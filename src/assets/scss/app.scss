@@ -1,0 +1,72 @@
+// <--------公共基础样式------->
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+html,body{background-color:#f7f7f7;color: #202020;}
+strong,span,i{font-style:normal;}
+.el-scrollbar__wrap{overflow: visible;overflow-x: hidden;box-sizing: border-box;}
+.wrap{box-sizing: border-box;padding:0 10px;width: calc(100vw - 220px);}
+
+// <--------------home样式-------------->
+.home{
+	.allCenter{display: flex;justify-content: center;align-items: center;align-content: center;}
+	.el-header{
+	  height: 60px;box-sizing: border-box;display: flex;justify-content: space-between;align-items: center;padding: 0 20px;color: #ffffff;background: linear-gradient(to bottom, #f28c38 0%, #de8033 100%);
+	  .left{
+		@extend .allCenter;
+		img{width: 30px;}
+		p{font-size: 22px;margin-left: 10px;}
+	  }
+	  .right{
+		@extend .allCenter;
+		i{font-size: 24px;}
+		img{width: 40px;height: 40px;border-radius: 100%;margin: 0 20px;}
+		.el-dropdown{color: #ffffff;cursor: pointer;}
+	  }
+	}
+	.el-aside {
+	  background-color: #363b4e;
+	  height: calc(100vh - 60px);
+	}
+	.el-main {
+	  background-color: #ffffff;color: #333;height: calc(100vh - 120px);padding:0;
+	  .tabs-wrap{
+		display: flex;padding:5px 10px 0;
+		.el-tabs{flex: 1;}
+	  }
+	  .el-tabs__item.is-active {
+		color: #de8033;
+	  }
+	  
+	}
+	.el-footer {
+	  background-color: #B3C0D1;
+	  color: #333;
+	  text-align: center;
+	  line-height: 60px;
+	}
+}
+  
+
+
+
+
+
+
+
+
+

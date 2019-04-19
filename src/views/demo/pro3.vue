@@ -1,0 +1,67 @@
+<template>
+    <div class="pro3">
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+        <p>pro3</p>
+    </div>
+</template>
+<style scoped lang="scss">
+.pro3{
+    box-sizing: border-box;
+    padding:0 10px;width: 100%;
+}
+</style>
+
