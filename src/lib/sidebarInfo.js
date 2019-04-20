@@ -8,7 +8,7 @@ let sidebarInfo = [
         items:[
             {
                 id:'21',
-                authUrl:'/projectList',
+                authUrl:'/home',
                 iconUrl:'el-icon-document',
                 isMenu:1,
                 name:'项目操作',
@@ -38,108 +38,6 @@ let sidebarInfo = [
                 name:'权限操作',
                 items:[{}]
             },
-        ]
-    },
-    {
-        id:'99',
-        authUrl:'null',
-        iconUrl:'el-icon-menu',
-        isMenu:0,
-        name:'项目一',
-        items:[
-            {
-                id:'98',
-                authUrl:'/home',
-                iconUrl:'el-icon-document',
-                isMenu:1,
-                name:'pro1',
-                items:[{}]
-            },
-            {
-                id:'97',
-                authUrl:'null',
-                iconUrl:'el-icon-menu',
-                isMenu:0,
-                name:'二级目录',
-                items:[
-                    {
-                        id:'96',
-                        authUrl:'/pro2',
-                        iconUrl:'el-icon-document',
-                        isMenu:1,
-                        name:'pro2',
-                        items:[{}]
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        id:'4',
-        authUrl:'null',
-        iconUrl:'el-icon-menu',
-        isMenu:0,
-        name:'项目二',
-        items:[
-            {
-                id:'5',
-                authUrl:'/pro3',
-                iconUrl:'el-icon-document',
-                isMenu:1,
-                name:'pro3',
-                items:[{}]
-            },
-            {
-                id:'6',
-                authUrl:'null',
-                iconUrl:'el-icon-menu',
-                isMenu:0,
-                name:'二级目录',
-                items:[
-                    {
-                        id:'7',
-                        authUrl:'/pro4',
-                        iconUrl:'el-icon-document',
-                        isMenu:1,
-                        name:'pro4',
-                        items:[{}]
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        id:'89',
-        authUrl:'null',
-        iconUrl:'el-icon-menu',
-        isMenu:0,
-        name:'项目三',
-        items:[
-            {
-                id:'88',
-                authUrl:'/pro5',
-                iconUrl:'el-icon-document',
-                isMenu:1,
-                name:'pro5',
-                items:[{}]
-            },
-            {
-                id:'87',
-                authUrl:'null',
-                iconUrl:'el-icon-menu',
-                isMenu:0,
-                name:'二级目录',
-                items:[
-                    {
-                        id:'86',
-                        authUrl:'/pro6',
-                        iconUrl:'el-icon-document',
-                        isMenu:1,
-                        name:'pro6',
-                        items:[{}]
-                    }
-                ]
-            }
         ]
     }
 ];

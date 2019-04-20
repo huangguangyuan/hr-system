@@ -21,7 +21,7 @@ export default new Router({
       children:[
         // 项目列表
         {
-          path:'/projectList',
+          path:'/',
           name:'projectList',
           component:() => import('./views/rbac/projectList.vue'),
         },
