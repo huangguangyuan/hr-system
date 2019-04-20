@@ -43,6 +43,30 @@ export default new Router({
           name:'proAccess',
           component:() => import('./views/rbac/proAccess.vue'),
         },
+        // 后台管理员列表
+        {
+          path:'/adminList',
+          name:'/adminList',
+          component:() => import('./views/admin/adminList.vue'),
+        },
+        // 公司列表
+        {
+          path:'/company',
+          name:'/company',
+          component:() => import('./views/admin/company.vue'),
+        },
+        // 区域列表
+        {
+          path:'/region',
+          name:'/region',
+          component:() => import('./views/admin/region.vue'),
+        },
+        // 单元列表
+        {
+          path:'/regionBU',
+          name:'/regionBU',
+          component:() => import('./views/admin/regionBU.vue'),
+        },
       ]
     }
   ]

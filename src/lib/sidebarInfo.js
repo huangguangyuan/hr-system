@@ -39,6 +39,46 @@ let sidebarInfo = [
                 items:[{}]
             },
         ]
+    },{
+        id:'30',
+        authUrl:'null',
+        iconUrl:'el-icon-menu',
+        isMenu:0,
+        name:'后台管理员',
+        items:[
+            {
+                id:'31',
+                authUrl:'/adminList',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'后台管理员列表',
+                items:[{}]
+            },
+            {
+                id:'32',
+                authUrl:'/company',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'公司操作',
+                items:[{}]
+            },
+            {
+                id:'33',
+                authUrl:'/region',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'区域操作',
+                items:[{}]
+            },
+            {
+                id:'34',
+                authUrl:'/regionBU',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'单元操作',
+                items:[{}]
+            },
+        ]
     }
 ];
 
