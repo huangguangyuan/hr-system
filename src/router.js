@@ -19,36 +19,6 @@ export default new Router({
       path: '/home',
       component: Home,
       children:[
-        {
-          path:'/',
-          name:'pro1',
-          component:() => import('./views/demo/pro1.vue'),
-        },
-        {
-          path:'/pro2',
-          name:'pro2',
-          component:() => import('./views/demo/pro2.vue'),
-        },
-        {
-          path:'/pro3',
-          name:'pro3',
-          component:() => import('./views/demo/pro3.vue'),
-        },
-        {
-          path:'/pro4',
-          name:'pro4',
-          component:() => import('./views/demo/pro4.vue'),
-        },
-        {
-          path:'/pro5',
-          name:'pro5',
-          component:() => import('./views/demo/pro5.vue'),
-        },
-        {
-          path:'/pro6',
-          name:'pro6',
-          component:() => import('./views/demo/pro6.vue'),
-        },
         // 项目列表
         {
           path:'/projectList',
