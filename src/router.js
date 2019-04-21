@@ -4,13 +4,13 @@ import Home from './views/Home.vue'
 
 Vue.use(Router)
 
-export default new Router({
+let routers = new Router({
   mode: 'hash',
   base: process.env.BASE_URL,
   routes: [
     // 登录
     {
-      path: '/login',
+      path: '/',
       name: 'login',
       component: () => import('./views/Login.vue')
     },
@@ -70,4 +70,7 @@ export default new Router({
       ]
     }
   ]
-})
+});
+
+
+export default routers;

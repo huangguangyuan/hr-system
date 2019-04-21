@@ -10,7 +10,7 @@
                     <el-input prefix-icon="el-icon-setting" v-model="formLabelAlign.pass"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary">登 录</el-button>
+                    <el-button type="primary" @click='loginFn'>登 录</el-button>
                     <el-button type="danger">注 册</el-button>
                 </el-form-item>
             </el-form>
@@ -26,6 +26,13 @@ export default {
                 user: '',
                 pass: ''
             }
+        }
+    },
+    methods:{
+        // 登录
+        loginFn(){
+            var _this = this;
+            _this.$router.push({path:'/home'});
         }
     }
 }
