@@ -4,7 +4,7 @@ let sidebarInfo = [
         authUrl:'null',
         iconUrl:'el-icon-menu',
         isMenu:0,
-        name:'系统管理',
+        name:'权限操作',
         items:[
             {
                 id:'21',
@@ -44,7 +44,7 @@ let sidebarInfo = [
         authUrl:'null',
         iconUrl:'el-icon-menu',
         isMenu:0,
-        name:'后台管理员',
+        name:'系统管理',
         items:[
             {
                 id:'31',
@@ -52,6 +52,14 @@ let sidebarInfo = [
                 iconUrl:'el-icon-document',
                 isMenu:1,
                 name:'后台管理员列表',
+                items:[{}]
+            },
+            {
+                id:'35',
+                authUrl:'/HRadminList',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'HR系统管理员列表',
                 items:[{}]
             },
             {

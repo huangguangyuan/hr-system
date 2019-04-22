@@ -47,25 +47,31 @@ let routers = new Router({
         {
           path:'/adminList',
           name:'/adminList',
-          component:() => import('./views/admin/adminList.vue'),
+          component:() => import('./views/sysManage/adminList.vue'),
+        },
+        // HR系统管理员列表
+        {
+          path:'/HRadminList',
+          name:'/HRadminList',
+          component:() => import('./views/sysManage/HRadminList.vue'),
         },
         // 公司列表
         {
           path:'/company',
           name:'/company',
-          component:() => import('./views/admin/company.vue'),
+          component:() => import('./views/sysManage/company.vue'),
         },
         // 区域列表
         {
           path:'/region',
           name:'/region',
-          component:() => import('./views/admin/region.vue'),
+          component:() => import('./views/sysManage/region.vue'),
         },
         // 单元列表
         {
           path:'/regionBU',
           name:'/regionBU',
-          component:() => import('./views/admin/regionBU.vue'),
+          component:() => import('./views/sysManage/regionBU.vue'),
         },
       ]
     }
