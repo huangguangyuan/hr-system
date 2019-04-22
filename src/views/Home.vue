@@ -64,7 +64,7 @@
                 ></el-tab-pane>
               </el-tabs>
               <el-dropdown @command="handleCommand">
-                <el-button size="small">
+                <el-button>
                   标签选项
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
@@ -81,7 +81,11 @@
             </el-scrollbar>
           </el-main>
           <!-- 底部 -->
-          <el-footer>Footer</el-footer>
+          <el-footer>
+            <img src="@/assets/images/logo.png" alt="">
+            版权所有 (C) 2019 GRAMMY TECH。保留所有权利。
+            
+          </el-footer>
         </el-container>
       </el-container>
     </el-container>
