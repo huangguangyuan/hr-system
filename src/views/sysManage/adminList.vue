@@ -55,12 +55,17 @@
     <el-dialog title="修改密码" :visible.sync="isShowModifyPassword" :close-on-click-modal="false" width="65%">
       <modify-password v-if="isShowModifyPassword" v-on:listenIsShowAddAdmin="IsShowAddAdminFn" :modifyInfo='modifyInfo'></modify-password>
     </el-dialog>
+    <!-- 增加角色 -->
+    <el-dialog title="添加角色" :visible.sync="isShowAddRole" :close-on-click-modal="false" width="40%">
+      <add-role v-if="isShowAddRole" v-on:listenIsShowAddAdmin="IsShowAddAdminFn" :modifyInfo='modifyInfo'></add-role>
+    </el-dialog>
   </div>
 </template>
 <script>
 import addAdmin from "./addAdmin.vue";
 import modifyAdmin from "./modifyAdmin.vue";
 import modifyPassword from "./modifyPassword.vue";
+import addRole from "./addRole.vue";
 export default {
   name: "adminList",
   inject: ["reload"],
@@ -74,6 +79,7 @@ export default {
       isShowAddAdmin: false, //是否显示新增后台管理员
       isShowModifyAdmin: false, //是否显示修改后台管理员
       isShowModifyPassword: false, //是否显示修改密码
+      isShowAddRole:false,//是否显示增加角色
       modifyInfo:{}//当前列表信息
     };
   },
@@ -123,6 +129,7 @@ export default {
       this.isShowAddAdmin = res;
       this.isShowModifyAdmin = res;
       this.isShowModifyPassword = res;
+      this.isShowAddRole = res;
     },
     // 搜索
     searchFn(){
@@ -144,7 +151,10 @@ export default {
     },
     // 添加角色
     addRole(index,res){
-
+      var _this = this;
+      _this.isShowAddRole =  true;
+      _this.modifyInfo = res;
+      _this.modifyInfo.adminType = 'admin';
     },
     // 禁用
     forbidden(index,res){
@@ -177,8 +187,6 @@ export default {
             message: "已取消操作~"
           });
         });
-
-
     },
     // 删除
     handleDelete(index, res) {
@@ -220,7 +228,8 @@ export default {
   components: {
     addAdmin,
     modifyAdmin,
-    modifyPassword
+    modifyPassword,
+    addRole
   }
 };
 </script>
