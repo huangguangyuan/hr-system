@@ -73,6 +73,12 @@ let routers = new Router({
           name:'/regionBU',
           component:() => import('./views/sysManage/regionBU.vue'),
         },
+        // 个税计算器
+        {
+          path:'/calculator',
+          name:'/calculator',
+          component:() => import('./views/salaryManage/calculator.vue'),
+        },
       ]
     }
   ]

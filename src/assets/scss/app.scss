@@ -20,6 +20,8 @@ html,body{background-color:#f7f7f7;color: #202020;}
 strong,span,i{font-style:normal;}
 .el-scrollbar__wrap{overflow: visible;overflow-x: hidden;box-sizing: border-box;}
 .wrap{box-sizing: border-box;padding:0 10px;width: calc(100vw - 220px);}
+// 顶部内容项
+.my-top {border-bottom: 1px solid #e4e7ed;padding-bottom: 10px;display: flex;align-items: center;justify-content: space-between;}
 
 // <--------------home样式-------------->
 .home{

@@ -39,7 +39,8 @@ let sidebarInfo = [
                 items:[{}]
             },
         ]
-    },{
+    },
+    {
         id:'30',
         authUrl:'null',
         iconUrl:'el-icon-menu',
@@ -84,6 +85,23 @@ let sidebarInfo = [
                 iconUrl:'el-icon-document',
                 isMenu:1,
                 name:'单元操作',
+                items:[{}]
+            },
+        ]
+    },
+    {
+        id:'40',
+        authUrl:'null',
+        iconUrl:'el-icon-menu',
+        isMenu:0,
+        name:'薪资管理',
+        items:[
+            {
+                id:'21',
+                authUrl:'/calculator',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'个税计算器',
                 items:[{}]
             },
         ]
