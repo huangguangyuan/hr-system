@@ -12,23 +12,31 @@
           <el-input v-model="scope.row.income" placeholder="请输入内容"></el-input>
         </template>
       </el-table-column>
-      <el-table-column prop="deduct" label="专项扣除">
+      <el-table-column prop="deduct" label="专项扣除（元）">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.deduct" placeholder="请输入内容" readonly @click.native='deductFn(scope.$index, scope.row)'></el-input>
+          <el-input v-model="scope.row.deduct" placeholder="请输入内容" suffix-icon="el-icon-caret-right" readonly @click.native='deductFn(scope.$index, scope.row)'></el-input>
         </template>
       </el-table-column>
-      <el-table-column prop="addDeduct" label="專項附加扣除">
+      <el-table-column prop="addDeduct" label="專項附加扣除（元）">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.addDeduct" placeholder="请输入内容" readonly @click.native='addDeductFn(scope.$index, scope.row)'></el-input>
+          <el-input v-model="scope.row.addDeduct" placeholder="请输入内容" suffix-icon="el-icon-caret-right" readonly @click.native='addDeductFn(scope.$index, scope.row)'></el-input>
         </template>
       </el-table-column>
-      <el-table-column prop="fixedDeduct" label="起征点"></el-table-column>
-      <el-table-column prop="iit" label="个人所得税">
+      <el-table-column prop="fixedDeduct" label="起征点（元）">
         <template slot-scope="scope">
-          <el-input v-model="JANtax" placeholder="请输入内容" :disabled="true"></el-input>
+          <el-input v-model="scope.row.fixedDeduct" placeholder="请输入内容"></el-input>
         </template>
       </el-table-column>
-      <el-table-column prop="accumulate" label="月累计应纳税所得额"></el-table-column>
+      <el-table-column prop="iit" label="个人所得税（元）">
+        <template slot-scope="scope">
+          <el-input v-model="monthlyTax[scope.$index].iit" placeholder="请输入内容" :disabled="true"></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column prop="accumulate" label="月累计应纳税所得额（元）">
+        <template slot-scope="scope">
+          <el-input v-model="monthlyTax[scope.$index].accumulate" placeholder="请输入内容" :disabled="true"></el-input>
+        </template>
+      </el-table-column>
     </el-table>
     <div class="footer">
         <p>
@@ -109,7 +117,7 @@ export default {
           income: 0,
           deduct: 0,
           addDeduct: 0,
-          fixedDeduct: 5000,
+          fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
           accumulate: 0
@@ -120,7 +128,7 @@ export default {
           income: 0,
           deduct: 0,
           addDeduct: 0,
-          fixedDeduct: 5000,
+          fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
           accumulate: 0
@@ -131,7 +139,7 @@ export default {
           income: 0,
           deduct: 0,
           addDeduct: 0,
-          fixedDeduct: 5000,
+          fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
           accumulate: 0
@@ -142,7 +150,7 @@ export default {
           income: 0,
           deduct: 0,
           addDeduct: 0,
-          fixedDeduct: 5000,
+          fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
           accumulate: 0
@@ -153,7 +161,7 @@ export default {
           income: 0,
           deduct: 0,
           addDeduct: 0,
-          fixedDeduct: 5000,
+          fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
           accumulate: 0
@@ -164,7 +172,7 @@ export default {
           income: 0,
           deduct: 0,
           addDeduct: 0,
-          fixedDeduct: 5000,
+          fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
           accumulate: 0
@@ -185,7 +193,8 @@ export default {
       },
       isShowDeduct: false, //是否显示专项扣除
       isShowAddDeduct: false, //是否显示附近专项扣除
-      currentInfo:{}//当前信息
+      currentInfo:{},//当前信息
+      
     };
   },
   mounted() {
@@ -262,8 +271,22 @@ export default {
         return sum;
     },
     // 1月份所得税
-    JANtax(){
-        return this.countIit(this.dataList[0].id,this.dataList[0].income,this.dataList[0].deduct,this.dataList[0].addDeduct,this.dataList[0].fixedDeduct);
+    monthlyTax(){
+        // return this.countIit(this.dataList[0].id,this.dataList[0].income,this.dataList[0].deduct,this.dataList[0].addDeduct,this.dataList[0].fixedDeduct);
+       var resultArr = [
+        {iit:1,accumulate:0},
+        {iit:2,accumulate:0},
+        {iit:3,accumulate:0},
+        {iit:4,accumulate:0},
+        {iit:5,accumulate:0},
+        {iit:6,accumulate:0},
+      ];
+
+      for(var i=0;i<resultArr.length;i++){
+        resultArr[i].iit = this.countIit(this.dataList[i].id,this.dataList[i].income,this.dataList[i].deduct,this.dataList[i].addDeduct,this.dataList[i].fixedDeduct);
+      }
+
+        return resultArr;
     }
   },
   components: {}
