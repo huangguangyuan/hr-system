@@ -33,6 +33,15 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
+    <!-- 新增公司 -->
+    <el-dialog
+      title="新增管理员"
+      :visible.sync="isShowAddModule"
+      :close-on-click-modal="false"
+      width="65%"
+    >
+      <add-admin v-if="isShowAddModule" v-on:listenIsShowAddAdmin="IsShowAddAdminFn" :modifyInfo="modifyInfo"></add-admin>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -44,6 +53,7 @@ export default {
       total: 0, //总计
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
+      isShowAddModule:false//是否显示增加模块
     };
   },
   mounted() {

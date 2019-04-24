@@ -172,6 +172,7 @@ export default {
     initializeTab() {
       var _this = this;
       var firstTitle = _this.$route.path;
+      if(_this.navTabs.length!=0){return false;}
       var isExist = _this.navTabs.some(item => {
         return item.name = _this.$route.path
       });

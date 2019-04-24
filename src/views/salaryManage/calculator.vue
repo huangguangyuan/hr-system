@@ -23,7 +23,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="fixedDeduct" label="起征点"></el-table-column>
-      <el-table-column prop="iit" label="个人所得税"></el-table-column>
+      <el-table-column prop="iit" label="个人所得税">
+        <template slot-scope="scope">
+          <el-input v-model="JANtax" placeholder="请输入内容" :disabled="true"></el-input>
+        </template>
+      </el-table-column>
       <el-table-column prop="accumulate" label="月累计应纳税所得额"></el-table-column>
     </el-table>
     <div class="footer">
@@ -92,6 +96,7 @@
   </div>
 </template>
 <script>
+import { setInterval } from 'timers';
 export default {
   name: "calculator",
   inject: ["reload"],
@@ -185,7 +190,6 @@ export default {
   },
   mounted() {
     var _this = this;
-    console.log(_this.JANtax);
   },
   methods: {
     //专项扣除

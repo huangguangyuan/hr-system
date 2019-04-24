@@ -22,7 +22,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.modifyInfo);
     this.getRoleList();
     this.getCurrentRole();
   },
@@ -31,11 +30,14 @@ export default {
     getRoleList() {
       var _this = this;
       var reqUrl = "/server/api/v1/projectRole/getAll";
-      var data = { typeId: 1 };
+      if(_this.modifyInfo.adminType == "admin"){
+        var data = { typeId: 1 };
+      }else{
+        var data = { typeId: 2 };
+      }
       _this.$http
         .post(reqUrl, data)
         .then(res => {
-          // console.log(res.data.data);
           _this.data = res.data.data;
         })
         .catch(err => {
@@ -59,7 +61,7 @@ export default {
     // 添加角色
     addRolr() {
       var _this = this;
-      var reqUrl = "/server/api/v1/admin/addProjectAdminRoleRelation";
+      var reqUrl = "/server/api/v1/admin/updateAdminRoleRelation";
       var roleCodeArr = _this.$refs.tree.getCheckedKeys();
       var data = {
         adminCode: _this.modifyInfo.code,
@@ -71,9 +73,11 @@ export default {
           roleCode: roleCodeArr[i]
         });
       }
-
       _this.$http.post(reqUrl, data).then(res => {
-        console.log(res);
+        if(res.data.code == 0){
+          _this.$message('操作成功~');
+          _this.reload();
+        }
       });
     },
     // 取消

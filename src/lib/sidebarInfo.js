@@ -4,7 +4,7 @@ let sidebarInfo = [
         authUrl:'null',
         iconUrl:'el-icon-menu',
         isMenu:0,
-        name:'权限操作',
+        name:'项目管理',
         items:[
             {
                 id:'21',
