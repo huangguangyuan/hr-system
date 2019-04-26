@@ -3,7 +3,7 @@
     <!-- 头部内容 -->
     <div class="my-top">
       <span>后台管理角色列表</span>
-      <el-button type="warning" size="small">添加角色</el-button>
+      <el-button type="warning" size="small" @click='isShowAddRole=true;curInfo.type="admin"'>添加角色</el-button>
     </div>
     <!-- 列表内容 -->
     <el-table :data="queryTableDate" stripe row-key="id" border>
@@ -29,9 +29,14 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
+    <!-- 添加角色 -->
+    <el-dialog title="新增角色" :visible.sync="isShowAddRole" :close-on-click-modal='false'>
+      <add-role v-if='isShowAddRole' :curInfo='curInfo'></add-role>
+    </el-dialog>
   </div>
 </template>
 <script>
+import addRole from './addRole.vue';
 export default {
   name: "proAdminRole",
   data() {
@@ -40,6 +45,8 @@ export default {
       total: 0, //总计
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
+      curInfo:{},//当前信息
+      isShowAddRole:true,//是否显示新增角色浮层
     };
   },
   mounted() {
@@ -89,6 +96,9 @@ export default {
       var pageTotal = Math.ceil(_this.total/_this.pageSize);
       return pageTotal;
     }
+  },
+  components:{
+    addRole
   }
 };
 </script>

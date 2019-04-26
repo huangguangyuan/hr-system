@@ -23,6 +23,10 @@ strong,span,i{font-style:normal;}
 // 顶部内容项
 .my-top {border-bottom: 1px solid #e4e7ed;padding-bottom: 10px;display: flex;align-items: center;justify-content: space-between;}
 
+// 重置elementUI
+.el-select-dropdown__wrap{margin-bottom: 0px!important;}
+.el-table-filter__wrap{margin-bottom: 0px!important;}
+
 // <--------------home样式-------------->
 .home{
 	.allCenter{display: flex;justify-content: center;align-items: center;align-content: center;}
