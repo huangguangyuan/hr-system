@@ -1,5 +1,5 @@
 <template>
-  <div class="addRole">
+  <div class="modifyRole">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
       <el-form-item label="角色名：" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
@@ -45,7 +45,7 @@
 </template>
 <script>
 export default {
-  name: "addRole",
+  name: "modifyRole",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
