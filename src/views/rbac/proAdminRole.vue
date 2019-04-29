@@ -165,10 +165,13 @@ export default {
     // 监听子组件发过来信息
     listenIsShowMask(res) {
       this.isShowAddRole = res;
+      this.isShowModifyRole = res;
     },
     // 编辑信息
-    editFun(){
+    editFun(index,res){
       var _this = this;
+      _this.isShowModifyRole = true;
+      _this.curInfo = res;
     },
     // 删除
     handleDelete(index, res) {}
@@ -210,7 +213,7 @@ export default {
   }
 }
 .search-wrap {
-  margin: 20px auto;
+  margin: 20px auto;width: 100%;box-sizing: border-box;
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;

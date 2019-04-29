@@ -37,7 +37,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">确定修改</el-button>
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>
@@ -88,9 +88,21 @@ export default {
     };
   },
   mounted() {
+    this.initializationFun();
     this.getProjectData();
   },
   methods: {
+    // 初始化
+    initializationFun(){
+      var _this = this;
+      _this.ruleForm.name = _this.curInfo.name;
+      _this.ruleForm.projectCode = _this.curInfo.projectCode;
+      _this.ruleForm.roleCode = _this.curInfo.roleCode;
+      _this.ruleForm.description = _this.curInfo.description;
+      _this.ruleForm.lev = _this.curInfo.lev;
+      _this.ruleForm.typeId = _this.curInfo.typeId.toString();
+      _this.ruleForm.status = _this.curInfo.status.toString();
+    },
     // 提交表单
     submitForm(formName) {
       var _this = this;
@@ -103,11 +115,12 @@ export default {
         }
       });
     },
-    // 新增角色
+    // 修改角色
     addRoleFn() {
       var _this = this;
-      var reqUrl = "/server/api/v1/projectRole/add";
+      var reqUrl = "/server/api/v1/projectRole/update";
       var data = {
+        id:_this.curInfo.id,
         projectCode: _this.ruleForm.projectCode,
         name: _this.ruleForm.name,
         roleCode: _this.ruleForm.roleCode,
@@ -117,7 +130,8 @@ export default {
         typeId: parseInt(_this.ruleForm.typeId)
       };
       _this.$http.post(reqUrl,data).then(res => {
-        if(res.data.code == 200){
+        console.log(res);
+        if(res.data.code == 0){
           _this.reload();
         }
       })
