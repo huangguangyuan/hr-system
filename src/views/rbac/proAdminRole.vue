@@ -30,17 +30,15 @@
     <el-table :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
+      <el-table-column prop="roleCode" label="角色代号"></el-table-column>
+      <el-table-column prop="isStatus" label="状态"></el-table-column>
       <el-table-column prop="description" label="描述"></el-table-column>
       <el-table-column label="操作" fixed="right" width="500px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click='editFun(scope.$index, scope.row)'>编辑</el-button>
-          <el-button size="mini" icon="el-icon-plus">新增子角色</el-button>
-          <el-button
-            size="mini"
-            icon="el-icon-delete"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button>
+          <el-button size="mini" icon="el-icon-plus" @click='addChildRoleFun(scope.$index, scope.row)'>增加从属角色</el-button>
+          <el-button size="mini" icon="el-icon-plus" @click='assignPermissionsFun(scope.$index, scope.row)'>分配权限</el-button>
+          <el-button size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -55,21 +53,32 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
-    <!-- 添加角色 -->
+    <!-- 新增角色 -->
     <el-dialog title="新增角色" :visible.sync="isShowAddRole" :close-on-click-modal="false">
       <add-role v-if="isShowAddRole" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></add-role>
+    </el-dialog>
+    <!-- 添加从属角色 -->
+    <el-dialog title="添加从属角色" :visible.sync="isShowAddChildRole" :close-on-click-modal="false">
+      <add-child-role v-if="isShowAddChildRole" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></add-child-role>
     </el-dialog>
     <!-- 修改角色 -->
     <el-dialog title="修改角色" :visible.sync="isShowModifyRole" :close-on-click-modal="false">
       <modify-role v-if='isShowModifyRole' v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo"></modify-role>
     </el-dialog>
+    <!-- 分配权限 -->
+    <el-dialog title="分配权限" :visible.sync="isShowAssignPermissions" :close-on-click-modal="false">
+      <assign-permissions v-if='isShowAssignPermissions' v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo"></assign-permissions>
+    </el-dialog>
   </div>
 </template>
 <script>
 import addRole from "./addRole.vue";
+import addChildRole from "./addChildRole.vue";
 import modifyRole from "./modifyRole.vue";
+import assignPermissions from "./assignPermissions.vue";
 export default {
   name: "proAdminRole",
+  inject:["reload"],
   data() {
     return {
       tableData: [],
@@ -78,7 +87,9 @@ export default {
       curPage: 1, //当前页数
       curInfo: {}, //当前信息
       isShowAddRole: false, //是否显示新增角色浮层
+      isShowAddChildRole: false, //是否显示新增角色浮层
       isShowModifyRole:false,//是否显示修改角色浮层
+      isShowAssignPermissions:true,//是否显示分配权限浮层
       roleTypeValue: "1", //角色类型
       searchInner: "" //搜索内容
     };
@@ -101,6 +112,7 @@ export default {
               item.createTime = _this.$toolFn.timeFormat(item.createTime);
               item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
               item.children = item.nodes;
+              item.isStatus = item.status == 1?"启用":"禁用";
               return item;
             }) //倒序
             .sort((a, b) => {
@@ -112,6 +124,7 @@ export default {
               }
               return 0;
             });
+            console.log(_this.tableData);
           _this.total = _this.tableData.length;
         })
         .catch(err => {
@@ -166,6 +179,8 @@ export default {
     listenIsShowMask(res) {
       this.isShowAddRole = res;
       this.isShowModifyRole = res;
+      this.isShowAddChildRole = res;
+      this.isShowAssignPermissions = res;
     },
     // 编辑信息
     editFun(index,res){
@@ -173,8 +188,42 @@ export default {
       _this.isShowModifyRole = true;
       _this.curInfo = res;
     },
+    // 添加从属角色
+    addChildRoleFun(index,res){
+      var _this = this;
+      _this.isShowAddChildRole = true;
+      _this.curInfo = res;
+    },
+    // 分配权限
+    assignPermissionsFun(index,res){
+      var _this = this;
+      _this.isShowAssignPermissions = true;
+      _this.curInfo = res;
+    },
     // 删除
-    handleDelete(index, res) {}
+    handleDelete(index, res) {
+      var _this = this;
+      _this
+        .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+        .then(() => {
+          _this.$http
+            .post("/server/api/v1/projectRole/delete", { id: res.id })
+            .then(res => {
+              _this.$message({message: "删除成功！"});
+              _this.reload();
+            });
+        })
+        .catch(() => {
+          _this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    }
   },
   computed: {
     queryTableDate() {
@@ -191,7 +240,7 @@ export default {
   },
   components: {
     addRole,
-    modifyRole
+    modifyRole,addChildRole,assignPermissions
   }
 };
 </script>

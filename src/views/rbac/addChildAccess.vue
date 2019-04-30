@@ -1,9 +1,6 @@
 <template>
-  <div class="addRole">
+  <div class="addChildAccess">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-      <el-form-item label="角色名：" prop="name">
-        <el-input v-model="ruleForm.name"></el-input>
-      </el-form-item>
       <el-form-item label="所属项目：" prop="projectCode">
         <el-select v-model="ruleForm.projectCode" placeholder="请选择所属项目">
           <el-option
@@ -14,23 +11,23 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="角色代号：" prop="roleCode">
-        <el-input v-model="ruleForm.roleCode"></el-input>
+      <el-form-item label="权限名称：" prop="name">
+        <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="描述：" prop="description">
+      <el-form-item label="权限代号：" prop="rightCode">
+        <el-input v-model="ruleForm.rightCode"></el-input>
+      </el-form-item>
+      <el-form-item label="权限描述：" prop="description">
         <el-input v-model="ruleForm.description"></el-input>
       </el-form-item>
-      <el-form-item label="分组：" prop="lev">
-        <el-input v-model="ruleForm.lev" placeholder='分组900以上默认角色'></el-input>
-      </el-form-item>
-      <el-form-item label="角色类型：" prop="typeId">
+      <el-form-item label="权限类型：" prop="typeId">
         <el-radio-group v-model="ruleForm.typeId">
           <el-radio label="1">管理员角色</el-radio>
           <el-radio label="2">HR系统角色角色</el-radio>
           <el-radio label="3">员工</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="角色状态：" prop="status">
+      <el-form-item label="权限状态：" prop="status">
         <el-radio-group v-model="ruleForm.status">
           <el-radio label="1">启用</el-radio>
           <el-radio label="0">禁用</el-radio>
@@ -45,7 +42,7 @@
 </template>
 <script>
 export default {
-  name: "addRole",
+  name: "addChildAccess",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
@@ -54,35 +51,31 @@ export default {
         name: "",
         projectCode: "",
         projectList: [],
-        roleCode: "",
+        rightCode: "",
         description: "",
-        lev:"",
         typeId: "",
         status: ""
       },
       rules: {
         name: [
-          { required: true, message: "请输入活动名称", trigger: "blur" },
+          { required: true, message: "请输入权限名称", trigger: "blur" },
           { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
         ],
         projectCode: [
           { required: true, message: "请选择所属项目", trigger: "change" }
         ],
-        roleCode: [
-          { required: true, message: "请输入角色代号", trigger: "blur" },
+        rightCode: [
+          { required: true, message: "请输入权限代号", trigger: "blur" },
           { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
         ],
         description: [
-          { required: true, message: "请输入角色描述", trigger: "blur" }
+          { required: true, message: "请输入权限描述", trigger: "blur" }
         ],
         typeId: [
-          { required: true, message: "请选择角色类型", trigger: "change" }
+          { required: true, message: "请选择权限类型", trigger: "change" }
         ],
         status: [
-          { required: true, message: "请选择角色状态", trigger: "change" }
-        ],
-        lev: [
-          { required: false, message: "请输入角色描述", trigger: "blur" }
+          { required: true, message: "请选择权限状态", trigger: "change" }
         ],
       }
     };
@@ -96,27 +89,27 @@ export default {
       var _this = this;
       _this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.addRoleFn();
+          _this.addFn();
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     },
-    // 新增角色
-    addRoleFn() {
+    // 新增权限
+    addFn() {
       var _this = this;
-      var reqUrl = "/server/api/v1/projectRole/add";
+      var reqUrl = "/server/api/v1/projectAccess/add";
       var data = {
         projectCode: _this.ruleForm.projectCode,
         name: _this.ruleForm.name,
-        roleCode: _this.ruleForm.roleCode,
+        rightCode: _this.ruleForm.rightCode,
         description: _this.ruleForm.description,
         status: parseInt(_this.ruleForm.status),
-        lev: parseInt(_this.ruleForm.lev),
         typeId: parseInt(_this.ruleForm.typeId)
       };
       _this.$http.post(reqUrl,data).then(res => {
+          console.log(res);
         if(res.data.code == 0){
           _this.reload();
         }

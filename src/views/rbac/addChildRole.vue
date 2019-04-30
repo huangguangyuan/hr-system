@@ -1,10 +1,10 @@
 <template>
-  <div class="addRole">
+  <div class="addChildRole">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
       <el-form-item label="角色名：" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="所属项目：" prop="projectCode">
+      <!-- <el-form-item label="所属项目：" prop="projectCode">
         <el-select v-model="ruleForm.projectCode" placeholder="请选择所属项目">
           <el-option
             v-for="item in ruleForm.projectList"
@@ -13,23 +13,23 @@
             :value="item.code"
           ></el-option>
         </el-select>
-      </el-form-item>
-      <el-form-item label="角色代号：" prop="roleCode">
+      </el-form-item> -->
+      <!-- <el-form-item label="角色代号：" prop="roleCode">
         <el-input v-model="ruleForm.roleCode"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="描述：" prop="description">
         <el-input v-model="ruleForm.description"></el-input>
       </el-form-item>
       <el-form-item label="分组：" prop="lev">
-        <el-input v-model="ruleForm.lev" placeholder='分组900以上默认角色'></el-input>
+        <el-input v-model="ruleForm.lev" placeholder="分组900以上默认角色"></el-input>
       </el-form-item>
-      <el-form-item label="角色类型：" prop="typeId">
+      <!-- <el-form-item label="角色类型：" prop="typeId">
         <el-radio-group v-model="ruleForm.typeId">
           <el-radio label="1">管理员角色</el-radio>
           <el-radio label="2">HR系统角色角色</el-radio>
           <el-radio label="3">员工</el-radio>
         </el-radio-group>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="角色状态：" prop="status">
         <el-radio-group v-model="ruleForm.status">
           <el-radio label="1">启用</el-radio>
@@ -45,7 +45,7 @@
 </template>
 <script>
 export default {
-  name: "addRole",
+  name: "addChildRole",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
@@ -88,9 +88,16 @@ export default {
     };
   },
   mounted() {
+    console.log(this.curInfo);
     this.getProjectData();
+    this.initializationFun();
   },
   methods: {
+    // 初始化
+    initializationFun(){
+        var _this = this;
+        _this.ruleForm.projectCode = this.curInfo.projectCode
+    },
     // 提交表单
     submitForm(formName) {
       var _this = this;
@@ -106,16 +113,16 @@ export default {
     // 新增角色
     addRoleFn() {
       var _this = this;
-      var reqUrl = "/server/api/v1/projectRole/add";
+      var reqUrl = "/server/api/v1/projectRole/childrenAdd";
       var data = {
         projectCode: _this.ruleForm.projectCode,
+        superCode:_this.curInfo.code,
         name: _this.ruleForm.name,
-        roleCode: _this.ruleForm.roleCode,
         description: _this.ruleForm.description,
         status: parseInt(_this.ruleForm.status),
-        lev: parseInt(_this.ruleForm.lev),
-        typeId: parseInt(_this.ruleForm.typeId)
+        lev: parseInt(_this.ruleForm.lev)
       };
+      
       _this.$http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           _this.reload();
