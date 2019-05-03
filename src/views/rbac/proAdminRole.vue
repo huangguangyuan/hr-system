@@ -69,6 +69,8 @@
     <el-dialog title="分配权限" :visible.sync="isShowAssignPermissions" :close-on-click-modal="false">
       <assign-permissions v-if='isShowAssignPermissions' v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo"></assign-permissions>
     </el-dialog>
+    <!-- 加载等待页 -->
+    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
@@ -76,6 +78,7 @@ import addRole from "./addRole.vue";
 import addChildRole from "./addChildRole.vue";
 import modifyRole from "./modifyRole.vue";
 import assignPermissions from "./assignPermissions.vue";
+import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "proAdminRole",
   inject:["reload"],
@@ -89,7 +92,8 @@ export default {
       isShowAddRole: false, //是否显示新增角色浮层
       isShowAddChildRole: false, //是否显示新增角色浮层
       isShowModifyRole:false,//是否显示修改角色浮层
-      isShowAssignPermissions:true,//是否显示分配权限浮层
+      isShowAssignPermissions:false,//是否显示分配权限浮层
+      isShowLoading: false, //是否显示loading页
       roleTypeValue: "1", //角色类型
       searchInner: "" //搜索内容
     };
@@ -104,18 +108,12 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/projectRole/projectRolesWithAll";
       var myData = { typeId: parseInt(_this.roleTypeValue) };
+      _this.isShowLoading = true;
       _this.$http
         .post(reqUrl, myData)
         .then(res => {
-          _this.tableData = res.data.data
-            .map(item => {
-              item.createTime = _this.$toolFn.timeFormat(item.createTime);
-              item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-              item.children = item.nodes;
-              item.isStatus = item.status == 1?"启用":"禁用";
-              return item;
-            }) //倒序
-            .sort((a, b) => {
+          _this.isShowLoading = false;
+          _this.tableData = _this.mapFun(res.data.data).sort((a, b) => {
               if (a.id < b.id) {
                 return 1;
               }
@@ -124,12 +122,26 @@ export default {
               }
               return 0;
             });
-            console.log(_this.tableData);
           _this.total = _this.tableData.length;
+          console.log(_this.tableData);
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    // 循环数据列表获取属性
+    mapFun(objArr) {
+      var _this = this;
+      return objArr.map(item => {
+        item.createTime = _this.$toolFn.timeFormat(item.createTime);
+        item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
+        item.isStatus = item.status == 1 ? "启用" : "禁用";
+        item.children = item.nodes;
+        if (item.children != 0) {
+          _this.mapFun(item.children);
+        }
+        return item;
+      });
     },
     // 获取当前页数
     curChange(val) {
@@ -240,7 +252,8 @@ export default {
   },
   components: {
     addRole,
-    modifyRole,addChildRole,assignPermissions
+    modifyRole,addChildRole,assignPermissions,
+    loadingPage
   }
 };
 </script>
