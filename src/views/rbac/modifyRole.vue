@@ -4,7 +4,7 @@
       <el-form-item label="角色名：" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="所属项目：" prop="projectCode">
+      <!-- <el-form-item label="所属项目：" prop="projectCode">
         <el-select v-model="ruleForm.projectCode" placeholder="请选择所属项目">
           <el-option
             v-for="item in ruleForm.projectList"
@@ -13,7 +13,7 @@
             :value="item.code"
           ></el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="角色代号：" prop="roleCode">
         <el-input v-model="ruleForm.roleCode"></el-input>
       </el-form-item>
@@ -23,7 +23,7 @@
       <el-form-item label="分组：" prop="lev">
         <el-input v-model="ruleForm.lev" placeholder='分组900以上默认角色'></el-input>
       </el-form-item>
-      <el-form-item label="角色类型：" prop="typeId">
+      <!-- <el-form-item label="角色类型：" prop="typeId">
         <el-radio-group v-model="ruleForm.typeId">
           <el-radio label="1">管理员角色</el-radio>
           <el-radio label="2">HR系统角色角色</el-radio>
@@ -35,7 +35,7 @@
           <el-radio label="1">启用</el-radio>
           <el-radio label="0">禁用</el-radio>
         </el-radio-group>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定修改</el-button>
         <el-button @click="cancelFn">取 消</el-button>
@@ -108,7 +108,7 @@ export default {
       var _this = this;
       _this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.addRoleFn();
+          _this.modifyFn();
         } else {
           console.log("error submit!!");
           return false;
@@ -116,23 +116,20 @@ export default {
       });
     },
     // 修改角色
-    addRoleFn() {
+    modifyFn() {
       var _this = this;
       var reqUrl = "/server/api/v1/projectRole/update";
       var data = {
         id:_this.curInfo.id,
-        projectCode: _this.ruleForm.projectCode,
         name: _this.ruleForm.name,
         roleCode: _this.ruleForm.roleCode,
         description: _this.ruleForm.description,
-        status: parseInt(_this.ruleForm.status),
         lev: parseInt(_this.ruleForm.lev),
-        typeId: parseInt(_this.ruleForm.typeId)
       };
       _this.$http.post(reqUrl,data).then(res => {
-        console.log(res);
         if(res.data.code == 0){
           _this.reload();
+          _this.$message('修改成功~');
         }
       })
     },

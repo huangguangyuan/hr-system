@@ -37,7 +37,12 @@
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click='editFun(scope.$index, scope.row)'>编辑</el-button>
           <el-button size="mini" icon="el-icon-plus" @click='addChildRoleFun(scope.$index, scope.row)'>增加从属角色</el-button>
-          <el-button size="mini" icon="el-icon-plus" @click='assignPermissionsFun(scope.$index, scope.row)'>分配权限</el-button>
+          <el-button size="mini" icon="el-icon-s-tools" @click='assignPermissionsFun(scope.$index, scope.row)'>分配权限</el-button>
+          <el-button 
+            size="mini"
+            icon="el-icon-warning"
+            @click="forbidden(scope.$index, scope.row)"
+          >{{scope.row.status==1?'禁用':'启用'}}</el-button>
           <el-button size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -123,7 +128,6 @@ export default {
               return 0;
             });
           _this.total = _this.tableData.length;
-          console.log(_this.tableData);
         })
         .catch(err => {
           console.log(err);
@@ -211,6 +215,37 @@ export default {
       var _this = this;
       _this.isShowAssignPermissions = true;
       _this.curInfo = res;
+    },
+    // 禁用
+    forbidden(index, res) {
+      var _this = this;
+      var reqUrl = "/server/api/v1/projectRole/update";
+      var data = { id: res.id };
+      var txt = "";
+      if (res.status == 1) {
+        data.status = 0;
+        txt = "此操作将禁用, 是否继续?";
+      } else {
+        data.status = 1;
+        txt = "此操作将启用, 是否继续?";
+      }
+      _this
+        .$confirm(txt, "提 示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+        .then(() => {
+          _this.$http.post(reqUrl, data).then(res => {
+            _this.reload();
+          });
+        })
+        .catch(() => {
+          _this.$message({
+            type: "info",
+            message: "已取消操作~"
+          });
+        });
     },
     // 删除
     handleDelete(index, res) {

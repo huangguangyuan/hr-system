@@ -24,21 +24,21 @@ export default {
   mounted() {
     console.log(this.curInfo);
     this.getRoleList();
-    this.getCurrentRole();
+    // this.getCurrentRole();
   },
   methods: {
     //获取后台管理员角色列表
     getRoleList() {
       var _this = this;
-      var reqUrl = "/server/api/v1/projectRole/getAll";
-      if(_this.modifyInfo.adminType == "admin"){
-        var data = { typeId: 1 };
-      }else{
-        var data = { typeId: 2 };
+      var reqUrl = "/server/api/v1/projectAccess/getByOptions";
+      var data = {
+        projectCode:_this.curInfo.projectCode,
+        typeId:_this.curInfo.typeId
       }
       _this.$http
         .post(reqUrl, data)
         .then(res => {
+          console.log(res);
           _this.data = res.data.data;
         })
         .catch(err => {
@@ -50,14 +50,14 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/admin/getByCode";
       var data = { code: _this.modifyInfo.code };
-      _this.$http.post(reqUrl, data).then(res => {
-        if (res.data.data.roles != 0) {
-          var arr = res.data.data.roles.map(item => {
-            return item.code;
-          });
-          _this.$refs.tree.setCheckedKeys(arr);
-        }
-      });
+      // _this.$http.post(reqUrl, data).then(res => {
+      //   if (res.data.data.roles != 0) {
+      //     var arr = res.data.data.roles.map(item => {
+      //       return item.code;
+      //     });
+      //     _this.$refs.tree.setCheckedKeys(arr);
+      //   }
+      // });
     },
     // 添加角色
     addRolr() {

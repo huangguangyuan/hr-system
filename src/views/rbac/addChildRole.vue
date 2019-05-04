@@ -4,19 +4,9 @@
       <el-form-item label="角色名：" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <!-- <el-form-item label="所属项目：" prop="projectCode">
-        <el-select v-model="ruleForm.projectCode" placeholder="请选择所属项目">
-          <el-option
-            v-for="item in ruleForm.projectList"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          ></el-option>
-        </el-select>
-      </el-form-item> -->
-      <!-- <el-form-item label="角色代号：" prop="roleCode">
+      <el-form-item label="角色代号：" prop="roleCode">
         <el-input v-model="ruleForm.roleCode"></el-input>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="描述：" prop="description">
         <el-input v-model="ruleForm.description"></el-input>
       </el-form-item>
@@ -118,6 +108,7 @@ export default {
         projectCode: _this.ruleForm.projectCode,
         superCode:_this.curInfo.code,
         name: _this.ruleForm.name,
+        roleCode:_this.ruleForm.roleCode,
         description: _this.ruleForm.description,
         status: parseInt(_this.ruleForm.status),
         lev: parseInt(_this.ruleForm.lev)
