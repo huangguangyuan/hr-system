@@ -45,7 +45,7 @@
   </div>
 </template>
 <script>
-import addProject from '@/components/addProject.vue'
+import addProject from './addProject.vue'
 export default {
   name: "projectList",
   inject:['reload'],

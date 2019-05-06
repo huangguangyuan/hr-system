@@ -3,12 +3,13 @@
     <!-- 头部内容 -->
     <div class="my-top">
       <span>区域列表</span>
-      <el-button type="warning" size="small">添加</el-button>
+      <el-button type="warning" size="small" @click='isShowAddModule=true;curInfo.type="region"'>添加区域</el-button>
     </div>
     <!-- 列表内容 -->
     <el-table :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column prop="account" label="账号"></el-table-column>
       <el-table-column prop="companyName" label="所属公司"></el-table-column>
       <el-table-column prop="status" label="状态"></el-table-column>
       <el-table-column prop="address" label="地址"></el-table-column>
@@ -33,9 +34,14 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
+    <!-- 新增区域 -->
+    <el-dialog title="新增区域" :visible.sync="isShowAddModule" :close-on-click-modal="false" width="65%">
+      <add-module v-if="isShowAddModule" v-on:listenChildren="listenChildren" :curInfo="curInfo"></add-module>
+    </el-dialog>
   </div>
 </template>
 <script>
+import addModule from './addModule.vue';
 export default {
   name: "region",
   data() {
@@ -44,6 +50,8 @@ export default {
       total: 0, //总计
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
+      curInfo:{},//当前信息
+      isShowAddModule:false//是否显示增加模块
     };
   },
   mounted() {
@@ -71,6 +79,10 @@ export default {
       var _this = this;
       _this.curPage = val;
     },
+    // 监听子组件信息
+    listenChildren(res){
+      this.isShowAddModule = res;
+    },
     // 删除
     handleDelete(index,res){
 
@@ -88,6 +100,9 @@ export default {
       var pageTotal = Math.ceil(_this.total/_this.pageSize);
       return pageTotal;
     }
+  },
+  components:{
+    addModule
   }
 };
 </script>

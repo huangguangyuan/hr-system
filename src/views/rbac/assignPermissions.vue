@@ -1,8 +1,15 @@
 <template>
   <div class="assignPermissions">
-    <el-tree :data="data" show-checkbox node-key="code" ref="tree" :props="defaultProps"></el-tree>
+    <el-tree 
+      :data="data" 
+      show-checkbox 
+      node-key="code" 
+      ref="tree" 
+      default-expand-all
+      :props="defaultProps"
+    ></el-tree>
     <div class="btn-ground">
-      <el-button type="primary" @click="addRolr">确 认</el-button>
+      <el-button type="primary" @click="addAccess">确 认</el-button>
       <el-button @click="cancelFn">取 消</el-button>
     </div>
   </div>
@@ -16,67 +23,66 @@ export default {
     return {
       data: [],
       defaultProps: {
-        orderNo: "children",
+        children: "nodes",
         label: "name"
       }
     };
   },
   mounted() {
-    console.log(this.curInfo);
-    this.getRoleList();
-    // this.getCurrentRole();
+    this.getAccessList();
+    this.getCurrentAccess();
   },
   methods: {
-    //获取后台管理员角色列表
-    getRoleList() {
+    //获取当前角色所在项目下所有权限
+    getAccessList() {
       var _this = this;
-      var reqUrl = "/server/api/v1/projectAccess/getByOptions";
+      var reqUrl = "/server/api/v1/projectAccess/accessbyProjectCode";
       var data = {
-        projectCode:_this.curInfo.projectCode,
-        typeId:_this.curInfo.typeId
-      }
+        projectCode: _this.curInfo.projectCode,
+        typeId: _this.curInfo.typeId
+      };
       _this.$http
         .post(reqUrl, data)
         .then(res => {
-          console.log(res);
+          console.log(res.data.data);
           _this.data = res.data.data;
         })
         .catch(err => {
           console.log(err);
         });
     },
-    // 获取用户当前的角色
-    getCurrentRole() {
+    // 获取用户当前的权限
+    getCurrentAccess() {
       var _this = this;
-      var reqUrl = "/server/api/v1/admin/getByCode";
-      var data = { code: _this.modifyInfo.code };
-      // _this.$http.post(reqUrl, data).then(res => {
-      //   if (res.data.data.roles != 0) {
-      //     var arr = res.data.data.roles.map(item => {
-      //       return item.code;
-      //     });
-      //     _this.$refs.tree.setCheckedKeys(arr);
-      //   }
-      // });
+      var reqUrl = "/server/api/v1/projectRole/getDetailByCode";
+      var data = { code: _this.curInfo.code };
+      _this.$http.post(reqUrl, data).then(res => {
+        if (res.data.data.accessList != 0) {
+          var arr = res.data.data.accessList.map(item => {
+            return item.accessCode;
+          });
+          _this.$refs.tree.setCheckedKeys(arr);
+        }
+      });
     },
-    // 添加角色
-    addRolr() {
+    // 分配权限
+    addAccess() {
       var _this = this;
-      var reqUrl = "/server/api/v1/admin/updateAdminRoleRelation";
-      var roleCodeArr = _this.$refs.tree.getCheckedKeys();
+      var reqUrl = "/server/api/v1/projectRole/updateProjectRoleAccessRelation";
+      var codeArr = _this.$refs.tree.getCheckedKeys();
       var data = {
-        adminCode: _this.modifyInfo.code,
+        roleCode: _this.curInfo.code,
         params: []
       };
-      for (var i = 0; i < roleCodeArr.length; i++) {
+      for (var i = 0; i < codeArr.length; i++) {
         data.params.push({
           projectCode: "8ea5fcd0-5aa4-11e9-9b7e-bb5ad1145dea",
-          roleCode: roleCodeArr[i]
+          accessCode: codeArr[i]
         });
       }
       _this.$http.post(reqUrl, data).then(res => {
-        if(res.data.code == 0){
-          _this.$message('操作成功~');
+        if (res.data.code == 0) {
+          _this.$message("操作成功~");
           _this.reload();
         }
       });
@@ -84,7 +90,7 @@ export default {
     // 取消
     cancelFn() {
       var _this = this;
-      _this.$emit("listenIsShowAddAdmin", false);
+      _this.$emit("listenIsShowMask", false);
     }
   }
 };
