@@ -94,6 +94,8 @@
         :modifyInfo="modifyInfo"
       ></add-role>
     </el-dialog>
+    <!-- 加载等待页 -->
+    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
@@ -101,6 +103,7 @@ import addAdmin from "./addAdmin.vue";
 import modifyAdmin from "./modifyAdmin.vue";
 import modifyPassword from "./modifyPassword.vue";
 import addRole from "./addRole.vue";
+import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "HRadminList",
   inject: ["reload"],
@@ -128,9 +131,11 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/admin/getAll";
       var myData = { typeId: 2 };
+      _this.isShowLoading =true;
       _this.$http
         .post(reqUrl, myData)
         .then(res => {
+          _this.isShowLoading =false;
           _this.tableData = res.data.data
             .map(item => {
               item.createTime = _this.$toolFn.timeFormat(item.createTime);
@@ -279,7 +284,8 @@ export default {
     addAdmin,
     modifyAdmin,
     modifyPassword,
-    addRole
+    addRole,
+    loadingPage
   }
 };
 </script>

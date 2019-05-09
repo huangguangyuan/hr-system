@@ -22,14 +22,14 @@ let sidebarInfo = [
                 name:'管理员角色操作',
                 items:[{}]
             },
-            {
-                id:'23',
-                authUrl:'/proHRrole',
-                iconUrl:'el-icon-document',
-                isMenu:1,
-                name:'HR角色操作',
-                items:[{}]
-            },
+            // {
+            //     id:'23',
+            //     authUrl:'/proHRrole',
+            //     iconUrl:'el-icon-document',
+            //     isMenu:1,
+            //     name:'HR角色操作',
+            //     items:[{}]
+            // },
             {
                 id:'24',
                 authUrl:'/proAccess',

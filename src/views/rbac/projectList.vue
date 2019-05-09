@@ -42,10 +42,13 @@
     <el-dialog title="新增项目" :visible.sync="isShowProject" :close-on-click-modal='false'>
       <add-project v-on:listenIsShowProject='showIsShowProject' :isType='isType' v-if='isShowProject'></add-project>
     </el-dialog>
+    <!-- 加载等待页 -->
+    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
 import addProject from './addProject.vue'
+import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "projectList",
   inject:['reload'],
@@ -56,6 +59,7 @@ export default {
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
       isShowProject:false,//是否显示增加项目表单
+      isShowLoading: false, //是否显示loading页
       isType:'added',//判断传入添加or修改
       searchInner:''//搜索关键字
     };
@@ -70,9 +74,11 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/project/getAll";
       var myData = {};
+      _this.isShowLoading = true;
       _this.$http
         .post(reqUrl, myData)
         .then(res => {
+          _this.isShowLoading = false;
           _this.tableData = res.data.data.map(item => {
             item.createTime = _this.$toolFn.timeFormat(item.createTime);
             item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
@@ -156,7 +162,7 @@ export default {
     }
   },
   components:{
-    addProject
+    addProject,loadingPage
   }
 };
 </script>
