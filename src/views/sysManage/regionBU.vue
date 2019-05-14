@@ -3,7 +3,7 @@
     <!-- 头部内容 -->
     <div class="my-top">
       <span>单元列表</span>
-      <el-button type="warning" size="small" @click='isShowAddModule=true;curInfo.type="regionBU"'>添加</el-button>
+      <el-button type="warning" size="small" @click='isShowAddModule=true;curInfo.type="regionBU"'>添加单元</el-button>
     </div>
     <!-- 列表内容 -->
     <el-table :data="queryTableDate" stripe row-key="id" border>
@@ -38,10 +38,13 @@
     <el-dialog title="新增单元" :visible.sync="isShowAddModule" :close-on-click-modal="false" width="65%">
       <add-module v-if="isShowAddModule" v-on:listenChildren="listenChildren" :curInfo="curInfo"></add-module>
     </el-dialog>
+    <!-- 加载等待页 -->
+    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
 import addModule from './addModule.vue';
+import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "regionBU",
   data() {
@@ -50,6 +53,9 @@ export default {
       total: 0, //总计
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
+      curInfo:{},//当前信息
+      isShowAddModule:false,//是否显示增加模块
+      isShowLoading: false, //是否显示loading页
     };
   },
   mounted() {
@@ -60,12 +66,22 @@ export default {
     //获取项目数据列表
     getData() {
       var _this = this;
+      _this.isShowLoading = true;
       var reqUrl = "/server/api/v1/company/regionBUs";
       var myData = {};
       _this.$http
         .post(reqUrl, myData)
         .then(res => {
-          _this.tableData = res.data.data
+          _this.isShowLoading = false;
+          _this.tableData = res.data.data.sort((a, b) => {
+              if (a.id < b.id) {
+                return 1;
+              }
+              if (a.id > b.id) {
+                return -1;
+              }
+              return 0;
+            });
           _this.total = _this.tableData.length;
         })
         .catch(err => {
@@ -100,7 +116,7 @@ export default {
     }
   },
   components:{
-    addModule
+    addModule,loadingPage
   }
 };
 </script>

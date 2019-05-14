@@ -109,6 +109,7 @@ export default {
   mounted() {
     this.getCompanyData();
     this.getRegionData();
+    console.log(this.curInfo.type);
   },
   methods: {
     // 提交表单
@@ -152,8 +153,8 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/company/regionAdd";
       var data = _this.ruleForm;
-      console.log(data);
       _this.$http.post(reqUrl, data).then(res => {
+        console.log(res);
         if (res.data.code == 0) {
           _this.reload();
         }

@@ -2,7 +2,7 @@ let sidebarInfo = [
     {
         id:'20',
         authUrl:'null',
-        iconUrl:'el-icon-menu',
+        iconUrl:'el-icon-folder',
         isMenu:0,
         name:'项目管理',
         items:[
@@ -43,7 +43,7 @@ let sidebarInfo = [
     {
         id:'30',
         authUrl:'null',
-        iconUrl:'el-icon-menu',
+        iconUrl:'el-icon-setting',
         isMenu:0,
         name:'系统管理',
         items:[
@@ -90,9 +90,42 @@ let sidebarInfo = [
         ]
     },
     {
+        id:'50',
+        authUrl:'null',
+        iconUrl:'el-icon-wallet',
+        isMenu:0,
+        name:'计薪模板',
+        items:[
+            {
+                id:'51',
+                authUrl:'/cityList',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'主要城市',
+                items:[{}]
+            },
+            {
+                id:'52',
+                authUrl:'/SItemplate',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'社保模块',
+                items:[{}]
+            },
+            {
+                id:'53',
+                authUrl:'/HCtemplate',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'公积金模板',
+                items:[{}]
+            },
+        ]
+    },
+    {
         id:'40',
         authUrl:'null',
-        iconUrl:'el-icon-menu',
+        iconUrl:'el-icon-money',
         isMenu:0,
         name:'薪资管理',
         items:[
