@@ -120,6 +120,14 @@ let sidebarInfo = [
                 name:'公积金模板',
                 items:[{}]
             },
+            {
+                id:'54',
+                authUrl:'/STitems',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'薪资应税项目',
+                items:[{}]
+            },
         ]
     },
     {

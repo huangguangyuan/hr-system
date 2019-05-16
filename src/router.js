@@ -97,6 +97,12 @@ let routers = new Router({
           name:'HCtemplate',
           component:() => import('./views/salaryTemplate/HCtemplate.vue'),
         },
+        // 薪资应税项目
+        {
+          path:'/STitems',
+          name:'STitems',
+          component:() => import('./views/salaryTemplate/STitems.vue'),
+        },
       ]
     }
   ]

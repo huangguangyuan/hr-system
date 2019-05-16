@@ -1,27 +1,13 @@
 <template>
-  <div class="wrap HCtemplate">
+  <div class="wrap STitems">
     <!-- 头部内容 -->
     <div class="my-top">
-      <span>公积金模板</span>
-      <el-button type="primary" size="small" @click="isShowAdd = true;curInfo.type='add'">添加模板</el-button>
+      <span>薪资应税项目</span>
+      <el-button type="primary" size="small" @click="isShowAdd = true;curInfo.type='add'">添加项目</el-button>
     </div>
     <!-- 搜索 -->
     <div class="search-wrap">
       <el-input placeholder="请输入内容" v-model="searchInner" @blur="searchFun">
-        <el-select
-          v-model="cityCode"
-          slot="prepend"
-          placeholder="请选择"
-          style="width:200px;"
-          @change="changeCity"
-        >
-          <el-option
-            v-for="item in cityList"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          ></el-option>
-        </el-select>
         <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
       </el-input>
     </div>
@@ -29,10 +15,9 @@
     <!-- 列表内容 -->
     <el-table :data="queryTableDate" stripe style="width: 100%" border>
       <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
-      <el-table-column prop="baseLower" label="基数下限"></el-table-column>
-      <el-table-column prop="paymentRatio" label="缴纳比例"></el-table-column>
-      <el-table-column prop="paymentIdTxt" label="缴纳对象"></el-table-column>
+      <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column prop="taxableTxt" label="是否应税项目"></el-table-column>
+      <el-table-column prop="description" label="描述"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -68,7 +53,7 @@
 import addHCtemplate from "./addHCtemplate.vue";
 import loadingPage from "@/components/loadingPage.vue";
 export default {
-  name: "HCtemplate",
+  name: "STitems",
   inject: ["reload"],
   data() {
     return {
@@ -80,20 +65,17 @@ export default {
       isShowLoading: false, //是否显示loading页
       searchInner: "", //搜索关键字
       curInfo: {}, //传值给子组件
-      cityList: [], //城市列表
-      cityCode: "b39f8ec0-676f-11e9-93b3-31525099b521" //城市代号
     };
   },
   mounted() {
     var _this = this;
-    _this.getCityList();
     _this.getData();
   },
   methods: {
-    //获取城市数据列表
+    //获取数据列表
     getData() {
       var _this = this;
-      var reqUrl = "/server/api/v1/cityHC/getAll";
+      var reqUrl = "/server/api/v1/salaryItem/getAll";
       var myData = {
         cityCode: _this.cityCode
       };
@@ -101,18 +83,19 @@ export default {
       _this.$http
         .post(reqUrl, myData)
         .then(res => {
+          console.log(res);
           _this.isShowLoading = false;
           _this.tableData = res.data.data
             .map(item => {
-              switch (item.paymentId) {
-                case 1:
-                  item.paymentIdTxt = "公司";
+              switch (item.taxable) {
+                case 0:
+                  item.taxableTxt = "否";
                   break;
-                case 2:
-                  item.paymentIdTxt = "个人";
+                case 1:
+                  item.taxableTxt = "是";
                   break;
                 default:
-                  item.typeIdTxt = "未知";
+                  item.taxableTxt = "未知";
               }
               item.createTime = _this.$toolFn.timeFormat(item.createTime);
               item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
@@ -137,20 +120,6 @@ export default {
     curChange(val) {
       var _this = this;
       _this.curPage = val;
-    },
-    // 获取城市列表
-    getCityList() {
-      var _this = this;
-      var reqUrl = "/server/api/v1/city/getAll";
-      var data = {};
-      _this.$http.post(reqUrl, data).then(res => {
-        _this.cityList = res.data.data;
-      });
-    },
-    // 选择城市
-    changeCity(val) {
-      this.cityCode = val;
-      this.getData();
     },
     // 检测是否关闭表单
     listenIsShowMask(res) {
@@ -193,42 +162,20 @@ export default {
     searchFun() {
       var _this = this;
       if (_this.searchInner) {
-        var reqUrl = "/server/api/v1/citySI/getByOptions";
-        var data = { id: _this.searchInner };
+        var reqUrl = "/server/api/v1/salaryItem/getByOptions";
+        var data = { name: _this.searchInner };
         _this.$http.post(reqUrl, data).then(res => {
           _this.tableData = res.data.data.map(item => {
-            switch (item.typeId) {
-              case 1:
-                item.typeIdTxt = "养老";
-                break;
-              case 2:
-                item.typeIdTxt = "医疗";
-                break;
-              case 3:
-                item.typeIdTxt = "工伤";
-                break;
-              case 4:
-                item.typeIdTxt = "生育";
-                break;
-              case 5:
-                item.typeIdTxt = "失业";
-                break;
-              case 6:
-                item.typeIdTxt = "大病";
-                break;
-              default:
-                item.typeIdTxt = "未知";
-            }
-            switch (item.paymentId) {
-              case 1:
-                item.paymentIdTxt = "公司";
-                break;
-              case 2:
-                item.paymentIdTxt = "个人";
-                break;
-              default:
-                item.typeIdTxt = "未知";
-            }
+            switch (item.taxable) {
+                case 0:
+                  item.taxableTxt = "否";
+                  break;
+                case 1:
+                  item.taxableTxt = "是";
+                  break;
+                default:
+                  item.taxableTxt = "未知";
+              }
             item.createTime = _this.$toolFn.timeFormat(item.createTime);
             item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
             return item;
