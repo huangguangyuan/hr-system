@@ -1,17 +1,17 @@
 <template>
   <div class="addSTitems">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px">
       <el-form-item label="名称：" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="是否应税项目" prop="taxable">
+      <el-form-item label="描述：" prop="description">
+        <el-input v-model="ruleForm.description"></el-input>
+      </el-form-item>
+      <el-form-item label="是否应税项目：" prop="taxable">
         <el-radio-group v-model="ruleForm.taxable">
-          <el-radio label="0">否</el-radio>
           <el-radio label="1">是</el-radio>
+          <el-radio label="0">否</el-radio>
         </el-radio-group>
-        <el-form-item label="描述：" prop="description">
-          <el-input v-model="ruleForm.description"></el-input>
-        </el-form-item>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定提交</el-button>
@@ -33,9 +33,7 @@ export default {
         description: ""
       }, //表单信息
       rules: {
-        name: [
-          { required: true, message: "请输入名称", trigger: "blur" }
-        ],
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
         description: [
           { required: true, message: "请输入描述", trigger: "blur" }
         ],
@@ -50,7 +48,7 @@ export default {
     console.log(this.curInfo);
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
-      this.ruleForm.paymentId = this.ruleForm.paymentId.toString();
+      this.ruleForm.taxable = this.ruleForm.taxable.toString();
     }
   },
   methods: {
@@ -73,12 +71,11 @@ export default {
     // 添加
     addFun() {
       var _this = this;
-      var reqUrl = "/server/api/v1/cityHC/add";
+      var reqUrl = "/server/api/v1/salaryItem/add";
       var data = {
-        baseUpper: Number(_this.ruleForm.baseUpper),
-        baseLower: Number(_this.ruleForm.baseLower),
-        paymentRatio: Number(_this.ruleForm.paymentRatio),
-        paymentId: Number(_this.ruleForm.paymentId)
+        name: _this.ruleForm.name,
+        taxable: Number(_this.ruleForm.taxable),
+        description: _this.ruleForm.description
       };
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
@@ -92,22 +89,22 @@ export default {
     // 修改
     modifyFun() {
       var _this = this;
-      var reqUrl = "/server/api/v1/cityHC/update";
+      var reqUrl = "/server/api/v1/salaryItem/update";
       var data = {
         id: _this.ruleForm.id,
-        baseUpper: Number(_this.ruleForm.baseUpper),
-        baseLower: Number(_this.ruleForm.baseLower),
-        paymentRatio: Number(_this.ruleForm.paymentRatio),
-        paymentId: Number(_this.ruleForm.paymentId)
+        name: _this.ruleForm.name,
+        taxable: 0,
+        description: _this.ruleForm.description
       };
+      console.log(data);
       _this.$http.post(reqUrl, data).then(res => {
         console.log(res);
-        if (res.data.code == 0) {
-          _this.reload();
-          _this.$message("修改成功~");
-        } else {
-          _this.$alert(res.data.msg, "提 示");
-        }
+        // if (res.data.code == 0) {
+        //   _this.reload();
+        //   _this.$message("修改成功~");
+        // } else {
+        //   _this.$alert(res.data.msg, "提 示");
+        // }
       });
     },
     // 取消

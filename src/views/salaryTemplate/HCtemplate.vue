@@ -8,20 +8,6 @@
     <!-- 搜索 -->
     <div class="search-wrap">
       <el-input placeholder="请输入内容" v-model="searchInner" @blur="searchFun">
-        <el-select
-          v-model="cityCode"
-          slot="prepend"
-          placeholder="请选择"
-          style="width:200px;"
-          @change="changeCity"
-        >
-          <el-option
-            v-for="item in cityList"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          ></el-option>
-        </el-select>
         <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
       </el-input>
     </div>
@@ -79,14 +65,11 @@ export default {
       isShowAdd: false, //是否显示增加项目表单
       isShowLoading: false, //是否显示loading页
       searchInner: "", //搜索关键字
-      curInfo: {}, //传值给子组件
-      cityList: [], //城市列表
-      cityCode: "b39f8ec0-676f-11e9-93b3-31525099b521" //城市代号
+      curInfo: {} //传值给子组件
     };
   },
   mounted() {
     var _this = this;
-    _this.getCityList();
     _this.getData();
   },
   methods: {
@@ -95,7 +78,7 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/cityHC/getAll";
       var myData = {
-        cityCode: _this.cityCode
+        cityCode: "b39f8ec0-676f-11e9-93b3-31525099b521"
       };
       _this.isShowLoading = true;
       _this.$http
@@ -147,11 +130,6 @@ export default {
         _this.cityList = res.data.data;
       });
     },
-    // 选择城市
-    changeCity(val) {
-      this.cityCode = val;
-      this.getData();
-    },
     // 检测是否关闭表单
     listenIsShowMask(res) {
       var _this = this;
@@ -167,7 +145,6 @@ export default {
     // 删除
     handleDelete(index, res) {
       var _this = this;
-      console.log(res.id);
       _this
         .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
@@ -176,10 +153,10 @@ export default {
         })
         .then(() => {
           _this.$http
-            .post("/server/api/v1/citySI/delete", { id: res.id })
+            .post("/server/api/v1/cityHC/delete", { id: res.id })
             .then(res => {
               _this.reload();
-              _this.$message('取消成功~');
+              _this.$message("取消成功~");
             });
         })
         .catch(() => {
@@ -191,53 +168,31 @@ export default {
     },
     // 搜索
     searchFun() {
-      var _this = this;
-      if (_this.searchInner) {
-        var reqUrl = "/server/api/v1/citySI/getByOptions";
-        var data = { id: _this.searchInner };
-        _this.$http.post(reqUrl, data).then(res => {
-          _this.tableData = res.data.data.map(item => {
-            switch (item.typeId) {
-              case 1:
-                item.typeIdTxt = "养老";
-                break;
-              case 2:
-                item.typeIdTxt = "医疗";
-                break;
-              case 3:
-                item.typeIdTxt = "工伤";
-                break;
-              case 4:
-                item.typeIdTxt = "生育";
-                break;
-              case 5:
-                item.typeIdTxt = "失业";
-                break;
-              case 6:
-                item.typeIdTxt = "大病";
-                break;
-              default:
-                item.typeIdTxt = "未知";
-            }
-            switch (item.paymentId) {
-              case 1:
-                item.paymentIdTxt = "公司";
-                break;
-              case 2:
-                item.paymentIdTxt = "个人";
-                break;
-              default:
-                item.typeIdTxt = "未知";
-            }
-            item.createTime = _this.$toolFn.timeFormat(item.createTime);
-            item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-            return item;
-          });
-          _this.total = _this.tableData.length;
-        });
-      } else {
-        _this.getData();
-      }
+      // var _this = this;
+      // if (_this.searchInner) {
+      //   var reqUrl = "/server/api/v1/cityHC/getById";
+      //   var data = { id: _this.searchInner };
+      //   _this.$http.post(reqUrl, data).then(res => {
+      //     _this.tableData = res.data.data.map(item => {
+      //       switch (item.paymentId) {
+      //         case 1:
+      //           item.paymentIdTxt = "公司";
+      //           break;
+      //         case 2:
+      //           item.paymentIdTxt = "个人";
+      //           break;
+      //         default:
+      //           item.typeIdTxt = "未知";
+      //       }
+      //       item.createTime = _this.$toolFn.timeFormat(item.createTime);
+      //       item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
+      //       return item;
+      //     });
+      //     _this.total = _this.tableData.length;
+      //   });
+      // } else {
+      //   _this.getData();
+      // }
     }
   },
   computed: {

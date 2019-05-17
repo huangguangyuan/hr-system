@@ -62,31 +62,7 @@ let sidebarInfo = [
                 isMenu:1,
                 name:'HR系统管理员列表',
                 items:[{}]
-            },
-            {
-                id:'32',
-                authUrl:'/company',
-                iconUrl:'el-icon-document',
-                isMenu:1,
-                name:'公司操作',
-                items:[{}]
-            },
-            {
-                id:'33',
-                authUrl:'/region',
-                iconUrl:'el-icon-document',
-                isMenu:1,
-                name:'区域操作',
-                items:[{}]
-            },
-            {
-                id:'34',
-                authUrl:'/regionBU',
-                iconUrl:'el-icon-document',
-                isMenu:1,
-                name:'单元操作',
-                items:[{}]
-            },
+            }
         ]
     },
     {
@@ -146,7 +122,58 @@ let sidebarInfo = [
                 items:[{}]
             },
         ]
-    }
+    },
+    {
+        id:'70',
+        authUrl:'null',
+        iconUrl:'el-icon-office-building',
+        isMenu:0,
+        name:'公司管理',
+        items:[
+            {
+                id:'71',
+                authUrl:'/companyList',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'公司列表',
+                items:[{}]
+            },
+        ]
+    },
+    {
+        id:'80',
+        authUrl:'null',
+        iconUrl:'el-icon-place',
+        isMenu:0,
+        name:'区域管理',
+        items:[
+            {
+                id:'81',
+                authUrl:'/regionList',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'区域列表',
+                items:[{}]
+            },
+        ]
+    },
+    {
+        id:'90',
+        authUrl:'null',
+        iconUrl:'el-icon-school',
+        isMenu:0,
+        name:'单位管理',
+        items:[
+            {
+                id:'91',
+                authUrl:'/regionBUList',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'单位列表',
+                items:[{}]
+            },
+        ]
+    },
 ];
 
 export default sidebarInfo;

@@ -1,32 +1,35 @@
 <template>
-  <div class="wrap STitems">
+  <div class="wrap regionBUList">
     <!-- 头部内容 -->
     <div class="my-top">
-      <span>薪资应税项目</span>
-      <el-button type="primary" size="small" @click="isShowAdd = true;curInfo.type='add'">添加项目</el-button>
+      <span>区域列表</span>
+      <el-button type="warning" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增区域</el-button>
     </div>
-    <!-- 搜索 -->
-    <div class="search-wrap">
-      <el-input placeholder="请输入内容" v-model="searchInner" @blur="searchFun">
-        <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
-      </el-input>
-    </div>
-
     <!-- 列表内容 -->
-    <el-table :data="queryTableDate" stripe style="width: 100%" border>
+    <el-table :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="taxableTxt" label="是否应税项目"></el-table-column>
-      <el-table-column prop="description" label="描述"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="200px">
+      <el-table-column prop="account" label="账号"></el-table-column>
+      <el-table-column prop="companyName" label="所属公司"></el-table-column>
+      <el-table-column prop="contactName" label="联系人"></el-table-column>
+      <el-table-column prop="contactTel" label="联系人电话"></el-table-column>
+      <el-table-column prop="contactEmail" label="联系人邮箱"></el-table-column>
+      <el-table-column prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column prop="location" label="位置"></el-table-column>
+      <el-table-column prop="address" label="地址"></el-table-column>
+      <el-table-column prop="logo" label="logo"></el-table-column>
+      <el-table-column prop="remarks" label="备注"></el-table-column>
+      <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini" icon="el-icon-warning" @click='prohibitFun(scope.$index, scope.row)'>{{scope.row.status==1?'禁用':'启用'}}</el-button>
           <el-button
             size="mini"
             icon="el-icon-delete"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button>
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -41,30 +44,38 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
-    <!-- 添加薪资应税项目 -->
-    <el-dialog title="添加薪资应税项目" :visible.sync="isShowAdd" :close-on-click-modal="false">
-      <addSTitems v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo" v-if="isShowAdd"></addSTitems>
+    <!-- 编辑区域信息 -->
+    <el-dialog
+      title="编辑区域信息"
+      :visible.sync="isShowAddModule"
+      :close-on-click-modal="false"
+      width="65%"
+    >
+      <edit-template
+        v-if="isShowAddModule"
+        v-on:listenIsShowMask="listenIsShowMask"
+        :curInfo="curInfo"
+      ></edit-template>
     </el-dialog>
     <!-- 加载等待页 -->
     <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
-import addSTitems from "./addSTitems.vue";
+import editTemplate from "./editTemplate.vue";
 import loadingPage from "@/components/loadingPage.vue";
 export default {
-  name: "STitems",
+  name: "regionBUList",
   inject: ["reload"],
   data() {
     return {
-      tableData: [], //列表数据
+      tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
-      isShowAdd: false, //是否显示增加项目表单
-      isShowLoading: false, //是否显示loading页
-      searchInner: "", //搜索关键字
-      curInfo: {}, //传值给子组件
+      curInfo: {}, //当前信息
+      isShowAddModule: false, //是否显示增加模块
+      isShowLoading: false //是否显示loading页
     };
   },
   mounted() {
@@ -72,33 +83,19 @@ export default {
     _this.getData();
   },
   methods: {
-    //获取数据列表
+    //获取项目数据列表
     getData() {
       var _this = this;
-      var reqUrl = "/server/api/v1/salaryItem/getAll";
-      var myData = {
-        cityCode: _this.cityCode
-      };
       _this.isShowLoading = true;
+      var reqUrl = "/server/api/v1/company/regionBUs";
+      var myData = {};
       _this.$http
         .post(reqUrl, myData)
         .then(res => {
-          console.log(res);
           _this.isShowLoading = false;
           _this.tableData = res.data.data
             .map(item => {
-              switch (item.taxable) {
-                case 0:
-                  item.taxableTxt = "否";
-                  break;
-                case 1:
-                  item.taxableTxt = "是";
-                  break;
-                default:
-                  item.taxableTxt = "未知";
-              }
-              item.createTime = _this.$toolFn.timeFormat(item.createTime);
-              item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
+              item.statusTxt = item.status == 1 ? "启用" : "禁用";
               return item;
             })
             .sort((a, b) => {
@@ -111,6 +108,7 @@ export default {
               return 0;
             });
           _this.total = _this.tableData.length;
+          console.log(res);
         })
         .catch(err => {
           console.log(err);
@@ -121,34 +119,46 @@ export default {
       var _this = this;
       _this.curPage = val;
     },
-    // 检测是否关闭表单
+    // 监听子组件信息
     listenIsShowMask(res) {
-      var _this = this;
-      _this.isShowAdd = res;
+      this.isShowAddModule = res;
     },
-    // 编辑
+    // 编辑信息
     handleEdit(index, res) {
       var _this = this;
       _this.curInfo = res;
       _this.curInfo.type = "modify";
-      _this.isShowAdd = true;
+      _this.isShowAddModule = true;
     },
-    // 删除
-    handleDelete(index, res) {
+
+    // 禁用
+    prohibitFun(index, res) {
       var _this = this;
-      console.log(res.id);
+      var txt = '';
+      var status = 1;
+      if(res.status == 1){
+          txt = '此操作将禁用该数据, 是否继续?'
+          status = 0;
+      }else{
+          txt = '此操作将启用该数据, 是否继续?'
+          status = 1;
+      }
       _this
-        .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+        .$confirm(txt, "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
         .then(() => {
+          var data = {
+                id:res.id,
+                status:status
+            }
           _this.$http
-            .post("/server/api/v1/salaryItem/delete", { id: res.id })
+            .post("/server/api/v1/company/regionUpdate", data)
             .then(res => {
               _this.reload();
-              _this.$message('取消成功~');
+              _this.$message("操作成功~");
             });
         })
         .catch(() => {
@@ -158,33 +168,33 @@ export default {
           });
         });
     },
-    // 搜索
-    searchFun() {
+    // 删除
+    handleDelete(index, res) {
       var _this = this;
-      if (_this.searchInner) {
-        var reqUrl = "/server/api/v1/salaryItem/getByOptions";
-        var data = { name: _this.searchInner };
-        _this.$http.post(reqUrl, data).then(res => {
-          _this.tableData = res.data.data.map(item => {
-            switch (item.taxable) {
-                case 0:
-                  item.taxableTxt = "否";
-                  break;
-                case 1:
-                  item.taxableTxt = "是";
-                  break;
-                default:
-                  item.taxableTxt = "未知";
-              }
-            item.createTime = _this.$toolFn.timeFormat(item.createTime);
-            item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-            return item;
+      _this
+        .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+        .then(() => {
+          _this.$http
+            .post("/server/api/v1/company/regionDelete", { id: res.id })
+            .then(res => {
+                if(res.data.code == 200){
+                    _this.reload();
+                    _this.$message("删除成功~");
+                }else{
+                    _this.$message(res.data.msg);
+                }
+            });
+        })
+        .catch(() => {
+          _this.$message({
+            type: "info",
+            message: "已取消删除"
           });
-          _this.total = _this.tableData.length;
         });
-      } else {
-        _this.getData();
-      }
     }
   },
   computed: {
@@ -201,8 +211,8 @@ export default {
     }
   },
   components: {
-    loadingPage,
-    addSTitems
+    editTemplate,
+    loadingPage
   }
 };
 </script>
@@ -223,18 +233,9 @@ export default {
     margin-right: 20px;
   }
 }
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-}
 .search {
   margin: 20px auto;
 }
 </style>
-
-
-
-
 
 

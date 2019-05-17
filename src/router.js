@@ -19,6 +19,7 @@ let routers = new Router({
       path: '/home',
       component: Home,
       children:[
+        // <==========项目管理==========>
         // 项目列表
         {
           path:'/',
@@ -43,6 +44,7 @@ let routers = new Router({
           name:'proAccess',
           component:() => import('./views/rbac/proAccess.vue'),
         },
+        // <==========管理员==========>
         // 后台管理员列表
         {
           path:'/adminList',
@@ -55,30 +57,14 @@ let routers = new Router({
           name:'HRadminList',
           component:() => import('./views/sysManage/HRadminList.vue'),
         },
-        // 公司列表
-        {
-          path:'/company',
-          name:'company',
-          component:() => import('./views/sysManage/company.vue'),
-        },
-        // 区域列表
-        {
-          path:'/region',
-          name:'region',
-          component:() => import('./views/sysManage/region.vue'),
-        },
-        // 单元列表
-        {
-          path:'/regionBU',
-          name:'regionBU',
-          component:() => import('./views/sysManage/regionBU.vue'),
-        },
+        // <==========计薪==========>
         // 个税计算器
         {
           path:'/calculator',
           name:'calculator',
           component:() => import('./views/salaryManage/calculator.vue'),
         },
+        // <==========计薪模板==========>
         // 主要城市
         {
           path:'/cityList',
@@ -102,6 +88,27 @@ let routers = new Router({
           path:'/STitems',
           name:'STitems',
           component:() => import('./views/salaryTemplate/STitems.vue'),
+        },
+        // <==========公司==========>
+        // 公司
+        {
+          path:'/companyList',
+          name:'companyList',
+          component:() => import('./views/company/companyList.vue'),
+        },
+        // <==========区域==========>
+        // 区域
+        {
+          path:'/regionList',
+          name:'regionList',
+          component:() => import('./views/companyRegion/regionList.vue'),
+        },
+        // <==========单位==========>
+        // 单位
+        {
+          path:'/regionBUList',
+          name:'regionBUList',
+          component:() => import('./views/companyRegionBU/regionBUList.vue'),
         },
       ]
     }

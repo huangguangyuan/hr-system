@@ -1,13 +1,13 @@
 <template>
-  <div class="addModule">
+  <div class="editTemplate">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
-      <el-form-item label="所属公司" prop="companyCode" v-if='curInfo.type=="regionBU" || curInfo.type=="region"'>
+      <el-form-item label="所属公司" prop="companyCode">
         <el-select v-model="ruleForm.companyCode" placeholder="请选择所属公司">
             <el-option v-for='item in companyList' :key="item.id" :label="item.name" :value="item.code"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="所属区域" prop="companyRegionCode" v-if='curInfo.type=="regionBU"'>
-        <el-select v-model="ruleForm.companyRegionCode" placeholder="请选择所属公司">
+      <el-form-item label="所属区域" prop="companyRegionCode">
+        <el-select v-model="ruleForm.companyRegionCode" placeholder="请选择所属区域">
             <el-option v-for='item in regionList' :key="item.id" :label="item.name" :value="item.code"></el-option>
         </el-select>
       </el-form-item>
@@ -62,7 +62,7 @@
 </template>
 <script>
 export default {
-  name: "addModule",
+  name: "editTemplate",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
@@ -118,14 +118,11 @@ export default {
       _this.$refs[formName].validate(valid => {
         if (valid) {
           switch (_this.curInfo.type) {
-            case "company":
-              _this.addCompanyFn();
+            case "add":
+              _this.addFun();
               break;
-            case "region":
-              _this.addRegionFn();
-              break;
-            case "regionBU":
-              _this.addRegionBUFn();
+            case "modify":
+              _this.modifyFun();
               break;
           }
         } else {
@@ -135,7 +132,7 @@ export default {
       });
     },
     // 新增公司
-    addCompanyFn() {
+    addFun() {
       var _this = this;
       var reqUrl = "/server/api/v1/company/companyAdd";
       var data = _this.ruleForm;
@@ -148,29 +145,13 @@ export default {
         }
       });
     },
-    // 新增区域
-    addRegionFn() {
-      var _this = this;
-      var reqUrl = "/server/api/v1/company/regionAdd";
-      var data = _this.ruleForm;
-      _this.$http.post(reqUrl, data).then(res => {
-        console.log(res);
-        if (res.data.code == 0) {
-          _this.reload();
+    // 修改信息
+    modifyFun(){
+        var _this = this;
+        var reqUrl = '/server/api/v1/company/companyUpdate';
+        var data = {
+            
         }
-      });
-    },
-    // 新增单元
-    addRegionBUFn() {
-      var _this = this;
-      var reqUrl = "/server/api/v1/company/regionBUAdd";
-      var data = _this.ruleForm;
-      _this.$http.post(reqUrl, data).then(res => {
-        console.log(res);
-        if (res.data.code == 0) {
-          _this.reload();
-        }
-      });
     },
     // 获取公司列表
     getCompanyData(){

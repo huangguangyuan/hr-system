@@ -50,8 +50,16 @@ module.exports = {
      
         // 配置多个代理
         proxy: {
+            // "/api": {
+            //     target: "http://134.175.150.60:9527",//目标主机 
+            //     ws: false,//代理的WebSockets  
+            //     changeOrigin: true,//需要虚拟主机站点 
+            //     pathRewrite: {
+            //         '^/api': '/' 
+            //     }
+            // }
             "/api": {
-                target: "http://134.175.150.60:9527",//目标主机 
+                target: "http://192.168.103.160:9527",//目标主机 
                 ws: false,//代理的WebSockets  
                 changeOrigin: true,//需要虚拟主机站点 
                 pathRewrite: {
