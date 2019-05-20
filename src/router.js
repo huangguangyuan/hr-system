@@ -110,6 +110,12 @@ let routers = new Router({
           name:'regionBUList',
           component:() => import('./views/companyRegionBU/regionBUList.vue'),
         },
+        // 税率表
+        {
+          path:'/taxRateTable',
+          name:'taxRateTable',
+          component:() => import('./views/companyRegionBU/taxRateTable.vue'),
+        },
       ]
     }
   ]

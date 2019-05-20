@@ -7,11 +7,17 @@
     </div>
     <!-- 搜索 -->
     <div class="search-wrap">
-      <el-input placeholder="请输入内容" v-model="searchInner" @blur="searchFun">
-        <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
-      </el-input>
+      <el-select
+        v-model="cityCode"
+        slot="prepend"
+        placeholder="请选择"
+        style="width:200px;"
+        @change="changeCity"
+      >
+        <el-option label="全部" value=""></el-option>
+        <el-option v-for="item in cityList" :key="item.code" :label="item.name" :value="item.code"></el-option>
+      </el-select>
     </div>
-
     <!-- 列表内容 -->
     <el-table :data="queryTableDate" stripe style="width: 100%" border>
       <el-table-column prop="id" label="ID"></el-table-column>
@@ -65,20 +71,23 @@ export default {
       isShowAdd: false, //是否显示增加项目表单
       isShowLoading: false, //是否显示loading页
       searchInner: "", //搜索关键字
-      curInfo: {} //传值给子组件
+      curInfo: {}, //传值给子组件
+      cityList: [], //城市列表
+      cityCode: "" //城市代号
     };
   },
   mounted() {
     var _this = this;
-    _this.getData();
+    _this.getAllData();
+    _this.getCityList();
   },
   methods: {
     //获取城市数据列表
     getData() {
       var _this = this;
-      var reqUrl = "/server/api/v1/cityHC/getAll";
+      var reqUrl = "/server/api/v1/cityHC/getByOptions";
       var myData = {
-        cityCode: "b39f8ec0-676f-11e9-93b3-31525099b521"
+        cityCode: _this.cityCode
       };
       _this.isShowLoading = true;
       _this.$http
@@ -116,6 +125,50 @@ export default {
           console.log(err);
         });
     },
+    // 获取所有城市数据列表
+    getAllData(){
+      var _this = this;
+      var reqUrl = "/server/api/v1/cityHC/getAll";
+      var myData = {
+        cityCode: 'b39f8ec0-676f-11e9-93b3-31525099b521'
+      };
+      _this.isShowLoading = true;
+      _this.$http
+        .post(reqUrl, myData)
+        .then(res => {
+          _this.isShowLoading = false;
+          _this.tableData = res.data.data
+            .map(item => {
+              switch (item.paymentId) {
+                case 1:
+                  item.paymentIdTxt = "公司";
+                  break;
+                case 2:
+                  item.paymentIdTxt = "个人";
+                  break;
+                default:
+                  item.typeIdTxt = "未知";
+              }
+              item.createTime = _this.$toolFn.timeFormat(item.createTime);
+              item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
+              return item;
+            })
+            .sort((a, b) => {
+              if (a.id < b.id) {
+                return 1;
+              }
+              if (a.id > b.id) {
+                return -1;
+              }
+              return 0;
+            });
+          _this.total = _this.tableData.length;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+
+    },
     // 获取当前页数
     curChange(val) {
       var _this = this;
@@ -129,6 +182,15 @@ export default {
       _this.$http.post(reqUrl, data).then(res => {
         _this.cityList = res.data.data;
       });
+    },
+    // 选择城市
+    changeCity(val) {
+      this.cityCode = val;
+      if(val == ''){
+        this.getAllData();
+      }else{
+        this.getData();
+      }
     },
     // 检测是否关闭表单
     listenIsShowMask(res) {
@@ -166,34 +228,6 @@ export default {
           });
         });
     },
-    // 搜索
-    searchFun() {
-      // var _this = this;
-      // if (_this.searchInner) {
-      //   var reqUrl = "/server/api/v1/cityHC/getById";
-      //   var data = { id: _this.searchInner };
-      //   _this.$http.post(reqUrl, data).then(res => {
-      //     _this.tableData = res.data.data.map(item => {
-      //       switch (item.paymentId) {
-      //         case 1:
-      //           item.paymentIdTxt = "公司";
-      //           break;
-      //         case 2:
-      //           item.paymentIdTxt = "个人";
-      //           break;
-      //         default:
-      //           item.typeIdTxt = "未知";
-      //       }
-      //       item.createTime = _this.$toolFn.timeFormat(item.createTime);
-      //       item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-      //       return item;
-      //     });
-      //     _this.total = _this.tableData.length;
-      //   });
-      // } else {
-      //   _this.getData();
-      // }
-    }
   },
   computed: {
     queryTableDate() {

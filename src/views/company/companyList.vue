@@ -180,12 +180,12 @@ export default {
           _this.$http
             .post("/server/api/v1/company/companyDelete", { id: res.id })
             .then(res => {
-                if(res.data.code == 200){
-                    _this.reload();
-                    _this.$message("删除成功~");
-                }else{
-                    _this.$message(res.data.msg);
-                }
+              if(res.data.code == 0){
+                  _this.reload();
+                  _this.$message("删除成功~");
+              }else{
+                  _this.$message(res.data.msg);
+              }
             });
         })
         .catch(() => {

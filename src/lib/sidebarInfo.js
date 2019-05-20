@@ -172,6 +172,14 @@ let sidebarInfo = [
                 name:'单位列表',
                 items:[{}]
             },
+            {
+                id:'92',
+                authUrl:'/taxRateTable',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'税率表',
+                items:[{}]
+            },
         ]
     },
 ];

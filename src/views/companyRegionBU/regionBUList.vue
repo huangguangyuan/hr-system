@@ -155,7 +155,7 @@ export default {
                 status:status
             }
           _this.$http
-            .post("/server/api/v1/company/regionUpdate", data)
+            .post("/server/api/v1/company/regionBUUpdate", data)
             .then(res => {
               _this.reload();
               _this.$message("操作成功~");
@@ -179,9 +179,9 @@ export default {
         })
         .then(() => {
           _this.$http
-            .post("/server/api/v1/company/regionDelete", { id: res.id })
+            .post("/server/api/v1/company/regionBUDelete", { id: res.id })
             .then(res => {
-                if(res.data.code == 200){
+                if(res.data.code == 0){
                     _this.reload();
                     _this.$message("删除成功~");
                 }else{

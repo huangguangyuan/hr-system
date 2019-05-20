@@ -96,15 +96,13 @@ export default {
         taxable: 0,
         description: _this.ruleForm.description
       };
-      console.log(data);
       _this.$http.post(reqUrl, data).then(res => {
-        console.log(res);
-        // if (res.data.code == 0) {
-        //   _this.reload();
-        //   _this.$message("修改成功~");
-        // } else {
-        //   _this.$alert(res.data.msg, "提 示");
-        // }
+        if (res.data.code == 0) {
+          _this.reload();
+          _this.$message("修改成功~");
+        } else {
+          _this.$alert(res.data.msg, "提 示");
+        }
       });
     },
     // 取消

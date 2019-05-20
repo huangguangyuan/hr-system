@@ -1,33 +1,43 @@
 <template>
   <div class="editTemplate">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
-      <el-form-item label="所属公司" prop="companyCode">
-        <el-select v-model="ruleForm.companyCode" placeholder="请选择所属公司">
-            <el-option v-for='item in companyList' :key="item.id" :label="item.name" :value="item.code"></el-option>
+      <el-form-item label="所属公司" prop="companyCode" v-if="isShow">
+        <el-select v-model="ruleForm.companyCode" placeholder="请选择所属公司" @change="getRegionData">
+          <el-option
+            v-for="item in companyList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.code"
+          ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="所属区域" prop="companyRegionCode">
-        <el-select v-model="ruleForm.companyRegionCode" placeholder="请选择所属区域">
-            <el-option v-for='item in regionList' :key="item.id" :label="item.name" :value="item.code"></el-option>
+      <el-form-item label="所属区域" prop="companyRegionCode" v-if="isShow">
+        <el-select v-model="ruleForm.companyRegionCode" placeholder="请选择所属区域" :loading="loading">
+          <el-option
+            v-for="item in regionList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.code"
+          ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="名称：" prop="name">
+      <el-form-item label="名称：" prop="name" v-if="isShow">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="账号：" prop="account">
+      <el-form-item label="账号：" prop="account" v-if="isShow">
         <el-input v-model="ruleForm.account"></el-input>
       </el-form-item>
-      <el-form-item label="密码：" prop="password">
+      <el-form-item label="密码：" prop="password" v-if="isShow">
         <el-input v-model="ruleForm.password"></el-input>
       </el-form-item>
-      <el-form-item label="地址：">
-        <el-input v-model="ruleForm.address"></el-input>
-      </el-form-item>
-      <el-form-item label="国家：">
+      <el-form-item label="国家：" v-if="isShow">
         <el-input v-model="ruleForm.country"></el-input>
       </el-form-item>
       <el-form-item label="位置：">
         <el-input v-model="ruleForm.location"></el-input>
+      </el-form-item>
+      <el-form-item label="地址：">
+        <el-input v-model="ruleForm.address"></el-input>
       </el-form-item>
       <el-form-item label="logo图片：">
         <el-input v-model="ruleForm.logo"></el-input>
@@ -68,8 +78,8 @@ export default {
   data() {
     return {
       ruleForm: {
-        companyCode:"",
-        companyRegionCode:"",
+        companyCode: "",
+        companyRegionCode: "",
         name: "",
         account: "",
         password: "",
@@ -84,9 +94,11 @@ export default {
         contactTitle: "",
         contactLocation: "",
         contactRemarks: ""
-      },//表单信息
-      companyList:[],//公司列表
-      regionList:[],//地区列表
+      }, //表单信息
+      companyList: [], //公司列表
+      regionList: [], //地区列表
+      loading: false, //公司ID号
+      isShow: true, //是否显示
       rules: {
         companyCode: [
           { required: true, message: "请选择所属公司", trigger: "change" }
@@ -108,8 +120,10 @@ export default {
   },
   mounted() {
     this.getCompanyData();
-    this.getRegionData();
-    console.log(this.curInfo.type);
+    if (this.curInfo.type == "modify") {
+      this.ruleForm = this.curInfo;
+      this.isShow = false;
+    }
   },
   methods: {
     // 提交表单
@@ -131,43 +145,68 @@ export default {
         }
       });
     },
-    // 新增公司
+    // 新增单位
     addFun() {
       var _this = this;
-      var reqUrl = "/server/api/v1/company/companyAdd";
+      var reqUrl = "/server/api/v1/company/regionBUAdd";
       var data = _this.ruleForm;
-      delete data.companyRegionCode;
-      console.log(data);
       _this.$http.post(reqUrl, data).then(res => {
         console.log(res);
         if (res.data.code == 0) {
           _this.reload();
+          _this.$message("新增成功~");
+        } else {
+          _this.$message(res.data.msg);
         }
       });
     },
     // 修改信息
-    modifyFun(){
-        var _this = this;
-        var reqUrl = '/server/api/v1/company/companyUpdate';
-        var data = {
-            
+    modifyFun() {
+      var _this = this;
+      var reqUrl = "/server/api/v1/company/regionBUUpdate";
+      var data = {
+        id: _this.ruleForm.id,
+        location: _this.ruleForm.location,
+        address: _this.ruleForm.address,
+        logo: _this.ruleForm.logo,
+        remarks: _this.ruleForm.remarks,
+        contactName: _this.ruleForm.contactName,
+        contactTel: _this.ruleForm.contactTel,
+        contactEmail: _this.ruleForm.contactEmail,
+        contactTitle: _this.ruleForm.contactTitle,
+        contactLocation: _this.ruleForm.contactLocation,
+        contactRemarks: _this.ruleForm.contactRemarks
+      };
+      _this.$http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
+          _this.reload();
+          _this.$message("修改成功~");
+        } else {
+          _this.$message(res.data.msg);
         }
+      });
     },
     // 获取公司列表
-    getCompanyData(){
-        var _this = this;
-        var reqUrl = '/server/api/v1/company/companys';
-        _this.$http.post(reqUrl,{}).then(res => {
-            _this.companyList = res.data.data
-        })
+    getCompanyData() {
+      var _this = this;
+      var reqUrl = "/server/api/v1/company/companys";
+      _this.$http.post(reqUrl, {}).then(res => {
+        _this.companyList = res.data.data;
+      });
     },
     // 获取区域列表
-    getRegionData(){
-        var _this = this;
-        var reqUrl = '/server/api/v1/company/regions';
-        _this.$http.post(reqUrl,{}).then(res => {
-            _this.regionList = res.data.data
-        })
+    getRegionData(val) {
+      var _this = this;
+      _this.loading = true;
+      var result = _this.companyList.filter(item => {
+        return item.code == val;
+      });
+      var reqUrl = "/server/api/v1/company/company";
+      var data = { id: result[0].id };
+      _this.$http.post(reqUrl, data).then(res => {
+        _this.loading = false;
+        _this.regionList = res.data.data.regionList;
+      });
     },
     // 取消
     cancelFn() {

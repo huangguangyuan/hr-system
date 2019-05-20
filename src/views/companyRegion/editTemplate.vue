@@ -99,7 +99,6 @@ export default {
   },
   mounted() {
     this.getCompanyData();
-    console.log(this.curInfo);
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
       this.isShow = false;

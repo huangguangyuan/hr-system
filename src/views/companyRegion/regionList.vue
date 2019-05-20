@@ -181,7 +181,7 @@ export default {
           _this.$http
             .post("/server/api/v1/company/regionDelete", { id: res.id })
             .then(res => {
-                if(res.data.code == 200){
+                if(res.data.code == 0){
                     _this.reload();
                     _this.$message("删除成功~");
                 }else{
