@@ -116,6 +116,13 @@ let routers = new Router({
           name:'taxRateTable',
           component:() => import('./views/companyRegionBU/taxRateTable.vue'),
         },
+        // <==========员工==========>
+        // 员工基本信息
+        {
+          path:'/staffInformation',
+          name:'staffInformation',
+          component:() => import('./views/staff/information/staffInformation.vue'),
+        },
       ]
     }
   ]

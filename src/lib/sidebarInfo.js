@@ -182,6 +182,23 @@ let sidebarInfo = [
             },
         ]
     },
+    {
+        id:'100',
+        authUrl:'null',
+        iconUrl:'el-icon-user',
+        isMenu:0,
+        name:'员工',
+        items:[
+            {
+                id:'101',
+                authUrl:'/staffInformation',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'基本信息',
+                items:[{}]
+            },
+        ]
+    },
 ];
 
 export default sidebarInfo;

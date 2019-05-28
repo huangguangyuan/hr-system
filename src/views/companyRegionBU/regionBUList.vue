@@ -6,7 +6,7 @@
       <el-button type="warning" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增区域</el-button>
     </div>
     <!-- 列表内容 -->
-    <el-table :data="queryTableDate" stripe row-key="id" border>
+    <el-table v-loading="loading" :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="account" label="账号"></el-table-column>
@@ -57,13 +57,10 @@
         :curInfo="curInfo"
       ></edit-template>
     </el-dialog>
-    <!-- 加载等待页 -->
-    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
 import editTemplate from "./editTemplate.vue";
-import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "regionBUList",
   inject: ["reload"],
@@ -75,7 +72,7 @@ export default {
       curPage: 1, //当前页数
       curInfo: {}, //当前信息
       isShowAddModule: false, //是否显示增加模块
-      isShowLoading: false //是否显示loading页
+      loading:true
     };
   },
   mounted() {
@@ -86,13 +83,13 @@ export default {
     //获取项目数据列表
     getData() {
       var _this = this;
-      _this.isShowLoading = true;
+      _this.loading = true;
       var reqUrl = "/server/api/v1/company/regionBUs";
       var myData = {};
       _this.$http
         .post(reqUrl, myData)
         .then(res => {
-          _this.isShowLoading = false;
+          _this.loading = false;
           _this.tableData = res.data.data
             .map(item => {
               item.statusTxt = item.status == 1 ? "启用" : "禁用";
@@ -108,7 +105,6 @@ export default {
               return 0;
             });
           _this.total = _this.tableData.length;
-          console.log(res);
         })
         .catch(err => {
           console.log(err);
@@ -211,8 +207,7 @@ export default {
     }
   },
   components: {
-    editTemplate,
-    loadingPage
+    editTemplate
   }
 };
 </script>

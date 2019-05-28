@@ -5,19 +5,16 @@
       <span>税率表</span>
     </div>
     <!-- 列表内容 -->
-    <el-table :data="dataList" stripe border>
+    <el-table v-loading="isShowLoading" :data="dataList" stripe border>
       <el-table-column prop="year" label="年份"></el-table-column>
       <el-table-column prop="id" label="级数"></el-table-column>
       <el-table-column prop="txt" label="全年应纳税所得额"></el-table-column>
       <el-table-column prop="taxRate" label="税率"></el-table-column>
       <el-table-column prop="quickDeduct" label="速算扣除数"></el-table-column>
     </el-table>
-    <!-- 加载等待页 -->
-    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
-import loadingPage from "@/components/loadingPage.vue";
 import { deflate } from 'zlib';
 export default {
   name: "taxRateTable",
@@ -25,7 +22,7 @@ export default {
   data() {
     return {
       dataList: [],
-      isShowLoading: false
+      isShowLoading: false,
     };
   },
   mounted() {
@@ -67,9 +64,7 @@ export default {
         });
     }
   },
-  components: {
-    loadingPage
-  }
+  components: {}
 };
 </script>
 <style scoped lang="scss">
