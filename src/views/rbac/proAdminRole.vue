@@ -27,7 +27,7 @@
       </el-input>
     </div>
     <!-- 列表内容 -->
-    <el-table :data="queryTableDate" stripe row-key="id" border>
+    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="roleCode" label="角色代号"></el-table-column>
@@ -74,8 +74,6 @@
     <el-dialog title="分配权限" :visible.sync="isShowAssignPermissions" :close-on-click-modal="false">
       <assign-permissions v-if='isShowAssignPermissions' v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo"></assign-permissions>
     </el-dialog>
-    <!-- 加载等待页 -->
-    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
@@ -83,7 +81,6 @@ import addRole from "./addRole.vue";
 import addChildRole from "./addChildRole.vue";
 import modifyRole from "./modifyRole.vue";
 import assignPermissions from "./assignPermissions.vue";
-import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "proAdminRole",
   inject:["reload"],
@@ -287,8 +284,7 @@ export default {
   },
   components: {
     addRole,
-    modifyRole,addChildRole,assignPermissions,
-    loadingPage
+    modifyRole,addChildRole,assignPermissions
   }
 };
 </script>

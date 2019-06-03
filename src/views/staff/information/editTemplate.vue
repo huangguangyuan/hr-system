@@ -1,6 +1,6 @@
 <template>
   <div class="editTemplate">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="170px">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="170px" size="mini">
       <el-form-item label="所属公司" prop="companyCode" v-if="isShow">
         <el-select v-model="ruleForm.companyCode" placeholder="请选择所属公司" @change="getRegionData">
           <el-option

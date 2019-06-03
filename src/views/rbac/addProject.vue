@@ -11,10 +11,6 @@
       <el-form-item label="项目名称" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <!-- 项目序号 -->
-      <el-form-item label="序号" prop="orderNo">
-        <el-input v-model="ruleForm.orderNo"></el-input>
-      </el-form-item>
       <!-- 项目状态 -->
       <el-form-item label="是否禁用" required prop="status">
         <el-radio-group v-model="ruleForm.status">
@@ -50,7 +46,6 @@ export default {
     return {
       ruleForm: {
         name: "", //项目名称
-        orderNo: "", //项目序号
         status: "", //项目状态
         typeId: "", //项目类型
         description: "" //项目描述
@@ -64,9 +59,6 @@ export default {
             message: "长度在 3 到 15 个字符",
             trigger: "blur"
           }
-        ],
-        orderNo: [
-          { required: false, message: "请输入项目序号", trigger: "blur" }
         ],
         status: [
           { required: true, message: "请选项目状态", trigger: "change" }
@@ -131,7 +123,6 @@ export default {
         "id":_this.ruleForm.id,
         "name":_this.ruleForm.name,
         "description":_this.ruleForm.description,
-        "orderNo":_this.ruleForm.orderNo,
         "status":_this.ruleForm.status
       }
       _this.$http.post(reqUrl,data).then(res => {

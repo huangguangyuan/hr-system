@@ -7,13 +7,13 @@
     </div>
     <!-- 搜索 -->
     <div class="search">
-      <el-input placeholder="请输入搜索关键字" v-model="searchInner" @blur='searchFn'>
+      <el-input placeholder="请输入项目名称" v-model="searchInner" @blur='searchFn'>
         <el-button slot="append" icon="el-icon-search" @click='searchFn'>搜 索</el-button>
       </el-input>
     </div>
     
     <!-- 列表内容 -->
-    <el-table :data="queryTableDate" stripe style="width: 100%" border>
+    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe style="width: 100%" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="项目名称"></el-table-column>
       <el-table-column prop="description" label="项目描述"></el-table-column>
@@ -42,13 +42,10 @@
     <el-dialog title="新增项目" :visible.sync="isShowProject" :close-on-click-modal='false'>
       <add-project v-on:listenIsShowProject='showIsShowProject' :isType='isType' v-if='isShowProject'></add-project>
     </el-dialog>
-    <!-- 加载等待页 -->
-    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
 import addProject from './addProject.vue'
-import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "projectList",
   inject:['reload'],
@@ -119,6 +116,7 @@ export default {
           type: 'warning'
       }).then(() => {
         _this.$http.post('/server/api/v1/project/delete', {id:res.id}).then(res => {
+          _this.$message({message: "删除成功！"});
           _this.reload();
         });
       }).catch(() => {
@@ -162,7 +160,7 @@ export default {
     }
   },
   components:{
-    addProject,loadingPage
+    addProject
   }
 };
 </script>

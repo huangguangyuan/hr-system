@@ -35,7 +35,7 @@ export default {
           { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
         ],
         description: [
-          { required: true, message: "请输入权限描述", trigger: "blur" }
+          { required: false, message: "请输入权限描述", trigger: "blur" }
         ],
         menuUrl: [
           { required: false, message: "请输入权限路径", trigger: "blur" }

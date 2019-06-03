@@ -22,7 +22,7 @@
       </el-input>
     </div>
     <!-- 列表内容 -->
-    <el-table :data="queryTableDate" stripe row-key="id" border>
+    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="description" label="描述"></el-table-column>
@@ -79,15 +79,12 @@
     <el-dialog title="修改权限信息" :visible.sync="isShowModifyAccess" :close-on-click-modal="false">
       <modify-access v-if="isShowModifyAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></modify-access>
     </el-dialog>
-    <!-- 加载等待页 -->
-    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
 import addAccess from "./addAccess.vue";
 import addChildAccess from "./addChildAccess.vue";
 import modifyAccess from "./modifyAccess.vue";
-import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "proAccess",
   inject: ["reload"],
@@ -103,7 +100,7 @@ export default {
       isShowAddAccess: false, //是否显示新增权限页面
       isShowAddChildAccess: false, //是否显示新增子权限页面
       isShowModifyAccess:false,//是否显示修改权限页面
-      isShowLoading: false //是否显示loading页
+      isShowLoading: true //是否显示loading页
     };
   },
   mounted() {
@@ -159,6 +156,7 @@ export default {
     listenIsShowMask(res) {
       this.isShowAddAccess = false;
       this.isShowModifyAccess = false;
+      this.isShowAddChildAccess = false;
     },
     // 获取角色类型
     getType(val) {
@@ -234,6 +232,7 @@ export default {
         .then(() => {
           _this.$http.post(reqUrl, data).then(res => {
             _this.reload();
+            _this.$message({message: "删除成功！"});
           });
         })
         .catch(() => {
@@ -283,7 +282,6 @@ export default {
   components: {
     addAccess,
     addChildAccess,
-    loadingPage,
     modifyAccess
   }
 };

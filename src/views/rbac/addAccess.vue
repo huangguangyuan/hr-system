@@ -20,6 +20,9 @@
       <el-form-item label="权限描述：" prop="description">
         <el-input v-model="ruleForm.description"></el-input>
       </el-form-item>
+      <el-form-item label="权限路径：">
+        <el-input v-model="ruleForm.menuUrl"></el-input>
+      </el-form-item>
       <el-form-item label="权限类型：" prop="typeId">
         <el-radio-group v-model="ruleForm.typeId">
           <el-radio label="1">管理员角色</el-radio>
@@ -54,7 +57,8 @@ export default {
         rightCode: "",
         description: "",
         typeId: "",
-        status: ""
+        status: "",
+        menuUrl:""
       },
       rules: {
         name: [
@@ -69,7 +73,7 @@ export default {
           { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
         ],
         description: [
-          { required: true, message: "请输入权限描述", trigger: "blur" }
+          { required: false, message: "请输入权限描述", trigger: "blur" }
         ],
         typeId: [
           { required: true, message: "请选择权限类型", trigger: "change" }
@@ -105,11 +109,11 @@ export default {
         name: _this.ruleForm.name,
         rightCode: _this.ruleForm.rightCode,
         description: _this.ruleForm.description,
+        menuUrl:_this.ruleForm.menuUrl,
         status: parseInt(_this.ruleForm.status),
         typeId: parseInt(_this.ruleForm.typeId)
       };
       _this.$http.post(reqUrl,data).then(res => {
-          console.log(res);
         if(res.data.code == 0){
           _this.reload();
         }

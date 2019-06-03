@@ -7,6 +7,9 @@
       <el-form-item label="权限代号：" prop="rightCode">
         <el-input v-model="ruleForm.rightCode"></el-input>
       </el-form-item>
+      <el-form-item label="权限路径：">
+        <el-input v-model="ruleForm.menuUrl"></el-input>
+      </el-form-item>
       <el-form-item label="权限描述：" prop="description">
         <el-input v-model="ruleForm.description"></el-input>
       </el-form-item>
@@ -34,6 +37,7 @@ export default {
         name: "",
         rightCode: "",
         description: "",
+        menuUrl:"",
         status: ""
       },
       rules: {
@@ -55,7 +59,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.curInfo);
+
   },
   methods: {
     // 提交表单
@@ -78,6 +82,7 @@ export default {
         superCode:_this.curInfo.code,
         name: _this.ruleForm.name,
         description: _this.ruleForm.description,
+        menuUrl:_this.ruleForm.menuUrl,
         status: parseInt(_this.ruleForm.status),
         rightCode: _this.ruleForm.rightCode
       };

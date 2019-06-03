@@ -7,7 +7,7 @@
     </div>
     <!-- 搜索 -->
     <div class="search-wrap">
-      <el-input placeholder="请输入内容" v-model="searchInner" @blur="searchFun">
+      <el-input placeholder="请输入员工姓名" v-model="searchInner" @blur="searchFun">
         <el-select
           v-model="BUCode"
           slot="prepend"
@@ -26,7 +26,7 @@
       </el-input>
     </div>
     <!-- 列表内容 -->
-    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe>
+    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
@@ -187,14 +187,18 @@
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     <!-- 添加员工 -->
-    <el-dialog title="添加员工" :visible.sync="isShowAddAccess"  :close-on-click-modal="false">
-      <editTemplate v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editTemplate>
+    <el-dialog title="添加员工" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+      <editTemplate
+        v-if="isShowAddAccess"
+        :curInfo="curInfo"
+        v-on:listenIsShowMask="listenIsShowMask"
+      ></editTemplate>
     </el-dialog>
   </div>
 </template>
 <script>
 import editTemplate from "./editTemplate.vue";
-import { deflate } from 'zlib';
+import { deflate } from "zlib";
 export default {
   name: "staffInformation",
   inject: ["reload"],
@@ -258,87 +262,87 @@ export default {
                   break;
                 default:
                   item.statusTxt = "未知";
-              };
+              }
               // 性别
               switch (item.gender) {
-                case 'M':
+                case "M":
                   item.genderTxt = "男";
                   break;
-                case 'F':
+                case "F":
                   item.genderTxt = "女";
                   break;
                 default:
                   item.genderTxt = "未知";
-              };
+              }
               // 户口性质
-              switch(item.hukouType){
+              switch (item.hukouType) {
                 case 1:
-                  item.hukouTypeTxt = '城镇';
+                  item.hukouTypeTxt = "城镇";
                   break;
                 case 2:
-                  item.hukouTypeTxt = '农村';
+                  item.hukouTypeTxt = "农村";
                   break;
                 default:
-                  item.hukouTypeTxt = '未知';
-              };
-              //婚姻状况 
-              switch(item.martialStatus){
+                  item.hukouTypeTxt = "未知";
+              }
+              //婚姻状况
+              switch (item.martialStatus) {
                 case 0:
-                  item.martialStatusTxt = '未婚';
+                  item.martialStatusTxt = "未婚";
                   break;
                 case 1:
-                  item.martialStatusTxt = '已婚';
+                  item.martialStatusTxt = "已婚";
                   break;
                 default:
-                  item.martialStatusTxt = '未知';
-              };
+                  item.martialStatusTxt = "未知";
+              }
               //长工/合约
-              switch(item.permanentOrContract){
-                case 'P':
-                  item.permanentOrContractTxt = '长工';
+              switch (item.permanentOrContract) {
+                case "P":
+                  item.permanentOrContractTxt = "长工";
                   break;
-                case 'C':
-                  item.permanentOrContractTxt = '合约';
+                case "C":
+                  item.permanentOrContractTxt = "合约";
                   break;
                 default:
-                  item.permanentOrContractTxt = '未知';
-              };
+                  item.permanentOrContractTxt = "未知";
+              }
               // 年假清空方法
-              switch(item.annualLeaveWriteOffMethod){
+              switch (item.annualLeaveWriteOffMethod) {
                 case 1:
-                  item.annualLeaveWriteOffMethodTxt = '年结';
+                  item.annualLeaveWriteOffMethodTxt = "年结";
                   break;
                 case 2:
-                  item.annualLeaveWriteOffMethodTxt = '自定义日期结算';
+                  item.annualLeaveWriteOffMethodTxt = "自定义日期结算";
                   break;
                 default:
-                  item.annualLeaveWriteOffMethodTxt = '未知';
-              };
+                  item.annualLeaveWriteOffMethodTxt = "未知";
+              }
               // 工资类型
-              switch(item.payrollType){
+              switch (item.payrollType) {
                 case 1:
-                  item.payrollTypeTxt = '月薪';
+                  item.payrollTypeTxt = "月薪";
                   break;
                 case 2:
-                  item.payrollTypeTxt = '周薪';
+                  item.payrollTypeTxt = "周薪";
                   break;
                 case 3:
-                  item.payrollTypeTxt = '时薪';
+                  item.payrollTypeTxt = "时薪";
                   break;
                 default:
-                  item.payrollTypeTxt = '未知';
-              };
+                  item.payrollTypeTxt = "未知";
+              }
               // 档案所在单位可否调动
-              switch(item.fileUnitMove){
+              switch (item.fileUnitMove) {
                 case 1:
-                  item.fileUnitMoveTxt = '是';
+                  item.fileUnitMoveTxt = "是";
                   break;
                 case 0:
-                  item.fileUnitMoveTxt = '否';
+                  item.fileUnitMoveTxt = "否";
                   break;
                 default:
-                  item.fileUnitMoveTxt = '未知';
-              };
+                  item.fileUnitMoveTxt = "未知";
+              }
               // 时间转换
               item.dateOfBirth = _this.$toolFn.timeFormat(item.dateOfBirth);
               item.dateOfJoining = _this.$toolFn.timeFormat(item.dateOfJoining);
@@ -360,20 +364,6 @@ export default {
           console.log(err);
         });
     },
-    // 循环数据列表获取属性
-    mapFun(objArr) {
-      var _this = this;
-      return objArr.map(item => {
-        item.createTime = _this.$toolFn.timeFormat(item.createTime);
-        item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-        item.isStatus = item.status == 1 ? "启用" : "禁用";
-        item.children = item.nodes;
-        if (item.children != 0) {
-          _this.mapFun(item.children);
-        }
-        return item;
-      });
-    },
     // 获取当前页数
     curChange(val) {
       var _this = this;
@@ -393,31 +383,122 @@ export default {
     searchFun() {
       var _this = this;
       if (_this.searchInner != "") {
-        var reqUrl = "/server/api/v1/projectAccess/getByOptions";
-        var data = { name: _this.searchInner };
+        var reqUrl = "/server/api/v1/staff/getByOptions";
+        var data = { nameChinese: _this.searchInner };
         _this.$http.post(reqUrl, data).then(res => {
-          if (res.data.code == 0) {
-            _this.tableData = res.data.data
-              .map(item => {
-                item.createTime = _this.$toolFn.timeFormat(item.createTime);
-                item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-                item.isStatus = item.status == 1 ? "启用" : "禁用";
-                item.children = item.nodes;
-                return item;
-              }) //倒序
-              .sort((a, b) => {
-                if (a.id < b.id) {
-                  return 1;
-                }
-                if (a.id > b.id) {
-                  return -1;
-                }
-                return 0;
-              });
-            _this.total = _this.tableData.length;
-          } else {
-            console.log(res.data.code);
-          }
+          _this.isShowLoading = false;
+          _this.tableData = res.data.data
+            .map(item => {
+              // 状态
+              switch (item.status) {
+                case 1:
+                  item.statusTxt = "在职";
+                  break;
+                case 2:
+                  item.statusTxt = "离职";
+                  break;
+                case 3:
+                  item.statusTxt = "停薪留职";
+                  break;
+                default:
+                  item.statusTxt = "未知";
+              }
+              // 性别
+              switch (item.gender) {
+                case "M":
+                  item.genderTxt = "男";
+                  break;
+                case "F":
+                  item.genderTxt = "女";
+                  break;
+                default:
+                  item.genderTxt = "未知";
+              }
+              // 户口性质
+              switch (item.hukouType) {
+                case 1:
+                  item.hukouTypeTxt = "城镇";
+                  break;
+                case 2:
+                  item.hukouTypeTxt = "农村";
+                  break;
+                default:
+                  item.hukouTypeTxt = "未知";
+              }
+              //婚姻状况
+              switch (item.martialStatus) {
+                case 0:
+                  item.martialStatusTxt = "未婚";
+                  break;
+                case 1:
+                  item.martialStatusTxt = "已婚";
+                  break;
+                default:
+                  item.martialStatusTxt = "未知";
+              }
+              //长工/合约
+              switch (item.permanentOrContract) {
+                case "P":
+                  item.permanentOrContractTxt = "长工";
+                  break;
+                case "C":
+                  item.permanentOrContractTxt = "合约";
+                  break;
+                default:
+                  item.permanentOrContractTxt = "未知";
+              }
+              // 年假清空方法
+              switch (item.annualLeaveWriteOffMethod) {
+                case 1:
+                  item.annualLeaveWriteOffMethodTxt = "年结";
+                  break;
+                case 2:
+                  item.annualLeaveWriteOffMethodTxt = "自定义日期结算";
+                  break;
+                default:
+                  item.annualLeaveWriteOffMethodTxt = "未知";
+              }
+              // 工资类型
+              switch (item.payrollType) {
+                case 1:
+                  item.payrollTypeTxt = "月薪";
+                  break;
+                case 2:
+                  item.payrollTypeTxt = "周薪";
+                  break;
+                case 3:
+                  item.payrollTypeTxt = "时薪";
+                  break;
+                default:
+                  item.payrollTypeTxt = "未知";
+              }
+              // 档案所在单位可否调动
+              switch (item.fileUnitMove) {
+                case 1:
+                  item.fileUnitMoveTxt = "是";
+                  break;
+                case 0:
+                  item.fileUnitMoveTxt = "否";
+                  break;
+                default:
+                  item.fileUnitMoveTxt = "未知";
+              }
+              // 时间转换
+              item.dateOfBirth = _this.$toolFn.timeFormat(item.dateOfBirth);
+              item.dateOfJoining = _this.$toolFn.timeFormat(item.dateOfJoining);
+              item.dateOfLeaving = _this.$toolFn.timeFormat(item.dateOfLeaving);
+              return item;
+            })
+            .sort((a, b) => {
+              if (a.id < b.id) {
+                return 1;
+              }
+              if (a.id > b.id) {
+                return -1;
+              }
+              return 0;
+            });
+          _this.total = _this.tableData.length;
         });
       } else {
         _this.getData();
