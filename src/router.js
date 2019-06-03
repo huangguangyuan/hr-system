@@ -117,6 +117,12 @@ let routers = new Router({
           component:() => import('./views/companyRegionBU/taxRateTable.vue'),
         },
         // <==========员工==========>
+        // 部门
+        {
+          path:'/departmentList',
+          name:'departmentList',
+          component:() => import('./views/staff/department/departmentList.vue'),
+        },
         // 员工基本信息
         {
           path:'/staffInformation',

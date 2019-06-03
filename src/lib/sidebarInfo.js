@@ -191,6 +191,14 @@ let sidebarInfo = [
         items:[
             {
                 id:'101',
+                authUrl:'/departmentList',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'部门',
+                items:[{}]
+            },
+            {
+                id:'102',
                 authUrl:'/staffInformation',
                 iconUrl:'el-icon-document',
                 isMenu:1,
