@@ -27,7 +27,8 @@ export default {
       ruleForm: {
         name: "",
         description: "",
-        menuUrl:""
+        menuUrl:"",
+        isMenu:""
       },
       rules: {
         name: [

@@ -1,5 +1,22 @@
 let sidebarInfo = [
     {
+        id:'9990',
+        authUrl:'null',
+        iconUrl:'el-icon-folder',
+        isMenu:0,
+        name:'工作台',
+        items:[
+            {
+                id:'9991',
+                authUrl:'/home',
+                iconUrl:'el-icon-document',
+                isMenu:1,
+                name:'欢迎',
+                items:[{}]
+            },
+        ]
+    },
+    {
         id:'20',
         authUrl:'null',
         iconUrl:'el-icon-folder',
@@ -8,7 +25,7 @@ let sidebarInfo = [
         items:[
             {
                 id:'21',
-                authUrl:'/home',
+                authUrl:'/projectList',
                 iconUrl:'el-icon-document',
                 isMenu:1,
                 name:'项目操作',

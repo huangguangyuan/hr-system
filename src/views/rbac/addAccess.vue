@@ -20,7 +20,13 @@
       <el-form-item label="权限描述：" prop="description">
         <el-input v-model="ruleForm.description"></el-input>
       </el-form-item>
-      <el-form-item label="权限路径：">
+      <el-form-item label="是否菜单：" prop="isMenu">
+        <el-radio-group v-model="ruleForm.isMenu">
+          <el-radio label="1">是</el-radio>
+          <el-radio label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="权限路径：" v-if='ruleForm.isMenu == "1"?true:false'>
         <el-input v-model="ruleForm.menuUrl"></el-input>
       </el-form-item>
       <el-form-item label="权限类型：" prop="typeId">
@@ -58,7 +64,8 @@ export default {
         description: "",
         typeId: "",
         status: "",
-        menuUrl:""
+        menuUrl:"",
+        isMenu:""
       },
       rules: {
         name: [
@@ -80,6 +87,9 @@ export default {
         ],
         status: [
           { required: true, message: "请选择权限状态", trigger: "change" }
+        ],
+        isMenu: [
+          { required: true, message: "请选择是否菜单", trigger: "change" }
         ],
       }
     };
@@ -111,7 +121,8 @@ export default {
         description: _this.ruleForm.description,
         menuUrl:_this.ruleForm.menuUrl,
         status: parseInt(_this.ruleForm.status),
-        typeId: parseInt(_this.ruleForm.typeId)
+        typeId: parseInt(_this.ruleForm.typeId),
+        isMenu:parseInt(_this.ruleForm.isMenu)
       };
       _this.$http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){

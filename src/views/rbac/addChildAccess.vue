@@ -7,11 +7,17 @@
       <el-form-item label="权限代号：" prop="rightCode">
         <el-input v-model="ruleForm.rightCode"></el-input>
       </el-form-item>
-      <el-form-item label="权限路径：">
-        <el-input v-model="ruleForm.menuUrl"></el-input>
-      </el-form-item>
       <el-form-item label="权限描述：" prop="description">
         <el-input v-model="ruleForm.description"></el-input>
+      </el-form-item>
+      <el-form-item label="是否菜单：" prop="isMenu">
+        <el-radio-group v-model="ruleForm.isMenu">
+          <el-radio label="1">是</el-radio>
+          <el-radio label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="权限路径：" v-if='ruleForm.isMenu == "1"?true:false'>
+        <el-input v-model="ruleForm.menuUrl"></el-input>
       </el-form-item>
       <el-form-item label="权限状态：" prop="status">
         <el-radio-group v-model="ruleForm.status">
@@ -38,7 +44,8 @@ export default {
         rightCode: "",
         description: "",
         menuUrl:"",
-        status: ""
+        status: "",
+        isMenu:""
       },
       rules: {
         name: [
@@ -50,10 +57,13 @@ export default {
           { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
         ],
         description: [
-          { required: true, message: "请输入权限描述", trigger: "blur" }
+          { required: false, message: "请输入权限描述", trigger: "blur" }
         ],
         status: [
           { required: true, message: "请选择权限状态", trigger: "change" }
+        ],
+        isMenu: [
+          { required: true, message: "请选择是否菜单", trigger: "change" }
         ],
       }
     };
@@ -84,7 +94,8 @@ export default {
         description: _this.ruleForm.description,
         menuUrl:_this.ruleForm.menuUrl,
         status: parseInt(_this.ruleForm.status),
-        rightCode: _this.ruleForm.rightCode
+        rightCode: _this.ruleForm.rightCode,
+        isMenu:parseInt(_this.ruleForm.isMenu)
       };
       _this.$http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){

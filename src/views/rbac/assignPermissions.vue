@@ -44,8 +44,11 @@ export default {
       _this.$http
         .post(reqUrl, data)
         .then(res => {
-          console.log(res.data.data);
-          _this.data = res.data.data;
+          _this.data = res.data.data.map(item => {
+            // item.disabled = true;
+            return item;
+          });
+          console.log(_this.data);
         })
         .catch(err => {
           console.log(err);
@@ -58,9 +61,7 @@ export default {
       var data = { code: _this.curInfo.code };
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.data.accessList != 0) {
-          var arr = res.data.data.accessList.map(item => {
-            return item.accessCode;
-          });
+          var arr = res.data.data.accessList;
           _this.$refs.tree.setCheckedKeys(arr);
         }
       });
