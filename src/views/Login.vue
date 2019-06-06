@@ -2,22 +2,30 @@
   <div class="login">
     <div class="container">
       <h5>后台登录系统</h5>
-      <el-form label-position="left" label-width="100px" :model="formLabelAlign">
-        <el-form-item label="账 号：">
+      <el-form
+        label-position="left"
+        label-width="100px"
+        :model="formLabelAlign"
+        :rules="rules"
+        ref="ruleForm"
+      >
+        <el-form-item label="账 号：" prop="user">
           <el-input prefix-icon="el-icon-edit" v-model="formLabelAlign.user"></el-input>
         </el-form-item>
-        <el-form-item label="密 码：">
-          <el-input prefix-icon="el-icon-setting" v-model="formLabelAlign.pass"></el-input>
+        <el-form-item label="密 码：" prop="pass">
+          <el-input prefix-icon="el-icon-setting" v-model="formLabelAlign.pass" show-password></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="loginFn">登 录</el-button>
-          <el-button type="danger">注 册</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">登 录</el-button>
+          <!-- <el-button type="danger">注 册</el-button> -->
         </el-form-item>
       </el-form>
     </div>
   </div>
 </template>
 <script>
+import md5 from "js-md5";
+import sidebarInfo from "@/lib/sidebarInfo.js";
 export default {
   name: "login",
   data() {
@@ -26,81 +34,40 @@ export default {
         user: "",
         pass: ""
       },
-      temporaryData: [
-        {
-          id: "50",
-          authUrl: "null",
-          iconUrl: "el-icon-wallet",
-          isMenu: 0,
-          name: "计薪模板",
-          roleCode:"payTemplate",
-          items: [
-            {
-              id: "51",
-              authUrl: "/cityList",
-              iconUrl: "el-icon-document",
-              isMenu: 1,
-              name: "主要城市",
-              items: [{}],
-              roleCode:"cityTemplate",
-            },
-            {
-              id: "52",
-              authUrl: "/SItemplate",
-              iconUrl: "el-icon-document",
-              isMenu: 1,
-              name: "社保模块",
-              items: [{}],
-              roleCode:"SItemplate",
-            },
-            {
-              id: "53",
-              authUrl: "/HCtemplate",
-              iconUrl: "el-icon-document",
-              isMenu: 1,
-              name: "公积金模板",
-              items: [{}],
-              roleCode:"HCtemplate",
-            },
-            {
-              id: "54",
-              authUrl: "/STitems",
-              iconUrl: "el-icon-document",
-              isMenu: 1,
-              name: "薪资应税项目",
-              items: [{}],
-              roleCode:"STitems",
-            }
-          ]
-        },
-        {
-          id: "40",
-          authUrl: "null",
-          iconUrl: "el-icon-money",
-          isMenu: 0,
-          name: "薪资管理",
-          roleCode:"salaryManage",
-          items: [
-            {
-              id: "21",
-              authUrl: "/calculator",
-              iconUrl: "el-icon-document",
-              isMenu: 1,
-              name: "个税计算器",
-              items: [{}],
-              roleCode:"calculator",
-            }
-          ]
-        }
-      ]
+      rules: {
+        user: [{ required: true, message: "请输入用户账号", trigger: "blur" }],
+        pass: [{ required: true, message: "请输入用户密码", trigger: "blur" }]
+      },
+      temporaryData: sidebarInfo
     };
   },
   methods: {
+    // 提交表单
+    submitForm(formName) {
+      var _this = this;
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          _this.loginFn();
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
     // 登录
     loginFn() {
       var _this = this;
-      // _this.$router.push({path:'/home'});
-      this.$store.dispatch("add_Routes", _this.temporaryData);
+      var reqUrl = '/server/api/v1/admin/login';
+      var data = {
+        account:_this.formLabelAlign.user,
+        password:md5(_this.formLabelAlign.pass)
+      }
+      _this.$http.post(reqUrl,data).then(res => {
+        console.log(res.data.data.data.roles);
+      })
+      // _this.$store.dispatch("add_Routes", _this.temporaryData).then(res => {
+      //   this.$router.replace({ path: "/home" });
+      // });
     }
   }
 };

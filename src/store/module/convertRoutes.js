@@ -11,11 +11,11 @@ function toRoutes(routerList,routeHideList, sysMenuList) {
             var sysMenuNode = sysMenuList[i];
             if (sysMenuNode.isMenu == 1) {
                 var code=sysMenuNode.roleCode;
-                console.log(code);
+                
                 var routeNode = {
                     name: sysMenuNode.name,
-                    path: '/' + roleCode,
-                    component: lazy(roleCode),
+                    path: '/' + code,
+                    component: lazy(code),
                     children:[]
                 };
                  //子节点存在
@@ -23,12 +23,7 @@ function toRoutes(routerList,routeHideList, sysMenuList) {
                     toRoutes(routeNode.children,routeHideList,sysMenuNode.items);
                 }
                 if(code&&code!=''){
-                    if(sysMenuNode.isShow=='1'){
-                        routerList.push(routeNode);
-                    }
-                    else{
-                        routeHideList.push(routeNode);
-                    }
+                    routerList.push(routeNode);
                 }
             }
             else{

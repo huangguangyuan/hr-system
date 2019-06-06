@@ -12,13 +12,13 @@ let routers = new Router({
     {
       path: '/',
       name: 'login',
-      component: () => import('./views/Login.vue')
+      component: resolve => require(['@/views/Login.vue'], resolve),
     },
     // 404
     {
       path: '*',
       name: 'page404',
-      component: () => import('./components/404.vue')
+      component: resolve => require(['@/components/404.vue'], resolve),
     },
   ]
 });

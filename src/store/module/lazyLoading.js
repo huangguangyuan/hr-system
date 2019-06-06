@@ -3,11 +3,8 @@
  * 懒加载动态路由 
  */
 function lazy(code) {
-    console.log(123);
     //return  resolve => require(["@/components/" + name + ".vue"], resolve)
     return getComponetByPath('/' + code);
-
-
 }
 function getComponetByPath(path) {
     for (var i = 0; i < dynamicRouter.length; i++) {
@@ -23,118 +20,118 @@ function getComponetByPath(path) {
  */
 const dynamicRouter = [
     {
-        path: '/',
+        path: '/home',
         name: 'welcome',
-        component: () => import('@/components/welcome.vue'),
+        component: resolve => require(['@/components/welcome.vue'], resolve),
     },
     // 项目列表
     {
         path: '/projectList',
         name: 'projectList',
-        component: () => import('@/views/rbac/projectList.vue'),
+        component: resolve => require(['@/views/rbac/projectList.vue'], resolve),
     },
     // HR角色操作
     {
         path: '/proHRrole',
         name: 'proHRrole',
-        component: () => import('@/views/rbac/proHRrole.vue'),
+        component: resolve => require(['@/views/rbac/proHRrole.vue'], resolve),
     },
     // 管理员角色操作
     {
         path: '/proAdminRole',
         name: 'proAdminRole',
-        component: () => import('@/views/rbac/proAdminRole.vue'),
+        component: resolve => require(['@/views/rbac/proAdminRole.vue'], resolve),
     },
     // 权限操作
     {
         path: '/proAccess',
         name: 'proAccess',
-        component: () => import('@/views/rbac/proAccess.vue'),
+        component: resolve => require(['@/views/rbac/proAccess.vue'], resolve),
     },
     // <==========管理员==========>
     // 后台管理员列表
     {
         path: '/adminList',
         name: 'adminList',
-        component: () => import('@/views/sysManage/adminList.vue'),
+        component: resolve => require(['@/views/sysManage/adminList.vue'], resolve),
     },
     // HR系统管理员列表
     {
         path: '/HRadminList',
         name: 'HRadminList',
-        component: () => import('@/views/sysManage/HRadminList.vue'),
+        component: resolve => require(['@/views/sysManage/HRadminList.vue'], resolve),
     },
     // <==========计薪==========>
     // 个税计算器
     {
         path: '/calculator',
         name: 'calculator',
-        component: () => import('@/views/salaryManage/calculator.vue'),
+        component: resolve => require(['@/views/salaryManage/calculator.vue'], resolve),
     },
     // <==========计薪模板==========>
     // 主要城市
     {
         path: '/cityList',
         name: 'cityList',
-        component: () => import('@/views/salaryTemplate/cityList.vue'),
+        component: resolve => require(['@/views/salaryTemplate/cityList.vue'], resolve),
     },
     // 社保模块
     {
         path: '/SItemplate',
         name: 'SItemplate',
-        component: () => import('@/views/salaryTemplate/SItemplate.vue'),
+        component: resolve => require(['@/views/salaryTemplate/SItemplate.vue'], resolve),
     },
     // 公积金模板
     {
         path: '/HCtemplate',
         name: 'HCtemplate',
-        component: () => import('@/views/salaryTemplate/HCtemplate.vue'),
+        component: resolve => require(['@/views/salaryTemplate/HCtemplate.vue'], resolve),
     },
     // 薪资应税项目
     {
         path: '/STitems',
         name: 'STitems',
-        component: () => import('@/views/salaryTemplate/STitems.vue'),
+        component: resolve => require(['@/views/salaryTemplate/STitems.vue'], resolve),
     },
     // <==========公司==========>
     // 公司
     {
         path: '/companyList',
         name: 'companyList',
-        component: () => import('@/views/company/companyList.vue'),
+        component: resolve => require(['@/views/company/companyList.vue'], resolve),
     },
     // <==========区域==========>
     // 区域
     {
         path: '/regionList',
         name: 'regionList',
-        component: () => import('@/views/companyRegion/regionList.vue'),
+        component: resolve => require(['@/views/companyRegion/regionList.vue'], resolve),
     },
     // <==========单位==========>
     // 单位
     {
         path: '/regionBUList',
         name: 'regionBUList',
-        component: () => import('@/views/companyRegionBU/regionBUList.vue'),
+        component: resolve => require(['@/views/companyRegionBU/regionBUList.vue'], resolve),
     },
     // 税率表
     {
         path: '/taxRateTable',
         name: 'taxRateTable',
-        component: () => import('@/views/companyRegionBU/taxRateTable.vue'),
+        component: resolve => require(['@/views/companyRegionBU/taxRateTable.vue'], resolve),
     },
     // <==========员工==========>
     // 部门
     {
         path: '/departmentList',
         name: 'departmentList',
-        component: () => import('@/views/staff/department/departmentList.vue'),
+        component: resolve => require(['@/views/staff/department/departmentList.vue'], resolve),
     },
     // 员工基本信息
     {
         path: '/staffInformation',
         name: 'staffInformation',
-        component: () => import('@/views/staff/information/staffInformation.vue'),
+        component: resolve => require(['@/views/staff/information/staffInformation.vue'], resolve),
     },
 ]
 
