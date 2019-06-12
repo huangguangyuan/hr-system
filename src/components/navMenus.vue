@@ -21,7 +21,8 @@
             >
                 <template slot="title">
                     <i :class='item.iconUrl'></i>
-                    <span class="text-color">{{item.name}}</span>
+                    <!-- <span class="text-color">{{item.name}}</span> -->
+                    <template v-if="!collapsed"><span slot="title">{{item.name}}</span></template>
                 </template>
                 <nav-menus :navMenus='item.items'></nav-menus>
             </el-submenu>
@@ -32,7 +33,7 @@
 
 export default {
     name:'navMenus',
-    props:['navMenus'],
+    props:['navMenus','collapsed'],
     data(){
         return{
             newTabName:''

@@ -10,15 +10,14 @@ function toRoutes(routerList,routeHideList, sysMenuList) {
         for (var i = 0; i < sysMenuList.length; i++) {
             var sysMenuNode = sysMenuList[i];
             if (sysMenuNode.isMenu == 1) {
-                var code=sysMenuNode.roleCode;
-                
+                var code=sysMenuNode.rightCode;
                 var routeNode = {
                     name: sysMenuNode.name,
                     path: '/' + code,
                     component: lazy(code),
                     children:[]
                 };
-                 //子节点存在
+                //子节点存在
                 if (sysMenuNode.items && sysMenuNode.items.length > 0) {
                     toRoutes(routeNode.children,routeHideList,sysMenuNode.items);
                 }

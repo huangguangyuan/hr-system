@@ -26,13 +26,14 @@
 <script>
 import md5 from "js-md5";
 import sidebarInfo from "@/lib/sidebarInfo.js";
+import { setTimeout } from "timers";
 export default {
   name: "login",
   data() {
     return {
       formLabelAlign: {
-        user: "",
-        pass: ""
+        user: "RBACtest",
+        pass: "000000"
       },
       rules: {
         user: [{ required: true, message: "请输入用户账号", trigger: "blur" }],
@@ -57,17 +58,41 @@ export default {
     // 登录
     loginFn() {
       var _this = this;
-      var reqUrl = '/server/api/v1/admin/login';
+      var reqUrl = "/server/api/v1/admin/login";
       var data = {
-        account:_this.formLabelAlign.user,
-        password:md5(_this.formLabelAlign.pass)
-      }
-      _this.$http.post(reqUrl,data).then(res => {
-        console.log(res.data.data.data.roles);
-      })
-      // _this.$store.dispatch("add_Routes", _this.temporaryData).then(res => {
-      //   this.$router.replace({ path: "/home" });
-      // });
+        account: _this.formLabelAlign.user,
+        password: md5(_this.formLabelAlign.pass)
+      };
+      _this.$http.post(reqUrl, data).then(res => {
+        // var sidebar = _this.recursionFun(res.data.data.data.roles[0].accessList);
+        var sidebar = this.temporaryData;
+        if (res.data.code == 0) {
+          _this.$store
+            .dispatch("add_Routes", sidebar)
+            .then(res => {
+              return this.$store.dispatch('getAccessData_Fun',sidebar)
+            }).then(res => {
+              this.$router.replace({ path: "/home" });
+            })
+        } else {
+          _this.$alert(res.data.msg);
+        }
+      });
+      // _this.$store.dispatch('getAccessData_Fun',res.data.data.data.roles[0].accessList).then(res => {
+      //       console.log(res);
+      //     });
+    },
+    // 递归算法
+    recursionFun(arr) {
+      return arr.map(item => {
+        item.id = item.code;
+        item.authUrl = item.menuUrl;
+        item.iconUrl = "el-icon-menu";
+        if (item.items) {
+          this.recursionFun(item.items);
+        }
+        return item;
+      });
     }
   }
 };

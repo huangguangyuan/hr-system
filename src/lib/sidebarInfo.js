@@ -5,7 +5,7 @@ let sidebarInfo = [
         iconUrl: 'el-icon-folder',
         isMenu: 0,
         name: '工作台',
-        roleCode: 'Workbench',
+        rightCode: 'Workbench',
         items: [
             {
                 id: '9991',
@@ -13,7 +13,7 @@ let sidebarInfo = [
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: '工作台',
-                roleCode: 'home',
+                rightCode: 'home',
                 items: [{}]
             },
         ]
@@ -24,7 +24,7 @@ let sidebarInfo = [
         iconUrl: 'el-icon-folder',
         isMenu: 0,
         name: '项目管理',
-        roleCode: 'projectManage',
+        rightCode: 'projectManage',
         items: [
             {
                 id: '21',
@@ -32,7 +32,7 @@ let sidebarInfo = [
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: '项目操作',
-                roleCode: 'projectList',
+                rightCode: 'projectList',
                 items: [{}]
             },
             {
@@ -41,7 +41,7 @@ let sidebarInfo = [
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: '管理员角色操作',
-                roleCode: 'proAdminRole',
+                rightCode: 'proAdminRole',
                 items: [{}]
             },
             // {
@@ -50,7 +50,7 @@ let sidebarInfo = [
             //     iconUrl:'el-icon-document',
             //     isMenu:1,
             //     name:'HR角色操作',
-            //     roleCode:'proHRrole',
+            //     rightCode:'proHRrole',
             //     items:[{}]
             // },
             {
@@ -59,7 +59,7 @@ let sidebarInfo = [
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: '权限操作',
-                roleCode: 'proAccess',
+                rightCode: 'proAccess',
                 items: [{}]
             },
         ]
@@ -70,7 +70,7 @@ let sidebarInfo = [
         iconUrl: 'el-icon-setting',
         isMenu: 0,
         name: '系统管理',
-        roleCode: 'sysManage',
+        rightCode: 'sysManage',
         items: [
             {
                 id: '31',
@@ -78,7 +78,7 @@ let sidebarInfo = [
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: '后台管理员列表',
-                roleCode: 'adminList',
+                rightCode: 'adminList',
                 items: [{}]
             },
             {
@@ -87,9 +87,18 @@ let sidebarInfo = [
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: 'HR系统管理员列表',
-                roleCode: 'HRadminList',
+                rightCode: 'HRadminList',
                 items: [{}]
-            }
+            },
+            {
+                id: '36',
+                authUrl: '/customerAdminList',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '客户管理员列表',
+                rightCode: 'customerAdminList',
+                items: [{}]
+            },
         ]
     },
     {
@@ -98,7 +107,7 @@ let sidebarInfo = [
         iconUrl: "el-icon-wallet",
         isMenu: 0,
         name: "计薪模板",
-        roleCode: "payTemplate",
+        rightCode: "payTemplate",
         items: [
             {
                 id: "51",
@@ -107,7 +116,7 @@ let sidebarInfo = [
                 isMenu: 1,
                 name: "主要城市",
                 items: [{}],
-                roleCode: "cityList",
+                rightCode: "cityList",
             },
             {
                 id: "52",
@@ -116,7 +125,7 @@ let sidebarInfo = [
                 isMenu: 1,
                 name: "社保模块",
                 items: [{}],
-                roleCode: "SItemplate",
+                rightCode: "SItemplate",
             },
             {
                 id: "53",
@@ -125,7 +134,7 @@ let sidebarInfo = [
                 isMenu: 1,
                 name: "公积金模板",
                 items: [{}],
-                roleCode: "HCtemplate",
+                rightCode: "HCtemplate",
             },
             {
                 id: "54",
@@ -134,7 +143,7 @@ let sidebarInfo = [
                 isMenu: 1,
                 name: "薪资应税项目",
                 items: [{}],
-                roleCode: "STitems",
+                rightCode: "STitems",
             }
         ]
     },
@@ -144,7 +153,7 @@ let sidebarInfo = [
         iconUrl: "el-icon-money",
         isMenu: 0,
         name: "薪资管理",
-        roleCode: "salaryManage",
+        rightCode: "salaryManage",
         items: [
             {
                 id: "21",
@@ -153,7 +162,7 @@ let sidebarInfo = [
                 isMenu: 1,
                 name: "个税计算器",
                 items: [{}],
-                roleCode: "calculator",
+                rightCode: "calculator",
             }
         ]
     },
@@ -163,7 +172,7 @@ let sidebarInfo = [
         iconUrl: 'el-icon-office-building',
         isMenu: 0,
         name: '公司管理',
-        roleCode: "companyManage",
+        rightCode: "companyManage",
         items: [
             {
                 id: '71',
@@ -171,7 +180,7 @@ let sidebarInfo = [
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: '公司列表',
-                roleCode: "companyList",
+                rightCode: "companyList",
                 items: [{}]
             },
         ]
@@ -182,7 +191,7 @@ let sidebarInfo = [
         iconUrl: 'el-icon-place',
         isMenu: 0,
         name: '区域管理',
-        roleCode: "regionManage",
+        rightCode: "regionManage",
         items: [
             {
                 id: '81',
@@ -190,7 +199,7 @@ let sidebarInfo = [
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: '区域列表',
-                roleCode: "regionList",
+                rightCode: "regionList",
                 items: [{}]
             },
         ]
@@ -201,7 +210,7 @@ let sidebarInfo = [
         iconUrl: 'el-icon-school',
         isMenu: 0,
         name: '单位管理',
-        roleCode: "regionBUManage",
+        rightCode: "regionBUManage",
         items: [
             {
                 id: '91',
@@ -209,7 +218,7 @@ let sidebarInfo = [
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: '单位列表',
-                roleCode: "regionBUList",
+                rightCode: "regionBUList",
                 items: [{}]
             },
             {
@@ -218,7 +227,7 @@ let sidebarInfo = [
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: '税率表',
-                roleCode: "taxRateTable",
+                rightCode: "taxRateTable",
                 items: [{}]
             },
         ]
@@ -229,7 +238,7 @@ let sidebarInfo = [
         iconUrl: 'el-icon-user',
         isMenu: 0,
         name: '员工',
-        roleCode: "staff",
+        rightCode: "staff",
         items: [
             {
                 id: '101',
@@ -237,7 +246,7 @@ let sidebarInfo = [
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: '部门',
-                roleCode: "departmentList",
+                rightCode: "departmentList",
                 items: [{}]
             },
             {
@@ -246,7 +255,7 @@ let sidebarInfo = [
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: '基本信息',
-                roleCode: "staffInformation",
+                rightCode: "staffInformation",
                 items: [{}]
             },
         ]

@@ -4,6 +4,9 @@
       <!-- 顶部 -->
       <el-header>
         <div class="left">
+          <div class="collapse-btn" @click="collapseFun">
+            <i class="el-icon-menu"></i>
+          </div>
           <img src="@/assets/images/logo.png" alt>
           <p>后台管理系统</p>
         </div>
@@ -28,7 +31,7 @@
       </el-header>
       <el-container>
         <!-- 左侧导航 -->
-        <el-aside width="220px">
+        <el-aside :width="collapseSize">
           <el-scrollbar style="height:100%">
             <el-menu
               :default-active="$route.path"
@@ -38,8 +41,9 @@
               text-color="#fff"
               active-text-color="#ed8937"
               unique-opened
+              :collapse="isCollapse"
             >
-              <nav-menus :navMenus="sidebarInfo"></nav-menus>
+              <nav-menus :navMenus="sidebarInfo" :collapsed="isCollapse"></nav-menus>
             </el-menu>
           </el-scrollbar>
         </el-aside>
@@ -82,9 +86,8 @@
           </el-main>
           <!-- 底部 -->
           <el-footer>
-            <img src="@/assets/images/logo.png" alt="">
+            <img src="@/assets/images/logo.png" alt>
             版权所有 (C) 2019 GRAMMY TECH。保留所有权利。
-            
           </el-footer>
         </el-container>
       </el-container>
@@ -99,14 +102,20 @@ export default {
   name: "home",
   data() {
     return {
-      sidebarInfo
+      sidebarInfo: [], //左侧导航栏数据
+      isCollapse: false, //左侧导航栏是否折叠
+      collapseSize: "220px" //左侧导航栏宽度大小
     };
   },
   mounted() {
-    var _this = this;
-    _this.initializeTab();
+    this.initializeFun();
   },
   methods: {
+    // 初始化
+    initializeFun() {
+      this.initializeTab();
+      this.sidebarInfo = this.getSidebar;
+    },
     // 选中当前tab标签
     tabSelection(tab) {
       var _this = this;
@@ -172,12 +181,16 @@ export default {
     initializeTab() {
       var _this = this;
       var firstTitle = _this.$route.path;
-      if(_this.navTabs.length!=0){return false;}
+      if (_this.navTabs.length != 0) {
+        return false;
+      }
       var isExist = _this.navTabs.some(item => {
-        return item.name = _this.$route.path
+        return (item.name = _this.$route.path);
       });
       // 判断tab标签是否已经存在
-      if(isExist){return false;}
+      if (isExist) {
+        return false;
+      }
       for (let i = 0; i < sidebarInfo.length; i++) {
         for (var j = 0; j < sidebarInfo[i].items.length; j++) {
           if (sidebarInfo[i].items[j].authUrl == _this.$route.path) {
@@ -197,6 +210,17 @@ export default {
         type: "changeTabsVal",
         TabsValue: _this.$route.path
       });
+    },
+    // 侧边栏折叠
+    collapseFun() {
+      this.isCollapse = !this.isCollapse;
+      if (this.isCollapse) {
+        this.collapseSize = "60px";
+        document.getElementsByClassName("wrap")[0].style.width='calc(100vw - 60px)'
+      } else {
+        this.collapseSize = "220px";
+        document.getElementsByClassName("wrap")[0].style.width='calc(100vw - 220px)'
+      }
     }
   },
   computed: {
@@ -214,6 +238,21 @@ export default {
           TabsValue: v
         });
       }
+    },
+    // 获取左侧导航条
+    getSidebar() {
+      return this.$store.state.accessModule.accessList;
+    },
+    hasScrollbar() {
+      var isOK
+      var obj = document.getElementsByClassName("el-scrollbar__wrap")[1];
+      console.log(obj.scrollHeight,obj.clientHeight,obj.offsetHeight,obj.clientHeight);
+      if (obj.scrollHeight > obj.clientHeight || obj.offsetHeight > obj.clientHeight) {
+        isOK = true;
+      }else{
+        isOK = false;
+      }
+      return isOK;
     }
   },
   components: {
@@ -222,6 +261,9 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 220px;
+}
 </style>
 
 

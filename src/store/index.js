@@ -12,7 +12,8 @@ let store = new Vuex.Store({
     storage: window.sessionStorage,
     reducer(val) {
       return {
-        addRoutes: val.addRoutes
+        addRoutes: val.addRoutes,
+        accessModule: val.accessModule
       }
     }
   })]

@@ -55,6 +55,12 @@ const dynamicRouter = [
         name: 'adminList',
         component: resolve => require(['@/views/sysManage/adminList.vue'], resolve),
     },
+    // 客户管理员列表
+    {
+        path: '/customerAdminList',
+        name: 'customerAdminList',
+        component: resolve => require(['@/views/sysManage/customerAdminList.vue'], resolve),
+    },
     // HR系统管理员列表
     {
         path: '/HRadminList',

@@ -12,7 +12,7 @@
       </el-input>
     </div>
     <!-- 列表内容 -->
-    <el-table :data="queryTableDate" stripe row-key="id" border>
+    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="account" label="账号"></el-table-column>
@@ -94,8 +94,6 @@
         :modifyInfo="modifyInfo"
       ></add-role>
     </el-dialog>
-    <!-- 加载等待页 -->
-    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
@@ -103,7 +101,6 @@ import addAdmin from "./addAdmin.vue";
 import modifyAdmin from "./modifyAdmin.vue";
 import modifyPassword from "./modifyPassword.vue";
 import addRole from "./addRole.vue";
-import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "adminList",
   inject: ["reload"],
@@ -131,7 +128,7 @@ export default {
     getData() {
       var _this = this;
       var reqUrl = "/server/api/v1/admin/getAll";
-      var myData = { typeId: 1 };
+      var myData = {};
       _this.isShowLoading =true;
       _this.$http
         .post(reqUrl, myData)
@@ -285,31 +282,11 @@ export default {
     addAdmin,
     modifyAdmin,
     modifyPassword,
-    addRole,
-    loadingPage
+    addRole
   }
 };
 </script>
 <style scoped lang="scss">
-.my-top {
-  border-bottom: 1px solid #e4e7ed;
-  padding-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search {
-  margin: 20px auto;
-}
 </style>
 
 

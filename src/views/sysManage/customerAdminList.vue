@@ -1,9 +1,8 @@
 <template>
-  <div class="wrap HRadminList">
+  <div class="wrap customerAdminList">
     <!-- 头部内容 -->
     <div class="my-top">
-      <span>HR管理员列表</span>
-      <el-button type="warning" size="small" @click="isShowAddAdmin = true;modifyInfo.adminType = 'HRadmin'">添加HR管理员</el-button>
+      <span>客户管理员列表</span>
     </div>
     <!-- 搜索 -->
     <div class="search">
@@ -12,7 +11,7 @@
       </el-input>
     </div>
     <!-- 列表内容 -->
-    <el-table :data="queryTableDate" stripe row-key="id" border>
+    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="account" label="账号"></el-table-column>
@@ -94,8 +93,6 @@
         :modifyInfo="modifyInfo"
       ></add-role>
     </el-dialog>
-    <!-- 加载等待页 -->
-    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
@@ -103,9 +100,8 @@ import addAdmin from "./addAdmin.vue";
 import modifyAdmin from "./modifyAdmin.vue";
 import modifyPassword from "./modifyPassword.vue";
 import addRole from "./addRole.vue";
-import loadingPage from "@/components/loadingPage.vue";
 export default {
-  name: "HRadminList",
+  name: "customerAdminList",
   inject: ["reload"],
   data() {
     return {
@@ -118,6 +114,7 @@ export default {
       isShowModifyAdmin: false, //是否显示修改后台管理员
       isShowModifyPassword: false, //是否显示修改密码
       isShowAddRole: false, //是否显示增加角色
+      isShowLoading: false, //是否显示loading页
       modifyInfo: {} //当前列表信息
     };
   },
@@ -129,13 +126,13 @@ export default {
     //获取项目数据列表
     getData() {
       var _this = this;
-      var reqUrl = "/server/api/v1/admin/getAll";
-      var myData = { typeId: 2 };
+      var reqUrl = "/server/api/v1/admin/client/getAll";
+      var myData = {};
       _this.isShowLoading =true;
       _this.$http
         .post(reqUrl, myData)
         .then(res => {
-          _this.isShowLoading =false;
+          _this.isShowLoading = false;
           _this.tableData = res.data.data
             .map(item => {
               item.createTime = _this.$toolFn.timeFormat(item.createTime);
@@ -210,7 +207,7 @@ export default {
       var _this = this;
       _this.isShowAddRole = true;
       _this.modifyInfo = res;
-      _this.modifyInfo.adminType = "HRadmin";
+      _this.modifyInfo.adminType = "admin";
     },
     // 禁用
     forbidden(index, res) {
@@ -284,11 +281,15 @@ export default {
     addAdmin,
     modifyAdmin,
     modifyPassword,
-    addRole,
-    loadingPage
+    addRole
   }
 };
 </script>
 <style scoped lang="scss">
 </style>
+
+
+
+
+
 
