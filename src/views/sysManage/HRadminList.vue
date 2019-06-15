@@ -7,15 +7,19 @@
     </div>
     <!-- 搜索 -->
     <div class="search">
-      <el-input placeholder="请输入搜索关键字" v-model="searchInner" @blur="searchFn">
+      <el-input placeholder="请输入管理员名称" v-model="searchInner" @blur="searchFn">
+        <el-select v-model="BUcode" slot="prepend" placeholder="请选择" @change="changeBUcode" style="width:200px;">
+          <el-option v-for='(item,index) in regionList' :key='index' :label="item.name" :value="item.code"></el-option>
+        </el-select>
         <el-button slot="append" icon="el-icon-search" @click="searchFn">搜 索</el-button>
       </el-input>
     </div>
     <!-- 列表内容 -->
-    <el-table :data="queryTableDate" stripe row-key="id" border>
+    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="account" label="账号"></el-table-column>
+      <el-table-column prop="mobile" label="手机"></el-table-column>
       <el-table-column prop="email" label="邮箱"></el-table-column>
       <el-table-column prop="isStatus" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="480px">
@@ -58,7 +62,7 @@
       :close-on-click-modal="false"
       width="65%"
     >
-      <add-admin v-if="isShowAddAdmin" v-on:listenIsShowAddAdmin="IsShowAddAdminFn" :modifyInfo="modifyInfo"></add-admin>
+      <add-h-radmin v-if="isShowAddAdmin" v-on:listenIsShowAddAdmin="IsShowAddAdminFn" :modifyInfo="modifyInfo"></add-h-radmin>
     </el-dialog>
     <!-- 修改管理员 -->
     <el-dialog
@@ -94,16 +98,14 @@
         :modifyInfo="modifyInfo"
       ></add-role>
     </el-dialog>
-    <!-- 加载等待页 -->
-    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
-import addAdmin from "./addAdmin.vue";
+import addHRadmin from "./addHRadmin.vue";
 import modifyAdmin from "./modifyAdmin.vue";
 import modifyPassword from "./modifyPassword.vue";
 import addRole from "./addRole.vue";
-import loadingPage from "@/components/loadingPage.vue";
+import { Promise } from 'q';
 export default {
   name: "HRadminList",
   inject: ["reload"],
@@ -118,19 +120,25 @@ export default {
       isShowModifyAdmin: false, //是否显示修改后台管理员
       isShowModifyPassword: false, //是否显示修改密码
       isShowAddRole: false, //是否显示增加角色
-      modifyInfo: {} //当前列表信息
+      modifyInfo: {}, //当前列表信息
+      BUcode:'',//单位code
+      regionList:[],//单位列表
+      isShowLoading:false//加载
     };
   },
   mounted() {
-    var _this = this;
-    _this.getData();
+    this.initializeFun();
   },
   methods: {
+    // 初始化
+    initializeFun(){
+      this.getBUcodeFun();
+    },
     //获取项目数据列表
-    getData() {
+    getData(code) {
       var _this = this;
-      var reqUrl = "/server/api/v1/admin/getAll";
-      var myData = { typeId: 2 };
+      var reqUrl = "/server/api/v1/admin/hrSys/getAll";
+      var myData = { BUCode: code };
       _this.isShowLoading =true;
       _this.$http
         .post(reqUrl, myData)
@@ -159,6 +167,20 @@ export default {
           console.log(err);
         });
     },
+    // 获取单位列表
+    getBUcodeFun(){
+      var _this = this;
+      var reqUrl = '/server/api/v1/company/regionBUs';
+      _this.$http.post(reqUrl,{}).then(res => {
+        this.regionList = res.data.data;
+        this.BUcode = res.data.data[0].code;
+        this.getData(this.BUcode);
+      });
+    },
+    // 选择单位
+    changeBUcode(code){
+      this.getData(code);
+    },
     // 获取当前页数
     curChange(val) {
       var _this = this;
@@ -175,9 +197,9 @@ export default {
     searchFn() {
       var _this = this;
       if (_this.searchInner == "") {
-        _this.getData();
+        _this.getData(this.BUcode);
       } else {
-        var reqUrl = "/server/api/v1/admin/getByOptions";
+        var reqUrl = "/server/api/v1/admin/hrSys/getByOptions";
         var data = { name: _this.searchInner };
         _this.$http.post(reqUrl, data).then(res => {
           _this.tableData = res.data.data.map(item => {
@@ -281,11 +303,10 @@ export default {
     }
   },
   components: {
-    addAdmin,
+    addHRadmin,
     modifyAdmin,
     modifyPassword,
-    addRole,
-    loadingPage
+    addRole
   }
 };
 </script>

@@ -7,7 +7,7 @@
     </div>
     <!-- 搜索 -->
     <div class="search">
-      <el-input placeholder="请输入搜索关键字" v-model="searchInner" @blur="searchFn">
+      <el-input placeholder="请输入管理员名称" v-model="searchInner" @blur="searchFn">
         <el-button slot="append" icon="el-icon-search" @click="searchFn">搜 索</el-button>
       </el-input>
     </div>
@@ -16,6 +16,7 @@
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="account" label="账号"></el-table-column>
+      <el-table-column prop="mobile" label="手机"></el-table-column>
       <el-table-column prop="email" label="邮箱"></el-table-column>
       <el-table-column prop="isStatus" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="480px">
