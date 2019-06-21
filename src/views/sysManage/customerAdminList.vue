@@ -11,13 +11,20 @@
       </el-input>
     </div>
     <!-- 列表内容 -->
-    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
+    <el-table
+      v-loading="isShowLoading"
+      :data="queryTableDate"
+      stripe
+      row-key="id"
+      border
+    >
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="account" label="账号"></el-table-column>
+      <el-table-column prop="mobile" label="手机"></el-table-column>
       <el-table-column prop="email" label="邮箱"></el-table-column>
       <el-table-column prop="isStatus" label="状态"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="480px">
+      <el-table-column label="操作" fixed="right" width="500px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="editFn(scope.$index, scope.row)">编辑</el-button>
           <el-button
@@ -25,16 +32,24 @@
             icon="el-icon-edit-outline"
             @click="modifyPassWord(scope.$index, scope.row)"
           >修改密码</el-button>
-          <el-button size="mini" icon="el-icon-plus" @click="addRole(scope.$index, scope.row)">添加角色</el-button>
+          <el-button
+            size="mini"
+            icon="el-icon-plus"
+            @click="addAccount(scope.$index, scope.row)"
+            v-if='!scope.row.superCode'
+          >添加子账号</el-button>
+          <!-- <el-button size="mini" icon="el-icon-plus" @click="addRole(scope.$index, scope.row)">添加角色</el-button> -->
           <el-button
             size="mini"
             icon="el-icon-warning"
             @click="forbidden(scope.$index, scope.row)"
+            v-if='!scope.row.superCode'
           >{{scope.row.status==1?'禁用':'启用'}}</el-button>
           <el-button
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
+            v-if='scope.row.superCode'
           >删除</el-button>
         </template>
       </el-table-column>
@@ -57,7 +72,11 @@
       :close-on-click-modal="false"
       width="65%"
     >
-      <add-admin v-if="isShowAddAdmin" v-on:listenIsShowAddAdmin="IsShowAddAdminFn" :modifyInfo="modifyInfo"></add-admin>
+      <add-admin
+        v-if="isShowAddAdmin"
+        v-on:listenIsShowAddAdmin="IsShowAddAdminFn"
+        :modifyInfo="modifyInfo"
+      ></add-admin>
     </el-dialog>
     <!-- 修改管理员 -->
     <el-dialog
@@ -128,17 +147,18 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/admin/client/getAll";
       var myData = {};
-      _this.isShowLoading =true;
+      _this.isShowLoading = true;
       _this.$http
         .post(reqUrl, myData)
         .then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data
             .map(item => {
-              item.createTime = _this.$toolFn.timeFormat(item.createTime);
-              item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
               item.isStatus = item.status == 1 ? "启用" : "禁用";
-              item.children = item.nodes;
+              item.children = item.childrenList.map(childItem => {
+                childItem.isStatus = item.status == 1 ? "启用" : "禁用";
+                return childItem;
+              });
               return item;
             }) //倒序
             .sort((a, b) => {
@@ -193,7 +213,7 @@ export default {
       var _this = this;
       _this.isShowModifyAdmin = true;
       _this.modifyInfo = res;
-      _this.modifyInfo.adminType = "admin";
+      _this.modifyInfo.adminType = "customerAdmin";
     },
     // 修改密码
     modifyPassWord(index, res) {
@@ -201,6 +221,13 @@ export default {
       _this.isShowModifyPassword = true;
       _this.modifyInfo = res;
       _this.modifyInfo.adminType = "admin";
+    },
+    // 添加子权限
+    addAccount(index, res) {
+      var _this = this;
+      _this.isShowAddAdmin = true;
+      _this.modifyInfo = res;
+      _this.modifyInfo.adminType = "customerAdmin";
     },
     // 添加角色
     addRole(index, res) {

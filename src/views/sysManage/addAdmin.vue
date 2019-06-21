@@ -44,7 +44,7 @@ export default {
         status: "",
         email: "",
         mobile: "",
-        superCode: "15a1ede0-2818-11e8-9aae-1fc72b92c9af"
+        superCode: ""
       },
       rules: {
         account: [
@@ -78,14 +78,25 @@ export default {
       }
     };
   },
-  mounted() {},
+  mounted() {
+    if(this.modifyInfo.adminType == 'customerAdmin'){
+      this.ruleForm.superCode = this.modifyInfo.code;
+    }
+  },
   methods: {
     //提交表单
     submitForm(formName) {
       var _this = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.addAmdinFn();
+          switch(this.modifyInfo.adminType){
+            case 'admin':
+              _this.addAmdinFn();
+              break;
+            case 'customerAdmin':
+              _this.addCustomerFn();
+              break;
+          }
         } else {
           console.log("error submit!!");
           return false;
@@ -95,12 +106,31 @@ export default {
     // 新增后台管理员
     addAmdinFn() {
       var _this = this;
-      var reqUrl = '';
-      if(_this.modifyInfo.adminType == 'admin'){
-        reqUrl = "/server/api/v1/admin/add";
-      }else{
-        reqUrl = "/server/api/v1/admin/addHr"
-      }
+      var reqUrl = '/server/api/v1/admin/add';
+      var data = {
+        account: _this.ruleForm.account,
+        email: _this.ruleForm.email,
+        password: md5(_this.ruleForm.password),
+        mobile: _this.ruleForm.mobile,
+        status: parseInt(_this.ruleForm.status),
+        name: _this.ruleForm.name
+      };
+      _this.$http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
+          _this.$message("新增成功");
+          _this.reload();
+        } else {
+          _this.$message(res.data.msg);
+          return false;
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    // 新增客户管理员子账号
+    addCustomerFn(){
+      var _this = this;
+      var reqUrl = '/server/api/v1/admin/client/childrenAdd';
       var data = {
         account: _this.ruleForm.account,
         email: _this.ruleForm.email,

@@ -10,6 +10,13 @@
       <el-form-item label="手机：" prop="mobile">
         <el-input v-model="ruleForm.mobile"></el-input>
       </el-form-item>
+      <el-form-item label="服务归属：" prop="serveId" v-if='modifyInfo.adminType=="HRadmin"'>
+        <el-radio-group v-model="ruleForm.serveId">
+          <el-radio label="1">单位</el-radio>
+          <el-radio label="2">区域</el-radio>
+          <el-radio label="3">公司</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确认修改</el-button>
         <el-button @click="cancelFn">取 消</el-button>
@@ -30,7 +37,7 @@ export default {
         name: "",
         email: "",
         mobile: "",
-        superCode: "15a1ede0-2818-11e8-9aae-1fc72b92c9af"
+        serveId:""
       },
       rules: {
         name: [
@@ -58,6 +65,7 @@ export default {
   },
   mounted() {
     this.initFn();
+    console.log(this.modifyInfo);
   },
   methods: {
     //初始化
@@ -66,13 +74,25 @@ export default {
       this.ruleForm.name = this.modifyInfo.name;
       this.ruleForm.email = this.modifyInfo.email;
       this.ruleForm.mobile = this.modifyInfo.mobile;
+      this.ruleForm.serveId = this.modifyInfo.serveId;
     },
     //提交表单
     submitForm(formName) {
       var _this = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.modifyAmdinFn();
+          switch(this.modifyInfo.adminType)
+          {
+            case 'admin':
+              _this.modifyAmdinFn();
+              break;
+            case 'HRadmin':
+              _this.modifyHRadminFn();
+              break;
+            case 'customerAdmin':
+              _this.modifyAmdinFn();
+              break;
+          }
         } else {
           console.log("error submit!!");
           return false;
@@ -102,38 +122,18 @@ export default {
     // 修改HR管理员
     modifyHRadminFn() {
       var _this = this;
-      var reqUrl = "/server/api/v1/admin/addHr";
+      var reqUrl = "/server/api/v1/admin/hrSys/update";
       var data = {
-        account: _this.ruleForm.account,
+        id:_this.ruleForm.id,
         email: _this.ruleForm.email,
-        password: md5(_this.ruleForm.password),
         mobile: _this.ruleForm.mobile,
-        name: _this.ruleForm.name
+        name: _this.ruleForm.name,
+        serveId:_this.ruleForm.serveId
       };
       _this.$http
         .post(reqUrl, data)
         .then(res => {
           _this.reload();
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 修改客户管理员
-    modifyCustomFn() {
-      var _this = this;
-      var reqUrl = "/server/api/v1/admin/client/update";
-      var data = {
-        id: _this.ruleForm.id,
-        email: _this.ruleForm.email,
-        mobile: _this.ruleForm.mobile,
-        name: _this.ruleForm.name
-      };
-      _this.$http
-        .post(reqUrl, data)
-        .then(res => {
-          _this.reload();
-          this.$message("修改成功~");
         })
         .catch(err => {
           console.log(err);

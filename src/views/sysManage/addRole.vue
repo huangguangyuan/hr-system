@@ -47,7 +47,12 @@ export default {
     // 获取用户当前的角色
     getCurrentRole() {
       var _this = this;
-      var reqUrl = "/server/api/v1/admin/getByCode";
+      var reqUrl = "";
+      if(_this.modifyInfo.adminType == "admin"){
+        reqUrl = '/server/api/v1/admin/getByCode';
+      }else{
+        reqUrl = '/server/api/v1/admin/hrSys/getByCode';
+      }
       var data = { code: _this.modifyInfo.code };
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.data.roles != 0) {

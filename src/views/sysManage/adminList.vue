@@ -256,6 +256,7 @@ export default {
             .post("/server/api/v1/admin/delete", { id: res.id })
             .then(res => {
               _this.reload();
+              _this.$message('删除成功！');
             });
         })
         .catch(() => {

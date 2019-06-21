@@ -218,14 +218,14 @@ export default {
       var _this = this;
       _this.isShowModifyAdmin = true;
       _this.modifyInfo = res;
-      _this.modifyInfo.adminType = "admin";
+      _this.modifyInfo.adminType = "HRadmin";
     },
     // 修改密码
     modifyPassWord(index, res) {
       var _this = this;
       _this.isShowModifyPassword = true;
       _this.modifyInfo = res;
-      _this.modifyInfo.adminType = "admin";
+      _this.modifyInfo.adminType = "HRadmin";
     },
     // 添加角色
     addRole(index, res) {
@@ -237,7 +237,7 @@ export default {
     // 禁用
     forbidden(index, res) {
       var _this = this;
-      var reqUrl = "/server/api/v1/admin/update";
+      var reqUrl = "/server/api/v1/admin/hrSys/update";
       var data = { id: res.id };
       var txt = "";
       if (res.status == 1) {
@@ -276,9 +276,11 @@ export default {
         })
         .then(() => {
           _this.$http
-            .post("/server/api/v1/admin/delete", { id: res.id })
+            .post("/server/api/v1/admin/hrSys/delete", { id: res.id })
             .then(res => {
+              console.log(res);
               _this.reload();
+              _this.$message('删除成功！');
             });
         })
         .catch(() => {
