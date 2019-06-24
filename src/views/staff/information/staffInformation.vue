@@ -155,18 +155,55 @@
       </el-table-column>
       <el-table-column prop="nameChinese" label="名称"></el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="mobile" label="电话"></el-table-column>
       <el-table-column prop="genderTxt" label="性别"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
-      <el-table-column label="操作" width="500px">
+      <el-table-column label="操作" width="900px">
         <template slot-scope="scope">
+          <!-- 编辑 -->
           <el-button size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">编辑</el-button>
+          <!-- 禁用 -->
           <el-button
             size="mini"
             icon="el-icon-warning"
             @click="forbidden(scope.$index, scope.row)"
           >{{scope.row.status==1?'禁用':'启用'}}</el-button>
+          <!-- 教育程度 -->
+          <el-button
+            size="mini"
+            icon="hr-icon-zinvjiaoyu"
+            @click="isShowEducation = true;getCurInfo(scope.$index, scope.row)"
+          >教育资历</el-button>
+          <!-- 工作经历 -->
+          <el-button
+            size="mini"
+            icon="hr-icon-kehudingdan"
+            @click="isShowEducation = true;getCurInfo(scope.$index, scope.row)"
+          >工作经历</el-button>
+          <!-- 晋升记录 -->
+          <el-button
+            size="mini"
+            icon="hr-icon-tongji"
+            @click="isShowEducation = true;getCurInfo(scope.$index, scope.row)"
+          >晋升记录</el-button>
+          <!-- 合约 -->
+          <el-button
+            size="mini"
+            icon="hr-icon-qianyue"
+            @click="isShowEducation = true;getCurInfo(scope.$index, scope.row)"
+          >合约</el-button>
+          <!-- 社交媒体 -->
+          <el-button
+            size="mini"
+            icon="hr-icon-yingxiaoshangjilei"
+            @click="isShowEducation = true;getCurInfo(scope.$index, scope.row)"
+          >社交媒体</el-button>
+          <!-- 警告信 -->
+          <el-button
+            size="mini"
+            icon="hr-icon-jinggaolei"
+            @click="isShowEducation = true;getCurInfo(scope.$index, scope.row)"
+          >警告信</el-button>
+          <!-- 删除 -->
           <el-button
             size="mini"
             icon="el-icon-delete"
@@ -194,10 +231,15 @@
         v-on:listenIsShowMask="listenIsShowMask"
       ></editTemplate>
     </el-dialog>
+    <!-- 员工教育资历 -->
+    <el-dialog title="教育资历" width='80%' :visible.sync="isShowEducation" :close-on-click-modal="false">
+      <education v-if="isShowEducation" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></education>
+    </el-dialog>
   </div>
 </template>
 <script>
 import editTemplate from "./editTemplate.vue";
+import education from "./education.vue";
 import { deflate } from "zlib";
 export default {
   name: "staffInformation",
@@ -210,10 +252,12 @@ export default {
       curPage: 1, //当前页数
       curInfo: {}, //当前内容
       searchInner: "", //搜索内容
+      regionBUlist: [], //单位列表
       BUCode: "18fa0a70-62c5-11e9-93a9-f78fd132055e", //角色类型
-      isShowAddAccess: false, //是否显示新增权限页面
       isShowLoading: false, //是否显示loading页
-      regionBUlist: [] //单位列表
+      isShowAddAccess: false, //是否显示新增权限页面
+      isShowEducation:false,//是否显示教育资历
+      
     };
   },
   mounted() {
@@ -557,7 +601,11 @@ export default {
             message: "已取消删除"
           });
         });
-    }
+    },
+    // 获取当前信息
+    getCurInfo(index, res){
+      this.curInfo = res;
+    },
   },
   computed: {
     queryTableDate() {
@@ -573,7 +621,7 @@ export default {
     }
   },
   components: {
-    editTemplate
+    editTemplate,education
   }
 };
 </script>

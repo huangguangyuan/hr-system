@@ -2,9 +2,29 @@
   <div class="editTemplate">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
       <el-form-item label="所属单位" prop="BUcode" v-if='isShow'>
-        <el-select v-model="ruleForm.BUcode" placeholder="请选择所属单位">
+        <el-select v-model="ruleForm.BUcode" placeholder="请选择所属单位" @change="getBUcode">
           <el-option
             v-for="item in regionBUList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.code"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="报销主管" prop="claimingSupervisorCode" v-if='!curInfo.superCode'>
+        <el-select v-model="ruleForm.claimingSupervisorCode" placeholder="请选择报销主管">
+          <el-option
+            v-for="item in HRadminList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.code"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="假期主管" prop="holidaySupervisorCode" v-if='!curInfo.superCode'>
+        <el-select v-model="ruleForm.holidaySupervisorCode" placeholder="请选择假期主管">
+          <el-option
+            v-for="item in HRadminList"
             :key="item.id"
             :label="item.name"
             :value="item.code"
@@ -39,15 +59,24 @@ export default {
     return {
       ruleForm: {
         BUcode: "",
+        claimingSupervisorCode:"",
+        holidaySupervisorCode:"",
         name: "",
         description: "",
         status: ""
       }, //表单信息
       regionBUList: [], //单位列表
+      HRadminList:[],//HR管理员列表
       isShow: true, //是否显示
       rules: {
         BUcode: [
           { required: true, message: "请选择所属单位", trigger: "change" }
+        ],
+        claimingSupervisorCode: [
+          { required: true, message: "请选择报销主管", trigger: "change" }
+        ],
+        holidaySupervisorCode: [
+          { required: true, message: "请选择假期主管", trigger: "change" }
         ],
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
@@ -59,6 +88,7 @@ export default {
   },
   mounted() {
     this.initializeFun();
+    console.log(this.curInfo);
   },
   methods: {
     // 初始化
@@ -66,10 +96,27 @@ export default {
       var _this = this;
       _this.getRegionBUList();
       if (this.curInfo.type == "modify") {
+        this.getHRadminList(this.curInfo.BUCode);
         this.ruleForm = this.curInfo;
         this.ruleForm.status = this.curInfo.status.toString();
+        this.ruleForm.claimingSupervisorCode = this.curInfo.claimingSupervisorCode;
+        this.ruleForm.holidaySupervisorCode = this.curInfo.holidaySupervisorCode;
         this.isShow = false;
       }
+    },
+    // 获取单位code
+    getBUcode(code){
+      // this.getHRadminList(code);
+    },
+    // 获取HR管理员列表
+    getHRadminList(BUCode){
+      var reqUrl = "/server/api/v1/admin/hrSys/getAll";
+      var data = {BUCode: BUCode}
+      this.$http.post(reqUrl,data).then(res => {
+        if(res.data.data){
+          this.HRadminList = res.data.data;
+        }
+      })
     },
     // 提交表单
     submitForm(formName) {
@@ -99,13 +146,15 @@ export default {
           description:_this.ruleForm.description,
           status:parseInt(_this.ruleForm.status),
           BUCode:_this.ruleForm.BUcode,
+          claimingSupervisorCode:_this.ruleForm.claimingSupervisorCode,
+          holidaySupervisorCode:_this.ruleForm.holidaySupervisorCode
       }
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
-          _this.$message("新增成功~");
+          _this.$message.success("新增成功~");
         } else {
-          _this.$message(res.data.msg);
+          _this.$message.error(res.data.msg);
         }
       });
     },
@@ -118,11 +167,13 @@ export default {
         name:_this.ruleForm.name,
         description:_this.ruleForm.description,
         status:parseInt(_this.ruleForm.status),
+        claimingSupervisorCode:_this.ruleForm.claimingSupervisorCode,
+        holidaySupervisorCode:_this.ruleForm.holidaySupervisorCode
       };
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
-          _this.$message("修改成功~");
+          _this.$message.success("修改成功~");
         } else {
           _this.$message(res.data.msg);
         }
@@ -138,7 +189,6 @@ export default {
         } else {
           _this.$message({ type: "info", message: `报错：${res.data.code}` });
         }
-        console.log(_this.regionBUList);
       });
     },
     // 取消

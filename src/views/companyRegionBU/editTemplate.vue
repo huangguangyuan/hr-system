@@ -151,10 +151,9 @@ export default {
       var reqUrl = "/server/api/v1/company/regionBUAdd";
       var data = _this.ruleForm;
       _this.$http.post(reqUrl, data).then(res => {
-        console.log(res);
         if (res.data.code == 0) {
           _this.reload();
-          _this.$message("新增成功~");
+          _this.$message.success("新增成功~");
         } else {
           _this.$message(res.data.msg);
         }
@@ -205,7 +204,7 @@ export default {
       var data = { id: result[0].id };
       _this.$http.post(reqUrl, data).then(res => {
         _this.loading = false;
-        _this.regionList = res.data.data.regionList;
+        _this.regionList = res.data.data.companyRegionList;
       });
     },
     // 取消

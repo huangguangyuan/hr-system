@@ -44,6 +44,7 @@ export default {
       _this.$http
         .post(reqUrl, data)
         .then(res => {
+          console.log(res);
           _this.data = res.data.data.map(item => {
             // item.disabled = true;
             return item;

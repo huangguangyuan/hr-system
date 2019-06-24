@@ -2,7 +2,7 @@
   <div class="wrap regionBUList">
     <!-- 头部内容 -->
     <div class="my-top">
-      <span>区域列表</span>
+      <span>单位列表</span>
       <el-button type="warning" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增区域</el-button>
     </div>
     <!-- 列表内容 -->
@@ -44,9 +44,9 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
-    <!-- 编辑区域信息 -->
+    <!-- 编辑单位信息 -->
     <el-dialog
-      title="编辑区域信息"
+      title="编辑单位信息"
       :visible.sync="isShowAddModule"
       :close-on-click-modal="false"
       width="65%"
@@ -154,7 +154,7 @@ export default {
             .post("/server/api/v1/company/regionBUUpdate", data)
             .then(res => {
               _this.reload();
-              _this.$message("操作成功~");
+              _this.$message.success("操作成功~");
             });
         })
         .catch(() => {
@@ -179,9 +179,9 @@ export default {
             .then(res => {
                 if(res.data.code == 0){
                     _this.reload();
-                    _this.$message("删除成功~");
+                    _this.$message.success("删除成功~");
                 }else{
-                    _this.$message(res.data.msg);
+                    _this.$message.error(res.data.msg);
                 }
             });
         })

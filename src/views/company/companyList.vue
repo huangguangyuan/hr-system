@@ -6,7 +6,7 @@
       <el-button type="warning" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增公司</el-button>
     </div>
     <!-- 列表内容 -->
-    <el-table :data="queryTableDate" stripe row-key="id" border>
+    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="account" label="账号"></el-table-column>
@@ -56,13 +56,10 @@
         :curInfo="curInfo"
       ></edit-template>
     </el-dialog>
-    <!-- 加载等待页 -->
-    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
 import editTemplate from "./editTemplate.vue";
-import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "company",
   inject: ["reload"],
@@ -157,7 +154,7 @@ export default {
             .post("/server/api/v1/company/companyUpdate", data)
             .then(res => {
               _this.reload();
-              _this.$message("操作成功~");
+              _this.$message.success("操作成功~");
             });
         })
         .catch(() => {
@@ -182,9 +179,9 @@ export default {
             .then(res => {
               if(res.data.code == 0){
                   _this.reload();
-                  _this.$message("删除成功~");
+                  _this.$message.success("删除成功~");
               }else{
-                  _this.$message(res.data.msg);
+                  _this.$message.error(res.data.msg);
               }
             });
         })
@@ -210,8 +207,7 @@ export default {
     }
   },
   components: {
-    editTemplate,
-    loadingPage
+    editTemplate
   }
 };
 </script>

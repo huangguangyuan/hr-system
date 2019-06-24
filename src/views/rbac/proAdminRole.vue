@@ -7,12 +7,8 @@
     </div>
     <!-- 搜索 -->
     <div class="search-wrap">
-      <el-input
-        placeholder="请输入内容"
-        v-model="searchInner"
-        class="input-with-select"
-        @blur="searchFun"
-      >
+      <div class="selectItem">
+        <p>管理员类型：</p>
         <el-select
           v-model="roleTypeValue"
           slot="prepend"
@@ -23,11 +19,35 @@
           <el-option label="后台管理员" value="1"></el-option>
           <el-option label="HR管理员" value="2"></el-option>
         </el-select>
+      </div>
+      <div class="selectItem">
+        <p>所属项目：</p>
+        <el-select
+          v-model="projectCode"
+          slot="prepend"
+          placeholder="请选择"
+          style="width:200px;"
+          @change="selectPro"
+        >
+          <el-option
+            v-for="item in projectList"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          ></el-option>
+        </el-select>
+      </div>
+      <el-input
+        placeholder="请输入内容"
+        v-model="searchInner"
+        class="input-with-select"
+        @blur="searchFun"
+      >
         <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
       </el-input>
     </div>
     <!-- 列表内容 -->
-    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
+    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="roleCode" label="角色代号"></el-table-column>
@@ -35,15 +55,27 @@
       <el-table-column prop="description" label="描述"></el-table-column>
       <el-table-column label="操作" fixed="right" width="500px">
         <template slot-scope="scope">
-          <el-button size="mini" icon="el-icon-edit" @click='editFun(scope.$index, scope.row)'>编辑</el-button>
-          <el-button size="mini" icon="el-icon-plus" @click='addChildRoleFun(scope.$index, scope.row)'>增加从属角色</el-button>
-          <el-button size="mini" icon="el-icon-s-tools" @click='assignPermissionsFun(scope.$index, scope.row)'>分配权限</el-button>
-          <el-button 
+          <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">编辑</el-button>
+          <el-button
+            size="mini"
+            icon="el-icon-plus"
+            @click="addChildRoleFun(scope.$index, scope.row)"
+          >增加从属角色</el-button>
+          <el-button
+            size="mini"
+            icon="el-icon-s-tools"
+            @click="assignPermissionsFun(scope.$index, scope.row)"
+          >分配权限</el-button>
+          <el-button
             size="mini"
             icon="el-icon-warning"
             @click="forbidden(scope.$index, scope.row)"
           >{{scope.row.status==1?'禁用':'启用'}}</el-button>
-          <el-button size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button
+            size="mini"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.$index, scope.row)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -64,15 +96,27 @@
     </el-dialog>
     <!-- 添加从属角色 -->
     <el-dialog title="添加从属角色" :visible.sync="isShowAddChildRole" :close-on-click-modal="false">
-      <add-child-role v-if="isShowAddChildRole" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></add-child-role>
+      <add-child-role
+        v-if="isShowAddChildRole"
+        :curInfo="curInfo"
+        v-on:listenIsShowMask="listenIsShowMask"
+      ></add-child-role>
     </el-dialog>
     <!-- 修改角色 -->
     <el-dialog title="修改角色" :visible.sync="isShowModifyRole" :close-on-click-modal="false">
-      <modify-role v-if='isShowModifyRole' v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo"></modify-role>
+      <modify-role
+        v-if="isShowModifyRole"
+        v-on:listenIsShowMask="listenIsShowMask"
+        :curInfo="curInfo"
+      ></modify-role>
     </el-dialog>
     <!-- 分配权限 -->
     <el-dialog title="分配权限" :visible.sync="isShowAssignPermissions" :close-on-click-modal="false">
-      <assign-permissions v-if='isShowAssignPermissions' v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo"></assign-permissions>
+      <assign-permissions
+        v-if="isShowAssignPermissions"
+        v-on:listenIsShowMask="listenIsShowMask"
+        :curInfo="curInfo"
+      ></assign-permissions>
     </el-dialog>
   </div>
 </template>
@@ -83,7 +127,7 @@ import modifyRole from "./modifyRole.vue";
 import assignPermissions from "./assignPermissions.vue";
 export default {
   name: "proAdminRole",
-  inject:["reload"],
+  inject: ["reload"],
   data() {
     return {
       tableData: [],
@@ -93,20 +137,36 @@ export default {
       curInfo: {}, //当前信息
       isShowAddRole: false, //是否显示新增角色浮层
       isShowAddChildRole: false, //是否显示新增角色浮层
-      isShowModifyRole:false,//是否显示修改角色浮层
-      isShowAssignPermissions:false,//是否显示分配权限浮层
+      isShowModifyRole: false, //是否显示修改角色浮层
+      isShowAssignPermissions: false, //是否显示分配权限浮层
       isShowLoading: false, //是否显示loading页
       roleTypeValue: "1", //角色类型
-      searchInner: "" //搜索内容
+      searchInner: "", //搜索内容
+      projectList: [], //项目列表
+      projectCode: "" //项目code
     };
   },
   mounted() {
-    var _this = this;
-    _this.getData();
+    this.getProjectList();
   },
   methods: {
-    //获取项目数据列表
-    getData() {
+    // 获取项目列表
+    getProjectList() {
+      var reqUrl = "/server/api/v1/project/getAll";
+      this.$http.post(reqUrl, {}).then(res => {
+        if (res.data.data) {
+          this.projectList = res.data.data;
+          this.projectCode = res.data.data[0].code;
+          this.getData(this.projectCode);
+        }
+      });
+    },
+    // 选择项目
+    selectPro(val) {
+      this.getData(val);
+    },
+    //获取数据列表
+    getData(proCode) {
       var _this = this;
       var reqUrl = "/server/api/v1/projectRole/projectRolesWithAll";
       var myData = { typeId: parseInt(_this.roleTypeValue) };
@@ -115,7 +175,9 @@ export default {
         .post(reqUrl, myData)
         .then(res => {
           _this.isShowLoading = false;
-          _this.tableData = _this.mapFun(res.data.data).sort((a, b) => {
+          _this.tableData = _this
+            .mapFun(res.data.data, proCode)
+            .sort((a, b) => {
               if (a.id < b.id) {
                 return 1;
               }
@@ -131,18 +193,22 @@ export default {
         });
     },
     // 循环数据列表获取属性
-    mapFun(objArr) {
+    mapFun(objArr, proCode) {
       var _this = this;
-      return objArr.map(item => {
-        item.createTime = _this.$toolFn.timeFormat(item.createTime);
-        item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-        item.isStatus = item.status == 1 ? "启用" : "禁用";
-        item.children = item.nodes;
-        if (item.children != 0) {
-          _this.mapFun(item.children);
-        }
-        return item;
-      });
+      return objArr
+        .map(item => {
+          item.createTime = _this.$toolFn.timeFormat(item.createTime);
+          item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
+          item.isStatus = item.status == 1 ? "启用" : "禁用";
+          item.children = item.nodes;
+          if (item.children != 0) {
+            _this.mapFun(item.children);
+          }
+          return item;
+        })
+        .filter(item => {
+          return item.projectCode == proCode;
+        });
     },
     // 获取当前页数
     curChange(val) {
@@ -153,7 +219,7 @@ export default {
     getRoleType(val) {
       var _this = this;
       _this.roleTypeValue = val;
-      _this.getData();
+      this.getData(this.projectCode);
     },
     // 根据name字段查找数据
     searchFun() {
@@ -184,8 +250,8 @@ export default {
             console.log(res.data.code);
           }
         });
-      }else{
-        _this.getData();
+      } else {
+        this.getData(this.projectCode);
       }
     },
     // 监听子组件发过来信息
@@ -196,19 +262,19 @@ export default {
       this.isShowAssignPermissions = res;
     },
     // 编辑信息
-    editFun(index,res){
+    editFun(index, res) {
       var _this = this;
       _this.isShowModifyRole = true;
       _this.curInfo = res;
     },
     // 添加从属角色
-    addChildRoleFun(index,res){
+    addChildRoleFun(index, res) {
       var _this = this;
       _this.isShowAddChildRole = true;
       _this.curInfo = res;
     },
     // 分配权限
-    assignPermissionsFun(index,res){
+    assignPermissionsFun(index, res) {
       var _this = this;
       _this.isShowAssignPermissions = true;
       _this.curInfo = res;
@@ -257,7 +323,7 @@ export default {
           _this.$http
             .post("/server/api/v1/projectRole/delete", { id: res.id })
             .then(res => {
-              _this.$message({message: "删除成功！"});
+              _this.$message({ message: "删除成功！" });
               _this.reload();
             });
         })
@@ -284,7 +350,9 @@ export default {
   },
   components: {
     addRole,
-    modifyRole,addChildRole,assignPermissions
+    modifyRole,
+    addChildRole,
+    assignPermissions
   }
 };
 </script>
@@ -306,7 +374,24 @@ export default {
   }
 }
 .search-wrap {
-  margin: 20px auto;width: 100%;box-sizing: border-box;
+  margin: 20px auto;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  .selectItem {
+    display: flex;
+    min-width: 300px;
+    align-items: center;
+    font-size: 14px;
+    color: rgb(237, 137, 55);
+  }
+}
+.el-input-group{
+  min-width: 400px;
+}
+.el-select {
+  margin-right: 10px;
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
