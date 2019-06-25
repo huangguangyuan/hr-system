@@ -27,13 +27,17 @@
         <el-input v-model="ruleForm.email"></el-input>
       </el-form-item>
       <el-form-item label="管理员等级：" prop="lev">
-        <el-radio-group v-model="ruleForm.lev">
-          <el-radio label="301">hr系统管理员</el-radio>
-          <el-radio label="401">薪酬管理员</el-radio>
-          <el-radio label="501">主管</el-radio>
-          <el-radio label="601">人事</el-radio>
-          <el-radio label="701">信息复核员</el-radio>
-        </el-radio-group>
+        <el-select v-model="ruleForm.lev" placeholder="请选择管理员类型">
+          <el-option label="hr系统管理员" value="301"></el-option>
+          <el-option label="薪酬主管" value="401"></el-option>
+          <el-option label="薪酬工资文员" value="411"></el-option>
+          <el-option label="审批主管" value="501"></el-option>
+          <el-option label="假期审批主管" value="511"></el-option>
+          <el-option label="报销审批主管" value="521"></el-option>
+          <el-option label="人事主管" value="601"></el-option>
+          <el-option label="人事文员" value="611"></el-option>
+          <el-option label="信息复核" value="701"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="服务归属：" prop="serveId">
         <el-radio-group v-model="ruleForm.serveId">

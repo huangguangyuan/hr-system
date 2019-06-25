@@ -163,7 +163,16 @@ let sidebarInfo = [
                 name: "个税计算器",
                 items: [{}],
                 rightCode: "calculator",
-            }
+            },
+            {
+                id: '92',
+                authUrl: '/taxRateTable',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '税率表',
+                rightCode: "taxRateTable",
+                items: [{}]
+            },
         ]
     },
     {
@@ -220,16 +229,7 @@ let sidebarInfo = [
                 name: '单位列表',
                 rightCode: "regionBUList",
                 items: [{}]
-            },
-            {
-                id: '92',
-                authUrl: '/taxRateTable',
-                iconUrl: 'el-icon-document',
-                isMenu: 1,
-                name: '税率表',
-                rightCode: "taxRateTable",
-                items: [{}]
-            },
+            }
         ]
     },
     {
@@ -256,6 +256,15 @@ let sidebarInfo = [
                 isMenu: 1,
                 name: '基本信息',
                 rightCode: "staffInformation",
+                items: [{}]
+            },
+            {
+                id: '103',
+                authUrl: '/staffMain',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '员工档案',
+                rightCode: "staffMain",
                 items: [{}]
             },
         ]

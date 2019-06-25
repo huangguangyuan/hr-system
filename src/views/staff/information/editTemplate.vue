@@ -27,7 +27,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="所属单位" prop="BUCode" v-if="isShow">
-        <el-select v-model="ruleForm.BUCode" placeholder="请选择所属单位" :loading="loading">
+        <el-select
+          v-model="ruleForm.BUCode"
+          placeholder="请选择所属单位"
+          :loading="loading"
+          @change="getDepartment"
+        >
           <el-option
             v-for="item in regionBUList"
             :key="item.id"
@@ -39,7 +44,7 @@
       <el-form-item label="所属部门" prop="departmentCode" v-if="isShow">
         <el-select v-model="ruleForm.departmentCode" placeholder="请选择所属部门" :loading="loading">
           <el-option
-            v-for="item in regionBUList"
+            v-for="item in departmentList"
             :key="item.id"
             :label="item.name"
             :value="item.code"
@@ -59,7 +64,15 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="相片：" prop="photo" v-if="isShow">
-        <el-input v-model="ruleForm.photo"></el-input>
+        <el-upload
+          class="avatar-uploader"
+          action="http://192.168.103.160:9527/app/api/v1/file/imageUpload"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+        >
+          <img v-if="ruleForm.photo" :src="ruleForm.photo" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
       </el-form-item>
       <el-form-item label="出生日期：" prop="dateOfBirth" v-if="isShow">
         <el-date-picker
@@ -82,7 +95,7 @@
         <el-input v-model="ruleForm.email"></el-input>
       </el-form-item>
       <el-form-item label="国籍：" prop="nationality" v-if="isShow">
-        <el-select v-model="ruleForm.nationality" placeholder="请选择所属国籍" @change="getRegionData">
+        <el-select v-model="ruleForm.nationality" placeholder="请选择所属国籍">
           <el-option label="中国大陆" value="中国大陆"></el-option>
           <el-option label="香港" value="香港"></el-option>
           <el-option label="台湾" value="台湾"></el-option>
@@ -99,17 +112,12 @@
         <el-input v-model="ruleForm.IDCopyBack"></el-input>
       </el-form-item>
       <el-form-item label="民族：" prop="ethnic" v-if="isShow">
-        <el-select v-model="ruleForm.ethnic" placeholder="请选择民族" @change="getRegionData">
-          <el-option
-            v-for="item in nationalList"
-            :key="item"
-            :label="item"
-            :value="item"
-          ></el-option>
+        <el-select v-model="ruleForm.ethnic" placeholder="请选择民族">
+          <el-option v-for="item in nationalList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="政治面貌：" prop="politicalBackground" v-if="isShow">
-        <el-select v-model="ruleForm.politicalBackground" placeholder="请选择政治面貌" @change="getRegionData">
+        <el-select v-model="ruleForm.politicalBackground" placeholder="请选择政治面貌">
           <el-option label="群众" value="1"></el-option>
           <el-option label="党员" value="2"></el-option>
           <el-option label="预备党员" value="3"></el-option>
@@ -119,7 +127,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="文化程度：" prop="politicalBackground" v-if="isShow">
-        <el-select v-model="ruleForm.politicalBackground" placeholder="请选择政治面貌" @change="getRegionData">
+        <el-select v-model="ruleForm.politicalBackground" placeholder="请选择文化程度">
           <el-option label="博士" value="61"></el-option>
           <el-option label="硕士/MBA/EMBA" value="51"></el-option>
           <el-option label="本科" value="41"></el-option>
@@ -272,55 +280,111 @@ export default {
         BUCode: "",
         departmentCode: "",
         nameChinese: "",
-        nameEnglish:"",
-        gender:"",
-        photo:"",
-        dateOfBirth:"",
-        address:"",
-        mobile:"",
-        mobileCountryCode:"",
-        email:"",
-        nationality:"",
-        IDNo:"",
-        IDCopy:"",
-        IDCopyBack:"",
-        ethnic:"",
-        politicalBackground:"",
-        cultureLevel:"",
-        hukouType:"",
-        hukouLoction:"",
-        martialStatus:"",
-        nameOfSpouse:"",
-        countOfKids:"",
-        emergencyContact:"",
-        dateOfJoining:"",
-        dateOfLeaving:"",
-        reasonOfLeaving:"",
-        workingLocation:"",
-        outsourceLocation:"",
-        permanentOrContract:"",
-        annualLeaveWriteOffMethod:"",
-        annualLeaveEntitled:"",
-        paidSickLeaveEntitled:"",
-        payrollType:"",
-        gratuity:"",
-        medicalScheme:"",
-        bankName:"",
-        bankAccountName:"",
-        bankAccountNo:"",
-        fileUnit:"",
-        fileUnitMove:"",
-        SIAccount:"",
-        HCAccount:"",
-        medicalSchemeAccount:"",
-        status:"",
+        nameEnglish: "",
+        gender: "",
+        photo: "",
+        dateOfBirth: "",
+        address: "",
+        mobile: "",
+        mobileCountryCode: "",
+        email: "",
+        nationality: "",
+        IDNo: "",
+        IDCopy: "",
+        IDCopyBack: "",
+        ethnic: "",
+        politicalBackground: "",
+        cultureLevel: "",
+        hukouType: "",
+        hukouLoction: "",
+        martialStatus: "",
+        nameOfSpouse: "",
+        countOfKids: "",
+        emergencyContact: "",
+        dateOfJoining: "",
+        dateOfLeaving: "",
+        reasonOfLeaving: "",
+        workingLocation: "",
+        outsourceLocation: "",
+        permanentOrContract: "",
+        annualLeaveWriteOffMethod: "",
+        annualLeaveEntitled: "",
+        paidSickLeaveEntitled: "",
+        payrollType: "",
+        gratuity: "",
+        medicalScheme: "",
+        bankName: "",
+        bankAccountName: "",
+        bankAccountNo: "",
+        fileUnit: "",
+        fileUnitMove: "",
+        SIAccount: "",
+        HCAccount: "",
+        medicalSchemeAccount: "",
+        status: ""
       }, //表单信息
       companyList: [], //公司列表
       regionList: [], //地区列表
       regionBUList: [], //单位列表
-      nationalList:[
-        "汉族", "壮族", "满族", "回族", "苗族", "维吾尔族", "土家族", "彝族", "蒙古族", "藏族", "布依族", "侗族", "瑶族", "朝鲜族", "白族", "哈尼族","哈萨克族", "黎族", "傣族", "畲族", "傈僳族", "仡佬族", "东乡族", "高山族", "拉祜族", "水族", "佤族", "纳西族", "羌族", "土族", "仫佬族", "锡伯族","柯尔克孜族", "达斡尔族", "景颇族", "毛南族", "撒拉族", "布朗族", "塔吉克族", "阿昌族", "普米族", "鄂温克族", "怒族", "京族", "基诺族", "德昂族", "保安族","俄罗斯族", "裕固族", "乌孜别克族", "门巴族", "鄂伦春族", "独龙族", "塔塔尔族", "赫哲族", "珞巴族"
-      ],//全国民族
+      departmentList: [], //部门列表
+      nationalList: [
+        "汉族",
+        "壮族",
+        "满族",
+        "回族",
+        "苗族",
+        "维吾尔族",
+        "土家族",
+        "彝族",
+        "蒙古族",
+        "藏族",
+        "布依族",
+        "侗族",
+        "瑶族",
+        "朝鲜族",
+        "白族",
+        "哈尼族",
+        "哈萨克族",
+        "黎族",
+        "傣族",
+        "畲族",
+        "傈僳族",
+        "仡佬族",
+        "东乡族",
+        "高山族",
+        "拉祜族",
+        "水族",
+        "佤族",
+        "纳西族",
+        "羌族",
+        "土族",
+        "仫佬族",
+        "锡伯族",
+        "柯尔克孜族",
+        "达斡尔族",
+        "景颇族",
+        "毛南族",
+        "撒拉族",
+        "布朗族",
+        "塔吉克族",
+        "阿昌族",
+        "普米族",
+        "鄂温克族",
+        "怒族",
+        "京族",
+        "基诺族",
+        "德昂族",
+        "保安族",
+        "俄罗斯族",
+        "裕固族",
+        "乌孜别克族",
+        "门巴族",
+        "鄂伦春族",
+        "独龙族",
+        "塔塔尔族",
+        "赫哲族",
+        "珞巴族"
+      ], //全国民族
       loading: false, //公司ID号
       isShow: true, //是否显示
       rules: {
@@ -337,9 +401,7 @@ export default {
           { required: true, message: "请输入名称", trigger: "blur" },
           { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
         ],
-        gender: [
-          { required: true, message: "请选择性别", trigger: "change" }
-        ]
+        gender: [{ required: true, message: "请选择性别", trigger: "change" }]
       }
     };
   },
@@ -381,56 +443,55 @@ export default {
         BUCode: _this.ruleForm.BUCode,
         departmentCode: _this.ruleForm.departmentCode,
         nameChinese: _this.ruleForm.nameChinese,
-        nameEnglish:_this.ruleForm.nameEnglish,
-        gender:_this.ruleForm.gender,
-        photo:_this.ruleForm.photo,
-        dateOfBirth:_this.ruleForm.dateOfBirth,
-        address:_this.ruleForm.address,
-        mobile:_this.ruleForm.mobile,
-        mobileCountryCode:_this.ruleForm.mobileCountryCode,
-        email:_this.ruleForm.email,
-        nationality:_this.ruleForm.nationality,
-        IDNo:_this.ruleForm.IDNo,
-        IDCopy:_this.ruleForm.IDCopy,
-        IDCopyBack:_this.ruleForm.IDCopyBack,
-        ethnic:_this.ruleForm.ethnic,
-        politicalBackground:_this.ruleForm.politicalBackground,
-        cultureLevel:_this.ruleForm.cultureLevel,
-        hukouType:_this.ruleForm.hukouType,
-        hukouLoction:_this.ruleForm.hukouLoction,
-        martialStatus:_this.ruleForm.martialStatus,
-        nameOfSpouse:_this.ruleForm.nameOfSpouse,
-        countOfKids:_this.ruleForm.countOfKids,
-        emergencyContact:_this.ruleForm.emergencyContact,
-        dateOfJoining:_this.ruleForm.dateOfJoining,
-        dateOfLeaving:_this.ruleForm.dateOfLeaving,
-        reasonOfLeaving:_this.ruleForm.reasonOfLeaving,
-        workingLocation:_this.ruleForm.workingLocation,
-        outsourceLocation:_this.ruleForm.outsourceLocation,
-        permanentOrContract:_this.ruleForm.permanentOrContract,
-        annualLeaveWriteOffMethod:_this.ruleForm.annualLeaveWriteOffMethod,
-        annualLeaveEntitled:_this.ruleForm.annualLeaveEntitled,
-        paidSickLeaveEntitled:_this.ruleForm.paidSickLeaveEntitled,
-        payrollType:_this.ruleForm.payrollType,
-        gratuity:_this.ruleForm.gratuity,
-        medicalScheme:_this.ruleForm.medicalScheme,
-        bankName:_this.ruleForm.bankName,
-        bankAccountName:_this.ruleForm.bankAccountName,
-        bankAccountNo:_this.ruleForm.bankAccountNo,
-        fileUnit:_this.ruleForm.fileUnit,
-        fileUnitMove:_this.ruleForm.fileUnitMove,
-        SIAccount:_this.ruleForm.SIAccount,
-        HCAccount:_this.ruleForm.HCAccount,
-        medicalSchemeAccount:_this.ruleForm.medicalSchemeAccount,
-        status:_this.ruleForm.status,
-      }
+        nameEnglish: _this.ruleForm.nameEnglish,
+        gender: _this.ruleForm.gender,
+        photo: _this.ruleForm.photo,
+        dateOfBirth: _this.ruleForm.dateOfBirth,
+        address: _this.ruleForm.address,
+        mobile: _this.ruleForm.mobile,
+        mobileCountryCode: _this.ruleForm.mobileCountryCode,
+        email: _this.ruleForm.email,
+        nationality: _this.ruleForm.nationality,
+        IDNo: _this.ruleForm.IDNo,
+        IDCopy: _this.ruleForm.IDCopy,
+        IDCopyBack: _this.ruleForm.IDCopyBack,
+        ethnic: _this.ruleForm.ethnic,
+        politicalBackground: _this.ruleForm.politicalBackground,
+        cultureLevel: _this.ruleForm.cultureLevel,
+        hukouType: _this.ruleForm.hukouType,
+        hukouLoction: _this.ruleForm.hukouLoction,
+        martialStatus: _this.ruleForm.martialStatus,
+        nameOfSpouse: _this.ruleForm.nameOfSpouse,
+        countOfKids: _this.ruleForm.countOfKids,
+        emergencyContact: _this.ruleForm.emergencyContact,
+        dateOfJoining: _this.ruleForm.dateOfJoining,
+        dateOfLeaving: _this.ruleForm.dateOfLeaving,
+        reasonOfLeaving: _this.ruleForm.reasonOfLeaving,
+        workingLocation: _this.ruleForm.workingLocation,
+        outsourceLocation: _this.ruleForm.outsourceLocation,
+        permanentOrContract: _this.ruleForm.permanentOrContract,
+        annualLeaveWriteOffMethod: _this.ruleForm.annualLeaveWriteOffMethod,
+        annualLeaveEntitled: _this.ruleForm.annualLeaveEntitled,
+        paidSickLeaveEntitled: _this.ruleForm.paidSickLeaveEntitled,
+        payrollType: _this.ruleForm.payrollType,
+        gratuity: _this.ruleForm.gratuity,
+        medicalScheme: _this.ruleForm.medicalScheme,
+        bankName: _this.ruleForm.bankName,
+        bankAccountName: _this.ruleForm.bankAccountName,
+        bankAccountNo: _this.ruleForm.bankAccountNo,
+        fileUnit: _this.ruleForm.fileUnit,
+        fileUnitMove: _this.ruleForm.fileUnitMove,
+        SIAccount: _this.ruleForm.SIAccount,
+        HCAccount: _this.ruleForm.HCAccount,
+        medicalSchemeAccount: _this.ruleForm.medicalSchemeAccount,
+        status: _this.ruleForm.status
+      };
       _this.$http.post(reqUrl, data).then(res => {
-        console.log(res);
         if (res.data.code == 0) {
           _this.reload();
-          _this.$message("新增成功~");
+          _this.$message.success("新增成功~");
         } else {
-          _this.$message(res.data.msg);
+          _this.$message.error(res.data.msg);
         }
       });
     },
@@ -471,34 +532,52 @@ export default {
     // 获取区域列表
     getRegionData(val) {
       var _this = this;
-      _this.loading = true;
+      _this.ruleForm.regionCode = "";
+      _this.ruleForm.BUCode = "";
+      _this.ruleForm.departmentCode = "";
       var result = _this.companyList.filter(item => {
         return item.code == val;
       });
       var reqUrl = "/server/api/v1/company/company";
       var data = { id: result[0].id };
       _this.$http.post(reqUrl, data).then(res => {
-        _this.loading = false;
         _this.regionList = res.data.data.companyRegionList;
       });
     },
     // 获取单位列表
     getRegionBUData(val) {
       var _this = this;
+      _this.ruleForm.BUCode = "";
+      _this.ruleForm.departmentCode = "";
       var result = _this.regionList.filter(item => {
         return item.code == val;
       });
       var reqUrl = "/server/api/v1/company/region";
       var data = { id: result[0].id };
       _this.$http.post(reqUrl, data).then(res => {
-        _this.loading = false;
         _this.regionBUList = res.data.data.BUList;
+      });
+    },
+    // 获取部门列表
+    getDepartment(val) {
+      this.ruleForm.departmentCode = "";
+      var reqUrl = "/server/api/v1/buDepartment/getAll";
+      var data = { BUCode: val };
+      this.$http.post(reqUrl, data).then(res => {
+        if (res.data.data) {
+          this.departmentList = res.data.data;
+        }
       });
     },
     // 取消
     cancelFn() {
       var _this = this;
       _this.$emit("listenIsShowMask", false);
+    },
+    // 获取上传图片
+    handleAvatarSuccess(res, file){
+      this.ruleForm.photo = URL.createObjectURL(file.raw);
+      console.log(res,file);
     },
     // 重置
     resetForm(formName) {
@@ -507,7 +586,30 @@ export default {
   }
 };
 </script>
-<style scoped lang="scss">
+<style lang="scss">
+.avatar-uploader .el-upload {
+  border: 1px dashed #ebb563;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>
 
 

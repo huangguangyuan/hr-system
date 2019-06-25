@@ -1,5 +1,5 @@
 <template>
-  <div class="editTemplate">
+  <div class="editEducation">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
       <el-form-item label="所属单位" prop="BUcode" v-if='isShow'>
         <el-select v-model="ruleForm.BUcode" placeholder="请选择所属单位" @change="getBUcode">
@@ -52,7 +52,7 @@
 </template>
 <script>
 export default {
-  name: "editTemplate",
+  name: "editEducation",
   inject: ["reload"],
   props: ["curInfo"],
   data() {

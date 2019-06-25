@@ -74,6 +74,12 @@ const dynamicRouter = [
         name: 'calculator',
         component: resolve => require(['@/views/salaryManage/calculator.vue'], resolve),
     },
+    // 税率表
+    {
+        path: '/taxRateTable',
+        name: 'taxRateTable',
+        component: resolve => require(['@/views/salaryManage/taxRateTable.vue'], resolve),
+    },
     // <==========计薪模板==========>
     // 主要城市
     {
@@ -120,12 +126,6 @@ const dynamicRouter = [
         name: 'regionBUList',
         component: resolve => require(['@/views/companyRegionBU/regionBUList.vue'], resolve),
     },
-    // 税率表
-    {
-        path: '/taxRateTable',
-        name: 'taxRateTable',
-        component: resolve => require(['@/views/companyRegionBU/taxRateTable.vue'], resolve),
-    },
     // <==========员工==========>
     // 部门
     {
@@ -138,6 +138,12 @@ const dynamicRouter = [
         path: '/staffInformation',
         name: 'staffInformation',
         component: resolve => require(['@/views/staff/information/staffInformation.vue'], resolve),
+    },
+    // 员工档案
+    {
+        path: '/staffMain',
+        name: 'staffMain',
+        component: resolve => require(['@/views/staff/information/staffMain.vue'], resolve),
     },
 ]
 

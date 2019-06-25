@@ -173,13 +173,15 @@ export default {
       var reqUrl = '/server/api/v1/company/regionBUs';
       _this.$http.post(reqUrl,{}).then(res => {
         this.regionList = res.data.data;
-        this.BUcode = res.data.data[0].code;
+        this.BUcode = this.$toolFn.sessionGet('hrBUcode')?this.$toolFn.sessionGet('hrBUcode'):res.data.data[0].code;
         this.getData(this.BUcode);
       });
     },
     // 选择单位
     changeBUcode(code){
-      this.getData(code);
+      this.BUcode = code;
+      this.getData(this.BUcode);
+      this.$toolFn.sessionSet('hrBUcode',code);
     },
     // 获取当前页数
     curChange(val) {

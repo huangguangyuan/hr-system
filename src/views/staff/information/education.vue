@@ -2,10 +2,12 @@
   <div class="education">
     <!-- 搜索 -->
     <div class="search-wrap">
+      <el-button icon="el-icon-plus" type="primary" @click="isShowAddAccess='true';curInfo">添 加</el-button>
       <el-input placeholder="请输入学校名称" v-model="searchInner" @blur="searchFun">
         <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
       </el-input>
     </div>
+    <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
       <el-table-column prop="id" label="ID"></el-table-column>
@@ -35,13 +37,14 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
-    <!-- 添加部门 -->
-    <!-- <el-dialog title="添加部门" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <editTemplate v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editTemplate>
-    </el-dialog> -->
+    <!-- 添加学历 -->
+    <el-dialog title="添加学历" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+      <edit-education v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></edit-education>
+    </el-dialog>
   </div>
 </template>
 <script>
+import editEducation from './editEducation.vue'
 export default {
   name: "education",
   inject: ["reload"],
@@ -189,7 +192,7 @@ export default {
     }
   },
   components: {
-    
+    editEducation
   }
 };
 </script>
@@ -207,6 +210,10 @@ export default {
   margin: 20px auto;
   width: 100%;
   box-sizing: border-box;
+  display: flex;justify-content: space-between;
+  .el-input-group{
+    width: 500px;
+  }
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;

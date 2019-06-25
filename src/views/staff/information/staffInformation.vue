@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap staffInformation">
+  <div class="staffInformation">
     <!-- 头部内容 -->
     <div class="my-top">
       <span>员工基本信息</span>
@@ -13,7 +13,7 @@
           slot="prepend"
           placeholder="请选择"
           style="width:200px;"
-          @change="getType"
+          @change="selectFun"
         >
           <el-option
             v-for="(item,index) in regionBUlist"
@@ -253,11 +253,10 @@ export default {
       curInfo: {}, //当前内容
       searchInner: "", //搜索内容
       regionBUlist: [], //单位列表
-      BUCode: "18fa0a70-62c5-11e9-93a9-f78fd132055e", //角色类型
+      BUCode: "", //角色类型
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增权限页面
       isShowEducation:false,//是否显示教育资历
-      
     };
   },
   mounted() {
@@ -269,7 +268,6 @@ export default {
     InitializationFun() {
       var _this = this;
       _this.getregionBU();
-      _this.getData();
     },
     // 获取单位列表
     getregionBU() {
@@ -278,14 +276,16 @@ export default {
       _this.$http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           _this.regionBUlist = res.data.data;
+          _this.BUCode = this.$toolFn.sessionGet('staffBUcode')?this.$toolFn.sessionGet('staffBUcode'):res.data.data[0].code;
+          _this.getData(this.BUCode);
         }
       });
     },
     //获取项目数据列表
-    getData() {
+    getData(BUCode) {
       var _this = this;
       var reqUrl = "/server/api/v1/staff/getAll";
-      var myData = { BUCode: _this.BUCode };
+      var myData = { BUCode: BUCode };
       _this.isShowLoading = true;
       _this.$http
         .post(reqUrl, myData)
@@ -417,11 +417,11 @@ export default {
     listenIsShowMask(res) {
       this.isShowAddAccess = false;
     },
-    // 获取角色类型
-    getType(val) {
-      var _this = this;
-      _this.BUCode = val;
-      _this.getData();
+    // 获取单位BUcode
+    selectFun(val) {
+      this.BUCode = val;
+      this.getData(this.BUCode);
+      this.$toolFn.sessionSet('staffBUcode',val);
     },
     // 根据name字段查找数据
     searchFun() {
@@ -545,7 +545,7 @@ export default {
           _this.total = _this.tableData.length;
         });
       } else {
-        _this.getData();
+        _this.getData(this.BUCode);
       }
     },
     // 禁用

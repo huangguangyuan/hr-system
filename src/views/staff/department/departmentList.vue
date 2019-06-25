@@ -91,15 +91,14 @@ export default {
   },
   mounted() {
     var _this = this;
-    _this.getData();
     _this.getRegionBUList();
   },
   methods: {
     //获取项目数据列表
-    getData() {
+    getData(BUCode) {
       var _this = this;
       var reqUrl = "/server/api/v1/buDepartment/getAllWithNodes";
-      var myData = { BUCode: _this.BUCode };
+      var myData = { BUCode: BUCode };
       _this.isShowLoading = true;
       _this.$http.post(reqUrl, myData).then(res => {
         _this.isShowLoading = false;
@@ -138,7 +137,9 @@ export default {
       var reqUrl = '/server/api/v1/company/regionBUs';
       _this.$http.post(reqUrl,{}).then(res => {
         if(res.data.code == 0){
-          _this.regionBUList = res.data.data
+          _this.regionBUList = res.data.data;
+          _this.BUCode = this.$toolFn.sessionGet('departmentBUcode')?this.$toolFn.sessionGet('departmentBUcode'):res.data.data[0].code;
+          _this.getData(this.BUCode);
         }else{
           _this.$message({type:'info',message:`报错：${res.data.code}`})
         }
@@ -155,9 +156,9 @@ export default {
     },
     // 获取单位列表
     selectFun(val) {
-      var _this = this;
-      _this.BUCode = val;
-      _this.getData();
+      this.BUCode = val;
+      this.getData(this.BUCode);
+      this.$toolFn.sessionSet('departmentBUcode',val);
     },
     // 根据name字段查找数据
     searchFun() {
@@ -190,7 +191,7 @@ export default {
           }
         });
       } else {
-        _this.getData();
+        _this.getData(this.BUCode);
       }
     },
     // 修改权限
