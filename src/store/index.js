@@ -13,7 +13,8 @@ let store = new Vuex.Store({
     reducer(val) {
       return {
         addRoutes: val.addRoutes,
-        accessModule: val.accessModule
+        accessModule: val.accessModule,
+        staffModule:val.staffModule
       }
     }
   })]

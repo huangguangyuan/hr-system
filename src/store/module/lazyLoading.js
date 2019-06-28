@@ -126,24 +126,18 @@ const dynamicRouter = [
         name: 'regionBUList',
         component: resolve => require(['@/views/companyRegionBU/regionBUList.vue'], resolve),
     },
-    // <==========员工==========>
     // 部门
     {
         path: '/departmentList',
         name: 'departmentList',
-        component: resolve => require(['@/views/staff/department/departmentList.vue'], resolve),
+        component: resolve => require(['@/views/companyRegionBU/department/departmentList.vue'], resolve),
     },
-    // 员工基本信息
-    {
-        path: '/staffInformation',
-        name: 'staffInformation',
-        component: resolve => require(['@/views/staff/information/staffInformation.vue'], resolve),
-    },
+    // <==========员工==========>
     // 员工档案
     {
         path: '/staffMain',
         name: 'staffMain',
-        component: resolve => require(['@/views/staff/information/staffMain.vue'], resolve),
+        component: resolve => require(['@/views/staff/staffMain.vue'], resolve),
     },
 ]
 

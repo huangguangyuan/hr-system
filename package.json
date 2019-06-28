@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "element-resize-detector": "^1.1.15",
-    "element-ui": "^2.8.2",
+    "element-ui": "^2.10.0",
     "js-md5": "^0.7.3",
     "qs": "^6.7.0",
     "vue": "^2.6.6",
