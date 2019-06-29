@@ -163,17 +163,17 @@
           <!-- 编辑 -->
           <el-button size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">编辑</el-button>
           <!-- 禁用 -->
-          <el-button
+          <!-- <el-button
             size="mini"
             icon="el-icon-warning"
             @click="forbidden(scope.$index, scope.row)"
-          >{{scope.row.status==1?'禁用':'启用'}}</el-button>
+          >{{scope.row.status==1?'禁用':'启用'}}</el-button> -->
           <!-- 删除 -->
-          <el-button
+          <!-- <el-button
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button>
+          >删除</el-button> -->
           <!-- 详细操作 -->
           <el-button
             size="mini"

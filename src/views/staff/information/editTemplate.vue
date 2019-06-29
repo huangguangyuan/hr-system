@@ -1,7 +1,7 @@
 <template>
   <div class="editTemplate">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="170px" size="mini">
-      <el-form-item label="所属公司/地区/单位">
+      <!-- <el-form-item label="所属公司/地区/单位">
         <el-cascader
           v-model="selectedOptions"
           placeholder="请选择公司/地区/单位"
@@ -13,7 +13,7 @@
             children: 'children'
           }"
         ></el-cascader>
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item label="所属公司" prop="companyCode" v-if="isShow">
         <el-select v-model="ruleForm.companyCode" placeholder="请选择所属公司" @change="getRegionData">
@@ -618,7 +618,6 @@ export default {
       } else if (val.length === 2) {
         grade = val.length;
       }
-      
     },
     handleItemChange(val) {
       this.getNodes(val);

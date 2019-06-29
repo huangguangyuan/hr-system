@@ -7,12 +7,9 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
       <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="companyName" label="公司名称"></el-table-column>
-      <el-table-column prop="position" label="职位"></el-table-column>
-      <el-table-column prop="jobNature" label="工作性质"></el-table-column>
-      <el-table-column prop="startDate" label="入职时间"></el-table-column>
-      <el-table-column prop="endDate" label="离职时间"></el-table-column>
-      <el-table-column prop="details" label="备注"></el-table-column>
+      <el-table-column prop="hrName" label="发起人"></el-table-column>
+      <el-table-column prop="issueTime" label="发起时间"></el-table-column>
+      <el-table-column prop="contents" label="内容"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">编辑</el-button>
@@ -74,16 +71,31 @@ export default {
         .then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data.map(item => {
-            item.startDate = _this.$toolFn
-              .timeFormat(item.startDate)
+            item.issueTime = _this.$toolFn
+              .timeFormat(item.issueTime)
               .slice(0, 10);
-            item.endDate = _this.$toolFn.timeFormat(item.endDate).slice(0, 10);
+              this.getHRadminName(item.issueBy).then(res => {
+                item.hrName = res;
+              });
             return item;
           });
+          console.log(_this.tableData);
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    // 获取管理员名称
+    getHRadminName(code){
+      var p = new Promise((resolve, reject) => {
+        var reqUrl = '/server/api/v1/admin/hrSys/getByCode';
+        var data = {code:code}
+        var name = '';
+        this.$http.post(reqUrl,data).then(res => {
+          resolve(res.data.data.name);
+        });
+      })
+      return p;
     },
     // 获取当前页数
     curChange(val) {
