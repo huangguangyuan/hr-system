@@ -35,19 +35,19 @@
       </el-tab-pane>
       <el-tab-pane label="晋升记录" name="promotion">
         <span slot="label"><i class="hr-icon-tongji"></i> 晋升记录</span>
-        晋升记录
+        <promotion></promotion>
       </el-tab-pane>
       <el-tab-pane label="合 约" name="contract">
         <span slot="label"><i class="hr-icon-qianyue"></i> 合 约</span>
-        合 约
+        <contract></contract>
       </el-tab-pane>
       <el-tab-pane label="社交媒体" name="media">
         <span slot="label"><i class="hr-icon-yingxiaoshangjilei"></i> 社交媒体</span>
-        社交媒体
+        <socialMedia></socialMedia>
       </el-tab-pane>
       <el-tab-pane label="警告信" name="warning">
         <span slot="label"><i class="hr-icon-jinggaolei"></i> 警告信</span>
-        警告信
+        <warning></warning>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -55,6 +55,10 @@
 <script>
 import education from '../education/education.vue';     
 import experience from '../experience/experience.vue'    
+import promotion from '../promotion/promotion.vue'
+import contract from '../contract/contract.vue'
+import socialMedia from '../socialMedia/socialMedia.vue'
+import warning from '../warning/warning.vue'
 export default {
   name: "staffDetails",
   inject: ["reload"],
@@ -85,7 +89,7 @@ export default {
     }
   },
   components: {
-    education,experience
+    education,experience,promotion,contract,socialMedia,warning
   }
 };
 </script>
@@ -102,7 +106,6 @@ export default {
         span{margin-left: 10px;}
         i{font-weight: 500;font-size: 15px;}
       }
-      
     }
   }
   .el-tabs{padding: 0 50px;margin: 20px auto 0;}

@@ -1,6 +1,20 @@
 <template>
   <div class="editTemplate">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="170px" size="mini">
+      <el-form-item label="所属公司/地区/单位">
+        <el-cascader
+          v-model="selectedOptions"
+          placeholder="请选择公司/地区/单位"
+          :options="cascaderData"
+          @active-item-change="handleItemChange"
+          :props="{
+            value: 'code',
+            label: 'name',
+            children: 'children'
+          }"
+        ></el-cascader>
+      </el-form-item>
+
       <el-form-item label="所属公司" prop="companyCode" v-if="isShow">
         <el-select v-model="ruleForm.companyCode" placeholder="请选择所属公司" @change="getRegionData">
           <el-option
@@ -327,6 +341,8 @@ export default {
       regionList: [], //地区列表
       regionBUList: [], //单位列表
       departmentList: [], //部门列表
+      cascaderData: [],
+      selectedOptions: [],
       nationalList: [
         "汉族",
         "壮族",
@@ -527,6 +543,13 @@ export default {
       var reqUrl = "/server/api/v1/company/companys";
       _this.$http.post(reqUrl, {}).then(res => {
         _this.companyList = res.data.data;
+        this.cascaderData = res.data.data.map(item => {
+          return {
+            code: item.code,
+            name: item.name,
+            children: []
+          };
+        });
       });
     },
     // 获取区域列表
@@ -542,6 +565,21 @@ export default {
       var data = { id: result[0].id };
       _this.$http.post(reqUrl, data).then(res => {
         _this.regionList = res.data.data.companyRegionList;
+        this.cascaderData = this.cascaderData.map(item => {
+          if (item.code == val) {
+            item.children = res.data.data.companyRegionList.map(
+              items => {
+                return {
+                  code: items.code,
+                  name: items.name,
+                  children: []
+                };
+              }
+            );
+          }
+          return item;
+        });
+        console.log(this.cascaderData);
       });
     },
     // 获取单位列表
@@ -569,15 +607,31 @@ export default {
         }
       });
     },
+    // 获取子节点
+    getNodes(val) {
+      var grade;
+      if (!val) {
+        grade = 0;
+      } else if (val.length === 1) {
+        grade = val.length;
+        this.getRegionData(val[0]);
+      } else if (val.length === 2) {
+        grade = val.length;
+      }
+      
+    },
+    handleItemChange(val) {
+      this.getNodes(val);
+    },
     // 取消
     cancelFn() {
       var _this = this;
       _this.$emit("listenIsShowMask", false);
     },
     // 获取上传图片
-    handleAvatarSuccess(res, file){
+    handleAvatarSuccess(res, file) {
       this.ruleForm.photo = URL.createObjectURL(file.raw);
-      console.log(res,file);
+      console.log(res, file);
     },
     // 重置
     resetForm(formName) {

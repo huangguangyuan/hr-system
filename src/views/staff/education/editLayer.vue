@@ -1,5 +1,5 @@
 <template>
-  <div class="editEducation">
+  <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
       <el-form-item label="学校/机构：" prop="school">
         <el-input v-model="ruleForm.school"></el-input>
@@ -50,7 +50,7 @@
 <script>
 import { setTimeout } from 'timers';
 export default {
-  name: "editEducation",
+  name: "editLayer",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
@@ -73,8 +73,8 @@ export default {
         degree: [
           { required: true, message: "请选择输入专业名称", trigger: "blur" }
         ],
-        startDate: [{ required: true, message: "入学日期", trigger: "change" }],
-        endDate: [{ required: true, message: "结业日期", trigger: "change" }]
+        startDate: [{ required: true, message: "入学日期", trigger: "blur" }],
+        endDate: [{ required: true, message: "结业日期", trigger: "blur" }]
       }
     };
   },
@@ -84,8 +84,7 @@ export default {
   methods: {
     // 初始化
     initializeFun() {
-      console.log(this.curInfo);
-      if(this.curInfo.type='modify'){
+      if(this.curInfo.type=='modify'){
         this.ruleForm.school = this.curInfo.school;
         this.ruleForm.degree = this.curInfo.degree;
         this.ruleForm.startDate = this.curInfo.startDate;

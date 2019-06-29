@@ -1,5 +1,5 @@
 <template>
-  <div class="education">
+  <div class="socialMedia">
     <div class="addBtn-wrap">
       <el-button type="primary" @click="addFun">添 加</el-button>
       <el-button type="danger" @click='handleDeleteAll'>删除所有</el-button>
@@ -7,11 +7,9 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
       <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="school" label="学校"></el-table-column>
-      <el-table-column prop="degree" label="學歷及主修"></el-table-column>
-      <el-table-column prop="startDate" label="入校时间"></el-table-column>
-      <el-table-column prop="endDate" label="结业时间"></el-table-column>
-      <el-table-column prop="details" label="备注"></el-table-column>
+      <el-table-column prop="media" label="媒体名称"></el-table-column>
+      <el-table-column prop="account" label="媒体账号"></el-table-column>
+      <el-table-column prop="remarks" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">编辑</el-button>
@@ -34,11 +32,9 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
-    <!-- 添加学历 -->
-    <el-dialog title="添加学历" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <editLayer v-if="isShowAddAccess"
-        :curInfo="curInfo"
-        v-on:listenIsShowMask="listenIsShowMask"></editLayer>
+    <!-- 添加 -->
+    <el-dialog title="添加合同" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>
 </template>
@@ -46,7 +42,7 @@
 import editLayer from "./editLayer.vue";
 let id = 0;
 export default {
-  name: "education",
+  name: "socialMedia",
   inject: ["reload"],
   data() {
     return {
@@ -54,7 +50,6 @@ export default {
       total: 0, //总计
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
-      searchInner: "", //搜索内容
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
       isShowLoading: false //是否显示loading页
@@ -64,23 +59,17 @@ export default {
     this.getData(this.staffInfo.code);
   },
   methods: {
-    //获取学历数据列表
+    //获取数据列表
     getData(staffCode) {
       var _this = this;
-      var reqUrl = "/server/api/v1/staff/education/getAll";
+      var reqUrl = "/server/api/v1/staff/socialMedia/getAll";
       var myData = { staffCode: staffCode };
       _this.isShowLoading = true;
       _this.$http
         .post(reqUrl, myData)
         .then(res => {
           _this.isShowLoading = false;
-          _this.tableData = res.data.data.map(item => {
-            item.startDate = _this.$toolFn
-              .timeFormat(item.startDate)
-              .slice(0, 10);
-            item.endDate = _this.$toolFn.timeFormat(item.endDate).slice(0, 10);
-            return item;
-          });
+          _this.tableData = res.data.data;
         })
         .catch(err => {
           console.log(err);
@@ -98,8 +87,10 @@ export default {
     // 新增
     addFun() {
       this.isShowAddAccess = true;
-      this.curInfo.type = "add";
-      this.curInfo.staffCode = this.staffInfo.code;
+      this.curInfo = {
+        type: "add",
+        staffCode: this.staffInfo.code
+      };
     },
     // 编辑
     editFun(index, res) {
@@ -107,7 +98,7 @@ export default {
       this.curInfo = res;
       this.curInfo.type = "modify";
     },
-    // 删除
+    // 删除单个
     handleDelete(index, res) {
       var _this = this;
       _this
@@ -118,7 +109,7 @@ export default {
         })
         .then(() => {
           _this.$http
-            .post("/server/api/v1/staff/education/delete", { id: res.id })
+            .post("/server/api/v1/staff/socialMedia/delete", { id: res.id })
             .then(res => {
               _this.reload();
               _this.$message.success("删除成功！");
@@ -140,7 +131,7 @@ export default {
         })
         .then(() => {
           this.$http
-            .post("/server/api/v1/staff/education/deleteByStaffCode", { staffCode:this.staffInfo.code })
+            .post("/server/api/v1/staff/socialMedia/deleteByStaffCode", { staffCode:this.staffInfo.code })
             .then(res => {
               this.reload();
               this.$message.success("删除成功！");

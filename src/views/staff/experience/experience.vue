@@ -2,14 +2,16 @@
   <div class="experience">
     <div class="addBtn-wrap">
       <el-button type="primary" @click="addFun">添 加</el-button>
+      <el-button type="danger" @click='handleDeleteAll'>删除所有</el-button>
     </div>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
       <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="school" label="学校"></el-table-column>
-      <el-table-column prop="degree" label="學歷及主修"></el-table-column>
-      <el-table-column prop="startDate" label="入校时间"></el-table-column>
-      <el-table-column prop="endDate" label="结业时间"></el-table-column>
+      <el-table-column prop="companyName" label="公司名称"></el-table-column>
+      <el-table-column prop="position" label="职位"></el-table-column>
+      <el-table-column prop="jobNature" label="工作性质"></el-table-column>
+      <el-table-column prop="startDate" label="入职时间"></el-table-column>
+      <el-table-column prop="endDate" label="离职时间"></el-table-column>
       <el-table-column prop="details" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
@@ -35,15 +37,15 @@
     </div>
     <!-- 添加学历 -->
     <el-dialog title="添加学历" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <edit v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></edit>
+      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>
 </template>
 <script>
-import edit from "./edit.vue";
+import editLayer from "./editLayer.vue";
 let id = 0;
 export default {
-  name: "edit",
+  name: "experience",
   inject: ["reload"],
   data() {
     return {
@@ -70,7 +72,6 @@ export default {
       _this.$http
         .post(reqUrl, myData)
         .then(res => {
-            console.log(res);
           _this.isShowLoading = false;
           _this.tableData = res.data.data.map(item => {
             item.startDate = _this.$toolFn
@@ -107,7 +108,7 @@ export default {
       this.curInfo = res;
       this.curInfo.type = "modify";
     },
-    // 删除
+    // 删除单个
     handleDelete(index, res) {
       var _this = this;
       _this
@@ -118,7 +119,7 @@ export default {
         })
         .then(() => {
           _this.$http
-            .post("/server/api/v1/staff/education/delete", { id: res.id })
+            .post("/server/api/v1/staff/working/delete", { id: res.id })
             .then(res => {
               _this.reload();
               _this.$message.success("删除成功！");
@@ -126,6 +127,28 @@ export default {
         })
         .catch(() => {
           _this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    // 删除所有
+    handleDeleteAll() {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+        .then(() => {
+          this.$http
+            .post("/server/api/v1/staff/working/deleteByStaffCode", { staffCode:this.staffInfo.code })
+            .then(res => {
+              this.reload();
+              this.$message.success("删除成功！");
+            });
+        })
+        .catch(() => {
+          this.$message({
             type: "info",
             message: "已取消删除"
           });
@@ -149,7 +172,7 @@ export default {
     }
   },
   components: {
-    edit
+    editLayer
   }
 };
 </script>

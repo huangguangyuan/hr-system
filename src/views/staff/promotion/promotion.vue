@@ -1,5 +1,5 @@
 <template>
-  <div class="education">
+  <div class="promotion">
     <div class="addBtn-wrap">
       <el-button type="primary" @click="addFun">添 加</el-button>
       <el-button type="danger" @click='handleDeleteAll'>删除所有</el-button>
@@ -7,10 +7,12 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
       <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="school" label="学校"></el-table-column>
-      <el-table-column prop="degree" label="學歷及主修"></el-table-column>
-      <el-table-column prop="startDate" label="入校时间"></el-table-column>
-      <el-table-column prop="endDate" label="结业时间"></el-table-column>
+      <el-table-column prop="position" label="职位"></el-table-column>
+      <el-table-column prop="salary" label="工资"></el-table-column>
+      <el-table-column prop="reportTo" label="上级"></el-table-column>
+      <el-table-column prop="staffGrade" label="员工职级"></el-table-column>
+      <el-table-column prop="startDate" label="入职时间"></el-table-column>
+      <el-table-column prop="endDate" label="离职时间"></el-table-column>
       <el-table-column prop="details" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
@@ -34,11 +36,9 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
-    <!-- 添加学历 -->
-    <el-dialog title="添加学历" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <editLayer v-if="isShowAddAccess"
-        :curInfo="curInfo"
-        v-on:listenIsShowMask="listenIsShowMask"></editLayer>
+    <!-- 添加 -->
+    <el-dialog title="添加晋升记录" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>
 </template>
@@ -46,7 +46,7 @@
 import editLayer from "./editLayer.vue";
 let id = 0;
 export default {
-  name: "education",
+  name: "promotion",
   inject: ["reload"],
   data() {
     return {
@@ -64,10 +64,10 @@ export default {
     this.getData(this.staffInfo.code);
   },
   methods: {
-    //获取学历数据列表
+    //获取数据列表
     getData(staffCode) {
       var _this = this;
-      var reqUrl = "/server/api/v1/staff/education/getAll";
+      var reqUrl = "/server/api/v1/staff/promotion/getAll";
       var myData = { staffCode: staffCode };
       _this.isShowLoading = true;
       _this.$http
@@ -98,8 +98,10 @@ export default {
     // 新增
     addFun() {
       this.isShowAddAccess = true;
-      this.curInfo.type = "add";
-      this.curInfo.staffCode = this.staffInfo.code;
+      this.curInfo = {
+        type: "add",
+        staffCode: this.staffInfo.code
+      };
     },
     // 编辑
     editFun(index, res) {
@@ -107,7 +109,7 @@ export default {
       this.curInfo = res;
       this.curInfo.type = "modify";
     },
-    // 删除
+    // 删除单个
     handleDelete(index, res) {
       var _this = this;
       _this
@@ -118,7 +120,7 @@ export default {
         })
         .then(() => {
           _this.$http
-            .post("/server/api/v1/staff/education/delete", { id: res.id })
+            .post("/server/api/v1/staff/working/delete", { id: res.id })
             .then(res => {
               _this.reload();
               _this.$message.success("删除成功！");
@@ -140,7 +142,7 @@ export default {
         })
         .then(() => {
           this.$http
-            .post("/server/api/v1/staff/education/deleteByStaffCode", { staffCode:this.staffInfo.code })
+            .post("/server/api/v1/staff/working/deleteByStaffCode", { staffCode:this.staffInfo.code })
             .then(res => {
               this.reload();
               this.$message.success("删除成功！");
