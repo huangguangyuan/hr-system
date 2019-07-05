@@ -1,6 +1,6 @@
 <template>
   <div class="editLayer">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px">
       <el-form-item label="职 位：" prop="position">
         <el-input v-model="ruleForm.position"></el-input>
       </el-form-item>
@@ -13,18 +13,12 @@
       <el-form-item label="员工职级：">
         <el-input v-model="ruleForm.staffGrade"></el-input>
       </el-form-item>
-      <el-form-item label="开始日期：" prop="startDate">
+      <el-form-item label="开始日期-结束日期：" prop="changeDate">
         <el-date-picker
-          v-model="ruleForm.startDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择日期"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="结束日期：" prop="endDate">
-        <el-date-picker
-          v-model="ruleForm.endDate"
-          type="date"
+          v-model="ruleForm.changeDate"
+          type="daterange"
+          range-separator="至"
+          format='yyyy-MM-dd'
           value-format="yyyy-MM-dd"
           placeholder="选择日期"
         ></el-date-picker>
@@ -70,8 +64,7 @@ export default {
         position: "",
         reportTo: "",
         staffGrade: "",
-        startDate: "",
-        endDate: "",
+        changeDate: [],
         fileSrc: "",
         details: ""
       }, //表单信息
@@ -83,9 +76,7 @@ export default {
         ],
         position: [
           { required: true, message: "请输入职位名称", trigger: "blur" }
-        ],
-        startDate: [{ required: true, message: "入学日期", trigger: "change" }],
-        endDate: [{ required: true, message: "结业日期", trigger: "change" }]
+        ]
       }
     };
   },
@@ -133,8 +124,8 @@ export default {
         position: _this.ruleForm.position,
         reportTo: _this.ruleForm.reportTo,
         staffGrade: _this.ruleForm.staffGrade,
-        startTime: _this.ruleForm.startDate,
-        endTime: _this.ruleForm.endDate,
+        startTime: _this.ruleForm.changeDate[0],
+        endTime: _this.ruleForm.changeDate[1],
         remarks: _this.ruleForm.details,
         fileSrc: _this.ruleForm.fileSrc
       };
@@ -150,16 +141,17 @@ export default {
     // 修改
     modifyFun() {
       var _this = this;
-      var reqUrl = "/server/api/v1/staff/working/update";
+      var reqUrl = "/server/api/v1/staff/promotion/update";
       var data = {
         id: _this.curInfo.id,
         staffCode: _this.curInfo.staffCode,
-        companyName: _this.ruleForm.companyName,
+        salary: parseInt(_this.ruleForm.salary),
         position: _this.ruleForm.position,
-        jobNature: _this.ruleForm.jobNature,
-        startDate: _this.ruleForm.startDate,
-        endDate: _this.ruleForm.endDate,
-        details: _this.ruleForm.details,
+        reportTo: _this.ruleForm.reportTo,
+        staffGrade: _this.ruleForm.staffGrade,
+        startTime: _this.ruleForm.changeDate[0],
+        endTime: _this.ruleForm.changeDate[1],
+        remarks: _this.ruleForm.details,
         fileSrc: _this.ruleForm.fileSrc
       };
       _this.$http.post(reqUrl, data).then(res => {

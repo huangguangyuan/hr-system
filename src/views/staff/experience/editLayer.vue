@@ -1,6 +1,6 @@
 <template>
   <div class="editLayer">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px">
       <el-form-item label="公司名称：" prop="companyName">
         <el-input v-model="ruleForm.companyName"></el-input>
       </el-form-item>
@@ -10,18 +10,12 @@
       <el-form-item label="工作性质：">
         <el-input v-model="ruleForm.jobNature"></el-input>
       </el-form-item>
-      <el-form-item label="入职日期：" prop="startDate">
+      <el-form-item label="入职日期-离职日期：" prop="changeDate">
         <el-date-picker
-          v-model="ruleForm.startDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择日期"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="离职日期：" prop="endDate">
-        <el-date-picker
-          v-model="ruleForm.endDate"
-          type="date"
+          v-model="ruleForm.changeDate"
+          type="daterange"
+          range-separator="至"
+          format='yyyy-MM-dd'
           value-format="yyyy-MM-dd"
           placeholder="选择日期"
         ></el-date-picker>
@@ -63,8 +57,7 @@ export default {
         companyName: "",
         position: "",
         jobNature:"",
-        startDate: "",
-        endDate: "",
+        changeDate: [],
         fileSrc: "",
         details: ""
       }, //表单信息
@@ -77,8 +70,7 @@ export default {
         position: [
           { required: true, message: "请选择输入职位名称", trigger: "blur" }
         ],
-        startDate: [{ required: true, message: "入学日期", trigger: "change" }],
-        endDate: [{ required: true, message: "结业日期", trigger: "change" }]
+        changeDate: [{ required: true, message: "入学日期", trigger: "change" }]
       }
     };
   },
@@ -92,9 +84,10 @@ export default {
         this.ruleForm.companyName = this.curInfo.companyName;
         this.ruleForm.position = this.curInfo.position;
         this.ruleForm.jobNature = this.curInfo.jobNature;
-        this.ruleForm.startDate = this.curInfo.startDate;
-        this.ruleForm.endDate = this.curInfo.endDate;
         this.ruleForm.details = this.curInfo.details;
+        this.ruleForm.changeDate = [];
+        this.ruleForm.changeDate[0] = this.curInfo.startDate;
+        this.ruleForm.changeDate[1] = this.curInfo.endDate;
       }
     },
     // 提交表单
@@ -125,8 +118,8 @@ export default {
         companyName: _this.ruleForm.companyName,
         position: _this.ruleForm.position,
         jobNature: _this.ruleForm.jobNature,
-        startDate: _this.ruleForm.startDate,
-        endDate: _this.ruleForm.endDate,
+        startDate: _this.ruleForm.changeDate[0],
+        endDate: _this.ruleForm.changeDate[1],
         details: _this.ruleForm.details,
         fileSrc: _this.ruleForm.fileSrc
       };
@@ -149,8 +142,8 @@ export default {
         companyName: _this.ruleForm.companyName,
         position: _this.ruleForm.position,
         jobNature: _this.ruleForm.jobNature,
-        startDate: _this.ruleForm.startDate,
-        endDate: _this.ruleForm.endDate,
+        startDate: _this.ruleForm.changeDate[0],
+        endDate: _this.ruleForm.changeDate[1],
         details: _this.ruleForm.details,
         fileSrc: _this.ruleForm.fileSrc
       };

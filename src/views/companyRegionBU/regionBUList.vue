@@ -6,30 +6,52 @@
       <el-button type="warning" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增区域</el-button>
     </div>
     <!-- 列表内容 -->
-    <el-table v-loading="loading" :data="queryTableDate" stripe row-key="id" border>
+    <el-table v-loading="loading" :data="queryTableDate" stripe row-key="id">
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="名称：">
+              <span>{{ props.row.name }}</span>
+            </el-form-item>
+            <el-form-item label="账号：">
+              <span>{{ props.row.account }}</span>
+            </el-form-item>
+            <el-form-item label="所属公司：">
+              <span>{{ props.row.companyName }}</span>
+            </el-form-item>
+            <el-form-item label="国家：">
+              <span>{{ props.row.country }}</span>
+            </el-form-item>
+            <el-form-item label="位置：">
+              <span>{{ props.row.location }}</span>
+            </el-form-item>
+            <el-form-item label="地址：">
+              <span>{{ props.row.address }}</span>
+            </el-form-item>
+            <el-form-item label="备注：">
+              <span>{{ props.row.remarks }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="account" label="账号"></el-table-column>
-      <el-table-column prop="companyName" label="所属公司"></el-table-column>
-      <el-table-column prop="contactName" label="联系人"></el-table-column>
-      <el-table-column prop="contactTel" label="联系人电话"></el-table-column>
-      <el-table-column prop="contactEmail" label="联系人邮箱"></el-table-column>
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
-      <el-table-column prop="location" label="位置"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
-      <el-table-column prop="logo" label="logo"></el-table-column>
-      <el-table-column prop="remarks" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" icon="el-icon-warning" @click='prohibitFun(scope.$index, scope.row)'>{{scope.row.status==1?'禁用':'启用'}}</el-button>
+          <el-button
+            size="mini"
+            icon="el-icon-warning"
+            @click="prohibitFun(scope.$index, scope.row)"
+          >{{scope.row.status==1?'禁用':'启用'}}</el-button>
           <el-button
             size="mini"
             icon="el-icon-delete"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
-          >删除
-          </el-button>
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -72,7 +94,7 @@ export default {
       curPage: 1, //当前页数
       curInfo: {}, //当前信息
       isShowAddModule: false, //是否显示增加模块
-      loading:true
+      loading: true
     };
   },
   mounted() {
@@ -105,6 +127,7 @@ export default {
               return 0;
             });
           _this.total = _this.tableData.length;
+          console.log(_this.tableData);
         })
         .catch(err => {
           console.log(err);
@@ -130,14 +153,14 @@ export default {
     // 禁用
     prohibitFun(index, res) {
       var _this = this;
-      var txt = '';
+      var txt = "";
       var status = 1;
-      if(res.status == 1){
-          txt = '此操作将禁用该数据, 是否继续?'
-          status = 0;
-      }else{
-          txt = '此操作将启用该数据, 是否继续?'
-          status = 1;
+      if (res.status == 1) {
+        txt = "此操作将禁用该数据, 是否继续?";
+        status = 0;
+      } else {
+        txt = "此操作将启用该数据, 是否继续?";
+        status = 1;
       }
       _this
         .$confirm(txt, "提 示", {
@@ -147,9 +170,9 @@ export default {
         })
         .then(() => {
           var data = {
-                id:res.id,
-                status:status
-            }
+            id: res.id,
+            status: status
+          };
           _this.$http
             .post("/server/api/v1/company/regionBUUpdate", data)
             .then(res => {
@@ -177,12 +200,12 @@ export default {
           _this.$http
             .post("/server/api/v1/company/regionBUDelete", { id: res.id })
             .then(res => {
-                if(res.data.code == 0){
-                    _this.reload();
-                    _this.$message.success("删除成功~");
-                }else{
-                    _this.$message.error(res.data.msg);
-                }
+              if (res.data.code == 0) {
+                _this.reload();
+                _this.$message.success("删除成功~");
+              } else {
+                _this.$message.error(res.data.msg);
+              }
             });
         })
         .catch(() => {
@@ -230,6 +253,19 @@ export default {
 }
 .search {
   margin: 20px auto;
+}
+
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 25%;
 }
 </style>
 

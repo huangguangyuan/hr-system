@@ -27,7 +27,7 @@
     </div>
 
     <!-- 列表内容 -->
-    <el-table :data="queryTableDate" stripe style="width: 100%" border>
+    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe style="width: 100%" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
       <el-table-column prop="baseLower" label="基数下限"></el-table-column>
@@ -61,13 +61,10 @@
     <el-dialog title="添加社保模板" :visible.sync="isShowAdd" :close-on-click-modal="false">
       <addSItemplate v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo" v-if="isShowAdd"></addSItemplate>
     </el-dialog>
-    <!-- 加载等待页 -->
-    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
 import addSItemplate from "./addSItemplate.vue";
-import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "SItemplate",
   inject: ["reload"],
@@ -277,7 +274,6 @@ export default {
     }
   },
   components: {
-    loadingPage,
     addSItemplate
   }
 };

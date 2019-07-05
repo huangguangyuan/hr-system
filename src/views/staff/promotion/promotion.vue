@@ -13,7 +13,7 @@
       <el-table-column prop="staffGrade" label="员工职级"></el-table-column>
       <el-table-column prop="startDate" label="入职时间"></el-table-column>
       <el-table-column prop="endDate" label="离职时间"></el-table-column>
-      <el-table-column prop="details" label="备注"></el-table-column>
+      <el-table-column prop="remarks" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">编辑</el-button>
@@ -120,7 +120,7 @@ export default {
         })
         .then(() => {
           _this.$http
-            .post("/server/api/v1/staff/working/delete", { id: res.id })
+            .post("/server/api/v1/staff/promotion/delete", { id: res.id })
             .then(res => {
               _this.reload();
               _this.$message.success("删除成功！");
@@ -142,7 +142,7 @@ export default {
         })
         .then(() => {
           this.$http
-            .post("/server/api/v1/staff/working/deleteByStaffCode", { staffCode:this.staffInfo.code })
+            .post("/server/api/v1/staff/promotion/deleteByStaffCode", { staffCode:this.staffInfo.code })
             .then(res => {
               this.reload();
               this.$message.success("删除成功！");

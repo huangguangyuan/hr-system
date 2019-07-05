@@ -13,7 +13,7 @@
     </div>
 
     <!-- 列表内容 -->
-    <el-table :data="queryTableDate" stripe style="width: 100%" border>
+    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe style="width: 100%" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="taxableTxt" label="是否应税项目"></el-table-column>
@@ -45,13 +45,10 @@
     <el-dialog title="添加薪资应税项目" :visible.sync="isShowAdd" :close-on-click-modal="false">
       <addSTitems v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo" v-if="isShowAdd"></addSTitems>
     </el-dialog>
-    <!-- 加载等待页 -->
-    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
 import addSTitems from "./addSTitems.vue";
-import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "STitems",
   inject: ["reload"],
@@ -201,7 +198,6 @@ export default {
     }
   },
   components: {
-    loadingPage,
     addSTitems
   }
 };

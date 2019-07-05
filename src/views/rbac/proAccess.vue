@@ -145,6 +145,10 @@ export default {
         if (res.data.data) {
           this.projectList = res.data.data;
           this.projectCode = res.data.data[0].code;
+          if(this.$toolFn.sessionGet('proAccessInitialize')){
+            this.projectCode = this.$toolFn.sessionGet('proAccessInitialize').projectCode;
+            this.roleTypeValue = this.$toolFn.sessionGet('proAccessInitialize').roleTypeValue; 
+          }
           this.getData(this.projectCode);
         }
       });
@@ -152,6 +156,7 @@ export default {
     // 选择项目
     selectPro(val) {
       this.getData(val);
+      this.$toolFn.sessionSet('proAccessInitialize',{roleTypeValue:this.roleTypeValue,projectCode:val});
     },
     //获取项目数据列表
     getData(proCode) {
@@ -211,6 +216,7 @@ export default {
       var _this = this;
       _this.roleTypeValue = val;
       _this.getData(this.projectCode);
+      this.$toolFn.sessionSet('proAccessInitialize',{roleTypeValue:this.roleTypeValue,projectCode:this.projectCode});
     },
     // 根据name字段查找数据
     searchFun() {

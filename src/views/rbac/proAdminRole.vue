@@ -157,12 +157,17 @@ export default {
         if (res.data.data) {
           this.projectList = res.data.data;
           this.projectCode = res.data.data[0].code;
+          if(this.$toolFn.sessionGet('proAdminRoleInitialize')){
+            this.projectCode = this.$toolFn.sessionGet('proAdminRoleInitialize').projectCode;
+            this.roleTypeValue = this.$toolFn.sessionGet('proAdminRoleInitialize').roleTypeValue; 
+          }
           this.getData(this.projectCode);
         }
       });
     },
     // 选择项目
     selectPro(val) {
+      this.$toolFn.sessionSet('proAdminRoleInitialize',{roleTypeValue:this.roleTypeValue,projectCode:val});
       this.getData(val);
     },
     //获取数据列表
@@ -217,9 +222,9 @@ export default {
     },
     // 获取角色类型
     getRoleType(val) {
-      var _this = this;
-      _this.roleTypeValue = val;
+      this.roleTypeValue = val;
       this.getData(this.projectCode);
+      this.$toolFn.sessionSet('proAdminRoleInitialize',{roleTypeValue:this.roleTypeValue,projectCode:this.projectCode});
     },
     // 根据name字段查找数据
     searchFun() {

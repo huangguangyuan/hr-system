@@ -1,24 +1,18 @@
 <template>
   <div class="editLayer">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px">
       <el-form-item label="学校/机构：" prop="school">
         <el-input v-model="ruleForm.school"></el-input>
       </el-form-item>
       <el-form-item label="专 业：" prop="degree">
         <el-input v-model="ruleForm.degree"></el-input>
       </el-form-item>
-      <el-form-item label="入学日期：" prop="startDate">
+      <el-form-item label="入学日期-结业日期：" prop="changeDate">
         <el-date-picker
-          v-model="ruleForm.startDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择日期"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="结业日期：" prop="endDate">
-        <el-date-picker
-          v-model="ruleForm.endDate"
-          type="date"
+          v-model="ruleForm.changeDate"
+          type="daterange"
+          range-separator="至"
+          format='yyyy-MM-dd'
           value-format="yyyy-MM-dd"
           placeholder="选择日期"
         ></el-date-picker>
@@ -59,8 +53,7 @@ export default {
         staffCode: "",
         school: "",
         degree: "",
-        startDate: "",
-        endDate: "",
+        changeDate: [],
         fileSrc: "",
         details: ""
       }, //表单信息
@@ -73,8 +66,7 @@ export default {
         degree: [
           { required: true, message: "请选择输入专业名称", trigger: "blur" }
         ],
-        startDate: [{ required: true, message: "入学日期", trigger: "blur" }],
-        endDate: [{ required: true, message: "结业日期", trigger: "blur" }]
+        changeDate: [{ required: true, message: "入学日期 至 结业日期", trigger: "blur" }]
       }
     };
   },
@@ -85,11 +77,14 @@ export default {
     // 初始化
     initializeFun() {
       if(this.curInfo.type=='modify'){
+        this.ruleForm.staffCode = this.curInfo.staffCode;
         this.ruleForm.school = this.curInfo.school;
         this.ruleForm.degree = this.curInfo.degree;
-        this.ruleForm.startDate = this.curInfo.startDate;
-        this.ruleForm.endDate = this.curInfo.endDate;
+        this.ruleForm.fileSrc = this.curInfo.fileSrc;
         this.ruleForm.details = this.curInfo.details;
+        this.ruleForm.changeDate = [];
+        this.ruleForm.changeDate[0] = this.curInfo.startDate;
+        this.ruleForm.changeDate[1] = this.curInfo.endDate;
       }
     },
     // 提交表单
@@ -119,8 +114,8 @@ export default {
         staffCode:_this.curInfo.staffCode,
         school: _this.ruleForm.school,
         degree: _this.ruleForm.degree,
-        startDate: _this.ruleForm.startDate,
-        endDate: _this.ruleForm.endDate,
+        startDate: _this.ruleForm.changeDate[0],
+        endDate: _this.ruleForm.changeDate[1],
         details: _this.ruleForm.details,
         fileSrc: _this.ruleForm.fileSrc
       };
@@ -142,8 +137,8 @@ export default {
         staffCode:_this.curInfo.staffCode,
         school: _this.ruleForm.school,
         degree: _this.ruleForm.degree,
-        startDate: _this.ruleForm.startDate,
-        endDate: _this.ruleForm.endDate,
+        startDate: _this.ruleForm.changeDate[0],
+        endDate: _this.ruleForm.changeDate[1],
         details: _this.ruleForm.details,
         fileSrc: _this.ruleForm.fileSrc
       };

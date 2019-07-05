@@ -1,25 +1,11 @@
 <template>
   <div class="editTemplate">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
-      <el-form-item label="所属公司" prop="companyCode" v-if="isShow">
-        <el-select v-model="ruleForm.companyCode" placeholder="请选择所属公司" @change="getRegionData">
-          <el-option
-            v-for="item in companyList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.code"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="所属区域" prop="companyRegionCode" v-if="isShow">
-        <el-select v-model="ruleForm.companyRegionCode" placeholder="请选择所属区域" :loading="loading">
-          <el-option
-            v-for="item in regionList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.code"
-          ></el-option>
-        </el-select>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" size="mini">
+      <el-divider>
+        <i class="hr-icon-jichuxinxi"></i> 基础信息
+      </el-divider>
+      <el-form-item label="所属公司/地区" prop="selectedOptions" v-if="isShow">
+        <el-cascader v-model="ruleForm.selectedOptions" :props="props"></el-cascader>
       </el-form-item>
       <el-form-item label="名称：" prop="name" v-if="isShow">
         <el-input v-model="ruleForm.name"></el-input>
@@ -39,12 +25,25 @@
       <el-form-item label="地址：">
         <el-input v-model="ruleForm.address"></el-input>
       </el-form-item>
-      <el-form-item label="logo图片：">
-        <el-input v-model="ruleForm.logo"></el-input>
-      </el-form-item>
       <el-form-item label="备注：">
         <el-input v-model="ruleForm.remarks"></el-input>
       </el-form-item>
+      <el-form-item label="logo图片：">
+        <el-upload
+          class="avatar-uploader"
+          action="/app/api/v1/file/imageUpload"
+          :show-file-list="false"
+          :on-success="uploadLogo"
+        >
+          <el-image v-if="ruleForm.logo" :src="logoSrc" class="avatar" fit="cover"></el-image>
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
+      
+
+      <el-divider>
+        <i class="el-icon-user"></i> 联系人信息
+      </el-divider>
       <el-form-item label="联系人：">
         <el-input v-model="ruleForm.contactName"></el-input>
       </el-form-item>
@@ -63,14 +62,16 @@
       <el-form-item label="联系人备注：">
         <el-input v-model="ruleForm.contactRemarks"></el-input>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
-        <el-button @click="cancelFn">取 消</el-button>
+      <el-form-item class="btn-ground">
+        <el-button type="primary" @click="submitForm('ruleForm')" size="medium">确定添加</el-button>
+        <el-button @click="cancelFn" size="medium">取 消</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
+import axios from "axios";
+import md5 from "js-md5";
 export default {
   name: "editTemplate",
   inject: ["reload"],
@@ -78,8 +79,7 @@ export default {
   data() {
     return {
       ruleForm: {
-        companyCode: "",
-        companyRegionCode: "",
+        selectedOptions:[],
         name: "",
         account: "",
         password: "",
@@ -95,16 +95,52 @@ export default {
         contactLocation: "",
         contactRemarks: ""
       }, //表单信息
-      companyList: [], //公司列表
-      regionList: [], //地区列表
+      props: {
+        lazy: true,
+        lazyLoad(node, resolve) {
+          var nodes;
+          if (node.level == 0) {
+            var reqUrl = "/server/api/v1/company/companys";
+            axios.post(reqUrl, {}).then(res => {
+              nodes = res.data.data.map(item => {
+                return {
+                  id: item.id,
+                  code: item.code,
+                  name: item.name
+                };
+              });
+              resolve(nodes);
+            });
+          } else if (node.level == 1) {
+            axios
+              .post("/server/api/v1/company/company", { id: node.data.id })
+              .then(res => {
+                nodes = res.data.data.companyRegionList.map(item => {
+                  return {
+                    id: item.id,
+                    code: item.code,
+                    name: item.name,
+                    leaf: item.code
+                  };
+                });
+                resolve(nodes);
+              });
+          }
+        },
+        value: "code",
+        label: "name",
+        children: "children"
+      },
+      logoSrc:'',//图片路径
       loading: false, //公司ID号
       isShow: true, //是否显示
       rules: {
-        companyCode: [
-          { required: true, message: "请选择所属公司", trigger: "change" }
-        ],
-        companyRegionCode: [
-          { required: true, message: "请选择所属区域", trigger: "change" }
+        selectedOptions: [
+          {
+            required: true,
+            message: "请选择所属公司/区域",
+            trigger: "change"
+          }
         ],
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
@@ -119,7 +155,6 @@ export default {
     };
   },
   mounted() {
-    this.getCompanyData();
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
       this.isShow = false;
@@ -147,15 +182,31 @@ export default {
     },
     // 新增单位
     addFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/company/regionBUAdd";
-      var data = _this.ruleForm;
-      _this.$http.post(reqUrl, data).then(res => {
+      var data = {
+        companyCode:this.ruleForm.selectedOptions[0],
+        companyRegionCode:this.ruleForm.selectedOptions[1],
+        name:this.ruleForm.name,
+        account:this.ruleForm.account,
+        password:md5(this.ruleForm.password),
+        address:this.ruleForm.address,
+        country:this.ruleForm.country,
+        location:this.ruleForm.location,
+        logo:this.ruleForm.logo,
+        remarks:this.ruleForm.remarks,
+        contactName:this.ruleForm.contactName,
+        contactTel:this.ruleForm.contactTel,
+        contactEmail:this.ruleForm.contactEmail,
+        contactTitle:this.ruleForm.contactTitle,
+        contactLocation:this.ruleForm.contactLocation,
+        contactRemarks:this.ruleForm.contactRemarks
+      };
+      this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("新增成功~");
+          this.reload();
+          this.$message.success("新增成功~");
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
         }
       });
     },
@@ -185,27 +236,10 @@ export default {
         }
       });
     },
-    // 获取公司列表
-    getCompanyData() {
-      var _this = this;
-      var reqUrl = "/server/api/v1/company/companys";
-      _this.$http.post(reqUrl, {}).then(res => {
-        _this.companyList = res.data.data;
-      });
-    },
-    // 获取区域列表
-    getRegionData(val) {
-      var _this = this;
-      _this.loading = true;
-      var result = _this.companyList.filter(item => {
-        return item.code == val;
-      });
-      var reqUrl = "/server/api/v1/company/company";
-      var data = { id: result[0].id };
-      _this.$http.post(reqUrl, data).then(res => {
-        _this.loading = false;
-        _this.regionList = res.data.data.companyRegionList;
-      });
+    // 获取上传头像
+    uploadLogo(res, file) {
+      this.ruleForm.logo = res.data.path;
+      this.logoSrc = URL.createObjectURL(file.raw);
     },
     // 取消
     cancelFn() {
@@ -219,7 +253,62 @@ export default {
   }
 };
 </script>
-<style scoped lang="scss">
+<style lang="scss">
+.editTemplate {
+  .el-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    .el-form-item {
+      width: 49%;
+    }
+    h5 {
+      width: 100%;
+    }
+    .el-divider--horizontal {
+      margin-bottom: 60px;
+    }
+    .btn-ground {
+      width: 100%;
+      margin-top: 50px;
+      .el-form-item__content {
+        margin-left: 0 !important;
+        text-align: center;
+      }
+    }
+    .el-divider__text {
+      font-size: 16px;
+      color: #f28c38;
+    }
+    .el-divider i {
+      font-size: 16px;
+    }
+  }
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #ebb563;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 120px;
+  height: 120px;
+  line-height: 120px;
+  text-align: center;
+}
+.avatar {
+  width: 120px;
+  height: 120px;
+  display: block;
+}
 </style>
 
 

@@ -1,6 +1,6 @@
 <template>
   <div class="addRole">
-    <el-tree :data="data" show-checkbox node-key="code" ref="tree" :props="defaultProps"></el-tree>
+    <el-tree :data="data" show-checkbox node-key="code" ref="tree" default-expand-all :props="defaultProps"></el-tree>
     <div class="btn-ground">
       <el-button type="primary" @click="addRolr">确 认</el-button>
       <el-button @click="cancelFn">取 消</el-button>
@@ -16,7 +16,7 @@ export default {
     return {
       data: [],
       defaultProps: {
-        orderNo: "children",
+        children: "nodes",
         label: "name"
       }
     };
@@ -29,7 +29,7 @@ export default {
     //获取后台管理员角色列表
     getRoleList() {
       var _this = this;
-      var reqUrl = "/server/api/v1/projectRole/getAll";
+      var reqUrl = "/server/api/v1/projectRole/projectRolesWithAll";
       if(_this.modifyInfo.adminType == "admin"){
         var data = { typeId: 1 };
       }else{
@@ -38,6 +38,7 @@ export default {
       _this.$http
         .post(reqUrl, data)
         .then(res => {
+          console.log(res);
           _this.data = res.data.data;
         })
         .catch(err => {

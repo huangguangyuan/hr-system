@@ -13,7 +13,7 @@
     </div>
 
     <!-- 列表内容 -->
-    <el-table :data="queryTableDate" stripe style="width: 100%" border>
+    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe style="width: 100%" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="城市名称"></el-table-column>
       <el-table-column prop="remarks" label="备注"></el-table-column>
@@ -46,13 +46,10 @@
     <el-dialog title="新增项目" :visible.sync="isShowAddCity" :close-on-click-modal="false">
       <add-city v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo" v-if="isShowAddCity"></add-city>
     </el-dialog>
-    <!-- 加载等待页 -->
-    <loading-page v-if="isShowLoading"></loading-page>
   </div>
 </template>
 <script>
 import addCity from "./addCity.vue";
-import loadingPage from "@/components/loadingPage.vue";
 export default {
   name: "cityList",
   inject: ["reload"],
@@ -177,7 +174,6 @@ export default {
     }
   },
   components: {
-    loadingPage,
     addCity
   }
 };

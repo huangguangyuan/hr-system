@@ -78,10 +78,10 @@
             <el-form-item label="婚姻状况：">
               <span>{{ props.row.martialStatusTxt }}</span>
             </el-form-item>
-            <el-form-item label="伴侣姓名：">
+            <el-form-item label="伴侣姓名：" v-if="props.row.martialStatus == "1"">
               <span>{{ props.row.nameOfSpouse }}</span>
             </el-form-item>
-            <el-form-item label="子女数目：">
+            <el-form-item label="子女数目：" v-if="props.row.martialStatus == "1"">
               <span>{{ props.row.countOfKids }}</span>
             </el-form-item>
             <el-form-item label="紧急联系人：">
@@ -90,10 +90,10 @@
             <el-form-item label="入职日期：">
               <span>{{ props.row.dateOfJoining }}</span>
             </el-form-item>
-            <el-form-item label="离职日期：">
+            <el-form-item label="离职日期：" v-if="props.row.status == "2"">
               <span>{{ props.row.dateOfLeaving }}</span>
             </el-form-item>
-            <el-form-item label="离职原因：">
+            <el-form-item label="离职原因：" v-if="props.row.status == "2"">
               <span>{{ props.row.reasonOfLeaving }}</span>
             </el-form-item>
             <el-form-item label="工作地点：">
@@ -155,6 +155,15 @@
       </el-table-column>
       <el-table-column prop="nameChinese" label="名称"></el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
+      <el-table-column label="头像">
+        <template slot-scope="scope">
+          <el-image
+            style="width: 50px; height: 50px;border-radius: 100%;"
+            :src="scope.row.photo?scope.row.photo:AvatarDefault"
+            fit="cover"
+          ></el-image>
+        </template>
+      </el-table-column>
       <el-table-column prop="genderTxt" label="性别"></el-table-column>
       <el-table-column prop="mobile" label="电话"></el-table-column>
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
@@ -162,18 +171,18 @@
         <template slot-scope="scope">
           <!-- 编辑 -->
           <el-button size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">编辑</el-button>
-          <!-- 禁用 -->
-          <!-- <el-button
+          <!-- 状态 -->
+          <el-button
             size="mini"
-            icon="el-icon-warning"
-            @click="forbidden(scope.$index, scope.row)"
-          >{{scope.row.status==1?'禁用':'启用'}}</el-button> -->
+            icon="el-icon-bangzhu"
+            @click="isShowState = true;staffID = scope.row.id;"
+          >状态</el-button>
           <!-- 删除 -->
-          <!-- <el-button
+          <el-button
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button> -->
+          >删除</el-button>
           <!-- 详细操作 -->
           <el-button
             size="mini"
@@ -195,12 +204,29 @@
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     <!-- 添加员工 -->
-    <el-dialog title="添加员工" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+    <el-dialog
+      title="添加员工"
+      width="60%"
+      :visible.sync="isShowAddAccess"
+      :close-on-click-modal="false"
+    >
       <editTemplate
         v-if="isShowAddAccess"
         :curInfo="curInfo"
         v-on:listenIsShowMask="listenIsShowMask"
       ></editTemplate>
+    </el-dialog>
+    <!-- 改变状态 -->
+    <el-dialog title="改变状态" :visible.sync="isShowState">
+      <el-radio-group v-model="staffState">
+        <el-radio :label="1">在职</el-radio>
+        <el-radio :label="2">离职</el-radio>
+        <el-radio :label="3">停薪留职</el-radio>
+      </el-radio-group>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click='changeState'>确 定</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -220,8 +246,13 @@ export default {
       searchInner: "", //搜索内容
       regionBUlist: [], //单位列表
       BUCode: "", //角色类型
+      staffState:'',//员工状态
+      staffID:'',//员工ID
       isShowLoading: false, //是否显示loading页
-      isShowAddAccess: false, //是否显示新增权限页面
+      isShowAddAccess: false, //是否显示新增页面
+      isShowState: false, //是否显示状态
+      AvatarDefault:
+        "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" //默认头像
     };
   },
   mounted() {
@@ -241,7 +272,9 @@ export default {
       _this.$http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           _this.regionBUlist = res.data.data;
-          _this.BUCode = this.$toolFn.sessionGet('staffBUcode')?this.$toolFn.sessionGet('staffBUcode'):res.data.data[0].code;
+          _this.BUCode = this.$toolFn.sessionGet("staffBUcode")
+            ? this.$toolFn.sessionGet("staffBUcode")
+            : res.data.data[0].code;
           _this.getData(this.BUCode);
         }
       });
@@ -353,9 +386,15 @@ export default {
                   item.fileUnitMoveTxt = "未知";
               }
               // 时间转换
-              item.dateOfBirth = _this.$toolFn.timeFormat(item.dateOfBirth);
-              item.dateOfJoining = _this.$toolFn.timeFormat(item.dateOfJoining);
-              item.dateOfLeaving = _this.$toolFn.timeFormat(item.dateOfLeaving);
+              item.dateOfBirth = _this.$toolFn
+                .timeFormat(item.dateOfBirth)
+                .slice(0, 10);
+              item.dateOfJoining = _this.$toolFn
+                .timeFormat(item.dateOfJoining)
+                .slice(0, 10);
+              item.dateOfLeaving = _this.$toolFn
+                .timeFormat(item.dateOfLeaving)
+                .slice(0, 10);
               return item;
             })
             .sort((a, b) => {
@@ -386,7 +425,7 @@ export default {
     selectFun(val) {
       this.BUCode = val;
       this.getData(this.BUCode);
-      this.$toolFn.sessionSet('staffBUcode',val);
+      this.$toolFn.sessionSet("staffBUcode", val);
     },
     // 根据name字段查找数据
     searchFun() {
@@ -513,51 +552,45 @@ export default {
         _this.getData(this.BUCode);
       }
     },
-    // 禁用
-    forbidden(index, res) {
-      var _this = this;
-      var reqUrl = "/server/api/v1/projectAccess/update";
-      var data = { id: res.id };
-      var txt = "";
-      if (res.status == 1) {
-        data.status = 0;
-        txt = "此操作将禁用, 是否继续?";
-      } else {
-        data.status = 1;
-        txt = "此操作将启用, 是否继续?";
+    // 编辑修改
+    modifyFun(index, res) {
+      this.curInfo = res;
+      this.curInfo.type = "modify";
+      this.isShowAddAccess = true;
+    },
+    // 改变转态
+    changeState(index, res) {
+      if(this.staffState == ''){
+        this.$message.info('请选择状态');
+        return false;
       }
-      _this
-        .$confirm(txt, "提 示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-        .then(() => {
-          _this.$http.post(reqUrl, data).then(res => {
-            _this.reload();
-          });
-        })
-        .catch(() => {
-          _this.$message({
-            type: "info",
-            message: "已取消操作~"
-          });
-        });
+      var reqUrl = '/server/api/v1/staff/update';
+      var data = {
+        id:this.staffID,
+        status:this.staffState
+      }
+      this.$http.post(reqUrl,data).then(res => {
+        if(res.data.code == 0){
+          this.reload();
+          this.$message.success('修改成功！');
+        }
+      })
     },
     // 删除
     handleDelete(index, res) {
       var _this = this;
       _this
-        .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+        .$confirm("此操作将永久删除该员工信息, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
         .then(() => {
           _this.$http
-            .post("/server/api/v1/projectAccess/delete", { id: res.id })
+            .post("/server/api/v1/staff/delete", { id: res.id })
             .then(res => {
               _this.reload();
+              _this.$message.success("操作成功！");
             });
         })
         .catch(() => {
@@ -568,13 +601,13 @@ export default {
         });
     },
     // 获取当前信息
-    getCurInfo(index, res){
+    getCurInfo(index, res) {
       this.$store.commit({
-        type:'getStaffInfo',
-        staffInfo:res,
-        isShowDetails:true
-      })
-    },
+        type: "getStaffInfo",
+        staffInfo: res,
+        isShowDetails: true
+      });
+    }
   },
   computed: {
     queryTableDate() {
@@ -631,6 +664,13 @@ export default {
   margin-right: 0;
   margin-bottom: 0;
   width: 25%;
+}
+.staffInformation {
+  .photo {
+    width: 35px;
+    height: 35px;
+    border-radius: 5px;
+  }
 }
 </style>
 

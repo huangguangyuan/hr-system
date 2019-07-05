@@ -40,6 +40,7 @@
 </template>
 <script>
 import editLayer from "./editLayer.vue";
+import { setTimeout } from 'timers';
 let id = 0;
 export default {
   name: "warning",
@@ -74,12 +75,12 @@ export default {
             item.issueTime = _this.$toolFn
               .timeFormat(item.issueTime)
               .slice(0, 10);
+              item.hrName = '';
               this.getHRadminName(item.issueBy).then(res => {
                 item.hrName = res;
               });
             return item;
           });
-          console.log(_this.tableData);
         })
         .catch(err => {
           console.log(err);
@@ -132,7 +133,7 @@ export default {
         })
         .then(() => {
           _this.$http
-            .post("/server/api/v1/staff/working/delete", { id: res.id })
+            .post("/server/api/v1/staff/warning/delete", { id: res.id })
             .then(res => {
               _this.reload();
               _this.$message.success("删除成功！");
@@ -154,7 +155,7 @@ export default {
         })
         .then(() => {
           this.$http
-            .post("/server/api/v1/staff/working/deleteByStaffCode", { staffCode:this.staffInfo.code })
+            .post("/server/api/v1/staff/warning/deleteByStaffCode", { staffCode:this.staffInfo.code })
             .then(res => {
               this.reload();
               this.$message.success("删除成功！");
