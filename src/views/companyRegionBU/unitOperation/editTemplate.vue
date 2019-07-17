@@ -63,7 +63,7 @@
         <el-input v-model="ruleForm.contactRemarks"></el-input>
       </el-form-item>
       <el-form-item class="btn-ground">
-        <el-button type="primary" @click="submitForm('ruleForm')" size="medium">确定添加</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')" size="medium">确 定</el-button>
         <el-button @click="cancelFn" size="medium">取 消</el-button>
       </el-form-item>
     </el-form>

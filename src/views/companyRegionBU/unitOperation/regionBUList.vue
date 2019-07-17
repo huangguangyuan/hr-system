@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap regionBUList">
+  <div class="regionBUList">
     <!-- 头部内容 -->
     <div class="my-top">
       <span>单位列表</span>
@@ -31,14 +31,41 @@
             <el-form-item label="备注：">
               <span>{{ props.row.remarks }}</span>
             </el-form-item>
+            <el-form-item label="联系人名称：">
+              <span>{{ props.row.contactName }}</span>
+            </el-form-item>
+            <el-form-item label="联系人电话：">
+              <span>{{ props.row.contactTel }}</span>
+            </el-form-item>
+            <el-form-item label="联系人邮箱：">
+              <span>{{ props.row.contactEmail }}</span>
+            </el-form-item>
+            <el-form-item label="联系人职位：">
+              <span>{{ props.row.contactTitle }}</span>
+            </el-form-item>
+            <el-form-item label="联系人位置：">
+              <span>{{ props.row.contactLocation }}</span>
+            </el-form-item>
+            <el-form-item label="联系人备注：">
+              <span>{{ props.row.contactRemarks }}</span>
+            </el-form-item>
           </el-form>
         </template>
       </el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column label="公司logo">
+        <template slot-scope="scope">
+          <el-image
+            style="width: 50px; height: 50px;border-radius: 100%;"
+            :src="scope.row.logo?scope.row.logo:AvatarDefault"
+            fit="scale-down"
+          ></el-image>
+        </template>
+      </el-table-column>
       <el-table-column prop="account" label="账号"></el-table-column>
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="300px">
+      <el-table-column label="操作" fixed="right" width="350px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button
@@ -46,6 +73,11 @@
             icon="el-icon-warning"
             @click="prohibitFun(scope.$index, scope.row)"
           >{{scope.row.status==1?'禁用':'启用'}}</el-button>
+          <el-button
+            size="mini"
+            icon="el-icon-setting"
+            @click="handleSetting(scope.$index, scope.row)"
+          >设置</el-button>
           <el-button
             size="mini"
             icon="el-icon-delete"
@@ -94,7 +126,8 @@ export default {
       curPage: 1, //当前页数
       curInfo: {}, //当前信息
       isShowAddModule: false, //是否显示增加模块
-      loading: true
+      loading: true,
+      AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" //默认头像
     };
   },
   mounted() {
@@ -127,7 +160,6 @@ export default {
               return 0;
             });
           _this.total = _this.tableData.length;
-          console.log(_this.tableData);
         })
         .catch(err => {
           console.log(err);
@@ -149,7 +181,6 @@ export default {
       _this.curInfo.type = "modify";
       _this.isShowAddModule = true;
     },
-
     // 禁用
     prohibitFun(index, res) {
       var _this = this;
@@ -186,6 +217,14 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    // 设置
+    handleSetting(index, res){
+      this.$store.commit({
+        type: "getBUInfo",
+        BUInfo: res,
+        isShowSetting: true
+      });
     },
     // 删除
     handleDelete(index, res) {

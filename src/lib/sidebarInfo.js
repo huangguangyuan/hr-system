@@ -223,11 +223,11 @@ let sidebarInfo = [
         items: [
             {
                 id: '91',
-                authUrl: '/regionBUList',
+                authUrl: '/BUMain',
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
-                name: '单位列表',
-                rightCode: "regionBUList",
+                name: '单位操作',
+                rightCode: "BUMain",
                 items: [{}]
             },
             {

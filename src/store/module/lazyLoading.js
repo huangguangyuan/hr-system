@@ -120,11 +120,11 @@ const dynamicRouter = [
         component: resolve => require(['@/views/companyRegion/regionList.vue'], resolve),
     },
     // <==========单位==========>
-    // 单位
+    // 单位操作
     {
-        path: '/regionBUList',
-        name: 'regionBUList',
-        component: resolve => require(['@/views/companyRegionBU/regionBUList.vue'], resolve),
+        path: '/BUMain',
+        name: 'BUMain',
+        component: resolve => require(['@/views/companyRegionBU/unitOperation/BUMain.vue'], resolve),
     },
     // 部门
     {
