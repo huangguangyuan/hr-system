@@ -25,7 +25,6 @@
     <div class="noContent" v-else>
       暂无城市模板
     </div>
-    
     <!-- 修改 -->
     <el-dialog title="修改城市模板信息" :visible.sync="isShowEdit" :close-on-click-modal="false" width="65%">
       <edit-city-template v-if='isShowEdit' v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo"></edit-city-template>

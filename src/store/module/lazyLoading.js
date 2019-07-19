@@ -99,6 +99,12 @@ const dynamicRouter = [
         name: 'HCtemplate',
         component: resolve => require(['@/views/salaryTemplate/HCtemplate.vue'], resolve),
     },
+    // 香港MPF模板
+    {
+        path: '/MPFtemplate',
+        name: 'MPFtemplate',
+        component: resolve => require(['@/views/salaryTemplate/MPFtemplate.vue'], resolve),
+    },
     // 薪资应税项目
     {
         path: '/STitems',

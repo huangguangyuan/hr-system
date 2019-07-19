@@ -5,7 +5,7 @@
       <el-avatar :size="130" :src="BUInfo.logo" fit='scale-down'></el-avatar>
       <p class="BUName">{{BUInfo.name}}</p>
     </div>
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
       <el-tab-pane label="编辑城市" name="city">
         <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 编辑城市</span>
         <city-template></city-template>
@@ -18,12 +18,17 @@
         <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 薪资应税项目</span>
         <salary-items></salary-items>
       </el-tab-pane>
+      <el-tab-pane label="社保方案" name="insuredScheme">
+        <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 社保方案</span>
+        <scheme-list></scheme-list>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 <script>
 import cityTemplate from '../cityTemplate/cityTemplate.vue'
 import salaryItems from '../salaryItems/salaryItems.vue'
+import schemeList from '../insuredScheme/schemeList.vue'
 export default {
   name: "setting",
   inject: ["reload"],
@@ -54,7 +59,7 @@ export default {
     }
   },
   components: {
-    cityTemplate,salaryItems
+    cityTemplate,salaryItems,schemeList
   }
 };
 </script>
@@ -66,7 +71,7 @@ export default {
       margin-top: 20px;
     }
   }
-  .el-tabs{padding: 0 50px;margin: 20px auto 0;}
+  .el-tabs{margin: 20px auto 0;}
 }
 </style>
 

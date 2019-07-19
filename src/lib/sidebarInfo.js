@@ -144,7 +144,16 @@ let sidebarInfo = [
                 name: "薪资应税项目",
                 items: [{}],
                 rightCode: "STitems",
-            }
+            },
+            {
+                id: "55",
+                authUrl: "/MPFtemplate",
+                iconUrl: "el-icon-document",
+                isMenu: 1,
+                name: "香港MPF模板",
+                items: [{}],
+                rightCode: "MPFtemplate",
+            },
         ]
     },
     {
