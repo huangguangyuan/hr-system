@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <router-view v-if='isRouterAlive'></router-view>
+    <router-view v-if='isRouterAlive'>1111</router-view>
   </div>
 </template>
 
 <script>
 
-export default {
-  name: 'App',
+export default { 
+  name: 'App', 
   provide(){
     return {
       reload:this.reload
