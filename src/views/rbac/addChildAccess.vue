@@ -25,6 +25,9 @@
           <el-radio label="0">禁用</el-radio>
         </el-radio-group>
       </el-form-item>
+      <el-form-item label="排序号：">
+        <el-input v-model="ruleForm.orderNo"></el-input>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
         <el-button @click="cancelFn">取 消</el-button>
@@ -45,7 +48,8 @@ export default {
         description: "",
         menuUrl:"",
         status: "",
-        isMenu:""
+        isMenu:"",
+        orderNo:0
       },
       rules: {
         name: [
@@ -95,7 +99,8 @@ export default {
         menuUrl:_this.ruleForm.menuUrl,
         status: parseInt(_this.ruleForm.status),
         rightCode: _this.ruleForm.rightCode,
-        isMenu:parseInt(_this.ruleForm.isMenu)
+        isMenu:parseInt(_this.ruleForm.isMenu),
+        orderNo:parseInt(_this.ruleForm.orderNo),
       };
       _this.$http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){

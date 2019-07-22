@@ -10,6 +10,9 @@
       <el-form-item label="权限路径：" prop="menuUrl">
         <el-input v-model="ruleForm.menuUrl"></el-input>
       </el-form-item>
+      <el-form-item label="排序号：">
+        <el-input v-model="ruleForm.orderNo"></el-input>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确认修改</el-button>
         <el-button @click="cancelFn">取 消</el-button>
@@ -28,7 +31,8 @@ export default {
         name: "",
         description: "",
         menuUrl:"",
-        isMenu:""
+        isMenu:"",
+        orderNo:0,
       },
       rules: {
         name: [
@@ -56,6 +60,7 @@ export default {
         _this.ruleForm.name = _this.curInfo.name;
         _this.ruleForm.description = _this.curInfo.description;
         _this.ruleForm.menuUrl = _this.curInfo.menuUrl;
+        _this.ruleForm.orderNo = _this.curInfo.orderNo;
     },
     // 提交表单
     submitForm(formName) {
@@ -77,7 +82,8 @@ export default {
         id:_this.curInfo.id,
         menuUrl:_this.ruleForm.menuUrl,
         name: _this.ruleForm.name,
-        description: _this.ruleForm.description
+        description: _this.ruleForm.description,
+        orderNo:_this.ruleForm.orderNo
       };
       _this.$http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
