@@ -28,6 +28,9 @@
       <el-form-item label="排序号：">
         <el-input v-model="ruleForm.orderNo"></el-input>
       </el-form-item>
+      <el-form-item label="自定义数据：" prop="addField1">
+        <el-input v-model="ruleForm.menuUrl"></el-input>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
         <el-button @click="cancelFn">取 消</el-button>
@@ -49,6 +52,7 @@ export default {
         menuUrl:"",
         status: "",
         isMenu:"",
+        addField1:"",
         orderNo:0
       },
       rules: {
@@ -99,6 +103,7 @@ export default {
         menuUrl:_this.ruleForm.menuUrl,
         status: parseInt(_this.ruleForm.status),
         rightCode: _this.ruleForm.rightCode,
+        addField1: _this.ruleForm.addField1,
         isMenu:parseInt(_this.ruleForm.isMenu),
         orderNo:parseInt(_this.ruleForm.orderNo),
       };

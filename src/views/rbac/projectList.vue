@@ -18,8 +18,8 @@
       <el-table-column prop="name" label="项目名称"></el-table-column>
       <el-table-column prop="description" label="项目描述"></el-table-column>
       <el-table-column prop="orderNo" label="项目序号"></el-table-column>
-      <el-table-column prop="createTime" label="创建时间"></el-table-column>
-      <el-table-column prop="modifyTime" label="修改时间"></el-table-column>
+      <!-- <el-table-column prop="createTime" label="创建时间"></el-table-column>
+      <el-table-column prop="modifyTime" label="修改时间"></el-table-column> -->
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -39,7 +39,7 @@
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     <!-- 新增项目 -->
-    <el-dialog title="新增项目" :visible.sync="isShowProject" :close-on-click-modal='false'>
+    <el-dialog :title="isType=='added'?'新增项目':'修改项目'" :visible.sync="isShowProject" :close-on-click-modal='false'>
       <add-project v-on:listenIsShowProject='showIsShowProject' :isType='isType' v-if='isShowProject'></add-project>
     </el-dialog>
   </div>
