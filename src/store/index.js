@@ -15,7 +15,8 @@ let store = new Vuex.Store({
         addRoutes: val.addRoutes,
         accessModule: val.accessModule,
         staffModule:val.staffModule,
-        BUModule:val.BUModule
+        BUModule:val.BUModule,
+        payrollModule:val.payrollModule
       }
     }
   })]

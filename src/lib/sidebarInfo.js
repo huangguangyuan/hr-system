@@ -269,6 +269,25 @@ let sidebarInfo = [
             },
         ]
     },
+    {
+        id: '110',
+        authUrl: 'null',
+        iconUrl: 'el-icon-user',
+        isMenu: 0,
+        name: '薪资计算',
+        rightCode: "staff",
+        items: [
+            {
+                id: '111',
+                authUrl: '/payrollMain',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '员工薪资档案',
+                rightCode: "payrollMain",
+                items: [{}]
+            },
+        ]
+    },
 ];
 
 export default sidebarInfo;

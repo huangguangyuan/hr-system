@@ -145,6 +145,13 @@ const dynamicRouter = [
         name: 'staffMain',
         component: resolve => require(['@/views/staff/staffMain.vue'], resolve),
     },
+    // <==========计薪==========>
+    // 员工薪资计算
+    {
+        path: '/payrollMain',
+        name: 'payrollMain',
+        component: resolve => require(['@/views/payroll/payrollMain.vue'], resolve),
+    },
 ]
 
 export { lazy }
