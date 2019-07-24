@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="container">
-      <h5>HR人事及薪酬登录系统</h5>
+      <h5>后台登录系统</h5>
       <el-form
         label-position="left"
         label-width="100px"
@@ -56,7 +56,7 @@ export default {
     },
     // 登录
     loginFn() {
-      var reqUrl = "/server/api/v1/hrSys/login";
+      var reqUrl = "/server/api/v1/admin/login";
       var data = {
         account: this.formLabelAlign.user,
         password: md5(this.formLabelAlign.pass)
