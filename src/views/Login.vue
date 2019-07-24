@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       formLabelAlign: {
-        user: "RBACtest",
+        user: "sysAdmin",
         pass: "000000"
       },
       rules: {
@@ -45,10 +45,9 @@ export default {
   methods: {
     // 提交表单
     submitForm(formName) {
-      var _this = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.loginFn();
+          this.loginFn();
         } else {
           console.log("error submit!!");
           return false;
@@ -57,17 +56,19 @@ export default {
     },
     // 登录
     loginFn() {
-      var _this = this;
       var reqUrl = "/server/api/v1/admin/login";
       var data = {
-        account: _this.formLabelAlign.user,
-        password: md5(_this.formLabelAlign.pass)
+        account: this.formLabelAlign.user,
+        password: md5(this.formLabelAlign.pass)
       };
-      _this.$http.post(reqUrl, data).then(res => {
-        // var sidebar = _this.recursionFun(res.data.data.data.roles[0].accessList);
-        var sidebar = this.temporaryData;
+      this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.$store
+          // var sidebars = this.temporaryData;
+          var sidebar = res.data.data.data.roles[0].menuList.map(item => {
+            item.id = item.id.toString();
+            return item;
+          });
+          this.$store
             .dispatch("add_Routes", sidebar)
             .then(res => {
               return this.$store.dispatch('getAccessData_Fun',sidebar)
@@ -75,10 +76,10 @@ export default {
               this.$router.replace({ path: "/home" });
             })
         } else {
-          _this.$alert(res.data.msg);
+          this.$message.error(res.data.msg);
         }
       });
-      // _this.$store.dispatch('getAccessData_Fun',res.data.data.data.roles[0].accessList).then(res => {
+      // this.$store.dispatch('getAccessData_Fun',res.data.data.data.roles[0].accessList).then(res => {
       //       console.log(res);
       //     });
     },
