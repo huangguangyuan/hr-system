@@ -23,6 +23,7 @@
       <el-table-column prop="account" label="账号"></el-table-column>
       <el-table-column prop="mobile" label="手机"></el-table-column>
       <el-table-column prop="email" label="邮箱"></el-table-column>
+      <el-table-column prop="levTxt" label="类型"></el-table-column>
       <el-table-column prop="isStatus" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="500px">
         <template slot-scope="scope">
