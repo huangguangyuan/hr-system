@@ -3,12 +3,14 @@
     <payroll-list v-if="payrollKey == 'payrollList'"></payroll-list>
     <deduction-list v-if="payrollKey == 'deduction'"></deduction-list>
     <allowance-list v-if="payrollKey == 'allowance'"></allowance-list>
+    <salary-item-list v-if="payrollKey == 'salaryItem'"></salary-item-list>
   </div>
 </template>
 <script>
 import payrollList from './payrolllist/payrolllist.vue';
 import deductionList from './deduction/deductionList.vue';
 import allowanceList from './allowance/allowanceList.vue';
+import salaryItemList from './salaryItem/salaryItemList.vue';
 export default {
   name: "payrollMain",
   inject: ["reload"],
@@ -25,7 +27,7 @@ export default {
     }
   },
   components: {
-    payrollList,deductionList,allowanceList
+    payrollList,deductionList,allowanceList,salaryItemList
   }
 };
 </script>

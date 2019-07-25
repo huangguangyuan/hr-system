@@ -1,5 +1,5 @@
 <template>
-  <div class="salaryItemList">
+  <div class="insured">
     <el-page-header @back="goBack" content="额外应税项目"></el-page-header>
     <el-divider></el-divider>
     <!-- 头部内容 -->
@@ -57,7 +57,7 @@
 <script>
 import editLayer from "./editLayer.vue";
 export default {
-  name: "salaryItemList",
+  name: "insured",
   inject: ["reload"],
   data() {
     return {

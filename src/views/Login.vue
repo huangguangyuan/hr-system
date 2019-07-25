@@ -56,18 +56,19 @@ export default {
     },
     // 登录
     loginFn() {
-      var reqUrl = "/server/api/v1/admin/login";
+      var reqUrl = "/open/api/v1/admin/login";
       var data = {
         account: this.formLabelAlign.user,
         password: md5(this.formLabelAlign.pass)
       };
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          // var sidebars = this.temporaryData;
+          // var sidebar = this.temporaryData;
           var sidebar = res.data.data.data.roles[0].menuList.map(item => {
             item.id = item.id.toString();
             return item;
           });
+          this.$toolFn.localSet("userInfo", res.data.data.data);
           this.$store
             .dispatch("add_Routes", sidebar)
             .then(res => {
@@ -79,9 +80,6 @@ export default {
           this.$message.error(res.data.msg);
         }
       });
-      // this.$store.dispatch('getAccessData_Fun',res.data.data.data.roles[0].accessList).then(res => {
-      //       console.log(res);
-      //     });
     },
     // 递归算法
     recursionFun(arr) {

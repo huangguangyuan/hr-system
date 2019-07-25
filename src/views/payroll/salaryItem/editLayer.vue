@@ -1,23 +1,23 @@
 <template>
   <div class="editLayer">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-      <el-form-item label="扣除金额：" prop="amount">
-        <el-input v-model="ruleForm.amount" oninput = "value=value.replace(/[^\d.]/g,'')"></el-input>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px">
+      <el-form-item label="额外应税项目：" prop="salaryItemCode">
+        <el-select v-model="ruleForm.salaryItemCode" placeholder="请选择额外应税项目">
+          <el-option
+            v-for="item in salaryCodeList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.code"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="应税金额：" prop="amount">
+        <el-input v-model="ruleForm.amount" oninput="value=value.replace(/[^\d.]/g,'')"></el-input>
       </el-form-item>
       <el-form-item label="是否生效：" prop="status">
         <el-radio-group v-model="ruleForm.status">
           <el-radio label="1">是</el-radio>
           <el-radio label="0">否</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="类型：" prop="typeId" v-if='isShow'>
-        <el-radio-group v-model="ruleForm.typeId">
-          <el-radio label="1">赡养老人</el-radio>
-          <el-radio label="2">子女教育</el-radio>
-          <el-radio label="3">房贷利息</el-radio>
-          <el-radio label="4">住房租金</el-radio>
-          <el-radio label="5">继续教育</el-radio>
-          <el-radio label="6">大病医疗</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="备 注：">
@@ -40,13 +40,13 @@ export default {
     return {
       ruleForm: {
         staffCode: "",
+        salaryItemCode: "",
         amount: "",
         status: "",
-        typeId: "",
         remarks: ""
       }, //表单信息
       isShow: true, //是否显示
-      fileList: [],
+      salaryCodeList: [],//应税项目列表
       rules: {
         amount: [
           { required: true, message: "请输入津贴金额", trigger: "blur" }
@@ -54,8 +54,8 @@ export default {
         status: [
           { required: true, message: "请选择是否生效", trigger: "change" }
         ],
-        typeId: [
-          { required: true, message: "请选择津贴类型", trigger: "change" }
+        salaryItemCode: [
+          { required: true, message: "请选择额外应税项目", trigger: "change" }
         ]
       }
     };
@@ -66,12 +66,26 @@ export default {
   methods: {
     // 初始化
     initializeFun() {
+      this.getSalaryItemCode();
       if (this.curInfo.type == "modify") {
+        this.ruleForm.salaryItemCode = this.curInfo.salaryItemCode;
         this.ruleForm.amount = this.curInfo.amount;
         this.ruleForm.status = this.curInfo.status.toString();
         this.ruleForm.remarks = this.curInfo.remarks;
         this.isShow = false;
       }
+    },
+    // 获取应税项目列表
+    getSalaryItemCode(){
+      var reqUrl = '/server/api/v1/bu/salaryItems';
+      var data = {BUCode: this.curInfo.BUcode}
+      this.$http.post(reqUrl,data).then(res => {
+        if(res.data.code == 0){
+          this.salaryCodeList = res.data.data
+        }else{
+          this.$message.error(res.data.msg);
+        }
+      })
     },
     // 提交表单
     submitForm(formName) {
@@ -93,12 +107,12 @@ export default {
     },
     // 新增
     addFun() {
-      var reqUrl = "/server/api/v1/staff/deduction/add";
+      var reqUrl = "/server/api/v1/staff/salaryItem/add";
       var data = {
         staffCode: this.curInfo.staffCode,
+        salaryItemCode:this.ruleForm.salaryItemCode,
         amount: parseFloat(this.ruleForm.amount),
         status: parseInt(this.ruleForm.status),
-        typeId: parseInt(this.ruleForm.typeId),
         remarks: this.ruleForm.remarks
       };
       this.$http.post(reqUrl, data).then(res => {
@@ -112,10 +126,10 @@ export default {
     },
     // 修改
     modifyFun() {
-      var reqUrl = "/server/api/v1/staff/deduction/update";
+      var reqUrl = "/server/api/v1/staff/salaryItem/update";
       var data = {
-        id:this.curInfo.id,
-        staffCode: this.curInfo.staffCode,
+        id: this.curInfo.id,
+        salaryItemCode:this.ruleForm.salaryItemCode,
         amount: parseFloat(this.ruleForm.amount),
         status: parseInt(this.ruleForm.status),
         remarks: this.ruleForm.remarks

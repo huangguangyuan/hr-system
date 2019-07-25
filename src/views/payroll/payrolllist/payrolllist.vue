@@ -46,11 +46,23 @@
           <!-- MPF信息（香港） -->
           <el-button size="mini" icon="hr-icon-shebaogongjijin">MPF信息</el-button>
           <!-- 专项扣除 -->
-          <el-button size="mini" icon="hr-icon-zhuanxiangkouchu" @click="deductionFun(scope.$index, scope.row)">专项扣除</el-button>
+          <el-button
+            size="mini"
+            icon="hr-icon-zhuanxiangkouchu"
+            @click="openFun(scope.$index, scope.row, 'deduction')"
+          >专项扣除</el-button>
           <!-- 津贴 -->
-          <el-button size="mini" icon="hr-icon-gangweijintie" @click="allowanceFun(scope.$index, scope.row)">津 贴</el-button>
+          <el-button
+            size="mini"
+            icon="hr-icon-gangweijintie"
+            @click="openFun(scope.$index, scope.row, 'allowance')"
+          >津 贴</el-button>
           <!-- 应税项目 -->
-          <el-button size="mini" icon="hr-icon-yingshui">应税项目</el-button>
+          <el-button
+            size="mini"
+            icon="hr-icon-yingshui"
+            @click="openFun(scope.$index, scope.row, 'salaryItem')"
+          >应税项目</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -87,7 +99,8 @@ export default {
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
       isShowState: false, //是否显示状态
-      AvatarDefault: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" //默认头像
+      AvatarDefault:
+        "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" //默认头像
     };
   },
   mounted() {
@@ -203,20 +216,12 @@ export default {
         _this.getData(this.BUCode);
       }
     },
-    // 专项扣除
-    deductionFun(index, res) {
+    // 打开详细页面
+    openFun(index, res, key) {
       this.$store.commit({
         type: "getPayrollInfo",
         payrollInfo: res,
-        payrollKey: 'deduction'
-      });
-    },
-    // 津贴
-    allowanceFun(index, res){
-      this.$store.commit({
-        type: "getPayrollInfo",
-        payrollInfo: res,
-        payrollKey: 'allowance'
+        payrollKey: key
       });
     }
   },
