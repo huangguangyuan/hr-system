@@ -376,6 +376,9 @@ export default {
 .el-input-group{
   min-width: 400px;
 }
+.input-with-select{
+   width: 62%;
+}
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
 }

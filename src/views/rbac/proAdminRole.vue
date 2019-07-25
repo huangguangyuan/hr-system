@@ -399,8 +399,13 @@ export default {
 .el-select {
   margin-right: 10px;
 }
+
+.input-with-select{
+   width: 62%;
+}
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
+ 
 }
 </style>
 

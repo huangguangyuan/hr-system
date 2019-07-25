@@ -255,8 +255,13 @@ export default {
           _this.$http
             .post("/server/api/v1/admin/delete", { id: res.id })
             .then(res => {
-              _this.reload();
-              _this.$message('删除成功！');
+              if (res.data.code == 0){
+                _this.reload();
+                _this.$message('删除成功！');
+              }else {
+                _this.$message(res.data.msg);
+              }
+
             });
         })
         .catch(() => {

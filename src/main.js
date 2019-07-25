@@ -26,7 +26,11 @@ let myVue = new Vue({
 // 配置全局token，设置axios拦截器
 /* 请求拦截器 */
 axios.interceptors.request.use(function (config) { // 每次请求时会从localStorage中获取token
-  let token = myVue.$toolFn.localGet('userInfo').token;
+  let token;
+  if (myVue.$toolFn.localGet('userInfo')){
+    token = myVue.$toolFn.localGet('userInfo').token;
+  }
+  
   if (token) {
     config.headers.common['token'] = token;
   } else {
@@ -44,6 +48,7 @@ axios.interceptors.response.use(function (response) { // -1 token过期无效
   // if (response.data.result === -1) {}
   return response;
 }, function (error) {
+  console.log(error);
   if (error.response.code === 109) {
     myVue.$toolFn.localRemove('token');// 删除已经失效或过期的token（不删除也可以，因为登录后覆盖）
     router.replace({
