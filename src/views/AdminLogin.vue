@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="container">
-      <h5>HR人事及薪酬登录系统</h5>
+      <h5>后台登录系统</h5>
       <el-form
         label-position="left"
         label-width="100px"
@@ -63,12 +63,11 @@ export default {
       };
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          // var sidebar = this.temporaryData;
+          // var sidebars = this.temporaryData;
           var sidebar = res.data.data.data.roles[0].menuList.map(item => {
             item.id = item.id.toString();
             return item;
           });
-          this.$toolFn.localSet("userInfo", res.data.data.data);
           this.$store
             .dispatch("add_Routes", sidebar)
             .then(res => {
@@ -80,6 +79,9 @@ export default {
           this.$message.error(res.data.msg);
         }
       });
+      // this.$store.dispatch('getAccessData_Fun',res.data.data.data.roles[0].accessList).then(res => {
+      //       console.log(res);
+      //     });
     },
     // 递归算法
     recursionFun(arr) {
