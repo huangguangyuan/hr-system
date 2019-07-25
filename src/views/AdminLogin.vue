@@ -56,7 +56,7 @@ export default {
     },
     // 登录
     loginFn() {
-      var reqUrl = "/server/api/v1/admin/login";
+      var reqUrl = "/open/api/v1/admin/login";
       var data = {
         account: this.formLabelAlign.user,
         password: md5(this.formLabelAlign.pass)

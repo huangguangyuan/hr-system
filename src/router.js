@@ -11,13 +11,13 @@ let routers = new Router({
     // 登录
     {
       path: '/',
-      name: 'login',
+      name: 'AdminLogin',
       component: resolve => require(['@/views/AdminLogin.vue'], resolve),
     },
     // 登录
     {
       path: '/hr',
-      name: 'AdminLogin',
+      name: 'login',
       component: resolve => require(['@/views/Login.vue'], resolve),
     },
     // 404

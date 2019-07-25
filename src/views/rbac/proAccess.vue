@@ -18,6 +18,7 @@
         >
           <el-option label="后台管理员" value="1"></el-option>
           <el-option label="HR管理员" value="2"></el-option>
+          <el-option label="员工" value="3"></el-option>
         </el-select>
       </div>
       <div class="selectItem">

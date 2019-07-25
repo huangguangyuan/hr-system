@@ -29,7 +29,7 @@
         <el-input v-model="ruleForm.orderNo"></el-input>
       </el-form-item>
       <el-form-item label="自定义数据：" prop="addField1">
-        <el-input v-model="ruleForm.menuUrl"></el-input>
+        <el-input v-model="ruleForm.addField1"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
