@@ -17,14 +17,13 @@
           <img src="@/assets/images/face_ico.jpg" alt>
           <el-dropdown>
             <span class="el-dropdown-link">
-              1234567890
+              {{userInfo.typeTxt}}
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>关于作者</el-dropdown-item>
-              <el-dropdown-item>用户信息</el-dropdown-item>
-              <el-dropdown-item>修改信息</el-dropdown-item>
-              <el-dropdown-item>退出登录</el-dropdown-item>
+              <el-dropdown-item></el-dropdown-item>
+              <el-dropdown-item>{{userInfo.account}}</el-dropdown-item>
+              <el-dropdown-item @click.native="logout(userInfo.roleTypeId)">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -104,13 +103,29 @@ export default {
     return {
       sidebarInfo: [], //左侧导航栏数据
       isCollapse: false, //左侧导航栏是否折叠
-      collapseSize: "220px" //左侧导航栏宽度大小
+      collapseSize: "220px", //左侧导航栏宽度大小
+      userInfo:{}
     };
   },
   mounted() {
+    this.userInfo = this.$toolFn.localGet('userInfo');
     this.initializeFun();
   },
   methods: {
+    logout(roleTypeId){
+      var _this = this;
+      var reqUrl = "/server/api/v1/admin/logout";
+      var returnUrl = "/hr";
+      if (roleTypeId == 3 || roleTypeId == 4){
+        reqUrl = "/server/api/v1/hrSys/logout";
+        returnUrl = "/";
+      }
+      _this.$http.post(reqUrl).then(res => {
+        if (res.data.code == 0){
+          _this.$router.replace({ path: returnUrl});
+        }
+      });
+    },
     // 初始化
     initializeFun() {
       this.initializeTab();
@@ -246,7 +261,6 @@ export default {
     hasScrollbar() {
       var isOK
       var obj = document.getElementsByClassName("el-scrollbar__wrap")[1];
-      console.log(obj.scrollHeight,obj.clientHeight,obj.offsetHeight,obj.clientHeight);
       if (obj.scrollHeight > obj.clientHeight || obj.offsetHeight > obj.clientHeight) {
         isOK = true;
       }else{

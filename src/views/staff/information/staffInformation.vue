@@ -272,8 +272,8 @@ export default {
       _this.$http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           _this.regionBUlist = res.data.data;
-          _this.BUCode = this.$toolFn.sessionGet("staffBUcode")
-            ? this.$toolFn.sessionGet("staffBUcode")
+          _this.BUCode = this.$toolFn.sessionGet("staffBUCode")
+            ? this.$toolFn.sessionGet("staffBUCode")
             : res.data.data[0].code;
           _this.getData(this.BUCode);
         }
@@ -421,11 +421,11 @@ export default {
     listenIsShowMask(res) {
       this.isShowAddAccess = false;
     },
-    // 获取单位BUcode
+    // 获取单位BUCode
     selectFun(val) {
       this.BUCode = val;
       this.getData(this.BUCode);
-      this.$toolFn.sessionSet("staffBUcode", val);
+      this.$toolFn.sessionSet("staffBUCode", val);
     },
     // 根据name字段查找数据
     searchFun() {

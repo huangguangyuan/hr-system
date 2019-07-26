@@ -7,6 +7,9 @@
     <!-- 搜索 -->
     <div class="search">
       <el-input placeholder="请输入搜索关键字" v-model="searchInner" @blur="searchFn">
+        <el-select v-model="BUCode" slot="prepend" placeholder="请选择" @change="changeBUCode" style="width:200px;">
+          <el-option v-for='(item,index) in buList' :key='index' :label="item.name" :value="item.code"></el-option>
+        </el-select>
         <el-button slot="append" icon="el-icon-search" @click="searchFn">搜 索</el-button>
       </el-input>
     </div>
@@ -135,19 +138,41 @@ export default {
       isShowModifyPassword: false, //是否显示修改密码
       isShowAddRole: false, //是否显示增加角色
       isShowLoading: false, //是否显示loading页
-      modifyInfo: {} //当前列表信息
+      modifyInfo: {}, //当前列表信息
+      BUCode:"",
+      buList:[]
     };
   },
   mounted() {
     var _this = this;
-    _this.getData();
+    //_this.getData();
+    _this.getBUCodeFun();
   },
   methods: {
+    // 获取单位列表
+    getBUCodeFun(){
+      var _this = this;
+      var reqUrl = '/server/api/v1/company/regionBUs';
+      _this.$http.post(reqUrl,{}).then(res => {
+        this.buList = res.data.data;
+        this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):res.data.data[0].code;
+        this.getData(this.BUCode);
+      });
+    },
+    // 选择单位
+    changeBUCode(code){
+      this.BUCode = code;
+      this.getData(this.BUCode);
+      this.$toolFn.sessionSet('hrBUCode',code);
+    },
     //获取项目数据列表
-    getData() {
+    getData(code) {
       var _this = this;
       var reqUrl = "/server/api/v1/admin/client/getAll";
       var myData = {};
+      if (code && code != ""){
+        myData.BUCode = code;
+      }
       _this.isShowLoading = true;
       _this.$http
         .post(reqUrl, myData)

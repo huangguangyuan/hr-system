@@ -78,7 +78,7 @@ export default {
     // 获取应税项目列表
     getSalaryItemCode(){
       var reqUrl = '/server/api/v1/bu/salaryItems';
-      var data = {BUCode: this.curInfo.BUcode}
+      var data = {BUCode: this.curInfo.BUCode}
       this.$http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.salaryCodeList = res.data.data

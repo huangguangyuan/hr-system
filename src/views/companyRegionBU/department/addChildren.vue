@@ -28,14 +28,14 @@ export default {
   data() {
     return {
       ruleForm: {
-        BUcode: "",
+        BUCode: "",
         name: "",
         description: "",
         status: ""
       }, //表单信息
       isShow: true, //是否显示
       rules: {
-        BUcode: [
+        BUCode: [
           { required: true, message: "请选择所属单位", trigger: "change" }
         ],
         name: [

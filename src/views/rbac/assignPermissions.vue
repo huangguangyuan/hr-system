@@ -41,6 +41,7 @@ export default {
         projectCode: _this.curInfo.projectCode,
         typeId: _this.curInfo.typeId
       };
+      
       _this.$http
         .post(reqUrl, data)
         .then(res => {

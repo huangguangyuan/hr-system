@@ -113,7 +113,7 @@ export default {
       this.curInfo = {
         type: "add",
         staffCode: this.staffInfo.code,
-        BUcode:this.staffInfo.BUCode
+        BUCode:this.staffInfo.BUCode
       };
     },
     // 编辑

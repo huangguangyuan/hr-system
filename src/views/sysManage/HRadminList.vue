@@ -8,7 +8,7 @@
     <!-- 搜索 -->
     <div class="search">
       <el-input placeholder="请输入管理员名称" v-model="searchInner" @blur="searchFn">
-        <el-select v-model="BUcode" slot="prepend" placeholder="请选择" @change="changeBUcode" style="width:200px;">
+        <el-select v-model="BUCode" slot="prepend" placeholder="请选择" @change="changeBUCode" style="width:200px;">
           <el-option v-for='(item,index) in regionList' :key='index' :label="item.name" :value="item.code"></el-option>
         </el-select>
         <el-button slot="append" icon="el-icon-search" @click="searchFn">搜 索</el-button>
@@ -121,7 +121,7 @@ export default {
       isShowModifyPassword: false, //是否显示修改密码
       isShowAddRole: false, //是否显示增加角色
       modifyInfo: {}, //当前列表信息
-      BUcode:'',//单位code
+      BUCode:'',//单位code
       regionList:[],//单位列表
       isShowLoading:false//加载
     };
@@ -132,7 +132,7 @@ export default {
   methods: {
     // 初始化
     initializeFun(){
-      this.getBUcodeFun();
+      this.getBUCodeFun();
     },
     //获取项目数据列表
     getData(code) {
@@ -168,20 +168,20 @@ export default {
         });
     },
     // 获取单位列表
-    getBUcodeFun(){
+    getBUCodeFun(){
       var _this = this;
       var reqUrl = '/server/api/v1/company/regionBUs';
       _this.$http.post(reqUrl,{}).then(res => {
         this.regionList = res.data.data;
-        this.BUcode = this.$toolFn.sessionGet('hrBUcode')?this.$toolFn.sessionGet('hrBUcode'):res.data.data[0].code;
-        this.getData(this.BUcode);
+        this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):res.data.data[0].code;
+        this.getData(this.BUCode);
       });
     },
     // 选择单位
-    changeBUcode(code){
-      this.BUcode = code;
-      this.getData(this.BUcode);
-      this.$toolFn.sessionSet('hrBUcode',code);
+    changeBUCode(code){
+      this.BUCode = code;
+      this.getData(this.BUCode);
+      this.$toolFn.sessionSet('hrBUCode',code);
     },
     // 获取当前页数
     curChange(val) {
@@ -199,7 +199,7 @@ export default {
     searchFn() {
       var _this = this;
       if (_this.searchInner == "") {
-        _this.getData(this.BUcode);
+        _this.getData(this.BUCode);
       } else {
         var reqUrl = "/server/api/v1/admin/hrSys/getByOptions";
         var data = { name: _this.searchInner };

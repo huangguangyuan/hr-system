@@ -1,8 +1,8 @@
 <template>
   <div class="editTemplate">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
-      <el-form-item label="所属单位" prop="BUcode" v-if='isShow'>
-        <el-select v-model="ruleForm.BUcode" placeholder="请选择所属单位" @change="getBUcode">
+      <el-form-item label="所属单位" prop="BUCode" v-if='isShow'>
+        <el-select v-model="ruleForm.BUCode" placeholder="请选择所属单位" @change="getBUCode">
           <el-option
             v-for="item in regionBUList"
             :key="item.id"
@@ -58,7 +58,7 @@ export default {
   data() {
     return {
       ruleForm: {
-        BUcode: "",
+        BUCode: "",
         claimingSupervisorCode:"",
         holidaySupervisorCode:"",
         name: "",
@@ -70,7 +70,7 @@ export default {
       HRadminList2:[],//HR假期管理员列表
       isShow: true, //是否显示
       rules: {
-        BUcode: [
+        BUCode: [
           { required: true, message: "请选择所属单位", trigger: "change" }
         ],
         claimingSupervisorCode: [
@@ -105,7 +105,7 @@ export default {
       }
     },
     // 获取单位code
-    getBUcode(code){
+    getBUCode(code){
       this.getHRadminList(code);
     },
     // 获取HR管理员列表
@@ -150,7 +150,7 @@ export default {
           name:_this.ruleForm.name,
           description:_this.ruleForm.description,
           status:parseInt(_this.ruleForm.status),
-          BUCode:_this.ruleForm.BUcode,
+          BUCode:_this.ruleForm.BUCode,
           claimingSupervisorCode:_this.ruleForm.claimingSupervisorCode,
           holidaySupervisorCode:_this.ruleForm.holidaySupervisorCode
       }

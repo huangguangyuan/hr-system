@@ -138,7 +138,7 @@ export default {
       _this.$http.post(reqUrl,{}).then(res => {
         if(res.data.code == 0){
           _this.regionBUList = res.data.data;
-          _this.BUCode = this.$toolFn.sessionGet('departmentBUcode')?this.$toolFn.sessionGet('departmentBUcode'):res.data.data[0].code;
+          _this.BUCode = this.$toolFn.sessionGet('departmentBUCode')?this.$toolFn.sessionGet('departmentBUCode'):res.data.data[0].code;
           _this.getData(this.BUCode);
         }else{
           _this.$message({type:'info',message:`报错：${res.data.code}`})
@@ -158,7 +158,7 @@ export default {
     selectFun(val) {
       this.BUCode = val;
       this.getData(this.BUCode);
-      this.$toolFn.sessionSet('departmentBUcode',val);
+      this.$toolFn.sessionSet('departmentBUCode',val);
     },
     // 根据name字段查找数据
     searchFun() {

@@ -3,7 +3,13 @@
     <!-- 头部内容 -->
     <div class="my-top">
       <span>单位列表</span>
-      <el-button type="warning" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增区域</el-button>
+      <el-button type="warning" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增单位</el-button>
+    </div>
+    <!-- 搜索 -->
+    <div class="search">
+        <el-select v-model="companyCode" slot="prepend" placeholder="请选择公司" @change="changeCompanyCode" style="width:200px;">
+          <el-option v-for='(item,index) in companyList' :key='index' :label="item.name" :value="item.code"></el-option>
+        </el-select>
     </div>
     <!-- 列表内容 -->
     <el-table v-loading="loading" :data="queryTableDate" stripe row-key="id">
@@ -127,20 +133,43 @@ export default {
       curInfo: {}, //当前信息
       isShowAddModule: false, //是否显示增加模块
       loading: true,
-      AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" //默认头像
+      AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
+      companyCode:"",
+      companyList:[]
     };
   },
   mounted() {
     var _this = this;
-    _this.getData();
+    _this.getCompanyCodeFun();
+    //_this.getData();
+    
   },
   methods: {
+    // 获取单位列表
+    getCompanyCodeFun(){
+      var _this = this;
+      var reqUrl = '/server/api/v1/company/companys';
+      _this.$http.post(reqUrl,{}).then(res => {
+        this.companyList = res.data.data;
+        this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):res.data.data[0].code;
+        this.getData({companyCode:this.companyCode});
+      });
+    },
+    // 选择单位
+    changeCompanyCode(code){
+      this.companyCode = code;
+      this.getData({companyCode:this.companyCode});
+      this.$toolFn.sessionSet('hrCompanyCode',code);
+    },
     //获取项目数据列表
-    getData() {
+    getData(params) {
       var _this = this;
       _this.loading = true;
       var reqUrl = "/server/api/v1/company/regionBUs";
       var myData = {};
+      if (params && params.companyCode != ""){
+        myData.companyCode = params.companyCode
+      }
       _this.$http
         .post(reqUrl, myData)
         .then(res => {

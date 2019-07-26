@@ -114,7 +114,7 @@ export default {
       this.isShowEditLayer = true;
       this.curInfo = {
         staffCode: this.payrollInfo.code,
-        BUcode: this.payrollInfo.BUCode,
+        BUCode: this.payrollInfo.BUCode,
         type: "add"
       };
     },
@@ -123,7 +123,7 @@ export default {
       this.isShowEditLayer = true;
       this.curInfo = res;
       this.curInfo.type = "modify";
-      this.curInfo.BUcode = this.payrollInfo.BUCode;
+      this.curInfo.BUCode = this.payrollInfo.BUCode;
     },
     // 删除
     handleDelete(index, res) {

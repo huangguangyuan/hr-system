@@ -1,8 +1,8 @@
 <template>
   <div class="addHRadmin">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px">
-      <el-form-item label="所属单位：" prop="BUcode">
-        <el-select v-model="ruleForm.BUcode" placeholder="请选择所属单位">
+      <el-form-item label="所属单位：" prop="BUCode">
+        <el-select v-model="ruleForm.BUCode" placeholder="请选择所属单位">
           <el-option
             v-for="item in regionList"
             :key="item.code"
@@ -68,7 +68,7 @@ export default {
   data() {
     return {
       ruleForm: {
-        BUcode: "",
+        BUCode: "",
         account: "",
         password: "",
         name: "",
@@ -92,7 +92,7 @@ export default {
         status: [
           { required: true, message: "请选择管理员状态", trigger: "change" }
         ],
-        BUcode: [
+        BUCode: [
           { required: true, message: "请选择所属单位", trigger: "change" }
         ],
         lev: [
@@ -121,11 +121,11 @@ export default {
     };
   },
   mounted() {
-    this.getBUcodeFun();
+    this.getBUCodeFun();
   },
   methods: {
     // 获取单位列表
-    getBUcodeFun() {
+    getBUCodeFun() {
       var _this = this;
       var reqUrl = "/server/api/v1/company/regionBUs";
       _this.$http.post(reqUrl, {}).then(res => {
@@ -149,7 +149,7 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/admin/hrSys/add";
       var data = {
-        BUCode:_this.ruleForm.BUcode,
+        BUCode:_this.ruleForm.BUCode,
         account: _this.ruleForm.account,
         email: _this.ruleForm.email,
         password: md5(_this.ruleForm.password),

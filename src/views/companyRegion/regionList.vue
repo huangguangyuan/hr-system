@@ -5,6 +5,12 @@
       <span>区域列表</span>
       <el-button type="warning" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增区域</el-button>
     </div>
+    <!-- 搜索 -->
+    <div class="search">
+        <el-select v-model="companyCode" slot="prepend" placeholder="请选择公司" @change="changeCompanyCode" style="width:200px;">
+          <el-option v-for='(item,index) in companyList' :key='index' :label="item.name" :value="item.code"></el-option>
+        </el-select>
+    </div>
     <!-- 列表内容 -->
     <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="id" label="ID"></el-table-column>
@@ -72,20 +78,42 @@ export default {
       curPage: 1, //当前页数
       curInfo: {}, //当前信息
       isShowAddModule: false, //是否显示增加模块
-      isShowLoading: false //是否显示loading页
+      isShowLoading: false, //是否显示loading页
+      companyCode:"",
+      companyList:[]
     };
   },
   mounted() {
     var _this = this;
-    _this.getData();
+    _this.getCompanyCodeFun();
+    //_this.getData({companyCode:companyCode});
   },
   methods: {
+    // 获取单位列表
+    getCompanyCodeFun(){
+      var _this = this;
+      var reqUrl = '/server/api/v1/company/companys';
+      _this.$http.post(reqUrl,{}).then(res => {
+        _this.companyList = res.data.data;
+        _this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):res.data.data[0].code;
+        _this.getData({companyCode:_this.companyCode});
+      });
+    },
+    // 选择单位
+    changeCompanyCode(code){
+      this.companyCode = code;
+      this.getData({companyCode:this.companyCode});
+      this.$toolFn.sessionSet('hrCompanyCode',code);
+    },
     //获取项目数据列表
-    getData() {
+    getData(params) {
       var _this = this;
       _this.isShowLoading = true;
       var reqUrl = "/server/api/v1/company/regions";
       var myData = {};
+      if (params && params.companyCode != ""){
+        myData.companyCode = params.companyCode
+      }
       _this.$http
         .post(reqUrl, myData)
         .then(res => {
