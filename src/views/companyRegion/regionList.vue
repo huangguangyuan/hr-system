@@ -3,11 +3,11 @@
     <!-- 头部内容 -->
     <div class="my-top">
       <span>区域列表</span>
-      <el-button type="warning" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增区域</el-button>
+      <el-button type="warning" v-if="userRight" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增区域</el-button>
     </div>
     <!-- 搜索 -->
     <div class="search">
-        <el-select v-model="companyCode" slot="prepend" placeholder="请选择公司" @change="changeCompanyCode" style="width:200px;">
+        <el-select v-if="userRight" v-model="companyCode" slot="prepend" placeholder="请选择公司" @change="changeCompanyCode" style="width:200px;">
           <el-option v-for='(item,index) in companyList' :key='index' :label="item.name" :value="item.code"></el-option>
         </el-select>
     </div>
@@ -28,8 +28,8 @@
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" icon="el-icon-warning" @click='prohibitFun(scope.$index, scope.row)'>{{scope.row.status==1?'禁用':'启用'}}</el-button>
-          <el-button
+          <el-button size="mini" v-if="userRight" icon="el-icon-warning" @click='prohibitFun(scope.$index, scope.row)'>{{scope.row.status==1?'禁用':'启用'}}</el-button>
+          <el-button v-if="userRight"
             size="mini"
             icon="el-icon-delete"
             type="danger"
@@ -67,6 +67,7 @@
 </template>
 <script>
 import editTemplate from "./editTemplate.vue";
+import { truncate } from 'fs';
 export default {
   name: "regionList",
   inject: ["reload"],
@@ -80,11 +81,17 @@ export default {
       isShowAddModule: false, //是否显示增加模块
       isShowLoading: false, //是否显示loading页
       companyCode:"",
-      companyList:[]
+      companyList:[],
+      userInfo:{},
+      userRight:true
     };
   },
   mounted() {
     var _this = this;
+    _this.userInfo = _this.$toolFn.localGet("userInfo");
+    if (_this.userInfo.roleTypeId == 4 && _this.userInfo.lev > 210){
+      this.userRight = false;
+    }
     _this.getCompanyCodeFun();
     //_this.getData({companyCode:companyCode});
   },

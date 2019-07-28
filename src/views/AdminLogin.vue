@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       formLabelAlign: {
-        user: "sysAdmin",
+        user: "companyAdmin",
         pass: "000000"
       },
       rules: {
@@ -75,7 +75,21 @@ export default {
             .then(res => {
               return this.$store.dispatch('getAccessData_Fun',sidebar)
             }).then(res => {
-              this.$router.replace({ path: "/home" });
+              var userInfo = this.$toolFn.localGet("userInfo");
+              if (userInfo.roleTypeId == 4){
+                if (userInfo.lev < 210 && userInfo.lev >= 201){
+                  this.$router.replace({ path: "/companyList" });
+                }else if (userInfo.lev < 220 && userInfo.lev >= 211){
+                  this.$router.replace({ path: "/regionList" });
+                }else if (userInfo.lev < 230 && userInfo.lev >= 221){
+                  this.$router.replace({ path: "/BUMain" });
+                }
+                
+              }else if (userInfo.roleTypeId == 3){
+                this.$router.replace({ path: "/adminList" });
+              }
+              
+
             })
         } else {
           this.$message.error(res.data.msg);

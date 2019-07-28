@@ -72,7 +72,6 @@ export default {
         description:_this.ruleForm.description,
         status:parseInt(_this.ruleForm.status),
       }
-      console.log(data);
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();

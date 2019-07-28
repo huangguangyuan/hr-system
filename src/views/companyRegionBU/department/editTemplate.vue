@@ -11,6 +11,9 @@
           ></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="名称：" prop="name">
+        <el-input v-model="ruleForm.name"></el-input>
+      </el-form-item>
       <el-form-item label="报销主管" prop="claimingSupervisorCode" v-if='!curInfo.superCode'>
         <el-select v-model="ruleForm.claimingSupervisorCode" placeholder="请选择报销主管">
           <el-option
@@ -31,17 +34,15 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="名称：" prop="name">
-        <el-input v-model="ruleForm.name"></el-input>
-      </el-form-item>
-      <el-form-item label="描述：">
-        <el-input v-model="ruleForm.description"></el-input>
-      </el-form-item>
+
       <el-form-item label="状态" prop="status">
         <el-radio-group v-model="ruleForm.status">
           <el-radio label="1">启用</el-radio>
           <el-radio label="0">禁用</el-radio>
         </el-radio-group>
+      </el-form-item>
+      <el-form-item label="描述：">
+        <el-input v-model="ruleForm.description"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定添加</el-button>

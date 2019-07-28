@@ -60,6 +60,7 @@
       </el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column prop="companyRegionName" label="所属区域"></el-table-column>
       <el-table-column label="公司logo">
         <template slot-scope="scope">
           <el-image

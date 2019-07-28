@@ -80,6 +80,18 @@ const dynamicRouter = [
         name: 'taxRateTable',
         component: resolve => require(['@/views/salaryManage/taxRateTable.vue'], resolve),
     },
+    // 社保公积金
+    {
+        path: '/SIAndHC',
+        name: 'SIAndHC',
+        component: resolve => require(['@/views/salaryManage/SIAndHC.vue'], resolve),
+    },
+    // 社保公积金
+    {
+        path: '/MPFModel',
+        name: 'MPFModel',
+        component: resolve => require(['@/views/salaryManage/MPFModel.vue'], resolve),
+    },
     // <==========计薪模板==========>
     // 主要城市
     {

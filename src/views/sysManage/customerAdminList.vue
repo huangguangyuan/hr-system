@@ -7,8 +7,8 @@
     <!-- 搜索 -->
     <div class="search">
       <el-input placeholder="请输入搜索关键字" v-model="searchInner" @blur="searchFn">
-        <el-select v-model="BUCode" slot="prepend" placeholder="请选择" @change="changeBUCode" style="width:200px;">
-          <el-option v-for='(item,index) in buList' :key='index' :label="item.name" :value="item.code"></el-option>
+        <el-select v-model="companyCode" slot="prepend" placeholder="请选择公司" @change="changeCompanyCode" style="width:200px;">
+          <el-option v-for='(item,index) in companyList' :key='index' :label="item.name" :value="item.code"></el-option>
         </el-select>
         <el-button slot="append" icon="el-icon-search" @click="searchFn">搜 索</el-button>
       </el-input>
@@ -139,39 +139,39 @@ export default {
       isShowAddRole: false, //是否显示增加角色
       isShowLoading: false, //是否显示loading页
       modifyInfo: {}, //当前列表信息
-      BUCode:"",
-      buList:[]
+      companyCode:"",
+      companyList:[]
     };
   },
   mounted() {
     var _this = this;
-    //_this.getData();
-    _this.getBUCodeFun();
+    _this.getCompanyCodeFun();
+    //_this.getData({companyCode:companyCode});
   },
   methods: {
     // 获取单位列表
-    getBUCodeFun(){
+    getCompanyCodeFun(){
       var _this = this;
-      var reqUrl = '/server/api/v1/company/regionBUs';
+      var reqUrl = '/server/api/v1/company/companys';
       _this.$http.post(reqUrl,{}).then(res => {
-        this.buList = res.data.data;
-        this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):res.data.data[0].code;
-        this.getData(this.BUCode);
+        _this.companyList = res.data.data;
+        _this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):res.data.data[0].code;
+        _this.getData({companyCode:_this.companyCode});
       });
     },
     // 选择单位
-    changeBUCode(code){
-      this.BUCode = code;
-      this.getData(this.BUCode);
-      this.$toolFn.sessionSet('hrBUCode',code);
+    changeCompanyCode(code){
+      this.companyCode = code;
+      this.getData({companyCode:this.companyCode});
+      this.$toolFn.sessionSet('hrCompanyCode',code);
     },
     //获取项目数据列表
-    getData(code) {
+    getData(params) {
       var _this = this;
       var reqUrl = "/server/api/v1/admin/client/getAll";
       var myData = {};
-      if (code && code != ""){
-        myData.BUCode = code;
+      if (params && params.companyCode != ""){
+        myData.companyCode = params.companyCode
       }
       _this.isShowLoading = true;
       _this.$http

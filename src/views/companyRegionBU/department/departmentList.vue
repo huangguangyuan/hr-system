@@ -59,7 +59,7 @@
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     <!-- 添加部门 -->
-    <el-dialog title="添加部门" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+    <el-dialog :title="curInfo.type=='modify'?'编辑部门':'新增部门'" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
       <editTemplate v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editTemplate>
     </el-dialog>
     <!-- 添加从属部门 -->
@@ -153,6 +153,7 @@ export default {
     // 接收子组件发送信息
     listenIsShowMask(res) {
       this.isShowAddAccess = false;
+      this.isShowAddChild = false;
     },
     // 获取单位列表
     selectFun(val) {

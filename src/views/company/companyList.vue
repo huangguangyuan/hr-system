@@ -3,7 +3,7 @@
     <!-- 头部内容 -->
     <div class="my-top">
       <span>公司列表</span>
-      <el-button type="warning" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增公司</el-button>
+      <el-button type="warning" v-if="userInfo.roleTypeId == 3" size="small"  @click="isShowAddModule=true;curInfo.type='add'">新增公司</el-button>
     </div>
     <!-- 列表内容 -->
     <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
@@ -21,8 +21,8 @@
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" icon="el-icon-warning" @click='prohibitFun(scope.$index, scope.row)'>{{scope.row.status==1?'禁用':'启用'}}</el-button>
-          <el-button
+          <el-button v-if="userInfo.roleTypeId == 3" size="mini" icon="el-icon-warning" @click='prohibitFun(scope.$index, scope.row)'>{{scope.row.status==1?'禁用':'启用'}}</el-button>
+          <el-button v-if="userInfo.roleTypeId == 3"
             size="mini"
             icon="el-icon-delete"
             type="danger"
@@ -71,11 +71,13 @@ export default {
       curPage: 1, //当前页数
       curInfo: {}, //当前信息
       isShowAddModule: false, //是否显示增加模块
-      isShowLoading: false //是否显示loading页
+      isShowLoading: false, //是否显示loading页
+      userInfo:{}
     };
   },
   mounted() {
     var _this = this;
+    _this.userInfo = this.$toolFn.localGet("userInfo");
     _this.getData();
   },
   methods: {
