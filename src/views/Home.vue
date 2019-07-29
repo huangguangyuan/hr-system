@@ -109,20 +109,28 @@ export default {
   },
   mounted() {
     this.userInfo = this.$toolFn.localGet('userInfo');
+    console.log(this.userInfo);
     this.initializeFun();
   },
   methods: {
     logout(roleTypeId){
-      var _this = this;
-      var reqUrl = "/server/api/v1/admin/logout";
-      var returnUrl = "/hr";
-      if (roleTypeId == 3 || roleTypeId == 4){
-        reqUrl = "/server/api/v1/hrSys/logout";
-        returnUrl = "/";
+      var reqUrl = "/server/api/v1/hrSys/logout";
+      var returnUrl = "/";
+      if (roleTypeId == 1 || roleTypeId == 2){
+        reqUrl = "/server/api/v1/admin/logout";
+        returnUrl = "/hr";
       }
       _this.$http.post(reqUrl).then(res => {
         if (res.data.code == 0){
-          _this.$router.replace({ path: returnUrl});
+          this.$toolFn.localRemove('userInfo');
+          if (roleTypeId == 3 || roleTypeId == 4){
+            this.router.replace({
+              path: returnUrl // 到登录页重新获取token
+            })
+          }
+          this.router.replace({
+              path: '/' // 到登录页重新获取token
+            })
         }
       });
     },

@@ -455,7 +455,7 @@ export default {
         ],
         nameChinese: [
           { required: true, message: "请输入名称", trigger: "blur" },
-          { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
+          { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
         gender: [{ required: true, message: "请选择性别", trigger: "change" }],
         status: [

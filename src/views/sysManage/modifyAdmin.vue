@@ -12,9 +12,9 @@
       </el-form-item>
       <el-form-item label="服务归属：" prop="serveId" v-if='modifyInfo.adminType=="HRadmin"'>
         <el-radio-group v-model="ruleForm.serveId">
-          <el-radio label="1">单位</el-radio>
-          <el-radio label="2">区域</el-radio>
-          <el-radio label="3">公司</el-radio>
+          <el-radio :label="1">单位</el-radio>
+          <el-radio :label="2">区域</el-radio>
+          <el-radio :label="3">公司</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item>
@@ -42,10 +42,10 @@ export default {
       rules: {
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
-          { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
+          { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
         mobile: [
-          { required: true, message: "请输入手机号码", trigger: "blur" },
+          { required: false, message: "请输入手机号码", trigger: "blur" },
           {
             pattern: /^[1][3,4,5,7,8][0-9]{9}$/,
             message: "请输入正确的手机号码",
@@ -53,7 +53,7 @@ export default {
           }
         ],
         email: [
-          { required: true, message: "请输入电子邮箱", trigger: "blur" },
+          { required: false, message: "请输入电子邮箱", trigger: "blur" },
           {
             pattern: /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/,
             message: "请输入正确的邮箱号",
@@ -65,7 +65,6 @@ export default {
   },
   mounted() {
     this.initFn();
-    console.log(this.modifyInfo);
   },
   methods: {
     //初始化
@@ -107,13 +106,12 @@ export default {
         id: _this.ruleForm.id,
         email: _this.ruleForm.email,
         mobile: _this.ruleForm.mobile,
-        name: _this.ruleForm.name
+        name: _this.ruleForm.name,
+        serveId : _this.ruleForm.serveId
       };
-      _this.$http
-        .post(reqUrl, data)
-        .then(res => {
+      _this.$http.post(reqUrl, data).then(res => {
           _this.reload();
-          this.$message("修改成功~");
+          this.$message("修改成功");
         })
         .catch(err => {
           console.log(err);

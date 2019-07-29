@@ -26,7 +26,7 @@
       <el-form-item label="邮箱：" prop="email">
         <el-input v-model="ruleForm.email"></el-input>
       </el-form-item>
-      <el-form-item label="管理员等级：" prop="lev">
+      <el-form-item label="管理员角色：" prop="lev">
         <el-select v-model="ruleForm.lev" placeholder="请选择管理员类型">
           <el-option label="hr系统管理员" value="301"></el-option>
           <el-option label="薪酬主管" value="401"></el-option>
@@ -87,7 +87,7 @@ export default {
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
-          { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
+          { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
         status: [
           { required: true, message: "请选择管理员状态", trigger: "change" }
@@ -159,20 +159,18 @@ export default {
         serveId: parseInt(_this.ruleForm.serveId),
         name: _this.ruleForm.name
       };
-      _this.$http
-        .post(reqUrl, data)
-        .then(res => {
-          if (res.data.code == 0) {
-            _this.$message("新增成功");
-            _this.reload();
-          } else {
-            _this.$message(res.data.msg);
-            return false;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      _this.$http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
+          _this.$message("新增成功");
+          _this.reload();
+        } else {
+          _this.$message(res.data.msg);
+          return false;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
     },
     // 取消
     cancelFn() {

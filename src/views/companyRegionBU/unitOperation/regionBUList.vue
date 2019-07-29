@@ -3,7 +3,7 @@
     <!-- 头部内容 -->
     <div class="my-top">
       <span>单位列表</span>
-      <el-button type="warning" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增单位</el-button>
+      <el-button type="warning" v-if="userRight" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增单位</el-button>
     </div>
     <!-- 搜索 -->
     <div class="search">
@@ -75,7 +75,7 @@
       <el-table-column label="操作" fixed="right" width="350px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button
+          <el-button v-if="userRight"
             size="mini"
             icon="el-icon-warning"
             @click="prohibitFun(scope.$index, scope.row)"
@@ -85,7 +85,7 @@
             icon="el-icon-setting"
             @click="handleSetting(scope.$index, scope.row)"
           >设置</el-button>
-          <el-button
+          <el-button v-if="userRight"
             size="mini"
             icon="el-icon-delete"
             type="danger"
@@ -136,12 +136,18 @@ export default {
       loading: true,
       AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
       companyCode:"",
-      companyList:[]
+      companyList:[],
+      userInfo:{},
+      userRight:true
     };
   },
   mounted() {
     var _this = this;
+    _this.userInfo = _this.$toolFn.localGet("userInfo");
     _this.getCompanyCodeFun();
+    if (_this.userInfo.roleTypeId == 4 && _this.userInfo.lev >= 221){
+      this.userRight = false;
+    }
     //_this.getData();
     
   },

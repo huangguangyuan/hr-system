@@ -53,14 +53,14 @@ export default {
       rules: {
         name: [
           { required: true, message: "请输入活动名称", trigger: "blur" },
-          { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
+          { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
         projectCode: [
           { required: true, message: "请选择所属项目", trigger: "change" }
         ],
         roleCode: [
           { required: true, message: "请输入角色代号", trigger: "blur" },
-          { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
+          { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
         description: [
           { required: true, message: "请输入角色描述", trigger: "blur" }

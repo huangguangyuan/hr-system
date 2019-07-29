@@ -54,7 +54,7 @@ export default {
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
-          { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
+          { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
         status: [
           { required: true, message: "请选择管理员状态", trigger: "change" }

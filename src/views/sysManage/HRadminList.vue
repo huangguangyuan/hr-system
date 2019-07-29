@@ -18,9 +18,9 @@
     <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column prop="roleTypeTxt" label="权限"></el-table-column>
       <el-table-column prop="account" label="账号"></el-table-column>
-      <el-table-column prop="mobile" label="手机"></el-table-column>
-      <el-table-column prop="email" label="邮箱"></el-table-column>
+      <!-- <el-table-column prop="mobile" label="手机"></el-table-column> -->
       <el-table-column prop="isStatus" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="480px">
         <template slot-scope="scope">
