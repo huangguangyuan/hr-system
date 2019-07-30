@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       formLabelAlign: {
-        user: "admin",
+        user: "testHrAdmin01",
         pass: "000000"
       },
       rules: {

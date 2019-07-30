@@ -120,16 +120,11 @@ export default {
         reqUrl = "/server/api/v1/admin/logout";
         returnUrl = "/hr";
       }
-      _this.$http.post(reqUrl).then(res => {
+      this.$http.post(reqUrl).then(res => {
         if (res.data.code == 0){
           this.$toolFn.localRemove('userInfo');
-          if (roleTypeId == 3 || roleTypeId == 4){
-            this.router.replace({
+          this.$router.replace({
               path: returnUrl // 到登录页重新获取token
-            })
-          }
-          this.router.replace({
-              path: '/' // 到登录页重新获取token
             })
         }
       });
