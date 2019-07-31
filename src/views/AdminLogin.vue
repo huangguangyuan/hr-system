@@ -84,12 +84,9 @@ export default {
                 }else if (userInfo.lev < 230 && userInfo.lev >= 221){
                   this.$router.replace({ path: "/BUMain" });
                 }
-                
               }else if (userInfo.roleTypeId == 3){
                 this.$router.replace({ path: "/adminList" });
               }
-              
-
             })
         } else {
           this.$message.error(res.data.msg);
