@@ -42,9 +42,13 @@
       <el-table-column label="操作" width="600px">
         <template slot-scope="scope">
           <!-- 缴纳社保/公积金信息 -->
-          <el-button size="mini" icon="hr-icon-gongjijinjiaoyimingxi">社保/公积金</el-button>
+          <el-button
+            size="mini"
+            icon="hr-icon-gongjijinjiaoyimingxi"
+            @click="openFun(scope.$index, scope.row, 'insured')"
+          >社保/公积金</el-button>
           <!-- MPF信息（香港） -->
-          <el-button size="mini" icon="hr-icon-shebaogongjijin">MPF信息</el-button>
+          <el-button size="mini" icon="hr-icon-shebaogongjijin" @click="openFun(scope.$index, scope.row, 'MPFinfo')">MPF信息</el-button>
           <!-- 专项扣除 -->
           <el-button
             size="mini"
