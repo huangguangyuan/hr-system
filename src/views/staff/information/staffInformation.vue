@@ -213,6 +213,7 @@
       <editTemplate
         v-if="isShowAddAccess"
         :curInfo="curInfo"
+        :userRight_props="userRight"
         v-on:listenIsShowMask="listenIsShowMask"
       ></editTemplate>
     </el-dialog>

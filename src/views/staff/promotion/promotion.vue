@@ -38,7 +38,7 @@
     </div>
     <!-- 添加 -->
     <el-dialog title="添加晋升记录" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
+      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" :userRight_props="userRight" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>
 </template>

@@ -271,7 +271,7 @@
       </el-form-item>
       <!-- 按钮组 -->
       <el-form-item class="btn-ground">
-        <el-button type="primary" @click="submitForm('ruleForm')" size="medium">确定添加</el-button>
+        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')" size="medium">确定添加</el-button>
         <el-button @click="cancelFn" size="medium">取 消</el-button>
       </el-form-item>
     </el-form>
@@ -282,9 +282,10 @@ import axios from "axios";
 export default {
   name: "editTemplate",
   inject: ["reload"],
-  props: ["curInfo"],
+  props: ["curInfo","userRight_props"],
   data() {
     return {
+      userRight:false,
       ruleForm: {
         selectedOptions: [],
         departmentCode: "",
@@ -465,6 +466,7 @@ export default {
     };
   },
   mounted() {
+    this.userRight = this.userRight_props;
     this.initialize();
   },
   methods: {

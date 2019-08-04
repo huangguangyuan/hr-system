@@ -15,7 +15,7 @@
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">编辑</el-button>
-          <el-button
+          <el-button v-if="userRight"
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
@@ -36,7 +36,7 @@
     </div>
     <!-- 添加 -->
     <el-dialog title="添加合同" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
+      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" :userRight_props="userRight" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>
 </template>

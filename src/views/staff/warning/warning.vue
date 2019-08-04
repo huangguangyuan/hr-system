@@ -34,7 +34,7 @@
     </div>
     <!-- 添加学历 -->
     <el-dialog title="添加警告信" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
+      <editLayer v-if="isShowAddAccess" :userRight_props="userRight" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>
 </template>

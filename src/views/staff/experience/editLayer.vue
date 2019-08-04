@@ -38,7 +38,7 @@
         <el-input v-model="ruleForm.details"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
+        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>
@@ -49,7 +49,7 @@ import { setTimeout } from 'timers';
 export default {
   name: "editLayer",
   inject: ["reload"],
-  props: ["curInfo"],
+  props: ["curInfo","userRight_props"],
   data() {
     return {
       ruleForm: {
@@ -59,7 +59,8 @@ export default {
         jobNature:"",
         changeDate: [],
         fileSrc: "",
-        details: ""
+        details: "",
+        userRight:true,
       }, //表单信息
       isShow: true, //是否显示
       fileList: [],
@@ -75,6 +76,7 @@ export default {
     };
   },
   mounted() {
+    this.userRight = this.userRight_props;
     this.initializeFun();
   },
   methods: {
