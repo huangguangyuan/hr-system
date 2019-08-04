@@ -116,8 +116,10 @@ export default {
           type: 'warning'
       }).then(() => {
         _this.$http.post('/server/api/v1/project/delete', {id:res.id}).then(res => {
-          _this.$message({message: "删除成功！"});
-          _this.reload();
+          if (res.data.code == 0) {
+            _this.$message({message: "删除成功！"});
+            _this.reload();
+          }
         });
       }).catch(() => {
         _this.$message({

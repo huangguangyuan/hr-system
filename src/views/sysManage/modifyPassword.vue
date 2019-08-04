@@ -71,8 +71,10 @@ export default {
             "superCode": _this.ruleForm.superCode
         }
         _this.$http.post(reqUrl,data).then(res => {
+          if (res.data.code == 0) {
             _this.reload();
             _this.$message('修改成功！');
+          }
         }).catch(err => {
             console.log(err);
         })
@@ -87,8 +89,10 @@ export default {
             "superCode": _this.ruleForm.superCode
         }
         _this.$http.post(reqUrl,data).then(res => {
+          if (res.data.code == 0) {
             _this.reload();
             _this.$message('修改成功！');
+          }
         }).catch(err => {
             console.log(err);
         })

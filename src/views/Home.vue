@@ -17,7 +17,7 @@
           <img src="@/assets/images/face_ico.jpg" alt>
           <el-dropdown>
             <span class="el-dropdown-link">
-              {{userInfo.typeTxt}}
+              {{userInfo.roleTypeTxt||userInfo.typeTxt}}
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">

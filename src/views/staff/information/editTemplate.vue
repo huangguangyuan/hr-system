@@ -62,9 +62,9 @@
       </el-form-item>
       <el-form-item label="状态：" prop="status">
         <el-radio-group v-model="ruleForm.status">
-          <el-radio label="1">在职</el-radio>
-          <el-radio label="2">离职</el-radio>
-          <el-radio label="3">停薪留职</el-radio>
+          <el-radio :label="1">在职</el-radio>
+          <el-radio :label="2">离职</el-radio>
+          <el-radio :label="3">停薪留职</el-radio>
         </el-radio-group>
       </el-form-item>
 

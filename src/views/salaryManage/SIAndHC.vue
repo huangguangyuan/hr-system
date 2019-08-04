@@ -172,7 +172,9 @@ export default {
       var reqUrl = "/server/api/v1/city/getAll";
       var data = {};
       _this.$http.post(reqUrl, data).then(res => {
-        _this.cityList = res.data.data;
+        if (res.data.code == 0) {
+          _this.cityList = res.data.data;
+        }
       });
     },
     // 选择城市

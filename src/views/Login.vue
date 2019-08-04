@@ -69,9 +69,7 @@ export default {
             item.id = item.id.toString();
             return item;
           });
-          this.$store
-            .dispatch("add_Routes", sidebar)
-            .then(res => {
+          this.$store.dispatch("add_Routes", sidebar).then(res => {
               return this.$store.dispatch('getAccessData_Fun',sidebar)
             }).then(res => {
               this.$router.replace({ path: "/home" });

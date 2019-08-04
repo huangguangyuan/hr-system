@@ -157,9 +157,11 @@ export default {
       var _this = this;
       var reqUrl = '/server/api/v1/company/companys';
       _this.$http.post(reqUrl,{}).then(res => {
-        this.companyList = res.data.data;
-        this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):res.data.data[0].code;
-        this.getData({companyCode:this.companyCode});
+        if (res.data.code == 0) {
+          this.companyList = res.data.data;
+          this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):res.data.data[0].code;
+          this.getData({companyCode:this.companyCode});
+        }
       });
     },
     // 选择单位

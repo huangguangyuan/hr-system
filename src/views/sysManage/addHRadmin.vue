@@ -129,7 +129,9 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/company/regionBUs";
       _this.$http.post(reqUrl, {}).then(res => {
-        this.regionList = res.data.data;
+        if (res.data.code == 0) {
+          this.regionList = res.data.data;
+        }
       });
     },
     //提交表单

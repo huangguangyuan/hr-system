@@ -27,27 +27,27 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="教育资历" name="education">
         <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 教育资历</span>
-        <education></education>
+        <education :userRight_props="userRight"></education>
       </el-tab-pane>
       <el-tab-pane label="工作经历" name="experience">
         <span slot="label"><i class="hr-icon-kehudingdan"></i> 工作经历</span>
-        <experience></experience>
+        <experience :userRight_props="userRight"></experience>
       </el-tab-pane>
       <el-tab-pane label="晋升记录" name="promotion">
         <span slot="label"><i class="hr-icon-tongji"></i> 晋升记录</span>
-        <promotion></promotion>
+        <promotion :userRight_props="userRight"></promotion>
       </el-tab-pane>
       <el-tab-pane label="合 约" name="contract">
         <span slot="label"><i class="hr-icon-qianyue"></i> 合 约</span>
-        <contract></contract>
+        <contract :userRight_props="userRight"></contract>
       </el-tab-pane>
       <el-tab-pane label="社交媒体" name="media">
         <span slot="label"><i class="hr-icon-yingxiaoshangjilei"></i> 社交媒体</span>
-        <socialMedia></socialMedia>
+        <socialMedia :userRight_props="userRight"></socialMedia>
       </el-tab-pane>
       <el-tab-pane label="警告信" name="warning">
         <span slot="label"><i class="hr-icon-jinggaolei"></i> 警告信</span>
-        <warning></warning>
+        <warning :userRight_props="userRight"></warning>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -62,13 +62,17 @@ import warning from '../warning/warning.vue'
 export default {
   name: "staffDetails",
   inject: ["reload"],
+  props: ["userRight_props"],
   data() {
     return {
       circleUrl: "",
-      activeName: "education"
+      activeName: "education",
+      userRight:false
     };
   },
   mounted() {
+    
+    
     this.circleUrl = this.staffInfo.photo?this.staffInfo.photo:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
     this.activeName = this.$toolFn.sessionGet('staffNavActive')?this.$toolFn.sessionGet('staffNavActive'):'education';
   },
@@ -86,6 +90,7 @@ export default {
   },
   computed: {
     staffInfo(){
+      this.userRight = this.userRight_props;
       return this.$store.state.staffModule.staffInfo;
     }
   },

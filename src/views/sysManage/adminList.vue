@@ -232,7 +232,9 @@ export default {
         })
         .then(() => {
           _this.$http.post(reqUrl, data).then(res => {
+            if (res.data.code == 0) {
             _this.reload();
+            }
           });
         })
         .catch(() => {

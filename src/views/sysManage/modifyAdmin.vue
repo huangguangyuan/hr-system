@@ -112,8 +112,10 @@ export default {
         serveId : _this.ruleForm.serveId
       };
       _this.$http.post(reqUrl, data).then(res => {
-          _this.reload();
-          this.$message("修改成功");
+          if (res.data.code == 0) {
+            _this.reload();
+            this.$message("修改成功");
+          }
         })
         .catch(err => {
           console.log(err);

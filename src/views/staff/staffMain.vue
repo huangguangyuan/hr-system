@@ -1,7 +1,7 @@
 <template>
   <div class="wrap staffMain">
-    <staff-information v-if='!isShowDetails'></staff-information>
-    <staff-details v-else></staff-details>
+    <staff-information v-if='!isShowDetails' :userRight_props="userRight"></staff-information>
+    <staff-details v-else  :userRight_props="userRight"></staff-details>
   </div>
 </template>
 <script>
@@ -13,7 +13,9 @@ export default {
   data() {
     return {
       isShow:true,
-      curInfo:{}
+      curInfo:{},
+      userInfo:{},
+      userRight:false
     };
   },
   mounted() {
@@ -21,6 +23,10 @@ export default {
   methods: {},
   computed: {
     isShowDetails(){
+      this.userInfo = this.$toolFn.localGet("userInfo");
+      if (this.userInfo.roleTypeId == 2 && [301,601,611].indexOf(this.userInfo.lev) >= 0 ){
+        this.userRight = true;
+      }
       return this.$store.state.staffModule.isShowDetails;
     }
   },

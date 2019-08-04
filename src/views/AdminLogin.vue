@@ -70,9 +70,7 @@ export default {
             return item;
           });
           
-          this.$store
-            .dispatch("add_Routes", sidebar)
-            .then(res => {
+          this.$store.dispatch("add_Routes", sidebar).then(res => {
               return this.$store.dispatch('getAccessData_Fun',sidebar)
             }).then(res => {
               var userInfo = this.$toolFn.localGet("userInfo");

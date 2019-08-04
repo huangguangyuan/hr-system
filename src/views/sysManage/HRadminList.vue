@@ -180,9 +180,11 @@ export default {
       var _this = this;
       var reqUrl = '/server/api/v1/company/regionBUs';
       _this.$http.post(reqUrl,{}).then(res => {
-        this.regionList = res.data.data;
-        this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):res.data.data[0].code;
-        this.getData(this.BUCode);
+        if (res.data.code == 0) {
+          this.regionList = res.data.data;
+          this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):res.data.data[0].code;
+          this.getData(this.BUCode);
+        }
       });
     },
     // 选择单位
@@ -265,7 +267,9 @@ export default {
         })
         .then(() => {
           _this.$http.post(reqUrl, data).then(res => {
+            if (res.data.code == 0) {
             _this.reload();
+            }
           });
         })
         .catch(() => {

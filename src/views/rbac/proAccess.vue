@@ -286,8 +286,10 @@ export default {
         })
         .then(() => {
           _this.$http.post(reqUrl, data).then(res => {
-            _this.reload();
-            _this.$message.success({ message: "禁用成功！" });
+            if (res.data.code == 0) {
+              _this.reload();
+              _this.$message.success({ message: "禁用成功！" });
+            }
           });
         })
         .catch(() => {
