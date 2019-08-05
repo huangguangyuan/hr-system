@@ -63,12 +63,12 @@ export default {
       };
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          var sidebar = this.temporaryData;
+          // var sidebar = this.temporaryData;
           this.$toolFn.localSet("userInfo", res.data.data.data);
-          // var sidebar = res.data.data.data.roles[0].menuList.map(item => {
-          //   item.id = item.id.toString();
-          //   return item;
-          // });
+          var sidebar = res.data.data.data.roles[0].menuList.map(item => {
+            item.id = item.id.toString();
+            return item;
+          });
           
           this.$store.dispatch("add_Routes", sidebar).then(res => {
               return this.$store.dispatch('getAccessData_Fun',sidebar)
