@@ -3,10 +3,10 @@
     <!-- 头部内容 -->
     <div class="my-top">
       <span>HR管理员列表</span>
-      <el-button type="warning" size="small" @click="isShowAddAdmin = true;modifyInfo.adminType = 'HRadmin'">添加HR管理员</el-button>
+      <el-button type="warning" v-if="userRight" size="small" @click="isShowAddAdmin = true;modifyInfo.adminType = 'HRadmin'">添加HR管理员</el-button>
     </div>
     <!-- 搜索 -->
-    <div class="search">
+    <div class="search" v-if="userRight">
       <el-input placeholder="请输入管理员名称" v-model="searchInner" @blur="searchFn">
         <el-select v-model="BUCode" slot="prepend" placeholder="请选择" @change="changeBUCode" style="width:200px;">
           <el-option v-for='(item,index) in regionList' :key='index' :label="item.name" :value="item.code"></el-option>
@@ -30,13 +30,13 @@
             icon="el-icon-edit-outline"
             @click="modifyPassWord(scope.$index, scope.row)"
           >修改密码</el-button>
-          <el-button size="mini" icon="el-icon-plus" @click="addRole(scope.$index, scope.row)">添加角色</el-button>
-          <el-button
+          <el-button  v-if="userRight" size="mini" icon="el-icon-plus" @click="addRole(scope.$index, scope.row)">添加角色</el-button>
+          <el-button  v-if="userRight"
             size="mini"
             icon="el-icon-warning"
             @click="forbidden(scope.$index, scope.row)"
           >{{scope.row.status==1?'禁用':'启用'}}</el-button>
-          <el-button
+          <el-button  v-if="userRight"
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
@@ -69,12 +69,14 @@
       title="修改信息"
       :visible.sync="isShowModifyAdmin"
       :close-on-click-modal="false"
+      
       width="65%"
     >
       <modify-admin
         v-if="isShowModifyAdmin"
         v-on:listenIsShowAddAdmin="IsShowAddAdminFn"
         :modifyInfo="modifyInfo"
+        :userRight="userRight"
       ></modify-admin>
     </el-dialog>
     <!-- 修改密码 -->
@@ -123,7 +125,9 @@ export default {
       modifyInfo: {}, //当前列表信息
       BUCode:'',//单位code
       regionList:[],//单位列表
-      isShowLoading:false//加载
+      isShowLoading:false,//加载
+      userInfo:{},
+      userRight:true,
     };
   },
   mounted() {
@@ -132,6 +136,10 @@ export default {
   methods: {
     // 初始化
     initializeFun(){
+      this.userInfo = this.$toolFn.localGet("userInfo");
+      if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301){
+        this.userRight = false;
+      }
       this.getBUCodeFun();
     },
     //获取项目数据列表
@@ -172,9 +180,11 @@ export default {
       var _this = this;
       var reqUrl = '/server/api/v1/company/regionBUs';
       _this.$http.post(reqUrl,{}).then(res => {
-        this.regionList = res.data.data;
-        this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):res.data.data[0].code;
-        this.getData(this.BUCode);
+        if (res.data.code == 0) {
+          this.regionList = res.data.data;
+          this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):res.data.data[0].code;
+          this.getData(this.BUCode);
+        }
       });
     },
     // 选择单位
@@ -257,7 +267,9 @@ export default {
         })
         .then(() => {
           _this.$http.post(reqUrl, data).then(res => {
+            if (res.data.code == 0) {
             _this.reload();
+            }
           });
         })
         .catch(() => {

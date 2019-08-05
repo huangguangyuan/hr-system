@@ -109,7 +109,9 @@ export default {
       var _this = this;
       var reqUrl = '/server/api/v1/project/add';
       _this.$http.post(reqUrl, _this.ruleForm).then(res => {
-        _this.reload();
+        if (res.data.code == 0) {
+          _this.reload();
+        }
       })
       .catch(err => {
         console.log(err);
@@ -126,7 +128,9 @@ export default {
         "status":_this.ruleForm.status
       }
       _this.$http.post(reqUrl,data).then(res => {
-        _this.reload();
+        if (res.data.code == 0) {
+          _this.reload();
+        }
       }).catch(err => {
         console.log(err);
       })

@@ -1,6 +1,6 @@
 <template>
   <div class="warning">
-    <div class="addBtn-wrap">
+    <div class="addBtn-wrap" v-if="userRight">
       <el-button type="primary" @click="addFun">添 加</el-button>
       <el-button type="danger" @click='handleDeleteAll'>删除所有</el-button>
     </div>
@@ -34,7 +34,7 @@
     </div>
     <!-- 添加学历 -->
     <el-dialog title="添加警告信" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
+      <editLayer v-if="isShowAddAccess" :userRight_props="userRight" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>
 </template>
@@ -54,10 +54,12 @@ export default {
       searchInner: "", //搜索内容
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
-      isShowLoading: false //是否显示loading页
+      isShowLoading: false, //是否显示loading页
+      userRight:false
     };
   },
   mounted() {
+    this.userRight = this.userRight_props;
     this.getData(this.staffInfo.code);
   },
   methods: {
@@ -93,7 +95,9 @@ export default {
         var data = {code:code}
         var name = '';
         this.$http.post(reqUrl,data).then(res => {
-          resolve(res.data.data.name);
+          if (res.data.code == 0) {
+            resolve(res.data.data.name);
+          }
         });
       })
       return p;

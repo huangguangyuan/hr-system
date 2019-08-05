@@ -1,6 +1,6 @@
 <template>
   <div class="promotion">
-    <div class="addBtn-wrap">
+    <div class="addBtn-wrap" v-if="userRight">
       <el-button type="primary" @click="addFun">添 加</el-button>
       <el-button type="danger" @click='handleDeleteAll'>删除所有</el-button>
     </div>
@@ -38,7 +38,7 @@
     </div>
     <!-- 添加 -->
     <el-dialog title="添加晋升记录" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
+      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" :userRight_props="userRight" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>
 </template>
@@ -48,6 +48,7 @@ let id = 0;
 export default {
   name: "promotion",
   inject: ["reload"],
+  props: ["userRight_props"],
   data() {
     return {
       tableData: [],
@@ -57,10 +58,12 @@ export default {
       searchInner: "", //搜索内容
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
-      isShowLoading: false //是否显示loading页
+      isShowLoading: false, //是否显示loading页
+      userRight:false
     };
   },
   mounted() {
+    this.userRight = this.userRight_props;
     this.getData(this.staffInfo.code);
   },
   methods: {

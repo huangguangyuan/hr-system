@@ -3,7 +3,7 @@
     <!-- 头部内容 -->
     <div class="my-top">
       <span>员工基本信息</span>
-      <el-button type="warning" size="small" @click="isShowAddAccess = true;curInfo.type='add'">添加员工</el-button>
+      <el-button v-if="userRight" type="warning" size="small" @click="isShowAddAccess = true;curInfo.type='add'">添加员工</el-button>
     </div>
     <!-- 搜索 -->
     <div class="search-wrap">
@@ -170,15 +170,15 @@
       <el-table-column label="操作" width="400px">
         <template slot-scope="scope">
           <!-- 编辑 -->
-          <el-button size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">编辑</el-button>
+          <el-button v-if="userRight" size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">编辑</el-button>
           <!-- 状态 -->
-          <el-button
+          <el-button v-if="userRight"
             size="mini"
             icon="el-icon-bangzhu"
             @click="isShowState = true;staffID = scope.row.id;"
           >状态</el-button>
           <!-- 删除 -->
-          <el-button
+          <el-button v-if="userRight"
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
@@ -213,6 +213,7 @@
       <editTemplate
         v-if="isShowAddAccess"
         :curInfo="curInfo"
+        :userRight_props="userRight"
         v-on:listenIsShowMask="listenIsShowMask"
       ></editTemplate>
     </el-dialog>
@@ -236,6 +237,7 @@ import { deflate } from "zlib";
 export default {
   name: "staffInformation",
   inject: ["reload"],
+  props: ["userRight_props"],
   data() {
     return {
       tableData: [],
@@ -252,11 +254,14 @@ export default {
       isShowAddAccess: false, //是否显示新增页面
       isShowState: false, //是否显示状态
       AvatarDefault:
-        "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" //默认头像
+        "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
+      userRight:false
     };
   },
   mounted() {
     var _this = this;
+    _this.userRight = _this.userRight_props;
+    
     _this.InitializationFun();
   },
   methods: {

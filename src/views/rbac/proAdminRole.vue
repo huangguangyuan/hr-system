@@ -306,7 +306,9 @@ export default {
         })
         .then(() => {
           _this.$http.post(reqUrl, data).then(res => {
-            _this.reload();
+            if (res.data.code == 0) {
+              _this.reload();
+            }
           });
         })
         .catch(() => {

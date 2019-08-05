@@ -42,9 +42,14 @@ axios.interceptors.request.use(function (config) { // 每次请求时会从local
 // /* 响应拦截器 */
 axios.interceptors.response.use(function (response) { // -1 token过期无效
   if (response.data.code === 109) {
-      myVue.$toolFn.localRemove('token');// 删除已经失效或过期的token（不删除也可以，因为登录后覆盖）
+      let userInfo = myVue.$toolFn.localGet('userInfo');
+      myVue.$toolFn.localRemove('userInfo');
+      let pathUrl = "/";
+      if (userInfo.roleTypeId == 2 || userInfo.roleTypeId == 1){
+        pathUrl ="/hr";
+      }
       router.replace({
-        path: '/' // 到登录页重新获取token
+        path: pathUrl // 到登录页重新获取token
       })
   }
   return response;

@@ -74,7 +74,9 @@ export default {
     getCityCode() {
       var reqUrl = "/server/api/v1/city/getAll";
       this.$http.post(reqUrl, {}).then(res => {
-        this.cityList = res.data.data;
+        if (res.data.code == 0) {
+          this.cityList = res.data.data;
+        }
       });
     },
     // 选择城市模板

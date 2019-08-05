@@ -10,7 +10,7 @@
       <el-form-item label="手机：" prop="mobile">
         <el-input v-model="ruleForm.mobile"></el-input>
       </el-form-item>
-      <el-form-item label="服务归属：" prop="serveId" v-if='modifyInfo.adminType=="HRadmin"'>
+      <el-form-item  label="服务归属：" prop="serveId" v-if='userRight && modifyInfo.adminType=="HRadmin"'>
         <el-radio-group v-model="ruleForm.serveId">
           <el-radio :label="1">单位</el-radio>
           <el-radio :label="2">区域</el-radio>
@@ -29,7 +29,7 @@ import md5 from "js-md5";
 export default {
   name: "modifyAdmin",
   inject: ["reload"],
-  props: ["modifyInfo"],
+  props: ["modifyInfo","userRight"],
   data() {
     return {
       ruleForm: {
@@ -37,7 +37,8 @@ export default {
         name: "",
         email: "",
         mobile: "",
-        serveId:""
+        serveId:"",
+        userRight:true
       },
       rules: {
         name: [
@@ -65,6 +66,7 @@ export default {
   },
   mounted() {
     this.initFn();
+    this.userRight = this.userRight;
   },
   methods: {
     //初始化
@@ -110,8 +112,10 @@ export default {
         serveId : _this.ruleForm.serveId
       };
       _this.$http.post(reqUrl, data).then(res => {
-          _this.reload();
-          this.$message("修改成功");
+          if (res.data.code == 0) {
+            _this.reload();
+            this.$message("修改成功");
+          }
         })
         .catch(err => {
           console.log(err);

@@ -101,17 +101,19 @@ export default {
       var myData = { BUCode: BUCode };
       _this.isShowLoading = true;
       _this.$http.post(reqUrl, myData).then(res => {
-        _this.isShowLoading = false;
-        _this.tableData = _this.mapFun(res.data.data).sort((a, b) => {
-            if (a.id < b.id) {
-              return 1;
-            }
-            if (a.id > b.id) {
-              return -1;
-            }
-            return 0;
-          });
-        _this.total = _this.tableData.length;
+        if (res.data.code == 0) {
+          _this.isShowLoading = false;
+          _this.tableData = _this.mapFun(res.data.data).sort((a, b) => {
+              if (a.id < b.id) {
+                return 1;
+              }
+              if (a.id > b.id) {
+                return -1;
+              }
+              return 0;
+            });
+          _this.total = _this.tableData.length;
+        }
       })
       .catch(err => {
         console.log(err);
@@ -229,7 +231,9 @@ export default {
         })
         .then(() => {
           _this.$http.post(reqUrl, data).then(res => {
+            if (res.data.code == 0) {
             _this.reload();
+            }
           });
         })
         .catch(() => {

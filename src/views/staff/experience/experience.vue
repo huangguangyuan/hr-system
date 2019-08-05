@@ -1,6 +1,6 @@
 <template>
   <div class="experience">
-    <div class="addBtn-wrap">
+    <div class="addBtn-wrap" v-if="userRight">
       <el-button type="primary" @click="addFun">添 加</el-button>
       <el-button type="danger" @click='handleDeleteAll'>删除所有</el-button>
     </div>
@@ -16,7 +16,7 @@
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">编辑</el-button>
-          <el-button
+          <el-button v-if="userRight"
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
@@ -36,8 +36,8 @@
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     <!-- 添加学历 -->
-    <el-dialog title="添加学历" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
+    <el-dialog title="添加工作经历" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+      <editLayer :userRight_props="userRight" v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>
 </template>
@@ -47,6 +47,7 @@ let id = 0;
 export default {
   name: "experience",
   inject: ["reload"],
+  props: ["userRight_props"],
   data() {
     return {
       tableData: [],
@@ -56,10 +57,12 @@ export default {
       searchInner: "", //搜索内容
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
-      isShowLoading: false //是否显示loading页
+      isShowLoading: false, //是否显示loading页
+      userRight:false
     };
   },
   mounted() {
+    this.userRight = this.userRight_props;
     this.getData(this.staffInfo.code);
   },
   methods: {

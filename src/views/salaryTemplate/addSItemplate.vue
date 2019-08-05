@@ -114,7 +114,9 @@ export default {
       var reqUrl = "/server/api/v1/city/getAll";
       var data = {};
       _this.$http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
         _this.cityList = res.data.data;
+        }
       });
     },
     // 添加
@@ -152,7 +154,6 @@ export default {
             paymentId:Number(_this.ruleForm.paymentId)
         };
         _this.$http.post(reqUrl,data).then(res => {
-            console.log(res);
             if(res.data.code == 0){
                 _this.reload();
                 _this.$message('修改成功~');

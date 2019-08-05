@@ -79,7 +79,9 @@ export default {
     getCityCode() {
       var reqUrl = "/server/api/v1/city/getAll";
       this.$http.post(reqUrl, {}).then(res => {
+        if (res.data.code == 0) {
         this.cityList = res.data.data;
+        }
       });
     },
     // 提交表单
@@ -129,7 +131,6 @@ export default {
         taxable: parseInt(this.ruleForm.taxable),
         description: this.ruleForm.description
       };
-      console.log(data);
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();

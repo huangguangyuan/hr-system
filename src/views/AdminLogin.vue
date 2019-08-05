@@ -70,9 +70,7 @@ export default {
           //   return item;
           // });
           
-          this.$store
-            .dispatch("add_Routes", sidebar)
-            .then(res => {
+          this.$store.dispatch("add_Routes", sidebar).then(res => {
               return this.$store.dispatch('getAccessData_Fun',sidebar)
             }).then(res => {
               var userInfo = this.$toolFn.localGet("userInfo");
@@ -84,12 +82,9 @@ export default {
                 }else if (userInfo.lev < 230 && userInfo.lev >= 221){
                   this.$router.replace({ path: "/BUMain" });
                 }
-                
               }else if (userInfo.roleTypeId == 3){
                 this.$router.replace({ path: "/adminList" });
               }
-              
-
             })
         } else {
           this.$message.error(res.data.msg);
