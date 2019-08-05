@@ -1,8 +1,7 @@
 <template>
-  <div class="insured">
-    <el-page-header @back="goBack" content="缴纳社保/公积金信息"></el-page-header>
+  <div class="MPFinfo">
+    <el-page-header @back="goBack" content="MPF信息"></el-page-header>
     <el-divider></el-divider>
-
     <!-- 内容 -->
     <div class="container" v-if="isContent">
       <!-- 头部内容 -->
@@ -20,44 +19,20 @@
           <span>{{tableData.id}}</span>
         </li>
         <li>
-          <span>社保账号：</span>
-          <span>{{tableData.SIAccount}}</span>
+          <span>MPF账号：</span>
+          <span>{{tableData.account}}</span>
         </li>
         <li>
-          <span>社保城市：</span>
-          <span>{{tableData.SICity}}</span>
+          <span>MPF城市：</span>
+          <span>{{tableData.mpfCity}}</span>
         </li>
         <li>
-          <span>该地社保首次购买社保：</span>
-          <span>{{tableData.SICityFirst}}</span>
+          <span>服务商名称：</span>
+          <span>{{tableData.serviceProviderName}}</span>
         </li>
         <li>
-          <span>社保基数：</span>
-          <span>{{tableData.SIBase}}</span>
-        </li>
-        <li>
-          <span>公积金账号：</span>
-          <span>{{tableData.HCAccount}}</span>
-        </li>
-        <li>
-          <span>公积金城市：</span>
-          <span>{{tableData.HCCity}}</span>
-        </li>
-        <li>
-          <span>该地首次购买公积金：</span>
-          <span>{{tableData.HCCityFirst}}</span>
-        </li>
-        <li>
-          <span>公积金实际金额：</span>
-          <span>{{tableData.HCRealityAoumt}}</span>
-        </li>
-        <li>
-          <span>医疗保险卡号：</span>
-          <span>{{tableData.medicalSchemeAccount}}</span>
-        </li>
-        <li>
-          <span>户籍类型：</span>
-          <span>{{tableData.householdId}}</span>
+          <span>缴纳日期：</span>
+          <span>{{tableData.contributionDate}}</span>
         </li>
         <li>
           <span>是否生效：</span>
@@ -68,17 +43,8 @@
           <span>{{tableData.remarks}}</span>
         </li>
       </ul>
-      <el-divider>{{tableData.SISchemeDetail.name}}</el-divider>
-      <el-table :data="schemeSIList" stripe>
-        <el-table-column prop="id" label="id"></el-table-column>
-        <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
-        <el-table-column prop="baseLower" label="基数下线"></el-table-column>
-        <el-table-column prop="paymentRatio" label="缴纳比例"></el-table-column>
-        <el-table-column prop="typeIdTxt" label="类 型"></el-table-column>
-        <el-table-column prop="paymentIdTxt" label="缴纳对象"></el-table-column>
-      </el-table>
-      <el-divider>{{tableData.HCSchemeDetail.name}}</el-divider>
-      <el-table :data="schemeHCList" stripe>
+      <el-divider>{{tableData.MPFSchemeDetail.name}}</el-divider>
+      <el-table :data="schemeMPFList" stripe>
         <el-table-column prop="id" label="id"></el-table-column>
         <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
         <el-table-column prop="baseLower" label="基数下线"></el-table-column>
@@ -88,12 +54,12 @@
     </div>
     <!-- 无内容 -->
     <div class="noContent" v-else>
-      <el-button type="primary" @click="addFun">添加社保/公积金方案</el-button>
+      <el-button type="primary" @click="addFun">添加MPF信息</el-button>
       <p>暂无内容~</p>
     </div>
     <!-- 新增 -->
     <el-dialog
-      title="添加社保/公积金方案"
+      title="添加MPF信息"
       :visible.sync="isShowEditLayer"
       :close-on-click-modal="false"
       width="60%"
@@ -109,13 +75,12 @@
 <script>
 import editLayer from "./editLayer.vue";
 export default {
-  name: "insured",
+  name: "MPFinfo",
   inject: ["reload"],
   data() {
     return {
       tableData: {},
-      schemeSIList: [], //社保方案列表
-      schemeHCList: [], //公积金方案列表
+      schemeMPFList: [], //MPF方案列表
       curInfo: {}, //当前内容
       isShowEditLayer: false, //是否显示新增页面
       isContent: false //是否有内容
@@ -127,7 +92,7 @@ export default {
   methods: {
     //获取项目数据列表
     getData() {
-      var reqUrl = "/server/api/v1/payroll/staff/insured/item";
+      var reqUrl = "/server/api/v1/payroll/staff/insured/mpf/item";
       var myData = { staffCode: this.payrollInfo.code };
       this.$http
         .post(reqUrl, myData)
@@ -135,43 +100,8 @@ export default {
           if (res.data.code == 0) {
             this.isContent = true;
             this.tableData = res.data.data;
-            this.schemeSIList = res.data.data.SISchemeDetail.schemeSIList.map(
-              item => {
-                switch (item.typeId) {
-                  case 1:
-                    item.typeIdTxt = "养老";
-                    break;
-                  case 2:
-                    item.typeIdTxt = "医疗";
-                    break;
-                  case 3:
-                    item.typeIdTxt = "工伤";
-                    break;
-                  case 4:
-                    item.typeIdTxt = "生育";
-                    break;
-                  case 5:
-                    item.typeIdTxt = "失业";
-                    break;
-                  case 6:
-                    item.typeIdTxt = "大病";
-                    break;
-                  case 7:
-                    item.typeIdTxt = "医疗保险";
-                    break;
-                }
-                switch (item.paymentId) {
-                  case 1:
-                    item.paymentIdTxt = "公司";
-                    break;
-                  case 2:
-                    item.paymentIdTxt = "个人";
-                    break;
-                }
-                return item;
-              }
-            );
-            this.schemeHCList = res.data.data.HCSchemeDetail.schemeHCList.map(
+            this.tableData.contributionDate = this.$toolFn.timeFormat(this.tableData.contributionDate).substring(0,10);
+            this.schemeMPFList = res.data.data.MPFSchemeDetail.schemeMPFList.map(
               item => {
                 switch (item.paymentId) {
                   case 1:
@@ -225,7 +155,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .post("/server/api/v1/payroll/staff/insured/update", {
+            .post("/server/api/v1/payroll/staff/insured/mpf/update", {
               staffCode: this.payrollInfo.code,
               status: status
             })
@@ -250,7 +180,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .post("/server/api/v1/payroll/staff/insured/delete", {
+            .post("/server/api/v1/payroll/staff/insured/mpf/delete", {
               staffCode: this.payrollInfo.code
             })
             .then(res => {
@@ -258,7 +188,7 @@ export default {
                 this.reload();
                 this.$message.success("删除成功~");
               }else{
-                this.$message.error(res.data.msg);
+                this.$message.error(res.data.code);
               }
             });
         })

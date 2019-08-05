@@ -267,6 +267,15 @@ let sidebarInfo = [
                 rightCode: "staffMain",
                 items: [{}]
             },
+            {
+                id: '104',
+                authUrl: '/applyMain',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '报销/请假申请',
+                rightCode: "applyMain",
+                items: [{}]
+            },
         ]
     },
     {

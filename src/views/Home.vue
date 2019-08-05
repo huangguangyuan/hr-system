@@ -109,7 +109,6 @@ export default {
   },
   mounted() {
     this.userInfo = this.$toolFn.localGet('userInfo');
-    console.log(this.userInfo);
     this.initializeFun();
   },
   methods: {

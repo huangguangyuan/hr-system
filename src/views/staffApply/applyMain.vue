@@ -1,0 +1,98 @@
+<template>
+  <div class="applyMain wrap">
+    <div class="header-info">
+      <el-avatar :size="130" :src="circleUrl"></el-avatar>
+      <div class="message">
+        <h5>{{staffInfo.nameChinese}}</h5>
+        <el-divider></el-divider>
+        <p>
+          <i class="hr-icon-xingbie"></i>
+          <span>性别：{{staffInfo.gender}}</span>
+        </p>
+        <p>
+          <i class="hr-icon-ccgl-caozuozhuangtai-4"></i>
+          <span>状态：{{staffInfo.status == 1?'在职':'离职'}}</span>
+        </p>
+        <p>
+          <i class="hr-icon-shouji"></i>
+          <span>手机：{{staffInfo.mobile}}</span>
+        </p>
+      </div>
+    </div>
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="报销申请" name="education">
+        <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 报销申请</span>
+        
+      </el-tab-pane>
+      <el-tab-pane label="请假申请" name="experience">
+        <span slot="label"><i class="hr-icon-kehudingdan"></i> 请假申请</span>
+        
+      </el-tab-pane>
+    </el-tabs>
+  </div>
+</template>
+<script>
+export default {
+  name: "applyMain",
+  inject: ["reload"],
+  data() {
+    return {
+      circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+      staffCode:'7ef51e60-9e01-11e9-bde5-6d1157612d12',
+      staffInfo:{},
+      activeName:''
+    };
+  },
+  mounted() {
+    this.getStaffInfo();
+  },
+  methods: {
+    // 获取员工信息
+    getStaffInfo(){
+        var reqUrl = '/server/api/v1/staff/getByCode';
+        var data = {code:this.staffCode}
+        this.$http.post(reqUrl,data).then(res => {
+            if(res.data.code == 0){
+                this.staffInfo = res.data.data;
+                console.log(this.staffInfo);
+            }else{
+                this.$message.error('error'+res.data.code);
+            }
+        })
+    },
+    handleClick(){
+
+    }
+  },
+  computed: {
+    
+  },
+  components: {
+    
+  }
+};
+</script>
+<style scoped lang="scss">
+.applyMain{
+  .header-info{
+    margin: 20px auto 0;box-sizing: border-box;padding: 30px 50px;display: flex;align-items: center;
+    border-radius: 10px;color: #ffffff;background-color: #439145;
+    .message{
+      flex: 1;box-sizing:border-box;padding: 0 0 0 30px;
+      h5{font-size: 22px;}
+      p{
+        font-size: 14px;margin: 8px auto 0;
+        span{margin-left: 10px;}
+        i{font-weight: 500;font-size: 15px;}
+      }
+    }
+  }
+  .el-tabs{padding: 0 50px;margin: 20px auto 0;}
+}
+</style>
+
+
+
+
+
+
