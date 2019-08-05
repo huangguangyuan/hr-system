@@ -1,10 +1,10 @@
 <template>
   <div class="editTemplate">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="170px" size="mini">
+    
       <el-divider>
         <i class="hr-icon-jichuxinxi"></i> 基础信息
       </el-divider>
-
       <el-form-item label="所属公司/地区/单位" prop="selectedOptions" v-if="isShow">
         <el-cascader v-model="ruleForm.selectedOptions" @change="handleChange" :props="props"></el-cascader>
       </el-form-item>
@@ -60,6 +60,9 @@
       <el-form-item label="邮箱：" prop="email">
         <el-input v-model="ruleForm.email"></el-input>
       </el-form-item>
+      <el-form-item label="员工编号：" prop="staffNo">
+        <el-input v-model="ruleForm.staffNo"></el-input>
+      </el-form-item>
       <el-form-item label="状态：" prop="status">
         <el-radio-group v-model="ruleForm.status">
           <el-radio :label="1">在职</el-radio>
@@ -67,11 +70,34 @@
           <el-radio :label="3">停薪留职</el-radio>
         </el-radio-group>
       </el-form-item>
-
-      <el-divider>
-        <i class="hr-icon-gerenxinxi"></i> 个人信息
-      </el-divider>
-
+          <el-divider v-if="isShow">
+            <i class="hr-icon-jichuxinxi"></i> 账户信息
+          </el-divider>
+          <el-form-item label="登录账户" prop="account" v-if="isShow">
+            <el-input v-model="ruleForm.account"></el-input>
+          </el-form-item>
+          <el-form-item label="密码：" prop="password" v-if="isShow">
+            <el-input v-model="ruleForm.password"></el-input>
+          </el-form-item>
+          <el-form-item label="关联系统管理员账户：" prop="hrCode" v-if="isShow">
+            <el-select v-model="ruleForm.hrCode" placeholder="请选择关联系统管理员" :loading="loading">
+              <el-option
+                v-for="item in HRadminList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-divider>
+            <i class="hr-icon-gerenxinxi"></i> 个人信息
+          </el-divider>
+      <el-form-item label="员工别名：" prop="staffAlias">
+        <el-input v-model="ruleForm.staffAlias"></el-input>
+      </el-form-item>
+      <el-form-item label="职位：" prop="position">
+        <el-input v-model="ruleForm.position"></el-input>
+      </el-form-item>
       <el-form-item label="国家号码：" prop="mobileCountryCode">
         <el-select v-model="ruleForm.mobileCountryCode" placeholder="请选择国家号码">
           <el-option label="86-中国" value="86"></el-option>
@@ -188,8 +214,14 @@
       <el-form-item label="离职原因：" prop="reasonOfLeaving" v-if="ruleForm.status == '2'">
         <el-input v-model="ruleForm.reasonOfLeaving"></el-input>
       </el-form-item>
+      <el-form-item label="出生地：" prop="dateOfPlace">
+        <el-input v-model="ruleForm.dateOfPlace"></el-input>
+      </el-form-item>
       <el-form-item label="工作地点：" prop="workingLocation">
         <el-input v-model="ruleForm.workingLocation"></el-input>
+      </el-form-item>
+      <el-form-item label="邮递地址：" prop="postalAddress">
+        <el-input v-model="ruleForm.postalAddress"></el-input>
       </el-form-item>
       <el-form-item label="外派地点：" prop="outsourceLocation">
         <el-input v-model="ruleForm.outsourceLocation"></el-input>
@@ -217,6 +249,9 @@
       <el-form-item label="每年可享有薪病假：" prop="paidSickLeaveEntitled">
         <el-input v-model="ruleForm.paidSickLeaveEntitled"></el-input>
       </el-form-item>
+      <el-form-item label="各项津贴上限：" prop="fringeBeneiftLimit">
+        <el-input v-model="ruleForm.fringeBeneiftLimit"></el-input>
+      </el-form-item>      
       <el-form-item label="工资类型：" prop="payrollType">
         <el-radio-group v-model="ruleForm.payrollType">
           <el-radio label="1">月薪</el-radio>
@@ -279,6 +314,7 @@
 </template>
 <script>
 import axios from "axios";
+import md5 from "js-md5";
 export default {
   name: "editTemplate",
   inject: ["reload"],
@@ -331,12 +367,22 @@ export default {
         SIAccount: "",
         HCAccount: "",
         medicalSchemeAccount: "",
-        status: ""
+        status: "",
+        account:"",
+        password:"",
+        hrCode:"",
+        staffNo:"",
+        staffAlias:"",
+        position:"",
+        dateOfPlace:"",
+        postalAddress:"",
+        fringeBeneiftLimit:"",
       }, //表单信息
       avatarSrc: "", //头像路径
       IDPositiveSrc: "", //身份证正面
       IDNegativeSrc: "", //身份证反面
       departmentList: [], //部门列表
+      HRadminList:[],//管理员列表
       props: {
         lazy: true,
         lazyLoad(node, resolve) {
@@ -461,7 +507,10 @@ export default {
         gender: [{ required: true, message: "请选择性别", trigger: "change" }],
         status: [
           { required: true, message: "请选择员工状态", trigger: "change" }
-        ]
+        ],
+        account: [{ required: true, message: "请填写账户", trigger: "change" }],
+        password: [{ required: true, message: "请填写密码", trigger: "change" }],
+        staffNo: [{ required: true, message: "请填写员工编号", trigger: "change" }],
       }
     };
   },
@@ -480,7 +529,8 @@ export default {
         this.ruleForm.annualLeaveWriteOffMethod = this.curInfo.annualLeaveWriteOffMethod?this.curInfo.annualLeaveWriteOffMethod.toString():null;
         this.ruleForm.payrollType = this.curInfo.payrollType?this.curInfo.payrollType.toString():null;
         this.ruleForm.fileUnitMove = this.curInfo.fileUnitMove?this.curInfo.fileUnitMove.toString():null;
-        this.ruleForm.status = this.ruleForm.status?this.ruleForm.status.toString():null;
+        //this.ruleForm.status = this.ruleForm.status?this.ruleForm.status.toString():null;
+        //this.ruleForm.status = this.ruleForm.status;
         this.avatarSrc = this.ruleForm.photo;
         this.IDPositiveSrc = this.ruleForm.IDCopy;
         this.IDNegativeSrc = this.ruleForm.IDCopyBack;
@@ -557,7 +607,10 @@ export default {
         SIAccount: _this.ruleForm.SIAccount,
         HCAccount: _this.ruleForm.HCAccount,
         medicalSchemeAccount: _this.ruleForm.medicalSchemeAccount,
-        status: parseInt(_this.ruleForm.status)
+        status: parseInt(_this.ruleForm.status),
+        account:_this.ruleForm.account,
+        password: md5(_this.ruleForm.password),
+        hrCode: _this.ruleForm.hrCode,
       };
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
@@ -616,6 +669,12 @@ export default {
         SIAccount: _this.ruleForm.SIAccount,
         HCAccount: _this.ruleForm.HCAccount,
         medicalSchemeAccount: _this.ruleForm.medicalSchemeAccount,
+        staffNo: _this.ruleForm.staffNo,
+        staffAlias: _this.ruleForm.staffAlias,
+        position: _this.ruleForm.position,
+        dateOfPlace: _this.ruleForm.dateOfPlace,
+        postalAddress: _this.ruleForm.postalAddress,
+        fringeBeneiftLimit: _this.ruleForm.fringeBeneiftLimit,
         status: parseInt(_this.ruleForm.status)
       };
       _this.$http.post(reqUrl, data).then(res => {
@@ -630,6 +689,7 @@ export default {
     // 获取公司、地区、单位code
     handleChange(val) {
       this.getDepartment(val[2]);
+      this.getHRadminList(val[2]);
     },
     // 获取部门列表
     getDepartment(val) {
@@ -641,6 +701,16 @@ export default {
           this.departmentList = res.data.data;
         }
       });
+    },
+    // 获取HR管理员列表
+    getHRadminList(val){
+      var reqUrl = '/server/api/v1/admin/hrSys/getAll';
+      var data = {BUCode:val}
+      this.$http.post(reqUrl,data).then(res => {
+        if(res.data.data){
+          this.HRadminList = res.data.data;
+        }
+      })
     },
     // 取消
     cancelFn() {

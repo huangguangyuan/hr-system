@@ -30,11 +30,23 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="登录账户：">
+              <span>{{ props.row.account }}</span>
+            </el-form-item>
+            <el-form-item label="员工编号：">
+              <span>{{ props.row.staffNo }}</span>
+            </el-form-item>
             <el-form-item label="中文名称：">
               <span>{{ props.row.nameChinese }}</span>
             </el-form-item>
             <el-form-item label="英文名称：">
               <span>{{ props.row.nameEnglish }}</span>
+            </el-form-item>
+            <el-form-item label="员工别名：">
+              <span>{{ props.row.staffAlias }}</span>
+            </el-form-item>
+            <el-form-item label="职位：">
+              <span>{{ props.row.position }}</span>
             </el-form-item>
             <el-form-item label="性别：">
               <span>{{ props.row.genderTxt }}</span>
@@ -175,7 +187,7 @@
           <el-button v-if="userRight"
             size="mini"
             icon="el-icon-bangzhu"
-            @click="isShowState = true;staffID = scope.row.id;"
+            @click="isShowState = true;staffID = scope.row.id;staffState = scope.row.status"
           >状态</el-button>
           <!-- 删除 -->
           <el-button v-if="userRight"
@@ -261,7 +273,6 @@ export default {
   mounted() {
     var _this = this;
     _this.userRight = _this.userRight_props;
-    
     _this.InitializationFun();
   },
   methods: {
