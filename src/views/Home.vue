@@ -24,6 +24,8 @@
               <el-dropdown-item></el-dropdown-item>
               <el-dropdown-item>{{userInfo.account}}</el-dropdown-item>
               <el-dropdown-item @click.native="logout(userInfo.roleTypeId)">退出登录</el-dropdown-item>
+              <el-divider><i style="font-size:18px;" class="el-icon-guide"></i>关联账户</el-divider>
+              <el-dropdown-item @click.native="logout(userInfo.roleTypeId)">{{userInfo.relatedUser.typeTxt}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
