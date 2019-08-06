@@ -17,15 +17,13 @@
           <img src="@/assets/images/face_ico.jpg" alt>
           <el-dropdown>
             <span class="el-dropdown-link">
-              {{userInfo.roleTypeTxt||userInfo.typeTxt}}
+              {{userInfo.account}}（{{userInfo.roleTypeTxt||userInfo.typeTxt}}）
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item></el-dropdown-item>
-              <el-dropdown-item>{{userInfo.account}}</el-dropdown-item>
               <el-dropdown-item @click.native="logout(userInfo.roleTypeId)">退出登录</el-dropdown-item>
-              <el-divider><i style="font-size:18px;" class="el-icon-guide"></i>关联账户</el-divider>
-              <el-dropdown-item @click.native="logout(userInfo.roleTypeId)">{{userInfo.relatedUser.typeTxt}}</el-dropdown-item>
+              <el-dropdown-item divided disabled>切换账户</el-dropdown-item>
+              <el-dropdown-item v-if="userInfo.relatedUser" @click.native="switchUser(userInfo.relatedUser)"><i style="font-size:18px;" class="el-icon-refresh"></i>{{userInfo.relatedUser.typeTxt}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -114,6 +112,33 @@ export default {
     this.initializeFun();
   },
   methods: {
+    switchUser(switchUser){
+      alert(0)
+      var reqUrl = "/server/api/v1/hrSys/loginRelated";
+      var postJson = {
+          account: switchUser.account,
+        	typeId:switchUser.typeId
+      }
+      this.$http.post(reqUrl,postJson).then(res => {
+        if (res.data.code == 0){
+          this.$toolFn.localSet("userInfo", res.data.data.data);
+          var sidebar = res.data.data.data.roles[0].menuList.map(item => {
+            item.id = item.id.toString();
+            return item;
+          });
+          this.$store.dispatch("add_Routes", sidebar).then(res => {
+              return this.$store.dispatch('getAccessData_Fun',sidebar)
+            }).then(res => {
+              var userInfo = this.$toolFn.localGet("userInfo");
+              if (userInfo.roleTypeId == 1){
+                this.$router.replace({ path: "/leaveApplyList" });
+              }else{
+                this.$router.replace({ path: "/home" });
+              }
+            })
+        }
+      });
+    },
     logout(roleTypeId){
       var reqUrl = "/server/api/v1/hrSys/logout";
       var returnUrl = "/";
