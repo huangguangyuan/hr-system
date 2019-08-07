@@ -11,9 +11,9 @@
           <p>后台管理系统</p>
         </div>
         <div class="right">
-          <el-badge is-dot class="item">
+          <!-- <el-badge is-dot class="item">
             <i class="el-icon-bell"></i>
-          </el-badge>
+          </el-badge> -->
           <img src="@/assets/images/face_ico.jpg" alt>
           <el-dropdown>
             <span class="el-dropdown-link">
@@ -113,7 +113,6 @@ export default {
   },
   methods: {
     switchUser(switchUser){
-      alert(0)
       var reqUrl = "/server/api/v1/hrSys/loginRelated";
       var postJson = {
           account: switchUser.account,
@@ -130,10 +129,11 @@ export default {
               return this.$store.dispatch('getAccessData_Fun',sidebar)
             }).then(res => {
               var userInfo = this.$toolFn.localGet("userInfo");
+              this.userInfo = userInfo;
               if (userInfo.roleTypeId == 1){
-                this.$router.replace({ path: "/leaveApplyList" });
+                this.$router.push({ path: "/leaveApplyList" });
               }else{
-                this.$router.replace({ path: "/home" });
+                this.$router.push({ path: "/home" });
               }
             })
         }
