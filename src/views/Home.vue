@@ -22,7 +22,7 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="logout(userInfo.roleTypeId)">退出登录</el-dropdown-item>
-              <el-dropdown-item divided disabled>切换账户</el-dropdown-item>
+              <el-dropdown-item v-if="userInfo.relatedUser" divided disabled>切换账户</el-dropdown-item>
               <el-dropdown-item v-if="userInfo.relatedUser" @click.native="switchUser(userInfo.relatedUser)"><i style="font-size:18px;" class="el-icon-refresh"></i>{{userInfo.relatedUser.typeTxt}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
