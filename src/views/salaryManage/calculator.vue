@@ -20,26 +20,26 @@
             suffix-icon="el-icon-caret-right"
             readonly
             @click.native="deductFn(scope.$index, scope.row)"
-            
+            @input="changeRow(scope.$index)"
           ></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="addDeduct" label="專項附加扣除（元）">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.addDeduct" placeholder="请输入内容" suffix-icon="el-icon-caret-right" readonly @click.native="addDeductFn(scope.$index, scope.row)"></el-input>
+          <el-input v-model="scope.row.addDeduct" placeholder="请输入内容" suffix-icon="el-icon-caret-right" readonly @click.native="addDeductFn(scope.$index, scope.row)" @input="changeRow(scope.$index)"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="fixedDeduct" label="起征点（元）">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.fixedDeduct" placeholder=""></el-input>
+          <el-input v-model="scope.row.fixedDeduct" placeholder="" @input="changeRow(scope.$index)"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="iit" label="当月个人所得税（元）">
         <template slot-scope="scope">
-          <el-input v-model="monthlyTax[scope.$index].iit" placeholder="" :disabled="true"></el-input>
+          <el-input v-model="monthlyTax[scope.$index].iit" placeholder="" :disabled="true" @input="changeRow(scope.$index)"></el-input>
         </template>
       </el-table-column>
-      <el-table-column prop="accumulate" label="当月应纳税所得额（元）">
+      <el-table-column prop="accumulate" label="当月税后所得额（元）">
         <template slot-scope="scope">
           <el-input
             v-model="monthlyTax[scope.$index].accumulate"
@@ -50,8 +50,9 @@
       </el-table-column>
     </el-table>
     <div class="footer">
-      <el-tag size="medium">累计应纳个人所得税：{{cummIIT}}元</el-tag>
-      <el-tag size="medium">累计应纳税所得额：{{cummExpense}}元</el-tag>
+      <el-tag size="medium">累计应纳税总额：{{cummGrossAmt}}元</el-tag>
+      <el-tag size="medium">累计个人所得税：{{cummIIT}}元</el-tag>
+      <el-tag size="medium">累计税后所得额：{{cummExpense}}元</el-tag>
     </div>
     <!-- 專項扣除 -->
     <el-dialog title="專項扣除" :visible.sync="isShowDeduct" :close-on-click-modal="false" width="40%">
@@ -321,8 +322,9 @@ export default {
       isShowDeduct: false, //是否显示专项扣除
       isShowAddDeduct: false, //是否显示附近专项扣除
       currentInfo: {}, //当前信息
-      grossAmtSum:0,
-      taxRateAmtSum:0,
+      grossAmtSum:0,//应税工资总额
+      taxRateAmtSum:0,//应税总额
+      netPayAmtSum:0,//税后总额
       changeRowIndex:1000
 
     };
@@ -444,7 +446,7 @@ export default {
       /* a=当前月份，b=税前收入，c=专项扣除，d=个人所得税 */
       var wages = 0;
       wages = b - c - d;
-      return wages;
+      return parseFloat(wages);
     }
     // 计算
   },
@@ -453,52 +455,47 @@ export default {
     monthlyTax() {
       var _this = this;
       let grossAmtSum = 0;//累计应税收入
-      let taxRateAmtSumNotCur = 0;//累计纳税金额
+      let taxRateAmtSumNotCur = 0;//累计纳税金额不包当前月纳税
       let taxRateAmtSum = 0;//累计纳税金额
+      //let grossAmtSumNotCur = 0;//累计纳税金额不包当前月纳税
       for (var i = 0; i < _this.dataList.length; i++) {
         if (_this.dataList[i].income && _this.dataList[i].income > 0){
-          let curGrossAmt = parseFloat(_this.dataList[i].income - _this.dataList[i].deduct -  _this.dataList[i].addDeduct - _this.dataList[i].fixedDeduct) //应税工资
+          let curGrossAmt = parseFloat(_this.dataList[i].income - _this.dataList[i].deduct -  _this.dataList[i].addDeduct - _this.dataList[i].fixedDeduct); //应税工资
           let curtaxRateAmt = _this.changeRowIndex != i ? parseFloat(_this.dataList[i].iit) : 0;
           //let curtaxRateAmt = parseFloat(_this.dataList[i].iit) ;
           grossAmtSum += curGrossAmt > 0?curGrossAmt:0;
-          taxRateAmtSumNotCur += curtaxRateAmt > 0?curtaxRateAmt:0;
+          taxRateAmtSumNotCur += curtaxRateAmt;
+          //console.log(grossAmtSum,taxRateAmtSumNotCur);
           _this.dataList[i].grossAmtSum = grossAmtSum;
-          _this.dataList[i].taxRateAmtSum = taxRateAmtSum;
-          _this.dataList[i].iit = _this.monthlySumIit(grossAmtSum,taxRateAmtSumNotCur);
-          taxRateAmtSum += parseFloat(_this.dataList[i].iit);
+          _this.dataList[i].iit = curGrossAmt > 0 ? _this.monthlySumIit(grossAmtSum,taxRateAmtSumNotCur) : 0;
           _this.dataList[i].accumulate = _this.monthlyWages(
             _this.dataList[i].id,
             _this.dataList[i].income,
             _this.dataList[i].deduct,
             _this.dataList[i].iit
           );
+          console.log(_this.dataList[i].accumulate);
+          _this.dataList[i].taxRateAmtSum = parseFloat(taxRateAmtSumNotCur + _this.dataList[i].iit);
+          _this.taxRateAmtSum = _this.dataList[i].taxRateAmtSum;
+          _this.netPayAmtSum += _this.dataList[i].accumulate;
+          console.log(_this.taxRateAmtSum,_this.netPayAmtSum);
         }
       }
       _this.grossAmtSum = grossAmtSum;
-      _this.taxRateAmtSum = taxRateAmtSum;
+      //_this.grossAmtSum = grossAmtSum;
       return _this.dataList;
+    },
+    // 累计应纳税总额
+    cummGrossAmt() {
+      return this.grossAmtSum;
     },
     // 累计应纳个人所得税
     cummIIT() {
-      // var a = 0; //税前收入
-      // var b = 0; //专项扣除
-      // var c = 0; //专项附加扣除
-      // var d = 0; //起征点
-      // for (var i = 0; i < this.dataList.length; i++) {
-      //   a += parseInt(this.dataList[i].income);
-      //   b += parseInt(this.dataList[i].deduct);
-      //   c += parseInt(this.dataList[i].addDeduct);
-      //   d += parseInt(this.dataList[i].fixedDeduct);
-      // }
-      //return this.monthlyIit(0,a,b,c,d);
       return this.taxRateAmtSum;
     },
+    // 累计税后所得额
     cummExpense() {
-      var res = 0;
-      for (var i = 0; i < this.dataList.length; i++) {
-        res += parseInt(this.dataList[i].accumulate);
-      }
-      return this.grossAmtSum;
+      return this.netPayAmtSum;
     },
     //获取专项扣除
     totalDeduct() {
