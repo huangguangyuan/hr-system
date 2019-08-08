@@ -72,7 +72,12 @@ export default {
           this.$store.dispatch("add_Routes", sidebar).then(res => {
               return this.$store.dispatch('getAccessData_Fun',sidebar)
             }).then(res => {
-              this.$router.replace({ path: "/home" });
+              var userInfo = this.$toolFn.localGet("userInfo");
+              if (userInfo.roleTypeId == 1){
+                this.$router.replace({ path: "/leaveApplyList" });
+              }else{
+                this.$router.replace({ path: "/home" });
+              }
             })
         } else {
           this.$message.error(res.data.msg);

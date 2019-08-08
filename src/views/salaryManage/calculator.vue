@@ -9,7 +9,7 @@
       <el-table-column prop="Mth" label="月份" width="80px"></el-table-column>
       <el-table-column label="税前收入（元）">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.income" placeholder="请输入内容"></el-input>
+          <el-input v-model="scope.row.income" placeholder="请输入内容" @input="changeRow(scope.$index)"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="deduct" label="专项扣除（元）">
@@ -20,35 +20,30 @@
             suffix-icon="el-icon-caret-right"
             readonly
             @click.native="deductFn(scope.$index, scope.row)"
+            
           ></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="addDeduct" label="專項附加扣除（元）">
         <template slot-scope="scope">
-          <el-input
-            v-model="scope.row.addDeduct"
-            placeholder="请输入内容"
-            suffix-icon="el-icon-caret-right"
-            readonly
-            @click.native="addDeductFn(scope.$index, scope.row)"
-          ></el-input>
+          <el-input v-model="scope.row.addDeduct" placeholder="请输入内容" suffix-icon="el-icon-caret-right" readonly @click.native="addDeductFn(scope.$index, scope.row)"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="fixedDeduct" label="起征点（元）">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.fixedDeduct" placeholder="请输入内容"></el-input>
+          <el-input v-model="scope.row.fixedDeduct" placeholder=""></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="iit" label="当月个人所得税（元）">
         <template slot-scope="scope">
-          <el-input v-model="monthlyTax[scope.$index].iit" placeholder="请输入内容" :disabled="true"></el-input>
+          <el-input v-model="monthlyTax[scope.$index].iit" placeholder="" :disabled="true"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="accumulate" label="当月应纳税所得额（元）">
         <template slot-scope="scope">
           <el-input
             v-model="monthlyTax[scope.$index].accumulate"
-            placeholder="请输入内容"
+            placeholder=""
             :disabled="true"
           ></el-input>
         </template>
@@ -78,7 +73,7 @@
             <el-input v-model.number="totalDeduct" disabled></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">确 定</el-button>
+            <el-button type="primary" @click="onSubmit(deductFrom)">确 定</el-button>
             <el-button @click="isShowDeduct = false;">取消</el-button>
           </el-form-item>
         </el-form>
@@ -112,7 +107,7 @@
             <el-input v-model.number="totalAddDeduct" disabled></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit2">确 定</el-button>
+            <el-button type="primary" @click="onSubmit2(addDeductFrom)">确 定</el-button>
             <el-button @click="isShowAddDeduct = false;">取消</el-button>
           </el-form-item>
         </el-form>
@@ -122,6 +117,7 @@
 </template>
 <script>
 import { setInterval } from "timers";
+import { all } from 'q';
 export default {
   name: "calculator",
   inject: ["reload"],
@@ -137,7 +133,11 @@ export default {
           fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
-          accumulate: 0
+          accumulate: 0,
+          grossAmtSum:0,
+          taxRateAmtSum:0,
+          deductList:[],
+          addDeductList: [],
         },
         {
           id: 2,
@@ -148,7 +148,11 @@ export default {
           fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
-          accumulate: 0
+          accumulate: 0,
+          grossAmtSum:0,
+          taxRateAmtSum:0,
+          deductList:[],
+          addDeductList: [],
         },
         {
           id: 3,
@@ -159,7 +163,11 @@ export default {
           fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
-          accumulate: 0
+          accumulate: 0,
+          grossAmtSum:0,
+          taxRateAmtSum:0,
+          deductList:[],
+          addDeductList: [],
         },
         {
           id: 4,
@@ -170,7 +178,11 @@ export default {
           fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
-          accumulate: 0
+          accumulate: 0,
+          grossAmtSum:0,
+          taxRateAmtSum:0,
+          deductList:[],
+          addDeductList: [],
         },
         {
           id: 5,
@@ -181,7 +193,11 @@ export default {
           fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
-          accumulate: 0
+          accumulate: 0,
+          grossAmtSum:0,
+          taxRateAmtSum:0,
+          deductList:[],
+          addDeductList: [],
         },
         {
           id: 6,
@@ -192,7 +208,11 @@ export default {
           fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
-          accumulate: 0
+          accumulate: 0,
+          grossAmtSum:0,
+          taxRateAmtSum:0,
+          deductList:[],
+          addDeductList: [],
         },
         {
           id: 7,
@@ -203,7 +223,11 @@ export default {
           fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
-          accumulate: 0
+          accumulate: 0,
+          grossAmtSum:0,
+          taxRateAmtSum:0,
+          deductList:[],
+          addDeductList: [],
         },
         {
           id: 8,
@@ -214,7 +238,11 @@ export default {
           fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
-          accumulate: 0
+          accumulate: 0,
+          grossAmtSum:0,
+          taxRateAmtSum:0,
+          deductList:[],
+          addDeductList: [],
         },
         {
           id: 9,
@@ -225,7 +253,11 @@ export default {
           fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
-          accumulate: 0
+          accumulate: 0,
+          grossAmtSum:0,
+          taxRateAmtSum:0,
+          deductList:[],
+          addDeductList: [],
         },
         {
           id: 10,
@@ -236,7 +268,11 @@ export default {
           fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
-          accumulate: 0
+          accumulate: 0,
+          grossAmtSum:0,
+          taxRateAmtSum:0,
+          deductList:[],
+          addDeductList: [],
         },
         {
           id: 11,
@@ -247,7 +283,11 @@ export default {
           fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
-          accumulate: 0
+          accumulate: 0,
+          grossAmtSum:0,
+          taxRateAmtSum:0,
+          deductList:[],
+          addDeductList: [],
         },
         {
           id: 12,
@@ -258,7 +298,11 @@ export default {
           fixedDeduct: 0,
           taxRate: 0.03,
           iit: 0,
-          accumulate: 0
+          accumulate: 0,
+          grossAmtSum:0,
+          taxRateAmtSum:0,
+          deductList:[],
+          addDeductList: [],
         }
       ], //表单列表
       deductFrom: {
@@ -276,40 +320,92 @@ export default {
       },
       isShowDeduct: false, //是否显示专项扣除
       isShowAddDeduct: false, //是否显示附近专项扣除
-      currentInfo: {} //当前信息
+      currentInfo: {}, //当前信息
+      grossAmtSum:0,
+      taxRateAmtSum:0,
+      changeRowIndex:1000
+
     };
   },
   mounted() {
     var _this = this;
   },
   methods: {
+    changeRow(index){
+      this.changeRowIndex = index;
+    },
     //专项扣除
     deductFn(index, res) {
       var _this = this;
+      let deductListIndex = 0;
       for (let i in _this.deductFrom) {
-        _this.deductFrom[i] = 0;
+        _this.deductFrom[i] = res.deductList[deductListIndex] || 0;
+        deductListIndex++;
       }
       _this.isShowDeduct = true;
       _this.currentInfo.index = index;
     },
-    onSubmit() {
+    onSubmit(deductFrom) {
       var _this = this;
       _this.isShowDeduct = false;
+      _this.dataList[_this.currentInfo.index].deductList = [];
+      for (let i in deductFrom) {
+        _this.dataList[_this.currentInfo.index].deductList.push(deductFrom[i]);
+      }
       _this.dataList[_this.currentInfo.index].deduct = _this.totalDeduct;
     },
     // 附加专项扣除
     addDeductFn(index, res) {
       var _this = this;
+      let deductListIndex = 0;
       for (let i in _this.addDeductFrom) {
-        _this.addDeductFrom[i] = 0;
+        _this.addDeductFrom[i] = res.addDeductList[deductListIndex] || 0;
+        deductListIndex++;
       }
       _this.isShowAddDeduct = true;
       _this.currentInfo.index = index;
     },
-    onSubmit2() {
+    onSubmit2(addDeductFrom) {
       var _this = this;
       _this.isShowAddDeduct = false;
+      _this.dataList[_this.currentInfo.index].addDeductList = [];
+      for (let i in addDeductFrom) {
+        _this.dataList[_this.currentInfo.index].addDeductList.push(addDeductFrom[i]);
+      }
       _this.dataList[_this.currentInfo.index].addDeduct = _this.totalAddDeduct;
+    },
+
+    // 计算当月个税(累计)
+    monthlySumIit(grossAmtSum,taxRateAmtSum) {
+      let taxRate = 0.00; //税率
+      let quickDeduct = 0.00; //速算扣除数
+      let result = 0.00;
+      let val = parseFloat(grossAmtSum);
+      if (val < 36000) {
+        taxRate = 0.03;
+        quickDeduct = 0;
+      } else if (val >= 36000 && val < 144000) {
+        taxRate = 0.1;
+        quickDeduct = 2520;
+      } else if (val >= 144000 && val < 300000) {
+        taxRate = 0.2;
+        quickDeduct = 16920;
+      } else if (val >= 300000 && val < 420000) {
+        taxRate = 0.25;
+        quickDeduct = 31920;
+      } else if (val >= 420000 && val < 600000) {
+        taxRate = 0.3;
+        quickDeduct = 52920;
+      } else if (val >= 600000 && val < 960000) {
+        taxRate = 0.35;
+        quickDeduct = 85920;
+      } else if (val >= 960000) {
+        taxRate = 0.45;
+        quickDeduct = 181920;
+      }
+      result = parseFloat(val * taxRate - quickDeduct - taxRateAmtSum) < 0?0:parseFloat(val * taxRate - quickDeduct - taxRateAmtSum);
+      //console.log(result.toFixed(2));
+      return result.toFixed(2);
     },
     // 计算当月个税
     monthlyIit(a, b, c, d, e) {
@@ -355,59 +451,54 @@ export default {
   computed: {
     // 计算个税
     monthlyTax() {
-      var resultArr = [
-        { iit: 1, accumulate: 0 },
-        { iit: 2, accumulate: 0 },
-        { iit: 3, accumulate: 0 },
-        { iit: 4, accumulate: 0 },
-        { iit: 5, accumulate: 0 },
-        { iit: 6, accumulate: 0 },
-        { iit: 7, accumulate: 0 },
-        { iit: 8, accumulate: 0 },
-        { iit: 9, accumulate: 0 },
-        { iit: 10, accumulate: 0 },
-        { iit: 11, accumulate: 0 },
-        { iit: 12, accumulate: 0 }
-      ];
-      for (var i = 0; i < resultArr.length; i++) {
-        resultArr[i].iit = this.monthlyIit(
-          this.dataList[i].id,
-          this.dataList[i].income,
-          this.dataList[i].deduct,
-          this.dataList[i].addDeduct,
-          this.dataList[i].fixedDeduct
-        );
+      var _this = this;
+      let grossAmtSum = 0;//累计应税收入
+      let taxRateAmtSumNotCur = 0;//累计纳税金额
+      let taxRateAmtSum = 0;//累计纳税金额
+      for (var i = 0; i < _this.dataList.length; i++) {
+        if (_this.dataList[i].income && _this.dataList[i].income > 0){
+          let curGrossAmt = parseFloat(_this.dataList[i].income - _this.dataList[i].deduct -  _this.dataList[i].addDeduct - _this.dataList[i].fixedDeduct) //应税工资
+          let curtaxRateAmt = _this.changeRowIndex != i ? parseFloat(_this.dataList[i].iit) : 0;
+          //let curtaxRateAmt = parseFloat(_this.dataList[i].iit) ;
+          grossAmtSum += curGrossAmt > 0?curGrossAmt:0;
+          taxRateAmtSumNotCur += curtaxRateAmt > 0?curtaxRateAmt:0;
+          _this.dataList[i].grossAmtSum = grossAmtSum;
+          _this.dataList[i].taxRateAmtSum = taxRateAmtSum;
+          _this.dataList[i].iit = _this.monthlySumIit(grossAmtSum,taxRateAmtSumNotCur);
+          taxRateAmtSum += parseFloat(_this.dataList[i].iit);
+          _this.dataList[i].accumulate = _this.monthlyWages(
+            _this.dataList[i].id,
+            _this.dataList[i].income,
+            _this.dataList[i].deduct,
+            _this.dataList[i].iit
+          );
+        }
       }
-      for (var i = 0; i < resultArr.length; i++) {
-        resultArr[i].accumulate = this.monthlyWages(
-          this.dataList[i].id,
-          this.dataList[i].income,
-          this.dataList[i].deduct,
-          resultArr[i].iit
-        );
-      }
-      return resultArr;
+      _this.grossAmtSum = grossAmtSum;
+      _this.taxRateAmtSum = taxRateAmtSum;
+      return _this.dataList;
     },
     // 累计应纳个人所得税
     cummIIT() {
-      var a = 0; //税前收入
-      var b = 0; //专项扣除
-      var c = 0; //专项附加扣除
-      var d = 0; //起征点
-      for (var i = 0; i < this.dataList.length; i++) {
-        a += parseInt(this.dataList[i].income);
-        b += parseInt(this.dataList[i].deduct);
-        c += parseInt(this.dataList[i].addDeduct);
-        d += parseInt(this.dataList[i].fixedDeduct);
-      }
-      return this.monthlyIit(0,a,b,c,d);
+      // var a = 0; //税前收入
+      // var b = 0; //专项扣除
+      // var c = 0; //专项附加扣除
+      // var d = 0; //起征点
+      // for (var i = 0; i < this.dataList.length; i++) {
+      //   a += parseInt(this.dataList[i].income);
+      //   b += parseInt(this.dataList[i].deduct);
+      //   c += parseInt(this.dataList[i].addDeduct);
+      //   d += parseInt(this.dataList[i].fixedDeduct);
+      // }
+      //return this.monthlyIit(0,a,b,c,d);
+      return this.taxRateAmtSum;
     },
     cummExpense() {
       var res = 0;
       for (var i = 0; i < this.dataList.length; i++) {
-        res += parseInt(this.monthlyTax[i].accumulate);
+        res += parseInt(this.dataList[i].accumulate);
       }
-      return res;
+      return this.grossAmtSum;
     },
     //获取专项扣除
     totalDeduct() {

@@ -166,7 +166,6 @@
         </template>
       </el-table-column>
       <el-table-column prop="nameChinese" label="名称"></el-table-column>
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column label="头像">
         <template slot-scope="scope">
           <el-image
@@ -176,11 +175,11 @@
           ></el-image>
         </template>
       </el-table-column>
-      <el-table-column prop="genderTxt" label="性别"></el-table-column>
-      <el-table-column prop="mobile" label="电话"></el-table-column>
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
-      <el-table-column label="操作" width="400px">
+      <el-table-column label="操作" width="500px">
         <template slot-scope="scope">
+          <!-- 编辑账户 -->
+          <el-button v-if="userRight" size="mini" icon="el-icon-edit" @click="modifyAccountFun(scope.row.code)">编辑账号</el-button>
           <!-- 编辑 -->
           <el-button v-if="userRight" size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">编辑</el-button>
           <!-- 状态 -->
@@ -237,8 +236,28 @@
         <el-radio :label="3">停薪留职</el-radio>
       </el-radio-group>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="isShowState = false">取 消</el-button>
         <el-button type="primary" @click='changeState'>确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 编辑账号 -->
+    <el-dialog title="账户信息" :visible.sync="isShowAccountState">
+      <el-form label-width="170px" size="mini">
+      <el-form-item label="登录账户" prop="account" >
+        <el-input v-model="accountInfo.account" readonly="readonly"></el-input>
+      </el-form-item>
+      <el-form-item label="密码：" prop="password">
+        <el-input v-model="accountInfo.password"></el-input>
+      </el-form-item>
+      <el-form-item label="关联系统管理员账户：" prop="hrCode" >
+        <el-select v-model="accountInfo.hrCode" placeholder="请选择关联系统管理员" >
+        <el-option v-for="item in HRadminList" :key="item.id" :label="item.name" :value="item.code"></el-option>
+      </el-select>
+      </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="isShowAccountState = false">取 消</el-button>
+        <el-button type="primary" @click='subAccount'>确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -246,6 +265,7 @@
 <script>
 import editTemplate from "./editTemplate.vue";
 import { deflate } from "zlib";
+import md5 from "js-md5";
 export default {
   name: "staffInformation",
   inject: ["reload"],
@@ -265,8 +285,11 @@ export default {
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
       isShowState: false, //是否显示状态
+      isShowAccountState:false,//是否显示账号信息
       AvatarDefault:
         "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
+      accountInfo:{},
+      HRadminList:[],//管理员列表
       userRight:false
     };
   },
@@ -280,6 +303,17 @@ export default {
     InitializationFun() {
       var _this = this;
       _this.getregionBU();
+      
+    },
+    // 获取HR管理员列表
+    getHRadminList(val){
+      var reqUrl = '/server/api/v1/admin/hrSys/getAll';
+      var data = {BUCode:val}
+      this.$http.post(reqUrl,data).then(res => {
+        if(res.data.data){
+          this.HRadminList = res.data.data;
+        }
+      })
     },
     // 获取单位列表
     getregionBU() {
@@ -288,10 +322,11 @@ export default {
       _this.$http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           _this.regionBUlist = res.data.data;
-          _this.BUCode = this.$toolFn.sessionGet("staffBUCode")
-            ? this.$toolFn.sessionGet("staffBUCode")
+          _this.BUCode = _this.$toolFn.sessionGet("staffBUCode")
+            ? _this.$toolFn.sessionGet("staffBUCode")
             : res.data.data[0].code;
-          _this.getData(this.BUCode);
+          _this.getData(_this.BUCode);
+          _this.getHRadminList(_this.BUCode);
         }
       });
     },
@@ -574,7 +609,38 @@ export default {
       this.curInfo.type = "modify";
       this.isShowAddAccess = true;
     },
-    // 改变转态
+    //提交账号修改
+    subAccount() {
+      var _this = this;
+      var reqUrl = '/server/api/v1/staff/account/update';
+      var data = {
+        staffCode:_this.accountInfo.staffCode,
+        hrCode:_this.accountInfo.hrCode
+      }
+      if (_this.accountInfo.password && _this.accountInfo.password != ""){
+        data.password = md5(_this.accountInfo.password);
+      }
+      this.$http.post(reqUrl,data).then(res => {
+        if(res.data.code == 0){
+          this.reload();
+          this.$message.success('修改成功！');
+        }
+      })
+    },    
+    //编辑账号
+    modifyAccountFun(code) {
+      var reqUrl = '/server/api/v1/staff/account';
+      var data = {
+        staffCode:code
+      }
+      this.$http.post(reqUrl,data).then(res => {
+        if(res.data.code == 0){
+          this.isShowAccountState = true;
+          this.accountInfo = res.data.data.account;
+        }
+      })
+    },
+    // 改变状态
     changeState(index, res) {
       if(this.staffState == ''){
         this.$message.info('请选择状态');
