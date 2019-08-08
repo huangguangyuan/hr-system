@@ -20,18 +20,20 @@
       </div>
     </div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="报销申请" name="education">
-        <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 报销申请</span>
-        
+      <el-tab-pane label="报销申请" name="claim">
+        <span slot="label"><i class="hr-icon-baoxiaoshenqing"></i> 报销申请</span>
+        <claim-list></claim-list>
       </el-tab-pane>
-      <el-tab-pane label="请假申请" name="experience">
-        <span slot="label"><i class="hr-icon-kehudingdan"></i> 请假申请</span>
-        
+      <el-tab-pane label="请假申请" name="holidaysApply">
+        <span slot="label"><i class="hr-icon-qingjiashenqing"></i> 请假申请</span>
+        <holidays-apply-list></holidays-apply-list>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 <script>
+import claimList from './claim/claimList.vue';
+import holidaysApplyList from './holidaysApply/holidaysApplyList.vue'
 export default {
   name: "applyMain",
   inject: ["reload"],
@@ -40,11 +42,12 @@ export default {
       circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
       staffCode:'7ef51e60-9e01-11e9-bde5-6d1157612d12',
       staffInfo:{},
-      activeName:''
+      activeName:'claim'
     };
   },
   mounted() {
     this.getStaffInfo();
+    this.activeName = this.$toolFn.sessionGet('applyActiveName') || 'claim'
   },
   methods: {
     // 获取员工信息
@@ -54,21 +57,20 @@ export default {
         this.$http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
                 this.staffInfo = res.data.data;
-                console.log(this.staffInfo);
             }else{
                 this.$message.error('error'+res.data.code);
             }
         })
     },
-    handleClick(){
-
+    handleClick(res){
+      this.$toolFn.sessionSet('applyActiveName',res.name);
     }
   },
   computed: {
     
   },
   components: {
-    
+    claimList,holidaysApplyList
   }
 };
 </script>

@@ -170,6 +170,7 @@ export default {
               return 0;
             });
           _this.total = _this.tableData.length;
+          console.log(_this.tableData);
         })
         .catch(err => {
           console.log(err);

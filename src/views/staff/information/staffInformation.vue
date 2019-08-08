@@ -3,7 +3,7 @@
     <!-- 头部内容 -->
     <div class="my-top">
       <span>员工基本信息</span>
-      <el-button v-if="userRight" type="warning" size="small" @click="isShowAddAccess = true;curInfo.type='add'">添加员工</el-button>
+      <el-button v-if="userRight" type="warning" size="small" @click="isShowAddAccess = true;curInfo.type='add'" icon="el-icon-plus">添加员工</el-button>
     </div>
     <!-- 搜索 -->
     <div class="search-wrap">
