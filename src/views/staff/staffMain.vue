@@ -27,6 +27,9 @@ export default {
       if (this.userInfo.roleTypeId == 2 && [301,601,611].indexOf(this.userInfo.lev) >= 0 ){
         this.userRight = true;
       }
+      if (this.userInfo.roleTypeId == 3 ){
+        this.userRight = true;
+      }
       return this.$store.state.staffModule.isShowDetails;
     }
   },
