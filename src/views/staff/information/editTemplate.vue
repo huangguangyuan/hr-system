@@ -534,6 +534,7 @@ export default {
         this.avatarSrc = this.ruleForm.photo;
         this.IDPositiveSrc = this.ruleForm.IDCopy;
         this.IDNegativeSrc = this.ruleForm.IDCopyBack;
+        console.log(this.ruleForm.departmentCode);
         this.getDepartment(this.ruleForm.BUCode);
       }
     },
@@ -676,6 +677,7 @@ export default {
         dateOfPlace: _this.ruleForm.dateOfPlace,
         postalAddress: _this.ruleForm.postalAddress,
         fringeBeneiftLimit: _this.ruleForm.fringeBeneiftLimit,
+        departmentCode:_this.ruleForm.departmentCode,
         status: parseInt(_this.ruleForm.status)
       };
       _this.$http.post(reqUrl, data).then(res => {
@@ -694,7 +696,7 @@ export default {
     },
     // 获取部门列表
     getDepartment(val) {
-      this.ruleForm.departmentCode = "";
+      //this.ruleForm.departmentCode = "";
       var reqUrl = "/server/api/v1/buDepartment/getAll";
       var data = { BUCode: val };
       this.$http.post(reqUrl, data).then(res => {
