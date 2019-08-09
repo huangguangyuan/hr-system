@@ -8,7 +8,7 @@
       <el-form-item label="所属公司/地区/单位" prop="selectedOptions" v-if="isShow">
         <el-cascader v-model="ruleForm.selectedOptions" @change="handleChange" :props="props"></el-cascader>
       </el-form-item>
-      <el-form-item label="所属部门" prop="departmentCode" v-if="isShow">
+      <el-form-item label="所属部门" prop="departmentCode">
         <el-select v-model="ruleForm.departmentCode" placeholder="请选择所属部门" :loading="loading">
           <el-option
             v-for="item in departmentList"
@@ -534,6 +534,7 @@ export default {
         this.avatarSrc = this.ruleForm.photo;
         this.IDPositiveSrc = this.ruleForm.IDCopy;
         this.IDNegativeSrc = this.ruleForm.IDCopyBack;
+        this.getDepartment(this.ruleForm.BUCode);
       }
     },
     // 提交表单
