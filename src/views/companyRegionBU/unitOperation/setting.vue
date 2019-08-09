@@ -12,10 +12,10 @@
       </el-tab-pane>
       <el-tab-pane label="粮 期" name="payroll">
         <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 粮 期</span>
-        <p>粮 期</p>
+        <payroll-period></payroll-period>
       </el-tab-pane>
       <el-tab-pane label="薪资应税项目" name="salaryItems">
-        <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 薪资应税项目</span>
+        <span slot="label"><i class="hr-icon-zinvjiaoyu"></i>薪资应税项目</span>
         <salary-items></salary-items>
       </el-tab-pane>
       <el-tab-pane label="社保方案" name="insuredScheme">
@@ -27,6 +27,7 @@
 </template>
 <script>
 import cityTemplate from '../cityTemplate/cityTemplate.vue'
+import payrollPeriod from '../payrollPeriod/payrollPeriod.vue'
 import salaryItems from '../salaryItems/salaryItems.vue'
 import schemeList from '../insuredScheme/schemeList.vue'
 export default {
@@ -59,7 +60,7 @@ export default {
     }
   },
   components: {
-    cityTemplate,salaryItems,schemeList
+    cityTemplate,payrollPeriod,salaryItems,schemeList
   }
 };
 </script>
