@@ -2,13 +2,13 @@
   <div class="editPayrollPeriod">
     <el-form :model="ruleForm" ref="ruleForm" label-width="160px">
       <el-form-item label="应税及社保月份：">
-        <el-input v-model="ruleForm.forMonth"></el-input>
+        <el-input v-model="ruleForm.forMonth" class="setWidth" type="number" min="0" max="12"></el-input><span class="setTip">  0 表示与当前出粮月份一致，其他为对应增减。例如（1：下月社保，-2上上月社保）</span>
       </el-form-item>
       <el-form-item label="计粮周期起始日：">
-        <el-input v-model="ruleForm.startDate"></el-input>
+        <el-input v-model="ruleForm.startDate" class="setWidth" type="number" min="0" max="31"></el-input><span class="setTip">  计粮周期起始日</span>
       </el-form-item>
       <el-form-item label="计粮周期截止日：">
-        <el-input v-model="ruleForm.endDate"></el-input>
+        <el-input v-model="ruleForm.endDate" class="setWidth" type="number" min="0" max="31"></el-input><span class="setTip">  计粮周期截止日，31为当月最后一天</span>
       </el-form-item>
       <el-form-item label="备注：">
         <el-input v-model="ruleForm.remarks"></el-input>
@@ -29,9 +29,9 @@ export default {
     return {
       ruleForm: {
         BUCode: "",
-        forMonth:"",
-        startDate:"",
-        endDate:"",
+        forMonth:"0",
+        startDate:"1",
+        endDate:"31",
         remarks:""
       }, //表单信息
     };
@@ -79,6 +79,12 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+.setWidth{
+  width:80px
+}
+.setTip{
+  color: #ff6600;
+}
 </style>
 
 

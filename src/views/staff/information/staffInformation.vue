@@ -247,7 +247,7 @@
         <el-input v-model="accountInfo.account" readonly="readonly"></el-input>
       </el-form-item>
       <el-form-item label="密码：" prop="password">
-        <el-input v-model="accountInfo.password"></el-input>
+        <el-input v-model="accountInfo.password" show-password></el-input>
       </el-form-item>
       <el-form-item label="关联系统管理员账户：" prop="hrCode" >
         <el-select v-model="accountInfo.hrCode" placeholder="请选择关联系统管理员" >

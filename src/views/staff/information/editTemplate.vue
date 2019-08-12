@@ -77,7 +77,7 @@
             <el-input v-model="ruleForm.account"></el-input>
           </el-form-item>
           <el-form-item label="密码：" prop="password" v-if="isShow">
-            <el-input v-model="ruleForm.password"></el-input>
+            <el-input v-model="ruleForm.password" show-password></el-input>
           </el-form-item>
           <el-form-item label="关联系统管理员账户：" prop="hrCode" v-if="isShow">
             <el-select v-model="ruleForm.hrCode" placeholder="请选择关联系统管理员" :loading="loading">

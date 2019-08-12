@@ -7,7 +7,7 @@
     </div>
     <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
       <el-tab-pane label="编辑城市" name="city">
-        <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 编辑城市</span>
+        <span slot="label"><i class="hr-icon-zinvjiaoyu"></i>所在城市</span>
         <city-template></city-template>
       </el-tab-pane>
       <el-tab-pane label="粮 期" name="payroll">

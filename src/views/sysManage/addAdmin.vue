@@ -5,7 +5,7 @@
         <el-input v-model="ruleForm.account"></el-input>
       </el-form-item>
       <el-form-item label="密码：" prop="password">
-        <el-input v-model="ruleForm.password"></el-input>
+        <el-input v-model="ruleForm.password" show-password></el-input>
       </el-form-item>
       <el-form-item label="名称：" prop="name">
         <el-input v-model="ruleForm.name"></el-input>

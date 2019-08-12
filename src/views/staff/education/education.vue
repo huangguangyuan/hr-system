@@ -14,7 +14,7 @@
       <el-table-column prop="details" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
-          <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">{{ userRight ?"编辑":"查看"}}</el-button>
           <el-button v-if="userRight"
             size="mini"
             icon="el-icon-delete"

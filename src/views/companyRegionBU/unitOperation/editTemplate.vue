@@ -14,7 +14,7 @@
         <el-input v-model="ruleForm.account"></el-input>
       </el-form-item>
       <el-form-item label="密码：" prop="password" v-if="isShow">
-        <el-input v-model="ruleForm.password"></el-input>
+        <el-input v-model="ruleForm.password" show-password></el-input>
       </el-form-item>
       <el-form-item label="国家：" v-if="isShow">
         <el-input v-model="ruleForm.country"></el-input>

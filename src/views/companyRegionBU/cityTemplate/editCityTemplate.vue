@@ -1,8 +1,8 @@
 <template>
   <div class="editCityTemplate">
     <el-form :model="ruleForm" ref="ruleForm" label-width="120px">
-      <el-form-item label="名称：">
-        <el-input v-model="ruleForm.name"></el-input>
+      <el-form-item label="所在城市：">
+        <el-input v-model="ruleForm.name" readonly="readonly" :disabled="true"></el-input>
       </el-form-item>
       <el-form-item label="描述：">
         <el-input v-model="ruleForm.remarks"></el-input>

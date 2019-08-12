@@ -3,7 +3,7 @@
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
       <el-form-item label="发起人：" prop="issueBy">
         <el-select v-model="ruleForm.issueBy" placeholder="请选择发起人">
-          <el-option v-for='(item,index) in HRadminList' :key='item.code' :label="item.name" :value="item.code"></el-option>
+          <el-option v-for='item in HRadminList' :key='item.code' :label="item.name" :value="item.code"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="发起时间：" prop="issueTime">

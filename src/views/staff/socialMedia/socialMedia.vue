@@ -10,10 +10,10 @@
       <el-table-column prop="media" label="媒体名称"></el-table-column>
       <el-table-column prop="account" label="媒体账号"></el-table-column>
       <el-table-column prop="remarks" label="备注"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="200px">
+      <el-table-column label="操作" fixed="right" width="200px" v-if="userRight">
         <template slot-scope="scope">
-          <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">编辑</el-button>
-          <el-button
+          <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">{{ userRight ?"编辑":"查看"}}</el-button>
+          <el-button v-if="userRight"
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"

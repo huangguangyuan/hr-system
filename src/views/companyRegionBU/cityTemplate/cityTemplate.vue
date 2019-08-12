@@ -1,25 +1,25 @@
 <template>
   <div class="cityTemplate">
     <div class="addBtn-wrap">
-      <el-select v-model="cityCode" placeholder="请选择城市模板" class="selectCityCode">
+      <el-select v-model="cityCode" placeholder="请选择城市模板" class="selectCityCode"  v-if='!isContent'>
         <el-option v-for="item in cityList" :key="item.code" :label="item.name" :value="item.code"></el-option>
       </el-select>
-      <el-button type="primary" @click="selectCity">确认添加</el-button>
+      <el-button type="primary" @click="selectCity" v-if='!isContent'>确认添加</el-button>
       <el-button type="primary" @click="editTemplageFun(tableData)" v-if='isContent'>修 改</el-button>
       <el-button type="danger" @click="handleDelete" v-if='isContent'>删 除</el-button>
     </div>
     <el-row :gutter="20" v-if='isContent'>
-      <el-col :span="6">
+      <!-- <el-col :span="6">
         <div class="grid-content">id：{{tableData.id}}</div>
+      </el-col> -->
+      <el-col :span="6">
+        <div class="grid-content">所在城市：<span>{{tableData.name}}</span></div>
       </el-col>
       <el-col :span="6">
-        <div class="grid-content">城市模板：{{tableData.name}}</div>
+        <div class="grid-content">创建时间：<span>{{tableData.createTime}}</span></div>
       </el-col>
-      <el-col :span="6">
-        <div class="grid-content">创建时间：{{tableData.createTime}}</div>
-      </el-col>
-      <el-col :span="6">
-        <div class="grid-content">备注：{{tableData.remarks}}</div>
+      <el-col :span="20">
+        <div class="grid-content">备注：<span>{{tableData.remarks}}</span></div>
       </el-col>
     </el-row>
     <div class="noContent" v-else>
@@ -143,6 +143,12 @@ export default {
   margin-bottom: 15px;
   border-radius: 8px;
   font-size: 14px;
+  color: #909399;
+  span{
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+  }
 }
 .selectCityCode {
   width: 220px;

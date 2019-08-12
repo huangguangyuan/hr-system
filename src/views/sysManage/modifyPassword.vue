@@ -5,7 +5,7 @@
         <el-input v-model="ruleForm.account" readonly></el-input>
       </el-form-item>
       <el-form-item label="新密码：" prop="password">
-        <el-input v-model="ruleForm.password"></el-input>
+        <el-input v-model="ruleForm.password" show-password></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确认修改</el-button>
