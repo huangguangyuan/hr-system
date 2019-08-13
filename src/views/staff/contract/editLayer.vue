@@ -7,14 +7,20 @@
       <el-form-item label="合同编号：" prop="contractNumber">
         <el-input v-model="ruleForm.contractNumber"></el-input>
       </el-form-item>
-      <el-form-item label="合同日期：" prop="contractDate">
+      <el-form-item label="合同开始日期：" prop="startDate">
         <el-date-picker
-          v-model="ruleForm.contractDate"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          value-format="yyyy-MM-dd"
+          v-model="ruleForm.startDate"
+          type="date"
+          placeholder="开始日期"
+          format="yyyy-MM-dd"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="合同结束日期：" prop="endDate">
+        <el-date-picker
+          v-model="ruleForm.endDate"
+          type="date"
+          placeholder="结束日期"
+          format="至今"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="文 件：">
@@ -70,7 +76,7 @@ export default {
         contractNumber: [
           { required: true, message: "请输入合同编号", trigger: "blur" }
         ],
-        contractDate: [{ required: true, message: "请输入合同日期", trigger: "blur" }],
+        //contractDate: [{ required: true, message: "请输入合同日期", trigger: "blur" }],
         startDate: [{ required: true, message: "入学日期", trigger: "change" }],
         endDate: [{ required: true, message: "结业日期", trigger: "change" }]
       }
@@ -86,7 +92,9 @@ export default {
       if (this.curInfo.type == "modify") {
         this.ruleForm.companyName = this.curInfo.companyName;
         this.ruleForm.contractNumber = this.curInfo.contractNumber;
-        this.ruleForm.contractDate = [this.curInfo.startDate,this.curInfo.endDate];
+        //this.ruleForm.contractDate = [this.curInfo.startDate,this.curInfo.endDate];
+        this.ruleForm.startDate = this.curInfo.startDate;
+        this.ruleForm.endDate = this.curInfo.endDate;
         this.ruleForm.remarks = this.curInfo.remarks;
       }
     },
@@ -117,15 +125,15 @@ export default {
         staffCode: this.curInfo.staffCode,
         companyName: this.ruleForm.companyName,
         contractNumber: this.ruleForm.contractNumber,
-        startDate: this.ruleForm.contractDate[0],
-        endDate: this.ruleForm.contractDate[1],
+        startDate: this.ruleForm.startDate,
+        endDate: this.ruleForm.endDate,
         remarks: this.ruleForm.remarks,
         fileSrc: this.ruleForm.fileSrc
       };
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
-          _this.$message.success("新增成功~");
+          _this.$message.success("新增成功");
         } else {
           _this.$message.error(res.data.msg);
         }
@@ -140,8 +148,8 @@ export default {
         staffCode: this.curInfo.staffCode,
         companyName: this.ruleForm.companyName,
         contractNumber: this.ruleForm.contractNumber,
-        startDate: this.ruleForm.contractDate[0],
-        endDate: this.ruleForm.contractDate[1],
+        startDate: this.ruleForm.startDate,
+        endDate: this.ruleForm.endDate,
         remarks: this.ruleForm.remarks,
         fileSrc: this.ruleForm.fileSrc
       };

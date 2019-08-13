@@ -53,7 +53,6 @@ export default {
           this.isContent = true;
           this.tableData.forMonthTxt = this.forMonthTxt(this.tableData.forMonth);
           this.tableData.endDateTxt = this.endDateTxt(this.tableData.endDate);
-          
         }
       });
     },
