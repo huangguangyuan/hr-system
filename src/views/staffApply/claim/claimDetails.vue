@@ -45,7 +45,7 @@ export default {
     // 审批流程
     this.approveHisList = this.curInfo.approveHis.map(item => {
       item.createTime = this.$toolFn.timeFormat(item.createTime);
-      item.nextOperatorName = this.nextOperator?this.nextOperator.name:'审批主管';
+      item.nextOperatorName = item.nextOperator == null?'审批主管':item.nextOperator.name;
       item.finishFlagTxt = item.finishFlag == 0?'否':'是';
       switch(item.typeId){
         case 1:

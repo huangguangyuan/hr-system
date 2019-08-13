@@ -297,6 +297,53 @@ let sidebarInfo = [
             },
         ]
     },
+    {
+        id: '120',
+        authUrl: 'null',
+        iconUrl: 'el-icon-user',
+        isMenu: 0,
+        name: '审批/结算',
+        rightCode: "staff",
+        items: [
+            {
+                id: '121',
+                authUrl: '/approvalClaim',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '报销审批',
+                rightCode: "approvalClaim",
+                items: [{}]
+            },
+            {
+                id: '122',
+                authUrl: '/approvalHolidays',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '请假审批',
+                rightCode: "approvalHolidays",
+                items: [{}]
+            },
+        ]
+    },
+    {
+        id: '130',
+        authUrl: 'null',
+        iconUrl: 'el-icon-user',
+        isMenu: 0,
+        name: '工资结算',
+        rightCode: "wages",
+        items: [
+            {
+                id: '131',
+                authUrl: '/wagesMain',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '员工配置',
+                rightCode: "wagesMain",
+                items: [{}]
+            }
+        ]
+    },
 ];
 
 export default sidebarInfo;
