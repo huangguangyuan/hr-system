@@ -7,14 +7,22 @@
       <el-form-item label="专 业：" prop="degree">
         <el-input v-model="ruleForm.degree"></el-input>
       </el-form-item>
-      <el-form-item label="入学日期-结业日期：" prop="changeDate">
+      <el-form-item label="入学日期：" prop="startDate">
         <el-date-picker
-          v-model="ruleForm.changeDate"
-          type="daterange"
-          range-separator="至"
+          v-model="ruleForm.startDate"
+          type="date"
           format='yyyy-MM-dd'
           value-format="yyyy-MM-dd"
-          placeholder="选择日期"
+          placeholder="入学日期"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="结业日期：" prop="endDate">
+        <el-date-picker
+          v-model="ruleForm.endDate"
+          type="date"
+          :format="('2100-01-01' == ruleForm.endDate?'至今':'yyyy-MM-dd')"
+          :picker-options="pickerOptions"
+          placeholder="结业日期"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="文 件：">
@@ -35,7 +43,7 @@
         <el-input v-model="ruleForm.details"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
+        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')">确定{{this.curInfo.type=="modify"?"修改":"增加"}}</el-button>
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>
@@ -53,11 +61,12 @@ export default {
         staffCode: "",
         school: "",
         degree: "",
-        changeDate: [],
         fileSrc: "",
         details: "",
-        userRight:false,
+        startDate: "",
+        endDate:"",
       }, //表单信息
+      userRight:false,
       isShow: true, //是否显示
       fileList: [],
       rules: {
@@ -67,8 +76,18 @@ export default {
         degree: [
           { required: true, message: "请选择输入专业名称", trigger: "blur" }
         ],
-        changeDate: [{ required: true, message: "入学日期 至 结业日期", trigger: "blur" }]
-      }
+        startDate: [{ required: true, message: "入学日期", trigger: "change" }],
+        endDate: [{ required: true, message: "结业日期", trigger: "change" }]
+      },
+      pickerOptions: {
+          shortcuts: [{
+            text: '至今',
+            onClick(picker) {
+              const endDate = "2100-01-01";
+              picker.$emit('pick', endDate);
+            }
+          }]
+        },
     };
   },
   mounted() {
@@ -84,9 +103,8 @@ export default {
         this.ruleForm.degree = this.curInfo.degree;
         this.ruleForm.fileSrc = this.curInfo.fileSrc;
         this.ruleForm.details = this.curInfo.details;
-        this.ruleForm.changeDate = [];
-        this.ruleForm.changeDate[0] = this.curInfo.startDate;
-        this.ruleForm.changeDate[1] = this.curInfo.endDate;
+        this.ruleForm.startDate = this.curInfo.startDate;
+        this.ruleForm.endDate = this.curInfo.endDate;
       }
     },
     // 提交表单
@@ -103,7 +121,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -116,10 +133,10 @@ export default {
         staffCode:_this.curInfo.staffCode,
         school: _this.ruleForm.school,
         degree: _this.ruleForm.degree,
-        startDate: _this.ruleForm.changeDate[0],
-        endDate: _this.ruleForm.changeDate[1],
         details: _this.ruleForm.details,
-        fileSrc: _this.ruleForm.fileSrc
+        fileSrc: _this.ruleForm.fileSrc,
+        startDate: this.$toolFn.timeFormat(_this.ruleForm.startDate),
+        endDate: this.$toolFn.timeFormat(_this.ruleForm.endDate),
       };
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
@@ -139,10 +156,10 @@ export default {
         staffCode:_this.curInfo.staffCode,
         school: _this.ruleForm.school,
         degree: _this.ruleForm.degree,
-        startDate: _this.ruleForm.changeDate[0],
-        endDate: _this.ruleForm.changeDate[1],
+        startDate: _this.$toolFn.timeFormat(_this.ruleForm.startDate),
+        endDate: _this.$toolFn.timeFormat(_this.ruleForm.endDate),
         details: _this.ruleForm.details,
-        fileSrc: _this.ruleForm.fileSrc
+        fileSrc:_this.ruleForm.fileSrc
       };
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
@@ -192,5 +209,3 @@ export default {
 <style scoped lang="scss">
 .el-upload__tip{margin-top: 0;}
 </style>
-
-

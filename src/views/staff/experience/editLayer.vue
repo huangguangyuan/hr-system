@@ -10,14 +10,23 @@
       <el-form-item label="工作性质：">
         <el-input v-model="ruleForm.jobNature"></el-input>
       </el-form-item>
-      <el-form-item label="入职日期-离职日期：" prop="changeDate">
+      
+      <el-form-item label="入职日期：" prop="startDate">
         <el-date-picker
-          v-model="ruleForm.changeDate"
-          type="daterange"
-          range-separator="至"
+          v-model="ruleForm.startDate"
+          type="date"
           format='yyyy-MM-dd'
           value-format="yyyy-MM-dd"
-          placeholder="选择日期"
+          placeholder="入职日期"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="离职日期：" prop="endDate">
+        <el-date-picker
+          v-model="ruleForm.endDate"
+          type="date"
+          :format="('2100-01-01' == ruleForm.endDate?'至今':'yyyy-MM-dd')"
+          :picker-options="pickerOptions"
+          placeholder="离职日期"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="文 件：">
@@ -38,7 +47,7 @@
         <el-input v-model="ruleForm.details"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
+        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')">确定{{this.curInfo.type=="modify"?"修改":"增加"}}</el-button>
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>
@@ -57,11 +66,12 @@ export default {
         companyName: "",
         position: "",
         jobNature:"",
-        changeDate: [],
         fileSrc: "",
         details: "",
-        userRight:true,
+        startDate: "",
+        endDate:"",
       }, //表单信息
+      userRight:true,
       isShow: true, //是否显示
       fileList: [],
       rules: {
@@ -71,8 +81,18 @@ export default {
         position: [
           { required: true, message: "请选择输入职位名称", trigger: "blur" }
         ],
-        changeDate: [{ required: true, message: "入学日期", trigger: "change" }]
-      }
+        startDate: [{ required: true, message: "入学日期", trigger: "change" }],
+        endDate: [{ required: true, message: "结业日期", trigger: "change" }]
+      },
+      pickerOptions: {
+          shortcuts: [{
+            text: '至今',
+            onClick(picker) {
+              const endDate = "2100-01-01";
+              picker.$emit('pick', endDate);
+            }
+          }]
+        },
     };
   },
   mounted() {
@@ -87,9 +107,8 @@ export default {
         this.ruleForm.position = this.curInfo.position;
         this.ruleForm.jobNature = this.curInfo.jobNature;
         this.ruleForm.details = this.curInfo.details;
-        this.ruleForm.changeDate = [];
-        this.ruleForm.changeDate[0] = this.curInfo.startDate;
-        this.ruleForm.changeDate[1] = this.curInfo.endDate;
+        this.ruleForm.startDate = this.curInfo.startDate;
+        this.ruleForm.endDate = this.curInfo.endDate;
       }
     },
     // 提交表单
@@ -106,7 +125,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -120,8 +138,8 @@ export default {
         companyName: _this.ruleForm.companyName,
         position: _this.ruleForm.position,
         jobNature: _this.ruleForm.jobNature,
-        startDate: _this.ruleForm.changeDate[0],
-        endDate: _this.ruleForm.changeDate[1],
+        startDate: this.$toolFn.timeFormat(_this.ruleForm.startDate),
+        endDate: this.$toolFn.timeFormat(_this.ruleForm.endDate),
         details: _this.ruleForm.details,
         fileSrc: _this.ruleForm.fileSrc
       };
@@ -144,8 +162,8 @@ export default {
         companyName: _this.ruleForm.companyName,
         position: _this.ruleForm.position,
         jobNature: _this.ruleForm.jobNature,
-        startDate: _this.ruleForm.changeDate[0],
-        endDate: _this.ruleForm.changeDate[1],
+        startDate: this.$toolFn.timeFormat(_this.ruleForm.startDate),
+        endDate: this.$toolFn.timeFormat(_this.ruleForm.endDate),
         details: _this.ruleForm.details,
         fileSrc: _this.ruleForm.fileSrc
       };

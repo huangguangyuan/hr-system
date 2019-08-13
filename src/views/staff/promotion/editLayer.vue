@@ -13,14 +13,22 @@
       <el-form-item label="员工职级：">
         <el-input v-model="ruleForm.staffGrade"></el-input>
       </el-form-item>
-      <el-form-item label="开始日期-结束日期：" prop="changeDate">
+      <el-form-item label="开始日期：" prop="startDate">
         <el-date-picker
-          v-model="ruleForm.changeDate"
-          type="daterange"
-          range-separator="至"
+          v-model="ruleForm.startDate"
+          type="date"
           format='yyyy-MM-dd'
           value-format="yyyy-MM-dd"
-          placeholder="选择日期"
+          placeholder="开始日期"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="结束日期：" prop="endDate">
+        <el-date-picker
+          v-model="ruleForm.endDate"
+          type="date"
+          :format="('2100-01-01' == ruleForm.endDate?'至今':'yyyy-MM-dd')"
+          :picker-options="pickerOptions"
+          placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="文 件：">
@@ -44,7 +52,7 @@
         <el-input v-model="ruleForm.details"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
+        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')">确定{{this.curInfo.type=="modify"?"修改":"增加"}}</el-button>
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>
@@ -64,11 +72,10 @@ export default {
         position: "",
         reportTo: "",
         staffGrade: "",
-        changeDate: [],
         fileSrc: "",
         details: "",
-        userRight:false,
       }, //表单信息
+      userRight:false,
       isShow: true, //是否显示
       fileList: [],
       rules: {
@@ -78,7 +85,16 @@ export default {
         position: [
           { required: true, message: "请输入职位名称", trigger: "blur" }
         ]
-      }
+      },
+      pickerOptions: {
+          shortcuts: [{
+            text: '至今',
+            onClick(picker) {
+              const endDate = "2100-01-01";
+              picker.$emit('pick', endDate);
+            }
+          }]
+        },
     };
   },
   mounted() {
@@ -111,7 +127,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -126,8 +141,8 @@ export default {
         position: _this.ruleForm.position,
         reportTo: _this.ruleForm.reportTo,
         staffGrade: _this.ruleForm.staffGrade,
-        startTime: _this.ruleForm.changeDate[0],
-        endTime: _this.ruleForm.changeDate[1],
+        startDate: _this.ruleForm.startDate,
+        endDate: _this.ruleForm.endDate,
         remarks: _this.ruleForm.details,
         fileSrc: _this.ruleForm.fileSrc
       };
@@ -151,8 +166,8 @@ export default {
         position: _this.ruleForm.position,
         reportTo: _this.ruleForm.reportTo,
         staffGrade: _this.ruleForm.staffGrade,
-        startTime: _this.ruleForm.changeDate[0],
-        endTime: _this.ruleForm.changeDate[1],
+        startDate: _this.ruleForm.startDate,
+        endDate: _this.ruleForm.endDate,
         remarks: _this.ruleForm.details,
         fileSrc: _this.ruleForm.fileSrc
       };

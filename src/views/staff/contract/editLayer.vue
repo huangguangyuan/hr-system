@@ -1,6 +1,6 @@
 <template>
   <div class="editLayer">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="140px">
       <el-form-item label="公司名称：" prop="companyName">
         <el-input v-model="ruleForm.companyName"></el-input>
       </el-form-item>
@@ -20,7 +20,8 @@
           v-model="ruleForm.endDate"
           type="date"
           placeholder="结束日期"
-          format="至今"
+          :format="('2100-01-01' == ruleForm.endDate?'至今':'yyyy-MM-dd')"
+          :picker-options="pickerOptions"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="文 件：">
@@ -44,7 +45,7 @@
         <el-input v-model="ruleForm.remarks"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
+        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')">确定{{this.curInfo.type=="modify"?"修改":"增加"}}</el-button>
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>
@@ -62,11 +63,12 @@ export default {
         staffCode: "",
         companyName: "",
         contractNumber: "",
-        contractDate: "",
+        startDate: "",
+        endDate:"",
         fileSrc: "",
         remarks: "",
-        userRight:false
       }, //表单信息
+      userRight:false,
       isShow: true, //是否显示
       fileList: [],
       rules: {
@@ -76,10 +78,18 @@ export default {
         contractNumber: [
           { required: true, message: "请输入合同编号", trigger: "blur" }
         ],
-        //contractDate: [{ required: true, message: "请输入合同日期", trigger: "blur" }],
-        startDate: [{ required: true, message: "入学日期", trigger: "change" }],
-        endDate: [{ required: true, message: "结业日期", trigger: "change" }]
-      }
+        startDate: [{ required: true, message: "合同开始日期", trigger: "change" }],
+        endDate: [{ required: true, message: "合同结束日期", trigger: "change" }]
+      },
+      pickerOptions: {
+          shortcuts: [{
+            text: '至今',
+            onClick(picker) {
+              const endDate = "2100-01-01";
+              picker.$emit('pick', endDate);
+            }
+          }]
+        },
     };
   },
   mounted() {
@@ -92,7 +102,6 @@ export default {
       if (this.curInfo.type == "modify") {
         this.ruleForm.companyName = this.curInfo.companyName;
         this.ruleForm.contractNumber = this.curInfo.contractNumber;
-        //this.ruleForm.contractDate = [this.curInfo.startDate,this.curInfo.endDate];
         this.ruleForm.startDate = this.curInfo.startDate;
         this.ruleForm.endDate = this.curInfo.endDate;
         this.ruleForm.remarks = this.curInfo.remarks;
@@ -112,7 +121,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

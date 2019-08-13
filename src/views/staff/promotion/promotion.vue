@@ -12,7 +12,7 @@
       <el-table-column prop="reportTo" label="上级"></el-table-column>
       <el-table-column prop="staffGrade" label="员工职级"></el-table-column>
       <el-table-column prop="startDate" label="入职时间"></el-table-column>
-      <el-table-column prop="endDate" label="离职时间"></el-table-column>
+      <el-table-column prop="endDateTxt" label="离职时间"></el-table-column>
       <el-table-column prop="remarks" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px" v-if="userRight">
         <template slot-scope="scope">
@@ -37,7 +37,7 @@
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     <!-- 添加 -->
-    <el-dialog title="添加晋升记录" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+    <el-dialog :title="this.curInfo.type=='modify'?'修改晋升记录':'增加晋升记录'"  :visible.sync="isShowAddAccess" :close-on-click-modal="false">
       <editLayer v-if="isShowAddAccess" :curInfo="curInfo" :userRight_props="userRight" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>
@@ -81,7 +81,10 @@ export default {
             item.startDate = _this.$toolFn
               .timeFormat(item.startDate)
               .slice(0, 10);
-            item.endDate = _this.$toolFn.timeFormat(item.endDate).slice(0, 10);
+            item.endDateTxt = item.endDate = _this.$toolFn.timeFormat(item.endDate).slice(0, 10);
+            if (item.endDate == "2100-01-01"){
+              item.endDateTxt = "至今";
+            }
             return item;
           });
         })

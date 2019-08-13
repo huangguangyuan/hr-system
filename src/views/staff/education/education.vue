@@ -10,7 +10,7 @@
       <el-table-column prop="school" label="学校"></el-table-column>
       <el-table-column prop="degree" label="學歷及主修"></el-table-column>
       <el-table-column prop="startDate" label="入校时间"></el-table-column>
-      <el-table-column prop="endDate" label="结业时间"></el-table-column>
+      <el-table-column prop="endDateTxt" label="结业时间"></el-table-column>
       <el-table-column prop="details" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
@@ -35,7 +35,7 @@
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     <!-- 添加学历 -->
-    <el-dialog title="添加学历" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+    <el-dialog :title="this.curInfo.type=='modify'?'修改学历':'增加学历'" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
       <editLayer v-if="isShowAddAccess"
         :curInfo="curInfo"
         :userRight_props="userRight"
@@ -79,10 +79,11 @@ export default {
         .then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data.map(item => {
-            item.startDate = _this.$toolFn
-              .timeFormat(item.startDate)
-              .slice(0, 10);
-            item.endDate = _this.$toolFn.timeFormat(item.endDate).slice(0, 10);
+            item.startDate = _this.$toolFn.timeFormat(item.startDate).slice(0, 10);
+            item.endDateTxt = item.endDate = _this.$toolFn.timeFormat(item.endDate).slice(0, 10);
+            if (item.endDate == "2100-01-01"){
+              item.endDateTxt = "至今";
+            }
             return item;
           });
         })

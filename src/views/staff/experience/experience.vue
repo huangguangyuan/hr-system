@@ -11,7 +11,7 @@
       <el-table-column prop="position" label="职位"></el-table-column>
       <el-table-column prop="jobNature" label="工作性质"></el-table-column>
       <el-table-column prop="startDate" label="入职时间"></el-table-column>
-      <el-table-column prop="endDate" label="离职时间"></el-table-column>
+      <el-table-column prop="endDateTxt" label="离职时间"></el-table-column>
       <el-table-column prop="details" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
@@ -36,7 +36,7 @@
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     <!-- 添加学历 -->
-    <el-dialog title="添加工作经历" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+    <el-dialog :title="this.curInfo.type=='modify'?'修改工作经历':'增加工作经历'" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
       <editLayer :userRight_props="userRight" v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>
@@ -80,7 +80,10 @@ export default {
             item.startDate = _this.$toolFn
               .timeFormat(item.startDate)
               .slice(0, 10);
-            item.endDate = _this.$toolFn.timeFormat(item.endDate).slice(0, 10);
+            item.endDateTxt = item.endDate = _this.$toolFn.timeFormat(item.endDate).slice(0, 10);
+            if (item.endDate == "2100-01-01"){
+              item.endDateTxt = "至今";
+            }
             return item;
           });
         })
