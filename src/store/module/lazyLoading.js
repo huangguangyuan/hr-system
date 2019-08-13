@@ -170,6 +170,26 @@ const dynamicRouter = [
         name: 'payrollMain',
         component: resolve => require(['@/views/payroll/payrollMain.vue'], resolve),
     },
+    // <==========审批/结算==========>
+    // 报销审批
+    {
+        path: '/approvalClaim',
+        name: 'approvalClaim',
+        component: resolve => require(['@/views/approval/approvalClaim.vue'], resolve),
+    },
+    // 假期审批
+    {
+        path: '/approvalHolidays',
+        name: 'approvalHolidays',
+        component: resolve => require(['@/views/approval/approvalHolidays.vue'], resolve),
+    },
+    // <==========工资结算==========>
+    // 员工配置
+    {
+        path: '/wagesMain',
+        name: 'wagesMain',
+        component: resolve => require(['@/views/wages/wagesMain.vue'], resolve),
+    },
 
 ]
 

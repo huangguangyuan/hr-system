@@ -1,5 +1,5 @@
 <template>
-  <div class="holidaysApplyDetails">
+  <div class="approvalHolidaysDetails">
     <el-table :data="tableData" stripe>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="startDate" label="请假开始时间"></el-table-column>
@@ -18,17 +18,48 @@
         </el-card>
       </el-timeline-item>
     </el-timeline>
+    <!-- 审批 -->
+    <el-form
+      :model="ruleForm"
+      :rules="rules"
+      ref="ruleForm"
+      label-width="100px"
+      class="demo-ruleForm"
+    >
+      <el-form-item label="是否批准：" prop="approve">
+        <el-radio-group v-model="ruleForm.approve">
+          <el-radio label="1">批准</el-radio>
+          <el-radio label="2">不批准</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="备注：">
+        <el-input type="textarea" v-model="ruleForm.remarks"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitForm('ruleForm')">提 交</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 <script>
 export default {
-  name: "holidaysApplyDetails",
+  name: "approvalHolidaysDetails",
+  inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
       tableData: [],
       getClaimList: [],
       approveHisList:[],//审批流程
+      ruleForm: {
+        approve: "",
+        remarks: ""
+      },
+      rules: {
+        approve: [
+          { required: true, message: "请选择是否批准", trigger: "change" }
+        ]
+      }
     };
   },
   mounted() {
@@ -74,7 +105,7 @@ export default {
       }
       return item;
     });
-    console.log(this.approveHisList);
+    
   },
   methods: {
     // 数据转换
@@ -91,11 +122,42 @@ export default {
       });
       return p;
     },
+    // 提交表单
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.approveFun();
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    // 审批
+    approveFun(){
+      var reqUrl = '/server/api/v1/staff/holidaysApply/approve';
+      var data = {
+        hrCode:this.curInfo.hrCode,
+        holidaysApplyCode:this.curInfo.code,
+        approve:parseInt(this.ruleForm.approve),
+        remarks:this.ruleForm.remarks
+      }
+      
+      this.$http.post(reqUrl,data).then(res => {
+        if(res.data.code == 0){
+          this.reload();
+          this.$message.success(res.data.msg);
+        }else{
+          this.reload();
+          this.$message.error(res.data.msg);
+        }
+      })
+    }
   }
 };
 </script>
 <style scoped lang="scss">
-.holidaysApplyDetails{
+.approvalHolidaysDetails{
   .my-card{
     p{
       margin-top: 10px;

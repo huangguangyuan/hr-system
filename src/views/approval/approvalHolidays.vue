@@ -1,13 +1,11 @@
 <template>
-  <div class="holidaysApplyList">
-    <el-button-group>
-      <el-button type="primary" icon="el-icon-edit" @click="addFun">请假申请</el-button>
-    </el-button-group>
+  <div class="approvalHolidays wrap">
+    <h5 class="title-h5">请假列表</h5>
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
       <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="createTime" label="创建日期" width="200"></el-table-column>
+      <el-table-column prop="createTime" label="创建日期"></el-table-column>
       <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column prop="totalAmount" label="金 额"></el-table-column>
       <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column>
@@ -18,12 +16,7 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
-          >查看详情</el-button>
-          <el-button
-            size="mini"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.$index, scope.row)"
-          >撤销请假</el-button>
+          >审 批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -38,22 +31,17 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
-    <!-- 请假申请表单 -->
-    <el-dialog title="请假申请表单" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
-    </el-dialog>
     <!-- 请假表单详情 -->
     <el-dialog title="请假申请详情" :visible.sync="isShowDetails" :close-on-click-modal="false">
-      <holidays-apply-details v-if="isShowDetails" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></holidays-apply-details>
+      <approval-holidays-details v-if="isShowDetails" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></approval-holidays-details>
     </el-dialog>
   </div>
 </template>
 <script>
-import editLayer from "./editLayer.vue";
-import holidaysApplyDetails from "./holidaysApplyDetails.vue";
+import approvalHolidaysDetails from "./approvalHolidaysDetails.vue";
 let id = 0;
 export default {
-  name: "holidaysApplyList",
+  name: "approvalHolidays",
   inject: ["reload"],
   data() {
     return {
@@ -62,20 +50,19 @@ export default {
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
       curInfo: {},
-      isShowAddAccess: false, //是否显示新增权限页面
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      staffCode: "7ef51e60-9e01-11e9-bde5-6d1157612d12"
+      hrCode: "8f6100f0-9714-11e9-9069-bf35c07c51d4"
     };
   },
   mounted() {
-    this.getData(this.staffCode);
+    this.getData(this.hrCode);
   },
   methods: {
     //获取数据列表
-    getData(staffCode) {
-      var reqUrl = "/server/api/v1/staff/holidaysApply/staffHolidaysApplyList";
-      var myData = { staffCode: staffCode };
+    getData(hrCode) {
+      var reqUrl = "/server/api/v1/staff/holidaysApply/hrSysHolidaysApplyList";
+      var myData = { hrCode: hrCode };
       this.isShowLoading = true;
       this.$http
         .post(reqUrl, myData)
@@ -98,45 +85,13 @@ export default {
     },
     // 接收子组件发送信息
     listenIsShowMask(res) {
-      this.isShowAddAccess = false;
       this.isShowDetails = false;
-    },
-    // 新增
-    addFun() {
-      this.isShowAddAccess = true;
-      this.curInfo.staffCode = this.staffCode;
     },
     // 查看详情
     handleDetails(index, res){
       this.isShowDetails = true;
       this.curInfo = res;
-    },
-    // 删除
-    handleDelete(index, res) {
-      this
-        .$confirm("是否撤销该请假申请?", "提 示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-        .then(() => {
-          this.$http
-            .post("/server/api/v1/staff/holidaysApply/recallApply", { holidaysApplyCode: res.code,staffCode:res.staffCode })
-            .then(res => {
-              if(res.data.code == 0){
-                this.reload();
-                this.$message.success("撤销成功！");
-              }else{
-                this.$message.error(res.data.msg);
-              }
-            });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
+      this.curInfo.hrCode = this.hrCode;
     }
   },
   computed: {
@@ -154,11 +109,12 @@ export default {
     }
   },
   components: {
-    editLayer,holidaysApplyDetails
+    approvalHolidaysDetails
   }
 };
 </script>
 <style scoped lang="scss">
+.title-h5{font-size: 22px;font-weight: 500;}
 .pageInfo {
   margin-top: 20px;
   display: flex;

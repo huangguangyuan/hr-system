@@ -5,6 +5,7 @@ import accessModule from './module/accessModule.js'
 import staffModule from './module/staffModule.js'
 import BUModule from './module/BUModule.js'
 import payrollModule from './module/payrollModule.js'
+import wagesModule from './module/wagesModule.js'
 
 export default {
     projectModul,
@@ -13,5 +14,6 @@ export default {
     accessModule,
     staffModule,
     BUModule,
-    payrollModule
+    payrollModule,
+    wagesModule
 }

@@ -16,7 +16,8 @@ let store = new Vuex.Store({
         accessModule: val.accessModule,
         staffModule:val.staffModule,
         BUModule:val.BUModule,
-        payrollModule:val.payrollModule
+        payrollModule:val.payrollModule,
+        wagesModule:val.wagesModule
       }
     }
   })]
