@@ -50,9 +50,9 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id" border>
       <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="id" label="ID"></el-table-column>
+      <!-- <el-table-column prop="id" label="ID"></el-table-column> -->
       <el-table-column prop="description" label="描述"></el-table-column>
-      <el-table-column prop="isStatus" label="状态"></el-table-column>
+      <!-- <el-table-column prop="isStatus" label="状态"></el-table-column> -->
       <el-table-column label="操作" fixed="right" width="500px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">编辑</el-button>

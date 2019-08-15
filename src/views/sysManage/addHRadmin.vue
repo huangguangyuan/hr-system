@@ -11,21 +11,6 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="账户名：" prop="account">
-        <el-input v-model="ruleForm.account"></el-input>
-      </el-form-item>
-      <el-form-item label="密码：" prop="password">
-        <el-input v-model="ruleForm.password" show-password></el-input>
-      </el-form-item>
-      <el-form-item label="名称：" prop="name">
-        <el-input v-model="ruleForm.name"></el-input>
-      </el-form-item>
-      <el-form-item label="手机：" prop="mobile">
-        <el-input v-model="ruleForm.mobile"></el-input>
-      </el-form-item>
-      <el-form-item label="邮箱：" prop="email">
-        <el-input v-model="ruleForm.email"></el-input>
-      </el-form-item>
       <el-form-item label="管理员角色：" prop="lev">
         <el-select v-model="ruleForm.lev" placeholder="请选择管理员类型">
           <el-option label="hr系统管理员" value="301"></el-option>
@@ -46,6 +31,22 @@
           <el-radio label="3">公司</el-radio>
         </el-radio-group>
       </el-form-item>
+      <el-form-item label="账户名：" prop="account">
+        <el-input v-model="ruleForm.account"></el-input>
+      </el-form-item>
+      <el-form-item label="密码：" prop="password">
+        <el-input v-model="ruleForm.password" show-password></el-input>
+      </el-form-item>
+      <el-form-item label="名称：" prop="name">
+        <el-input v-model="ruleForm.name"></el-input>
+      </el-form-item>
+      <el-form-item label="手机：" prop="mobile">
+        <el-input v-model="ruleForm.mobile"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱：" prop="email">
+        <el-input v-model="ruleForm.email"></el-input>
+      </el-form-item>
+
       <el-form-item label="状态：" prop="status">
         <el-radio-group v-model="ruleForm.status">
           <el-radio label="1">启用</el-radio>
@@ -141,7 +142,6 @@ export default {
         if (valid) {
           _this.addAmdinFn();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
