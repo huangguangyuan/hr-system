@@ -105,6 +105,7 @@ export default {
         this.ruleForm.startDate = this.curInfo.startDate;
         this.ruleForm.endDate = this.curInfo.endDate;
         this.ruleForm.remarks = this.curInfo.remarks;
+        console.log(this.ruleForm);
       }
     },
     // 提交表单

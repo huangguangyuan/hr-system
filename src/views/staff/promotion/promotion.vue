@@ -11,8 +11,8 @@
       <el-table-column prop="salary" label="工资"></el-table-column>
       <el-table-column prop="reportTo" label="上级"></el-table-column>
       <el-table-column prop="staffGrade" label="员工职级"></el-table-column>
-      <el-table-column prop="startDate" label="入职时间"></el-table-column>
-      <el-table-column prop="endDateTxt" label="离职时间"></el-table-column>
+      <el-table-column prop="startDate" label="开始日期"></el-table-column>
+      <el-table-column prop="endDateTxt" label="结束日期"></el-table-column>
       <el-table-column prop="remarks" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px" v-if="userRight">
         <template slot-scope="scope">
@@ -73,14 +73,10 @@ export default {
       var reqUrl = "/server/api/v1/staff/promotion/getAll";
       var myData = { staffCode: staffCode };
       _this.isShowLoading = true;
-      _this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      _this.$http.post(reqUrl, myData).then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data.map(item => {
-            item.startDate = _this.$toolFn
-              .timeFormat(item.startDate)
-              .slice(0, 10);
+            item.startDate = _this.$toolFn.timeFormat(item.startDate).slice(0, 10);
             item.endDateTxt = item.endDate = _this.$toolFn.timeFormat(item.endDate).slice(0, 10);
             if (item.endDate == "2100-01-01"){
               item.endDateTxt = "至今";

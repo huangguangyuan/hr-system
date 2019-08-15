@@ -16,7 +16,6 @@
           v-model="ruleForm.startDate"
           type="date"
           format='yyyy-MM-dd'
-          value-format="yyyy-MM-dd"
           placeholder="入职日期"
         ></el-date-picker>
       </el-form-item>

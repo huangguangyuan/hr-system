@@ -7,7 +7,7 @@
       <el-form-item label="工 资：" prop="salary">
         <el-input v-model="ruleForm.salary"></el-input>
       </el-form-item>
-      <el-form-item label="上 级：">
+      <el-form-item label="上 级：" prop="reportTo">
         <el-input v-model="ruleForm.reportTo"></el-input>
       </el-form-item>
       <el-form-item label="员工职级：">
@@ -18,7 +18,6 @@
           v-model="ruleForm.startDate"
           type="date"
           format='yyyy-MM-dd'
-          value-format="yyyy-MM-dd"
           placeholder="开始日期"
         ></el-date-picker>
       </el-form-item>
@@ -105,13 +104,15 @@ export default {
     // 初始化
     initializeFun() {
       if (this.curInfo.type == "modify") {
-        this.ruleForm.companyName = this.curInfo.companyName;
         this.ruleForm.position = this.curInfo.position;
-        this.ruleForm.jobNature = this.curInfo.jobNature;
-        this.ruleForm.startTime = this.curInfo.startDate;
+        this.ruleForm.reportTo = this.curInfo.reportTo;
+        this.ruleForm.salary = this.curInfo.salary;
+        this.ruleForm.staffGrade = this.curInfo.staffGrade;
+        this.ruleForm.startDate = this.curInfo.startDate;
         this.ruleForm.endDate = this.curInfo.endDate;
         this.ruleForm.details = this.curInfo.details;
       }
+      console.log(this.ruleForm);
     },
     // 提交表单
     submitForm(formName) {
