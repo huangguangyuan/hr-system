@@ -75,10 +75,11 @@ export default {
         .then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data.map(item => {
-            item.startDate = _this.$toolFn
-              .timeFormat(item.startDate)
-              .slice(0, 10);
-            item.endDate = _this.$toolFn.timeFormat(item.endDate).slice(0, 10);
+            item.startDate = _this.$toolFn.timeFormat(item.startDate).slice(0, 10);
+            item.endDateTxt = item.endDate = _this.$toolFn.timeFormat(item.endDate).slice(0, 10);
+            if (item.endDate == "2100-01-01"){
+              item.endDateTxt = "至今";
+            }
             return item;
           });
         })

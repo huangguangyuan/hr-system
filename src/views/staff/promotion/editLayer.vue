@@ -70,6 +70,8 @@ export default {
         salary: "",
         position: "",
         reportTo: "",
+        startDate:"",
+        endDate:"",
         staffGrade: "",
         fileSrc: "",
         details: "",
@@ -110,9 +112,9 @@ export default {
         this.ruleForm.staffGrade = this.curInfo.staffGrade;
         this.ruleForm.startDate = this.curInfo.startDate;
         this.ruleForm.endDate = this.curInfo.endDate;
-        this.ruleForm.details = this.curInfo.details;
+        this.ruleForm.details = this.curInfo.remarks;
       }
-      console.log(this.ruleForm);
+      //console.log(this.ruleForm);
     },
     // 提交表单
     submitForm(formName) {
@@ -142,8 +144,8 @@ export default {
         position: _this.ruleForm.position,
         reportTo: _this.ruleForm.reportTo,
         staffGrade: _this.ruleForm.staffGrade,
-        startDate: _this.ruleForm.startDate,
-        endDate: _this.ruleForm.endDate,
+        startDate: _this.$toolFn.timeFormat(_this.ruleForm.startDate).slice(0, 10),
+        endDate: _this.$toolFn.timeFormat(_this.ruleForm.endDate).slice(0, 10),
         remarks: _this.ruleForm.details,
         fileSrc: _this.ruleForm.fileSrc
       };
@@ -167,8 +169,8 @@ export default {
         position: _this.ruleForm.position,
         reportTo: _this.ruleForm.reportTo,
         staffGrade: _this.ruleForm.staffGrade,
-        startDate: _this.ruleForm.startDate,
-        endDate: _this.ruleForm.endDate,
+        startDate: _this.$toolFn.timeFormat(_this.ruleForm.startDate).slice(0, 10),
+        endDate: _this.$toolFn.timeFormat(_this.ruleForm.endDate).slice(0, 10),
         remarks: _this.ruleForm.details,
         fileSrc: _this.ruleForm.fileSrc
       };

@@ -105,7 +105,6 @@ export default {
         this.ruleForm.startDate = this.curInfo.startDate;
         this.ruleForm.endDate = this.curInfo.endDate;
         this.ruleForm.remarks = this.curInfo.remarks;
-        console.log(this.ruleForm);
       }
     },
     // 提交表单
@@ -131,13 +130,13 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/staff/contract/add";
       var data = {
-        staffCode: this.curInfo.staffCode,
-        companyName: this.ruleForm.companyName,
-        contractNumber: this.ruleForm.contractNumber,
-        startDate: this.ruleForm.startDate,
-        endDate: this.ruleForm.endDate,
-        remarks: this.ruleForm.remarks,
-        fileSrc: this.ruleForm.fileSrc
+        staffCode: _this.curInfo.staffCode,
+        companyName: _this.ruleForm.companyName,
+        contractNumber: _this.ruleForm.contractNumber,
+        startDate: _this.$toolFn.timeFormat(_this.ruleForm.startDate).slice(0, 10),
+        endDate: _this.$toolFn.timeFormat(_this.ruleForm.endDate).slice(0, 10),
+        remarks: _this.ruleForm.remarks,
+        fileSrc: _this.ruleForm.fileSrc
       };
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
@@ -154,13 +153,13 @@ export default {
       var reqUrl = "/server/api/v1/staff/contract/update";
       var data = {
         id: _this.curInfo.id,
-        staffCode: this.curInfo.staffCode,
-        companyName: this.ruleForm.companyName,
-        contractNumber: this.ruleForm.contractNumber,
-        startDate: this.ruleForm.startDate,
-        endDate: this.ruleForm.endDate,
-        remarks: this.ruleForm.remarks,
-        fileSrc: this.ruleForm.fileSrc
+        staffCode: _this.curInfo.staffCode,
+        companyName: _this.ruleForm.companyName,
+        contractNumber: _this.ruleForm.contractNumber,
+        startDate: _this.$toolFn.timeFormat(_this.ruleForm.startDate).slice(0, 10),
+        endDate: _this.$toolFn.timeFormat(_this.ruleForm.endDate).slice(0, 10),
+        remarks: _this.ruleForm.remarks,
+        fileSrc: _this.ruleForm.fileSrc
       };
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {

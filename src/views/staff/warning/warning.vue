@@ -126,6 +126,7 @@ export default {
       this.isShowAddAccess = true;
       this.curInfo = res;
       this.curInfo.type = "modify";
+      this.curInfo.BUCode = this.staffInfo.BUCode;
     },
     // 删除单个
     handleDelete(index, res) {

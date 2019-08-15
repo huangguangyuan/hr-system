@@ -34,9 +34,6 @@
           >上传文件格式为：'.jpg','.png','.gif','.csv','.csv','.xlsx','.xls','.docx','.doc'</div>
         </el-upload>
       </el-form-item>
-      <el-form-item label="备 注：">
-        <el-input v-model="ruleForm.details"></el-input>
-      </el-form-item>
       <el-form-item>
         <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
         <el-button @click="cancelFn">取 消</el-button>
@@ -85,11 +82,10 @@ export default {
     initializeFun() {
       this.getHRadminList();
       if (this.curInfo.type == "modify") {
-        this.ruleForm.school = this.curInfo.school;
-        this.ruleForm.degree = this.curInfo.degree;
-        this.ruleForm.startDate = this.curInfo.startDate;
-        this.ruleForm.endDate = this.curInfo.endDate;
-        this.ruleForm.details = this.curInfo.details;
+        this.ruleForm.issueTime = this.curInfo.issueTime;
+        this.ruleForm.issueBy = this.curInfo.issueBy;
+        this.ruleForm.fileSrc = this.curInfo.fileSrc;
+        this.ruleForm.contents = this.curInfo.contents;
       }
     },
     // 获取HR管理员列表
@@ -116,7 +112,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
