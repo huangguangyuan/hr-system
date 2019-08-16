@@ -6,11 +6,10 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <el-table-column prop="id" label="ID"></el-table-column>
+      <!-- <el-table-column prop="id" label="ID"></el-table-column> -->
       <el-table-column prop="createTime" label="创建日期"></el-table-column>
-      <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
-      <el-table-column prop="totalAmount" label="结算金额"></el-table-column>
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column prop="totalAmount" label="结算金额"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button
@@ -119,7 +118,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          console.log({ claimCode: res.code,staffCode:res.staffCode });
+          //console.log({ claimCode: res.code,staffCode:res.staffCode });
           this.$http
             .post("/server/api/v1/staff/claim/recallApply", { claimCode: res.code,staffCode:res.staffCode })
             .then(res => {

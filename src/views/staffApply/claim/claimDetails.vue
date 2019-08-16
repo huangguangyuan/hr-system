@@ -1,13 +1,23 @@
 <template>
   <div class="claimDetails">
     <el-table :data="tableData" stripe>
-      <el-table-column prop="id" label="ID"></el-table-column>
+      <!-- <el-table-column prop="id" label="ID"></el-table-column> -->
       <el-table-column prop="title" label="报销项目名称"></el-table-column>
       <el-table-column prop="amount" label="报销金额"></el-table-column>
       <el-table-column prop="typeIdTxt" label="报销类型"></el-table-column>
       <el-table-column prop="remarks" label="备 注"></el-table-column>
     </el-table>
-    <el-divider></el-divider>
+    
+    <div class="stepSet">
+      <el-divider content-position="left">审批流程</el-divider>
+        <el-steps :active="step" align-center >
+          <el-step title="申请"></el-step>
+          <el-step title="主管审批"></el-step>
+          <el-step title="人事审批"></el-step>
+          <el-step title="财务审批"></el-step>
+          <el-step title="结算（完成）"></el-step>
+        </el-steps>
+    </div>
     <el-timeline>
       <el-timeline-item v-for='item in approveHisList' :key='item.id' :timestamp="item.createTime" placement="top">
         <el-card class="my-card">
@@ -29,6 +39,7 @@ export default {
       tableData: [],//数据列表
       getClaimList: [],//审批类型
       approveHisList:[],//审批流程
+      step:1
     };
   },
   mounted() {
@@ -40,6 +51,11 @@ export default {
         return item;
       });
       this.tableData = this.curInfo.details;
+      console.log(this.tableData);
+      this.step = this.curInfo.status > 5?5:this.curInfo.status;
+      if(this.curInfo.status == 999){
+        this.step = 0;
+      }
     });
 
     // 审批流程
@@ -89,13 +105,22 @@ export default {
   }
 };
 </script>
-<style scoped lang="scss">
+<style lang="scss">
 .claimDetails{
   .my-card{
     p{
       margin-top: 10px;
     }
   }
+  .stepSet{
+    width: 100%;margin: 50px auto 30px;
+
+  }
+  .el-step__title{
+      font-size: 14px;
+      font-weight: normal;
+  }
+
 }
 </style>
 
