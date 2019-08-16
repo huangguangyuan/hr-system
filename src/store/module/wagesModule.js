@@ -1,7 +1,7 @@
 // <--------工资模块-------->
 let wagesModule = {
     state: {
-        wagesKey:'staffList',
+        wagesKey:'wagesStaffList',
         wagesInfo:{}
     },
     mutations: {

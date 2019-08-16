@@ -183,6 +183,18 @@ const dynamicRouter = [
         name: 'approvalHolidays',
         component: resolve => require(['@/views/approval/approvalHolidays.vue'], resolve),
     },
+    // 报销结算
+    {
+        path: '/balanceClaim',
+        name: 'balanceClaim',
+        component: resolve => require(['@/views/balance/balanceClaim.vue'], resolve),
+    },
+    // 请假结算
+    {
+        path: '/balanceHolidays',
+        name: 'balanceHolidays',
+        component: resolve => require(['@/views/balance/balanceHolidays.vue'], resolve),
+    },
     // <==========工资结算==========>
     // 员工配置
     {

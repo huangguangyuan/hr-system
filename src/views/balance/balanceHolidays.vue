@@ -1,13 +1,15 @@
 <template>
-  <div class="approvalClaim wrap">
-    <h5 class="title-h5">报销列表</h5>
+  <div class="approvalHolidays wrap">
+    <h5 class="title-h5">请假结算列表</h5>
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
       <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="createTime" label="创建日期"></el-table-column>
+      <el-table-column prop="createTime" label="创建日期" width="200"></el-table-column>
       <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
-      <el-table-column prop="totalAmount" label="结算金额"></el-table-column>
+      <el-table-column prop="totalDay" label="请假天数"></el-table-column>
+      <el-table-column prop="totalAmount" label="金 额"></el-table-column>
+      <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column>
       <el-table-column prop="nextStepTip" label="下一步提示"></el-table-column>
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
@@ -16,7 +18,7 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
-          >审 批</el-button>
+          >结 算</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -31,17 +33,17 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
-    <!-- 申请表单详情 -->
-    <el-dialog title="报销申请详情" :visible.sync="isShowDetails" :close-on-click-modal="false">
-      <approval-claim-details v-if="isShowDetails" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></approval-claim-details>
+    <!-- 请假表单详情 -->
+    <el-dialog title="请假申请详情" :visible.sync="isShowDetails" :close-on-click-modal="false">
+      <balance-holidays-details v-if="isShowDetails" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></balance-holidays-details>
     </el-dialog>
   </div>
 </template>
 <script>
-import approvalClaimDetails from "./approvalClaimDetails.vue";
+import balanceHolidaysDetails from "./balanceHolidaysDetails.vue";
 let id = 0;
 export default {
-  name: "approvalClaim",
+  name: "approvalHolidays",
   inject: ["reload"],
   data() {
     return {
@@ -52,7 +54,7 @@ export default {
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      hrCode: "b0886660-9714-11e9-9069-bf35c07c51d4"
+      hrCode: "baa7b350-96f4-11e9-9069-bf35c07c51d4"
     };
   },
   mounted() {
@@ -61,7 +63,7 @@ export default {
   methods: {
     //获取数据列表
     getData(hrCode) {
-      var reqUrl = "/server/api/v1/staff/claim/hrSysClaimList";
+      var reqUrl = "/server/api/v1/staff/holidaysApply/holidaysApplyListBalance";
       var myData = { hrCode: hrCode };
       this.isShowLoading = true;
       this.$http
@@ -70,7 +72,8 @@ export default {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
+            item.isBalanceTxt = this.isBalance == 1?'是':'否';
+            item.isWithpayTxt = this.isBalance == 1?'是':'否';
             return item;
           });
           this.total = this.tableData.length;
@@ -109,7 +112,7 @@ export default {
     }
   },
   components: {
-    approvalClaimDetails
+    balanceHolidaysDetails
   }
 };
 </script>
@@ -122,16 +125,6 @@ export default {
   p {
     font-size: 14px;
     margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  .el-input-group {
-    width: 500px;
   }
 }
 

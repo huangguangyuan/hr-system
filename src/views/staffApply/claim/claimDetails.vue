@@ -11,8 +11,8 @@
     <el-timeline>
       <el-timeline-item v-for='item in approveHisList' :key='item.id' :timestamp="item.createTime" placement="top">
         <el-card class="my-card">
-          <p>下一级审批：{{item.nextOperatorName}}</p>
-          <p>审批员等级：{{item.nextOperatorLev}}</p>
+          <p>操作员：{{item.operatorUser.name}}</p>
+          <p>操作行为：{{item.operatorUser.tip}}</p>
           <p>审批类型：{{item.typeIdTxt}}</p>
           <p>是否完结：{{item.finishFlagTxt}}</p>
         </el-card>
@@ -45,7 +45,6 @@ export default {
     // 审批流程
     this.approveHisList = this.curInfo.approveHis.map(item => {
       item.createTime = this.$toolFn.timeFormat(item.createTime);
-      item.nextOperatorName = item.nextOperator == null?'审批主管':item.nextOperator.name;
       item.finishFlagTxt = item.finishFlag == 0?'否':'是';
       switch(item.typeId){
         case 1:

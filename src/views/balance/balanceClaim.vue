@@ -1,6 +1,6 @@
 <template>
-  <div class="approvalClaim wrap">
-    <h5 class="title-h5">报销列表</h5>
+  <div class="settlementClaim wrap">
+    <h5 class="title-h5">结算列表</h5>
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
@@ -16,7 +16,7 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
-          >审 批</el-button>
+          >结 算</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -33,15 +33,19 @@
     </div>
     <!-- 申请表单详情 -->
     <el-dialog title="报销申请详情" :visible.sync="isShowDetails" :close-on-click-modal="false">
-      <approval-claim-details v-if="isShowDetails" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></approval-claim-details>
+      <balance-claim-details
+        v-if="isShowDetails"
+        :curInfo="curInfo"
+        v-on:listenIsShowMask="listenIsShowMask"
+      ></balance-claim-details>
     </el-dialog>
   </div>
 </template>
 <script>
-import approvalClaimDetails from "./approvalClaimDetails.vue";
+import balanceClaimDetails from "./balanceClaimDetails.vue";
 let id = 0;
 export default {
-  name: "approvalClaim",
+  name: "settlementClaim",
   inject: ["reload"],
   data() {
     return {
@@ -50,9 +54,9 @@ export default {
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
       curInfo: {},
-      isShowDetails:false,//是否显示表单详情
+      isShowDetails: false, //是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      hrCode: "b0886660-9714-11e9-9069-bf35c07c51d4"
+      hrCode: "baa7b350-96f4-11e9-9069-bf35c07c51d4"
     };
   },
   mounted() {
@@ -61,7 +65,7 @@ export default {
   methods: {
     //获取数据列表
     getData(hrCode) {
-      var reqUrl = "/server/api/v1/staff/claim/hrSysClaimList";
+      var reqUrl = "/server/api/v1/staff/claim/claimListBalance";
       var myData = { hrCode: hrCode };
       this.isShowLoading = true;
       this.$http
@@ -70,7 +74,7 @@ export default {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
+            item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
             return item;
           });
           this.total = this.tableData.length;
@@ -88,7 +92,7 @@ export default {
       this.isShowDetails = false;
     },
     // 查看详情
-    handleDetails(index, res){
+    handleDetails(index, res) {
       this.isShowDetails = true;
       this.curInfo = res;
       this.curInfo.hrCode = this.hrCode;
@@ -109,12 +113,15 @@ export default {
     }
   },
   components: {
-    approvalClaimDetails
+    balanceClaimDetails
   }
 };
 </script>
 <style scoped lang="scss">
-.title-h5{font-size: 22px;font-weight: 500;}
+.title-h5 {
+  font-size: 22px;
+  font-weight: 500;
+}
 .pageInfo {
   margin-top: 20px;
   display: flex;
@@ -134,7 +141,6 @@ export default {
     width: 500px;
   }
 }
-
 </style>
 
 

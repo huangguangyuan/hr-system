@@ -323,6 +323,24 @@ let sidebarInfo = [
                 rightCode: "approvalHolidays",
                 items: [{}]
             },
+            {
+                id: '123',
+                authUrl: '/balanceClaim',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '报销结算',
+                rightCode: "balanceClaim",
+                items: [{}]
+            },
+            {
+                id: '124',
+                authUrl: '/balanceHolidays',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '请假结算',
+                rightCode: "balanceHolidays",
+                items: [{}]
+            },
         ]
     },
     {

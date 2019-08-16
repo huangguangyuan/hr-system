@@ -85,6 +85,7 @@ export default {
             item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
             return item;
           });
+          this.total =  this.tableData.length;
         })
         .catch(err => {
           console.log(err);

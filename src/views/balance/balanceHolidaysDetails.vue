@@ -26,11 +26,24 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="是否批准：" prop="approve">
-        <el-radio-group v-model="ruleForm.approve">
-          <el-radio label="1">批准</el-radio>
-          <el-radio label="2">不批准</el-radio>
-        </el-radio-group>
+      <el-form-item label="结算月份：" prop="balanceMon">
+        <el-select v-model="ruleForm.balanceMon" placeholder="请选择月份">
+          <el-option label="1月" value="1"></el-option>
+          <el-option label="2月" value="2"></el-option>
+          <el-option label="3月" value="3"></el-option>
+          <el-option label="4月" value="4"></el-option>
+          <el-option label="5月" value="5"></el-option>
+          <el-option label="6月" value="6"></el-option>
+          <el-option label="7月" value="7"></el-option>
+          <el-option label="8月" value="8"></el-option>
+          <el-option label="9月" value="9"></el-option>
+          <el-option label="10月" value="10"></el-option>
+          <el-option label="11月" value="11"></el-option>
+          <el-option label="12月" value="12"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="扣除金额：" v-if='curInfo.isWithpay == 1'>
+        <el-input type="text" v-model="ruleForm.totalAmount"></el-input>
       </el-form-item>
       <el-form-item label="备注：">
         <el-input type="textarea" v-model="ruleForm.remarks"></el-input>
@@ -52,12 +65,13 @@ export default {
       getClaimList: [],
       approveHisList:[],//审批流程
       ruleForm: {
-        approve: "",
+        balanceMon: "",
+        totalAmount:0,
         remarks: ""
       },
       rules: {
-        approve: [
-          { required: true, message: "请选择是否批准", trigger: "change" }
+        balanceMon: [
+          { required: true, message: "请选择结算月份", trigger: "change" }
         ]
       }
     };
@@ -104,8 +118,6 @@ export default {
       }
       return item;
     });
-    
-    console.log(this.approveHisList);
   },
   methods: {
     // 数据转换
@@ -133,16 +145,16 @@ export default {
         }
       });
     },
-    // 审批
+    // 结算
     approveFun(){
-      var reqUrl = '/server/api/v1/staff/holidaysApply/approve';
+      var reqUrl = '/server/api/v1/staff/holidaysApply/holidaysApplyBalance';
       var data = {
         hrCode:this.curInfo.hrCode,
         holidaysApplyCode:this.curInfo.code,
-        approve:parseInt(this.ruleForm.approve),
+        balanceMon:parseInt(this.ruleForm.balanceMon),
+        totalAmount:parseFloat(this.ruleForm.totalAmount),
         remarks:this.ruleForm.remarks
       }
-      
       this.$http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.reload();

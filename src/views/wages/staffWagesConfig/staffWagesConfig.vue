@@ -6,78 +6,180 @@
       <div class="message">
         <h5>{{staffInfo.nameChinese}}</h5>
         <el-divider></el-divider>
-        <p>
-          <i class="hr-icon-xingbie"></i>
-          <span>性别：{{staffInfo.genderTxt}}</span>
-        </p>
-        <p>
-          <i class="hr-icon-ccgl-caozuozhuangtai-4"></i>
-          <span>状态：{{staffInfo.statusTxt}}</span>
-        </p>
-        <p>
-          <i class="hr-icon-shouji"></i>
-          <span>手机：{{staffInfo.mobile}}</span>
-        </p>
-        <p>
-          <i class="hr-icon-riqi"></i>
-          <span>入职日期：{{staffInfo.dateOfJoining}}</span>
-        </p>
       </div>
     </div>
+    <div class="container" v-if='isContent'>
+      <el-button type="primary" @click="editFun">修改配置</el-button>
+      <el-divider></el-divider>
+      <el-row :gutter="12">
+        <el-col :span="8">
+          <el-card shadow="always">税前工资：{{configureMsg.salary}}</el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="always">是否正常缴纳社保：{{configureMsg.needSI}}</el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="always">是否正常缴纳公积金：{{configureMsg.needHC}}</el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="always">是否正常使用专项附加扣除：{{configureMsg.needSD}}</el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="always">是否正常扣税：{{configureMsg.needTaxRate}}</el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="always">状态：{{configureMsg.typeId}}</el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="always">强制缴纳类型：{{configureMsg.insuredTypeId}}</el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="noContent" v-else>
+      <el-button type="primary" @click="addFun">添加配置</el-button>
+      <p>暂无内容~</p>
+    </div>
+
+    <!-- 设置员工配置 -->
+    <el-dialog title="设置员工配置" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
+    </el-dialog>
   </div>
 </template>
 <script>
-
+import editLayer from "./editLayer.vue";
 export default {
   name: "staffWagesConfig",
   inject: ["reload"],
-  props: ["staffInfo"],
   data() {
     return {
       circleUrl: "",
       activeName: "education",
-      userRight:false
+      configureMsg:{},
+      curInfo: {},
+      isContent:false,
+      isShowAddAccess: false, //是否显示新增权限页面
+      isShowLoading: false //是否显示loading页
     };
   },
   mounted() {
-    this.circleUrl = this.staffInfo.photo?this.staffInfo.photo:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
-    this.activeName = this.$toolFn.sessionGet('staffNavActive')?this.$toolFn.sessionGet('staffNavActive'):'education';
+    this.circleUrl = this.staffInfo.photo
+      ? this.staffInfo.photo
+      : "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
+    this.activeName = this.$toolFn.sessionGet("staffNavActive")
+      ? this.$toolFn.sessionGet("staffNavActive")
+      : "education";
+    this.getData();
   },
   methods: {
     // 返回
-    goBack(){
-      
+    goBack() {
+      this.$store.commit({
+        type: "getWagesInfo",
+        wagesKey: "wagesStaffList"
+      });
     },
-    handleClick(tab, event) {
-      this.$toolFn.sessionSet('staffNavActive',tab.name);
+    // 获取数据
+    getData() {
+      var reqUrl = "/server/api/v1/payroll/staff/staffPayrollConfig";
+      var data = { staffCode: this.staffInfo.code };
+      this.$http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
+          this.configureMsg = {
+            id:res.data.data.id,
+            salary:res.data.data.salary,
+            needSI:res.data.data.needSI == 1?'是':'否',
+            needHC:res.data.data.needHC == 1?'是':'否',
+            needSD:res.data.data.needSD == 1?'是':'否',
+            needTaxRate:res.data.data.needTaxRate == 1?'是':'否',
+            typeId:res.data.data.typeId == 1?'正常':'停用',
+            insuredTypeId:res.data.data.insuredTypeId == 1?'中国（社保，医保，公积金）':'香港（MPF）',
+          }
+          this.isContent = true;
+          this.curInfo = res.data.data;
+          this.curInfo.type = 'modify';
+        }
+      });
+    },
+    // 添加配置
+    addFun() {
+      this.isShowAddAccess = true;
+      this.curInfo = {
+        editType: "add",
+        staffCode: this.staffInfo.code
+      };
+    },
+    // 修改配置
+    editFun(){
+      this.isShowAddAccess = true;
+    },
+    // 接收子组件发送信息
+    listenIsShowMask(res) {
+      this.isShowAddAccess = false;
     }
   },
   computed: {
-    staffInfo(){
-      return this.$store.state.staffModule.staffInfo;
+    staffInfo() {
+      return this.$store.state.wagesModule.wagesInfo;
     }
   },
   components: {
-      
+    editLayer
   }
 };
 </script>
 <style scoped lang="scss">
-.staffWagesConfig{
-  .header-info{
-    margin: 20px auto 0;box-sizing: border-box;padding: 30px 50px;display: flex;align-items: center;
-    border-radius: 10px;color: #ffffff;background-color: #439145;
-    .message{
-      flex: 1;box-sizing:border-box;padding: 0 0 0 30px;
-      h5{font-size: 22px;}
-      p{
-        font-size: 14px;margin: 8px auto 0;
-        span{margin-left: 10px;}
-        i{font-weight: 500;font-size: 15px;}
+.staffWagesConfig {
+  .header-info {
+    margin: 20px auto 0;
+    box-sizing: border-box;
+    padding: 30px 50px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    color: #ffffff;
+    background-color: #439145;
+    .message {
+      flex: 1;
+      box-sizing: border-box;
+      padding: 0 0 0 30px;
+      h5 {
+        font-size: 22px;
+      }
+      p {
+        font-size: 14px;
+        margin: 8px auto 0;
+        span {
+          margin-left: 10px;
+        }
+        i {
+          font-weight: 500;
+          font-size: 15px;
+        }
       }
     }
   }
-  .el-tabs{padding: 0 50px;margin: 20px auto 0;}
+  .el-tabs {
+    padding: 0 50px;
+    margin: 20px auto 0;
+  }
+  .container {
+    margin: 20px auto 0;
+    .el-card{margin-top: 12px;}
+  }
+  .noContent {
+    margin: 20px auto 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 200px;
+    p {
+      margin: 10px auto 0;
+      font-size: 14px;
+      color: #cccccc;
+    }
+  }
 }
 </style>
 

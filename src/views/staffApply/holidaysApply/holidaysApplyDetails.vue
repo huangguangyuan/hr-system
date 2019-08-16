@@ -2,8 +2,8 @@
   <div class="holidaysApplyDetails">
     <el-table :data="tableData" stripe>
       <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="startDate" label="请假开始时间"></el-table-column>
-      <el-table-column prop="endDate" label="请假结束时间"></el-table-column>
+      <el-table-column prop="startDate" label="请假开始时间" width="200"></el-table-column>
+      <el-table-column prop="endDate" label="请假结束时间" width="200"></el-table-column>
       <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>
       <el-table-column prop="remarks" label="备 注"></el-table-column>
     </el-table>
@@ -11,8 +11,8 @@
     <el-timeline>
       <el-timeline-item v-for='item in approveHisList' :key='item.id' :timestamp="item.creatorTime" placement="top">
         <el-card class="my-card">
-          <p>下一级审批：{{item.nextOperatorName}}</p>
-          <p>审批员等级：{{item.nextOperatorLev}}</p>
+          <p>操作员：{{item.operatorUser.name}}</p>
+          <p>操作行为：{{item.operatorUser.tip}}</p>
           <p>审批类型：{{item.typeIdTxt}}</p>
           <p>是否完结：{{item.finishFlagTxt}}</p>
         </el-card>
@@ -48,7 +48,6 @@ export default {
     // 审批流程
     this.approveHisList = this.curInfo.approveHis.map(item => {
       item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
-      item.nextOperatorName = item.nextOperator == null?'审批主管':item.nextOperator.name;
       item.finishFlagTxt = item.finishFlag == 0?'否':'是';
       switch(item.typeId){
         case 1:

@@ -45,8 +45,8 @@
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
-            @click="openFun(scope.$index, scope.row, 'insured')"
-          >社保/公积金</el-button>
+            @click="openFun(scope.$index, scope.row, 'staffWagesConfig')"
+          >配 置</el-button>
         </template>
       </el-table-column>
     </el-table>

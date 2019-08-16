@@ -1,5 +1,5 @@
 <template>
-  <div class="approvalClaimDetails">
+  <div class="balanceClaimDetails">
     <el-table :data="tableData" stripe>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="title" label="报销项目名称"></el-table-column>
@@ -31,11 +31,21 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="是否批准：" prop="approve">
-        <el-radio-group v-model="ruleForm.approve">
-          <el-radio label="1">批准</el-radio>
-          <el-radio label="2">不批准</el-radio>
-        </el-radio-group>
+      <el-form-item label="结算月份：" prop="balanceMon">
+        <el-select v-model="ruleForm.balanceMon" placeholder="请选择月份">
+          <el-option label="1月" value="1"></el-option>
+          <el-option label="2月" value="2"></el-option>
+          <el-option label="3月" value="3"></el-option>
+          <el-option label="4月" value="4"></el-option>
+          <el-option label="5月" value="5"></el-option>
+          <el-option label="6月" value="6"></el-option>
+          <el-option label="7月" value="7"></el-option>
+          <el-option label="8月" value="8"></el-option>
+          <el-option label="9月" value="9"></el-option>
+          <el-option label="10月" value="10"></el-option>
+          <el-option label="11月" value="11"></el-option>
+          <el-option label="12月" value="12"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="备注：">
         <el-input type="textarea" v-model="ruleForm.remarks"></el-input>
@@ -48,7 +58,7 @@
 </template>
 <script>
 export default {
-  name: "approvalClaimDetails",
+  name: "balanceClaimDetails",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
@@ -57,12 +67,12 @@ export default {
       getClaimList: [], //审批类型
       approveHisList: [], //审批流程
       ruleForm: {
-        approve: "",
+        balanceMon: "",
         remarks: ""
       },
       rules: {
-        approve: [
-          { required: true, message: "请选择是否批准", trigger: "change" }
+        balanceMon: [
+          { required: true, message: "请选择月份", trigger: "blur" }
         ]
       }
     };
@@ -133,26 +143,24 @@ export default {
       });
     },
     // 审批
-    approveFun(){
-      var reqUrl = '/server/api/v1/staff/claim/approve';
+    approveFun() {
+      var reqUrl = "/server/api/v1/staff/claim/claimApplyBalance";
       var data = {
-        hrCode:this.curInfo.hrCode,
-        claimCode:this.curInfo.code,
-        approve:parseInt(this.ruleForm.approve),
-        remarks:this.ruleForm.remarks
-      }
-      
-      this.$http.post(reqUrl,data).then(res => {
-        if(res.data.code == 0){
+        hrCode: this.curInfo.hrCode,
+        claimCode: this.curInfo.code,
+        balanceMon: parseInt(this.ruleForm.balanceMon),
+        remarks: this.ruleForm.remarks
+      };
+      this.$http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
           this.reload();
-          this.$message.success('审批成功~');
-        }else{
+          this.$message.success('操作成功！');
+        } else {
           this.reload();
           this.$message.error(res.data.msg);
         }
-      })
+      });
     }
-
   }
 };
 </script>
