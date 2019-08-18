@@ -18,7 +18,7 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
-          >审 批</el-button>
+          >查看{{(scope.row.status < 4?"并审批":"")}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -72,8 +72,8 @@ export default {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.isBalanceTxt = this.isBalance == 1?'是':'否';
-            item.isWithpayTxt = this.isBalance == 1?'是':'否';
+            item.isBalanceTxt = item.isBalance == 1?'是':'否';
+            item.isWithpayTxt = item.isWithpay == 1?'是':'否';
             return item;
           });
           this.total = this.tableData.length;

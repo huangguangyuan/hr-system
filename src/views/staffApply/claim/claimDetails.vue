@@ -25,6 +25,7 @@
           <p>操作行为：{{item.operatorUser.tip}}</p>
           <p>审批类型：{{item.typeIdTxt}}</p>
           <p>是否完结：{{item.finishFlagTxt}}</p>
+          <p v-if="item.remarks != ''">备注：{{item.remarks}}</p>
         </el-card>
       </el-timeline-item>
     </el-timeline>
@@ -51,7 +52,6 @@ export default {
         return item;
       });
       this.tableData = this.curInfo.details;
-      console.log(this.tableData);
       this.step = this.curInfo.status > 5?5:this.curInfo.status;
       if(this.curInfo.status == 999){
         this.step = 0;

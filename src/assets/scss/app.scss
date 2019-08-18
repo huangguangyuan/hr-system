@@ -60,7 +60,9 @@ strong,span,i{font-style:normal;}
 .el-scrollbar__wrap{overflow: visible;overflow-x: hidden;box-sizing: border-box;}
 .el-menu{border-right: 0 !important;}
 .el-select,.el-cascader{width: 100%;}
-
+.el-timeline-item:last-child .el-timeline-item__node{
+	background: #ff6600 !important
+  }
 // <--------------home样式-------------->
 .home{
 	.allCenter{display: flex;justify-content: center;align-items: center;align-content: center;}

@@ -7,7 +7,7 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
       <!-- <el-table-column prop="id" label="ID"></el-table-column> -->
-      <el-table-column prop="createTime" label="创建日期"></el-table-column>
+      <el-table-column prop="createTime" label="申请时间"></el-table-column>
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
       <el-table-column prop="totalAmount" label="结算金额"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
@@ -16,11 +16,13 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
+            
           >查看详情</el-button>
           <el-button
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
+            v-if="scope.row.status <=4"
           >撤销申请</el-button>
         </template>
       </el-table-column>
@@ -186,7 +188,7 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
-</style>
+
 
 
 

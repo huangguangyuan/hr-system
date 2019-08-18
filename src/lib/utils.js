@@ -1,9 +1,34 @@
 let toolFn = {
     // 转换时间格式方法
-    timeFormat:(time)=>{
+    timeFormat:(time,fmt)=>{
+        if (fmt && fmt != ""){
+            time =  toolFn.formatTime(time,fmt);
+        }
         var dateee = new Date(time).toJSON();
         var newTime = new Date(+new Date(dateee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');
         return newTime;
+    },
+    formatTime:(time,fmt)=>{
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (time.getFullYear() + '').substr(4 - RegExp.$1.length));
+        }
+        let o = {
+            'M+': time.getMonth() + 1,
+            'd+': time.getDate(),
+            'h+': time.getHours(),
+            'm+': time.getMinutes(),
+            's+': time.getSeconds()
+        };
+        for (let k in o) {
+            if (new RegExp(`(${k})`).test(fmt)) {
+                let str = o[k] + '';
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : toolFn.padLeftZero(str));
+            }
+        }
+        return fmt;
+    },
+    padLeftZero(str) {
+        return ('00' + str).substr(str.length);
     },
     // ==================sessionsTorage设置缓存================
     // 设置缓存

@@ -1,19 +1,20 @@
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
-      <el-form-item label="请假日期：" prop="applyTime">
+      <el-form-item label="请假时间" prop="applyTime">
         <el-date-picker
           v-model="ruleForm.applyTime"
           type="datetimerange"
           range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
           value-format="yyyy-MM-dd HH:mm:ss"
         ></el-date-picker>
       </el-form-item>
 
       <el-form-item label="请假天数" prop="days">
-        <el-input v-model="ruleForm.days"></el-input>
+        <el-input-number v-model="ruleForm.days" :precision="2" :step="0.5" :max="30" :min="0.5"></el-input-number>
+        <span class="inptTip">最少单位为0.5</span>
       </el-form-item>
 
       <el-form-item label="请假类型" prop="typeId">
@@ -26,7 +27,12 @@
           ></el-option>
         </el-select>
       </el-form-item>
-
+      <el-form-item label="是否带薪" prop="isWithpay">
+        <el-radio-group v-model="ruleForm.isWithpay">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="文 件：">
         <el-upload
           class="upload-demo"
@@ -65,9 +71,10 @@ export default {
       ruleForm: {
         staffCode: "",
         applyTime: [],
-        days: "",
+        days: 1,
         typeId: "",
         remarks: "",
+        isWithpay:0,
         fileSrc: ""
       }, //表单信息
       isShow: true, //是否显示
@@ -86,6 +93,9 @@ export default {
   },
   mounted() {
     this.initializeFun();
+    let s = this.$toolFn.timeFormat(this.$toolFn.formatTime(new Date(),"yyyy-MM-dd") + " 09:00:00");
+    let e = this.$toolFn.timeFormat(this.$toolFn.formatTime(new Date(),"yyyy-MM-dd") + " 18:00:00");
+    this.ruleForm.applyTime.push(s,e);
   },
   methods: {
     // 初始化
@@ -120,6 +130,7 @@ export default {
           startDate: this.ruleForm.applyTime[0],
           endDate: this.ruleForm.applyTime[1],
           days: parseFloat(this.ruleForm.days),
+          isWithpay: parseInt(this.ruleForm.isWithpay),
           typeId: parseInt(this.ruleForm.typeId),
           remarks: this.ruleForm.remarks
         }
@@ -127,6 +138,7 @@ export default {
       var data = {
         staffCode: this.curInfo.staffCode,
         totalDay: parseFloat(this.ruleForm.days),
+        isWithpay: parseInt(this.ruleForm.isWithpay),
         fileSrc: this.ruleForm.fileSrc,
         details: details
       };
@@ -187,5 +199,11 @@ export default {
   }
 };
 </script>
+
+
+<style scoped lang="scss">
+.inptTip{padding: 0 10px;color: #ff6600}
+
+</style>
 
 

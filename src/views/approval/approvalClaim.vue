@@ -16,7 +16,7 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
-          >审 批</el-button>
+          >查看{{(scope.row.status < 4?"并审批":"")}}</el-button>
         </template>
       </el-table-column>
     </el-table>

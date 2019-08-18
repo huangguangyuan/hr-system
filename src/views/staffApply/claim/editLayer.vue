@@ -112,6 +112,9 @@ export default {
     },
     // 删除报销项目
     removeDomain(item){
+        if (this.ruleForm.details.length == 1){
+          return;
+        }
         var index = this.ruleForm.details.indexOf(item)
         if (index !== -1) {
           this.ruleForm.details.splice(index, 1)
