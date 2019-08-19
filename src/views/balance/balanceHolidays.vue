@@ -4,13 +4,10 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="createTime" label="创建日期" width="200"></el-table-column>
+      <el-table-column prop="staff.nameChinese" label="申请人"></el-table-column>
       <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column prop="totalDay" label="请假天数"></el-table-column>
-      <el-table-column prop="totalAmount" label="金 额"></el-table-column>
       <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column>
-      <el-table-column prop="nextStepTip" label="下一步提示"></el-table-column>
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
@@ -18,7 +15,7 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
-          >结 算</el-button>
+          >查看并结算</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -72,8 +69,8 @@ export default {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.isBalanceTxt = this.isBalance == 1?'是':'否';
-            item.isWithpayTxt = this.isBalance == 1?'是':'否';
+            item.isBalanceTxt = item.isBalance == 1?'是':'否';
+            item.isWithpayTxt = item.isWithpay == 1?'是':'否';
             return item;
           });
           this.total = this.tableData.length;

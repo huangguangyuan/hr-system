@@ -22,7 +22,7 @@
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
-            v-if="scope.row.status <=4"
+            v-if="scope.row.status < 4"
           >撤销申请</el-button>
         </template>
       </el-table-column>

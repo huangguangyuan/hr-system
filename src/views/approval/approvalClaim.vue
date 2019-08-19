@@ -4,7 +4,7 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <el-table-column prop="id" label="ID"></el-table-column>
+      <el-table-column prop="staff.nameChinese" label="申请人"></el-table-column>
       <el-table-column prop="createTime" label="创建日期"></el-table-column>
       <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column prop="totalAmount" label="结算金额"></el-table-column>
@@ -52,7 +52,7 @@ export default {
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      hrCode: "b0886660-9714-11e9-9069-bf35c07c51d4"
+      hrCode: "baa7b350-96f4-11e9-9069-bf35c07c51d4"
     };
   },
   mounted() {

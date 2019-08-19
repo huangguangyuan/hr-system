@@ -1,7 +1,6 @@
 <template>
   <div class="balanceClaimDetails">
     <el-table :data="tableData" stripe>
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="title" label="报销项目名称"></el-table-column>
       <el-table-column prop="amount" label="报销金额"></el-table-column>
       <el-table-column prop="typeIdTxt" label="报销类型"></el-table-column>

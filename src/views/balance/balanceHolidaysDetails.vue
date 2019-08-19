@@ -1,7 +1,6 @@
 <template>
   <div class="approvalHolidaysDetails">
     <el-table :data="tableData" stripe>
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="startDate" label="请假开始时间" width="200"></el-table-column>
       <el-table-column prop="endDate" label="请假结束时间" width="200"></el-table-column>
       <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>

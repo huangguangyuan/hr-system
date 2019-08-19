@@ -4,7 +4,7 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <el-table-column prop="id" label="ID"></el-table-column>
+      <el-table-column prop="staff.nameChinese" label="申请人"></el-table-column>
       <el-table-column prop="createTime" label="创建日期" width="200"></el-table-column>
       <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column prop="totalDay" label="请假天数"></el-table-column>
@@ -18,7 +18,7 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
-          >查看{{(scope.row.status < 4?"并审批":"")}}</el-button>
+          >查看{{(scope.row.status < 3?"并审批":"")}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -54,7 +54,7 @@ export default {
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      hrCode: "8f6100f0-9714-11e9-9069-bf35c07c51d4"
+      hrCode: "baa7b350-96f4-11e9-9069-bf35c07c51d4"
     };
   },
   mounted() {

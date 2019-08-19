@@ -22,7 +22,7 @@
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
-            v-if="scope.row.status <=4"
+            v-if="scope.row.status < 3"
           >撤销请假</el-button>
         </template>
       </el-table-column>
@@ -89,7 +89,6 @@ export default {
             return item;
           });
           this.total = this.tableData.length;
-          console.log(this.tableData);
         })
         .catch(err => {
           console.log(err);
