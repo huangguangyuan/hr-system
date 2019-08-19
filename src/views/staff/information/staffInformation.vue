@@ -624,6 +624,8 @@ export default {
         if(res.data.code == 0){
           this.reload();
           this.$message.success('修改成功！');
+        }else{
+          this.$message.success(res.data.msg);
         }
       })
     },    

@@ -16,7 +16,12 @@
         <el-input-number v-model="ruleForm.days" :precision="2" :step="0.5" :max="30" :min="0.5"></el-input-number>
         <span class="inptTip">最少单位为0.5</span>
       </el-form-item>
-
+      <el-form-item label="是否带薪" prop="isWithpay">
+        <el-radio-group v-model="ruleForm.isWithpay">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="请假类型" prop="typeId">
         <el-select v-model="ruleForm.typeId" placeholder="请选择请假类型">
           <el-option
@@ -27,12 +32,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="是否带薪" prop="isWithpay">
-        <el-radio-group v-model="ruleForm.isWithpay">
-          <el-radio :label="1">是</el-radio>
-          <el-radio :label="0">否</el-radio>
-        </el-radio-group>
-      </el-form-item>
+
       <el-form-item label="文 件：">
         <el-upload
           class="upload-demo"
@@ -87,6 +87,9 @@ export default {
         days: [{ required: true, message: "请填写请假天数", trigger: "blur" }],
         typeId: [
           { required: true, message: "请选择请假类型", trigger: "change" }
+        ],
+        isWithpay: [
+          { required: true, message: "请选择假期性质", trigger: "change" }
         ]
       }
     };

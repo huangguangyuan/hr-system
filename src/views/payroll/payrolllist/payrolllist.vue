@@ -28,7 +28,6 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
       <el-table-column prop="nameChinese" label="名称"></el-table-column>
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column label="头像">
         <template slot-scope="scope">
           <el-image

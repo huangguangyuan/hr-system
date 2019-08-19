@@ -55,6 +55,7 @@ let id = 0;
 export default {
   name: "claimList",
   inject: ["reload"],
+  props: ["staffCode_props"],
   data() {
     return {
       tableData: [],
@@ -65,7 +66,7 @@ export default {
       isShowAddAccess: false, //是否显示新增权限页面
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      staffCode: "7ef51e60-9e01-11e9-bde5-6d1157612d12"
+      staffCode: this.staffCode_props,
     };
   },
   mounted() {
