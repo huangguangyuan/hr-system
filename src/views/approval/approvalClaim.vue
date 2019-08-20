@@ -54,7 +54,7 @@ export default {
       isShowLoading: false, //是否显示loading页
       hrCode: "baa7b350-96f4-11e9-9069-bf35c07c51d4",
       userInfo:{},
-      rightStatus:0, //当前管理员可审批的申请类型
+      rightStatus:[], //当前管理员可审批的申请类型
     };
   },
   mounted() {
@@ -62,14 +62,16 @@ export default {
     if (this.userInfo.roleTypeId == 2 ){
       this.hrCode = this.userInfo.userCode;
       if (this.userInfo.lev == 301){
-        this.rightStatus = 999;
+        this.rightStatus = [1,2,3,4];
       }else if ([501,521].indexOf(this.userInfo.lev) >= 0){//主管，假期审批主管
-        this.rightStatus = 2;
+        this.rightStatus = [1];
       }else if ([601,611].indexOf(this.userInfo.lev) >= 0){//人事，人事文员
-        this.rightStatus = 3;
+        this.rightStatus = [2];
+      }else if ([401,411].indexOf(this.userInfo.lev) >= 0){//薪酬主管，薪酬文员
+        this.rightStatus = [3];
       }
     }else if (this.userInfo.roleTypeId == 3){
-      this.rightStatus = 999;
+      this.rightStatus = [1,2,3,4];
     }
     this.getData(this.hrCode);
   },
@@ -77,10 +79,10 @@ export default {
     approveTxt(item){//显示文字并判断是否有权限审批
       item.canApprove = false;
       var str = "";
-      if (this.rightStatus == 0){
+      if (this.rightStatus.length == 0){
         str = "";
       }
-      if (item.status < this.rightStatus){
+      if (this.rightStatus.indexOf(item.status) >= 0){
         str = "并审批";
         item.canApprove = true;
       }
