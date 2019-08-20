@@ -104,9 +104,7 @@ export default {
       _this.$http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           _this.regionBUlist = res.data.data;
-          _this.BUCode = this.$toolFn.sessionGet("staffBUCode")
-            ? this.$toolFn.sessionGet("staffBUCode")
-            : res.data.data[0].code;
+          _this.BUCode = this.$toolFn.sessionGet("staffBUCode") ? this.$toolFn.sessionGet("staffBUCode"): res.data.data[0].code;
           _this.getData(this.BUCode);
         }
       });

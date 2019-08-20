@@ -24,7 +24,7 @@
       ref="ruleForm"
       label-width="100px"
       class="demo-ruleForm"
-      v-if="!isFinish"
+      v-if="!isFinish && canApprove"
     >
       <el-form-item label="是否批准：" prop="approve">
         <el-radio-group v-model="ruleForm.approve">
@@ -56,6 +56,7 @@ export default {
         remarks: ""
       },
       isFinish:false,
+      canApprove:false,
       rules: {
         approve: [
           { required: true, message: "请选择是否批准", trigger: "change" }
@@ -64,6 +65,7 @@ export default {
     };
   },
   mounted() {
+    this.canApprove = this.curInfo.canApprove;
     this.dataConvert().then(res => {
       this.curInfo.details.map(item => {
           item.typeIdTxt = res.filter(child => {

@@ -131,7 +131,7 @@ export default {
               var userInfo = this.$toolFn.localGet("userInfo");
               this.userInfo = userInfo;
               if (userInfo.roleTypeId == 1){
-                this.$router.push({ path: "/leaveApplyList" });
+                this.$router.push({ path: "/applyMain" });
               }else{
                 this.$router.push({ path: "/home" });
               }

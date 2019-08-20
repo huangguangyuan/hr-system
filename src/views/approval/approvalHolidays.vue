@@ -17,8 +17,8 @@
           <el-button
             size="mini"
             icon="el-icon-info"
-            @click="handleDetails(scope.$index, scope.row)"
-          >查看{{(scope.row.status < 3?"并审批":"")}}</el-button>
+            @click="handleDetails(scope.$index,scope.row)"
+          >查看{{approveTxt(scope.row)}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -41,6 +41,7 @@
 </template>
 <script>
 import approvalHolidaysDetails from "./approvalHolidaysDetails.vue";
+import { truncate } from 'fs';
 let id = 0;
 export default {
   name: "approvalHolidays",
@@ -54,13 +55,43 @@ export default {
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      hrCode: "baa7b350-96f4-11e9-9069-bf35c07c51d4"
+      hrCode: "baa7b350-96f4-11e9-9069-bf35c07c51d4",
+      rightStatus:0, //当前管理员可审批的申请类型
     };
   },
   mounted() {
+    this.userInfo = this.$toolFn.localGet("userInfo");
+    if (this.userInfo.roleTypeId == 2 ){
+      this.hrCode = this.userInfo.userCode;
+      if (this.userInfo.lev == 301){
+        this.rightStatus = 999;
+      }else if ([501,511].indexOf(this.userInfo.lev) >= 0){//主管，假期审批主管
+        this.rightStatus = 2;
+      }else if ([601,611].indexOf(this.userInfo.lev) >= 0){//人事，人事文员
+        this.rightStatus = 3;
+      }
+    }else if (this.userInfo.roleTypeId == 3){
+      this.rightStatus = 999;
+    }
     this.getData(this.hrCode);
   },
   methods: {
+    approveTxt(item){//显示文字并判断是否有权限审批
+      item.canApprove = false;
+      var str = "";
+      if (this.rightStatus == 0){
+        str = "";
+      }
+      if (item.status < this.rightStatus){
+        str = "并审批";
+        item.canApprove = true;
+      }
+      if (item.status >= 3){
+        str = "";
+      }
+      return str
+
+    },
     //获取数据列表
     getData(hrCode) {
       var reqUrl = "/server/api/v1/staff/holidaysApply/hrSysHolidaysApplyList";
