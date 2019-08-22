@@ -108,6 +108,16 @@ export default {
     return {
       value: new Date()
     };
+  },
+  methods:{
+    getInfo(res){
+      var _this = this;
+      _this.$http.post(reqUrl, {}).then(res => {
+        if (res.data.code == 0) {
+          _this.$message.error(res.data.msg);
+        }
+      });
+    }
   }
 };
 </script>
