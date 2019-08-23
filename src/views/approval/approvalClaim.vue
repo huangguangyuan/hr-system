@@ -4,7 +4,7 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <el-table-column prop="id" label="ID"></el-table-column>
+      <el-table-column prop="staff.nameChinese" label="申请人"></el-table-column>
       <el-table-column prop="createTime" label="创建日期"></el-table-column>
       <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column prop="totalAmount" label="结算金额"></el-table-column>
@@ -16,7 +16,7 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
-          >审 批</el-button>
+          >查看{{approveTxt(scope.row)}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -52,13 +52,46 @@ export default {
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      hrCode: "b0886660-9714-11e9-9069-bf35c07c51d4"
+      hrCode: "baa7b350-96f4-11e9-9069-bf35c07c51d4",
+      userInfo:{},
+      rightStatus:[], //当前管理员可审批的申请类型
     };
   },
   mounted() {
+    this.userInfo = this.$toolFn.localGet("userInfo");
+    if (this.userInfo.roleTypeId == 2 ){
+      this.hrCode = this.userInfo.userCode;
+      if (this.userInfo.lev == 301){
+        this.rightStatus = [1,2,3,4];
+      }else if ([501,521].indexOf(this.userInfo.lev) >= 0){//主管，假期审批主管
+        this.rightStatus = [1];
+      }else if ([601,611].indexOf(this.userInfo.lev) >= 0){//人事，人事文员
+        this.rightStatus = [2];
+      }else if ([401,411].indexOf(this.userInfo.lev) >= 0){//薪酬主管，薪酬文员
+        this.rightStatus = [3];
+      }
+    }else if (this.userInfo.roleTypeId == 3){
+      this.rightStatus = [1,2,3,4];
+    }
     this.getData(this.hrCode);
   },
   methods: {
+    approveTxt(item){//显示文字并判断是否有权限审批
+      item.canApprove = false;
+      var str = "";
+      if (this.rightStatus.length == 0){
+        str = "";
+      }
+      if (this.rightStatus.indexOf(item.status) >= 0){
+        str = "并审批";
+        item.canApprove = true;
+      }
+      if (item.status >= 4){
+        str = "";
+      }
+      return str
+
+    },
     //获取数据列表
     getData(hrCode) {
       var reqUrl = "/server/api/v1/staff/claim/hrSysClaimList";

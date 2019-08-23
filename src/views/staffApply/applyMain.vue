@@ -22,11 +22,11 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="报销申请" name="claim">
         <span slot="label"><i class="hr-icon-baoxiaoshenqing"></i> 报销申请</span>
-        <claim-list></claim-list>
+        <claim-list :staffCode_props="staffCode"></claim-list>
       </el-tab-pane>
       <el-tab-pane label="请假申请" name="holidaysApply">
         <span slot="label"><i class="hr-icon-qingjiashenqing"></i> 请假申请</span>
-        <holidays-apply-list></holidays-apply-list>
+        <holidays-apply-list :staffCode_props="staffCode"></holidays-apply-list>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -40,12 +40,17 @@ export default {
   data() {
     return {
       circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
-      staffCode:'7ef51e60-9e01-11e9-bde5-6d1157612d12',
       staffInfo:{},
-      activeName:'claim'
+      activeName:'claim',
+      staffCode: "7ef51e60-9e01-11e9-bde5-6d1157612d12",
+      userInfo:{}
     };
   },
   mounted() {
+    this.userInfo = this.$toolFn.localGet("userInfo");
+    if (this.userInfo.roleTypeId == 1 ){
+      this.staffCode = this.userInfo.staffCode;
+    }
     this.getStaffInfo();
     this.activeName = this.$toolFn.sessionGet('applyActiveName') || 'claim'
   },

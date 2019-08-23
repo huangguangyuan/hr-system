@@ -1,7 +1,6 @@
 <template>
   <div class="approvalHolidaysDetails">
     <el-table :data="tableData" stripe>
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="startDate" label="请假开始时间" width="200"></el-table-column>
       <el-table-column prop="endDate" label="请假结束时间" width="200"></el-table-column>
       <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>
@@ -11,7 +10,7 @@
     <el-timeline>
       <el-timeline-item v-for='item in approveHisList' :key='item.id' :timestamp="item.creatorTime" placement="top">
         <el-card class="my-card">
-          <p>操作员：{{item.operatorUser.name}}</p>
+          <p>操作员：{{item.operatorUser.name}}{{item.operatorUser.roleName?" ( "+item.operatorUser.roleName+" ) ":""}}</p>
           <p>操作行为：{{item.operatorUser.tip}}</p>
           <p>审批类型：{{item.typeIdTxt}}</p>
           <p>是否完结：{{item.finishFlagTxt}}</p>
@@ -25,6 +24,7 @@
       ref="ruleForm"
       label-width="100px"
       class="demo-ruleForm"
+      v-if="!isFinish && canApprove"
     >
       <el-form-item label="是否批准：" prop="approve">
         <el-radio-group v-model="ruleForm.approve">
@@ -55,6 +55,8 @@ export default {
         approve: "",
         remarks: ""
       },
+      isFinish:false,
+      canApprove:false,
       rules: {
         approve: [
           { required: true, message: "请选择是否批准", trigger: "change" }
@@ -63,6 +65,7 @@ export default {
     };
   },
   mounted() {
+    this.canApprove = this.curInfo.canApprove;
     this.dataConvert().then(res => {
       this.curInfo.details.map(item => {
           item.typeIdTxt = res.filter(child => {
@@ -80,6 +83,9 @@ export default {
     this.approveHisList = this.curInfo.approveHis.map(item => {
       item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
       item.finishFlagTxt = item.finishFlag == 0?'否':'是';
+      if (item.finishFlag == 1){
+        this.isFinish = true;
+      }
       switch(item.typeId){
         case 1:
           item.typeIdTxt = '批准';
@@ -104,8 +110,6 @@ export default {
       }
       return item;
     });
-    
-    console.log(this.approveHisList);
   },
   methods: {
     // 数据转换

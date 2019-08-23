@@ -11,9 +11,9 @@
           <p>后台管理系统</p>
         </div>
         <div class="right">
-          <!-- <el-badge is-dot class="item">
+          <el-badge is-dot class="item">
             <i class="el-icon-bell"></i>
-          </el-badge> -->
+          </el-badge>
           <img src="@/assets/images/face_ico.jpg" alt>
           <el-dropdown>
             <span class="el-dropdown-link">
@@ -131,7 +131,7 @@ export default {
               var userInfo = this.$toolFn.localGet("userInfo");
               this.userInfo = userInfo;
               if (userInfo.roleTypeId == 1){
-                this.$router.push({ path: "/leaveApplyList" });
+                this.$router.push({ path: "/applyMain" });
               }else{
                 this.$router.push({ path: "/home" });
               }

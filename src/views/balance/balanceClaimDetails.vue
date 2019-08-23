@@ -1,7 +1,6 @@
 <template>
   <div class="balanceClaimDetails">
     <el-table :data="tableData" stripe>
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="title" label="报销项目名称"></el-table-column>
       <el-table-column prop="amount" label="报销金额"></el-table-column>
       <el-table-column prop="typeIdTxt" label="报销类型"></el-table-column>
@@ -16,7 +15,7 @@
         placement="top"
       >
         <el-card class="my-card">
-          <p>操作员：{{item.operatorUser.name}}</p>
+          <p>操作员：{{item.operatorUser.name}}{{item.operatorUser.roleName?" ( "+item.operatorUser.roleName+" ) ":""}}</p>
           <p>操作行为：{{item.operatorUser.tip}}</p>
           <p>审批类型：{{item.typeIdTxt}}</p>
           <p>是否完结：{{item.finishFlagTxt}}</p>

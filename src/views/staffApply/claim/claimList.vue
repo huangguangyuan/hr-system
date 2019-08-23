@@ -6,22 +6,23 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="createTime" label="创建日期"></el-table-column>
-      <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
-      <el-table-column prop="totalAmount" label="结算金额"></el-table-column>
+      <!-- <el-table-column prop="id" label="ID"></el-table-column> -->
+      <el-table-column prop="createTime" label="申请时间"></el-table-column>
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column prop="totalAmount" label="结算金额"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
+            
           >查看详情</el-button>
           <el-button
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
+            v-if="scope.row.status < 4"
           >撤销申请</el-button>
         </template>
       </el-table-column>
@@ -54,6 +55,7 @@ let id = 0;
 export default {
   name: "claimList",
   inject: ["reload"],
+  props: ["staffCode_props"],
   data() {
     return {
       tableData: [],
@@ -64,7 +66,7 @@ export default {
       isShowAddAccess: false, //是否显示新增权限页面
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      staffCode: "7ef51e60-9e01-11e9-bde5-6d1157612d12"
+      staffCode: this.staffCode_props,
     };
   },
   mounted() {
@@ -119,7 +121,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          console.log({ claimCode: res.code,staffCode:res.staffCode });
+          //console.log({ claimCode: res.code,staffCode:res.staffCode });
           this.$http
             .post("/server/api/v1/staff/claim/recallApply", { claimCode: res.code,staffCode:res.staffCode })
             .then(res => {
@@ -187,7 +189,7 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
-</style>
+
 
 
 

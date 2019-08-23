@@ -24,9 +24,7 @@
             placeholder="请输入内容"
             suffix-icon="el-icon-caret-right"
             readonly
-            @click.native="deductFn(scope.$index, scope.row)"
-           
-          ></el-input>
+            @click.native="deductFn(scope.$index, scope.row)"></el-input>
         </template>
       </el-table-column>
       <el-table-column label="专项扣除（元）累计">
@@ -47,6 +45,11 @@
       <el-table-column prop="fixedDeduct" label="起征点（元）">
         <template slot-scope="scope">
           <el-input v-model="scope.row.fixedDeduct" placeholder=""></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column prop="fixedDeductSum" label="起征点（元）累计">
+        <template slot-scope="scope">
+          <el-input v-model="scope.row.fixedDeductSum" placeholder=""></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="grossAmt" label="应税金额（元）">
@@ -179,6 +182,7 @@ export default {
           addDeduct: 0,//附加扣除
           addDeductSum:0,//附加扣除累计
           fixedDeduct: 5000,//起征点
+          fixedDeductSum:0,
           taxRate: 0.03,//税点
           quickDeduct:0,//速减扣除
           iit: 0,//个人所得税
@@ -340,6 +344,7 @@ export default {
       _this.incomeSum = 0;//累计税前收入
       _this.deductSum = 0;//社保累计
       _this.addDeductSum = 0;//附加扣除累计
+      _this.fixedDeductSum = 0;//累计起征点
       //_this.grossAmtSum = 0;//累计应税金额
       //let grossAmtSumNotCur = 0;//累计纳税金额不包当前月纳税
       for (var i = 0; i < _this.dataList.length; i++) {
@@ -362,9 +367,11 @@ export default {
           _this.incomeSum += parseFloat(_this.dataList[i].income);
           _this.deductSum += parseFloat(_this.dataList[i].deduct);
           _this.addDeductSum += parseFloat(_this.dataList[i].addDeduct);
+          _this.fixedDeductSum += parseFloat(_this.dataList[i].fixedDeduct);
           _this.dataList[i].incomeSum = _this.incomeSum;
           _this.dataList[i].deductSum = _this.deductSum;
           _this.dataList[i].addDeductSum = _this.addDeductSum;
+          _this.dataList[i].fixedDeductSum = _this.fixedDeductSum;
           _this.dataList[i].taxRateAmtSum = taxRateAmtSum;
           _this.dataList[i].grossAmtSum = grossAmtSum;
           _this.taxRateAmtSum = taxRateAmtSum;

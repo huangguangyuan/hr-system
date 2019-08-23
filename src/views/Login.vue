@@ -49,7 +49,6 @@ export default {
         if (valid) {
           this.loginFn();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -74,7 +73,7 @@ export default {
             }).then(res => {
               var userInfo = this.$toolFn.localGet("userInfo");
               if (userInfo.roleTypeId == 1){
-                this.$router.replace({ path: "/leaveApplyList" });
+                this.$router.replace({ path: "/applyMain" });
               }else{
                 this.$router.replace({ path: "/home" });
               }

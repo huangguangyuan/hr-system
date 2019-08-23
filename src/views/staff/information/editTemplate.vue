@@ -534,7 +534,6 @@ export default {
         this.avatarSrc = this.ruleForm.photo;
         this.IDPositiveSrc = this.ruleForm.IDCopy;
         this.IDNegativeSrc = this.ruleForm.IDCopyBack;
-        console.log(this.ruleForm.departmentCode);
         this.getDepartment(this.ruleForm.BUCode);
       }
     },
@@ -552,7 +551,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

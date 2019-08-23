@@ -6,13 +6,10 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="createTime" label="创建日期" width="200"></el-table-column>
-      <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
+      <el-table-column prop="createTime" label="申请时间" width="200"></el-table-column>
       <el-table-column prop="totalDay" label="请假天数"></el-table-column>
-      <el-table-column prop="totalAmount" label="金 额"></el-table-column>
+      <el-table-column prop="totalAmount" label="扣除金额"></el-table-column>
       <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column>
-      <el-table-column prop="nextStepTip" label="下一步提示"></el-table-column>
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
@@ -25,6 +22,7 @@
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
+            v-if="scope.row.status < 3"
           >撤销请假</el-button>
         </template>
       </el-table-column>
@@ -57,6 +55,7 @@ let id = 0;
 export default {
   name: "holidaysApplyList",
   inject: ["reload"],
+  props: ["staffCode_props"],
   data() {
     return {
       tableData: [],
@@ -67,7 +66,8 @@ export default {
       isShowAddAccess: false, //是否显示新增权限页面
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      staffCode: "7ef51e60-9e01-11e9-bde5-6d1157612d12"
+      staffCode: this.staffCode_props,
+      step:1
     };
   },
   mounted() {
@@ -85,12 +85,11 @@ export default {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.isBalanceTxt = this.isBalance == 1?'是':'否';
-            item.isWithpayTxt = this.isBalance == 1?'是':'否';
+            item.isBalanceTxt = item.isBalance == 1?'是':'否';
+            item.isWithpayTxt = item.isWithpay == 1?'是':'否';
             return item;
           });
           this.total = this.tableData.length;
-          console.log(this.tableData);
         })
         .catch(err => {
           console.log(err);
