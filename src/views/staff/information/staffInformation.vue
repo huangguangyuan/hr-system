@@ -7,7 +7,7 @@
     </div>
     <!-- 搜索 -->
     <div class="search-wrap">
-      <el-input placeholder="请输入员工姓名" v-model="searchInner" @blur="searchFun">
+      <el-input placeholder="请输入关键字" v-model="filter.searchKey">
         <el-select
           v-model="BUCode"
           slot="prepend"
@@ -22,7 +22,6 @@
             :value="item.code"
           ></el-option>
         </el-select>
-        <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
       </el-input>
     </div>
     <!-- 列表内容 -->
@@ -165,7 +164,9 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column prop="nameChinese" label="名称"></el-table-column>
+      
+      <el-table-column sortable prop="staffNo" label="员工编号"></el-table-column>
+      <el-table-column sortable prop="nameChinese" label="名称"></el-table-column>
       <el-table-column label="头像">
         <template slot-scope="scope">
           <el-image
@@ -175,7 +176,7 @@
           ></el-image>
         </template>
       </el-table-column>
-      <el-table-column prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" width="500px">
         <template slot-scope="scope">
           <!-- 编辑账户 -->
@@ -290,7 +291,9 @@ export default {
         "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
       accountInfo:{},
       HRadminList:[],//管理员列表
-      userRight:false
+      userRight:false,
+      filter:{searchKey:'',searchField:['account','staffNo','nameChinese','nameEnglish','staffAlias','position','genderTxt',
+      'dateOfBirth','address','mobile','email','IDNo','ethnic','politicalBackground','hukouTypeTxt','martialStatusTxt','emergencyContact','SIAccount','medicalSchemeAccoun','HCAccount','SIAccount']}
     };
   },
   mounted() {
@@ -478,130 +481,19 @@ export default {
       this.getData(this.BUCode);
       this.$toolFn.sessionSet("staffBUCode", val);
     },
-    // 根据name字段查找数据
-    searchFun() {
-      var _this = this;
-      if (_this.searchInner != "") {
-        var reqUrl = "/server/api/v1/staff/getByOptions";
-        var data = { nameChinese: _this.searchInner };
-        _this.$http.post(reqUrl, data).then(res => {
-          _this.isShowLoading = false;
-          _this.tableData = res.data.data
-            .map(item => {
-              // 状态
-              switch (item.status) {
-                case 1:
-                  item.statusTxt = "在职";
-                  break;
-                case 2:
-                  item.statusTxt = "离职";
-                  break;
-                case 3:
-                  item.statusTxt = "停薪留职";
-                  break;
-                default:
-                  item.statusTxt = "未知";
-              }
-              // 性别
-              switch (item.gender) {
-                case "M":
-                  item.genderTxt = "男";
-                  break;
-                case "F":
-                  item.genderTxt = "女";
-                  break;
-                default:
-                  item.genderTxt = "未知";
-              }
-              // 户口性质
-              switch (item.hukouType) {
-                case 1:
-                  item.hukouTypeTxt = "城镇";
-                  break;
-                case 2:
-                  item.hukouTypeTxt = "农村";
-                  break;
-                default:
-                  item.hukouTypeTxt = "未知";
-              }
-              //婚姻状况
-              switch (item.martialStatus) {
-                case 0:
-                  item.martialStatusTxt = "未婚";
-                  break;
-                case 1:
-                  item.martialStatusTxt = "已婚";
-                  break;
-                default:
-                  item.martialStatusTxt = "未知";
-              }
-              //长工/合约
-              switch (item.permanentOrContract) {
-                case "P":
-                  item.permanentOrContractTxt = "长工";
-                  break;
-                case "C":
-                  item.permanentOrContractTxt = "合约";
-                  break;
-                default:
-                  item.permanentOrContractTxt = "未知";
-              }
-              // 年假清空方法
-              switch (item.annualLeaveWriteOffMethod) {
-                case 1:
-                  item.annualLeaveWriteOffMethodTxt = "年结";
-                  break;
-                case 2:
-                  item.annualLeaveWriteOffMethodTxt = "自定义日期结算";
-                  break;
-                default:
-                  item.annualLeaveWriteOffMethodTxt = "未知";
-              }
-              // 工资类型
-              switch (item.payrollType) {
-                case 1:
-                  item.payrollTypeTxt = "月薪";
-                  break;
-                case 2:
-                  item.payrollTypeTxt = "周薪";
-                  break;
-                case 3:
-                  item.payrollTypeTxt = "时薪";
-                  break;
-                default:
-                  item.payrollTypeTxt = "未知";
-              }
-              // 档案所在单位可否调动
-              switch (item.fileUnitMove) {
-                case 1:
-                  item.fileUnitMoveTxt = "是";
-                  break;
-                case 0:
-                  item.fileUnitMoveTxt = "否";
-                  break;
-                default:
-                  item.fileUnitMoveTxt = "未知";
-              }
-              // 时间转换
-              item.dateOfBirth = _this.$toolFn.timeFormat(item.dateOfBirth);
-              item.dateOfJoining = _this.$toolFn.timeFormat(item.dateOfJoining);
-              item.dateOfLeaving = _this.$toolFn.timeFormat(item.dateOfLeaving);
-              return item;
-            })
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          _this.total = _this.tableData.length;
-        });
-      } else {
-        _this.getData(this.BUCode);
+    searchFun(list,search){
+      let newList = [];
+      for(let i = 0;i < list.length;i++){
+        for(let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0){
+            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+              newList.push(list[i]);
+              break;
+            }
+          }
+        };
       }
+      return newList;
     },
     // 编辑修改
     modifyFun(index, res) {
@@ -696,9 +588,14 @@ export default {
   computed: {
     queryTableDate() {
       var _this = this;
+      let tableData = _this.tableData;
+      if (_this.filter.searchKey != ""){
+        tableData = _this.searchFun(tableData,_this.filter);
+      }
+      _this.total = tableData.length;
       var begin = (_this.curPage - 1) * _this.pageSize;
       var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      return tableData.slice(begin, end);
     },
     pageTotal() {
       var _this = this;

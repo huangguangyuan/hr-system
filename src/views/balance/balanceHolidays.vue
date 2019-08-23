@@ -1,14 +1,27 @@
 <template>
   <div class="approvalHolidays wrap">
     <h5 class="title-h5">请假结算列表</h5>
+    <div class="search-wrap">
+      <el-input placeholder="请输入关键字" v-model="filter.searchKey" >
+        <el-select
+          v-model="BUCode"
+          slot="prepend"
+          placeholder="请选择"
+          style="width:200px;"
+          @change="selectFun"
+        >
+          <el-option v-for='(item,index) in regionBUList' :key='index' :label="item.name" :value="item.code"></el-option>
+        </el-select>
+      </el-input>
+    </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <el-table-column prop="staff.nameChinese" label="申请人"></el-table-column>
-      <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
-      <el-table-column prop="totalDay" label="请假天数"></el-table-column>
-      <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column>
-      <el-table-column prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column sortable prop="nameChinese" label="申请人"></el-table-column>
+      <el-table-column sortable prop="isBalanceTxt" label="是否结算"></el-table-column>
+      <el-table-column sortable prop="totalDay" label="请假天数"></el-table-column>
+      <el-table-column sortable prop="isWithpayTxt" label="是否带薪"></el-table-column>
+      <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <el-button
@@ -51,17 +64,21 @@ export default {
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      hrCode: "baa7b350-96f4-11e9-9069-bf35c07c51d4"
+      hrCode: "baa7b350-96f4-11e9-9069-bf35c07c51d4",
+      BUCode: "18fa0a70-62c5-11e9-93a9-f78fd132055e", //单位code
+      regionBUList:[],//单位列表
+      filter:{searchKey:'',searchField:['nameChinese']}
     };
   },
   mounted() {
-    this.getData(this.hrCode);
+    this.getRegionBUList();
+    this.getData(this.hrCode,this.BUCode);
   },
   methods: {
     //获取数据列表
-    getData(hrCode) {
+    getData(hrCode,BUCode) {
       var reqUrl = "/server/api/v1/staff/holidaysApply/holidaysApplyListBalance";
-      var myData = { hrCode: hrCode };
+      var myData = { hrCode: hrCode,BUCode:BUCode };
       this.isShowLoading = true;
       this.$http
         .post(reqUrl, myData)
@@ -71,6 +88,7 @@ export default {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
             item.isBalanceTxt = item.isBalance == 1?'是':'否';
             item.isWithpayTxt = item.isWithpay == 1?'是':'否';
+            item.nameChinese = item.staff.nameChinese;
             return item;
           });
           this.total = this.tableData.length;
@@ -92,13 +110,52 @@ export default {
       this.isShowDetails = true;
       this.curInfo = res;
       this.curInfo.hrCode = this.hrCode;
-    }
+    },
+    selectFun(val) {
+      this.BUCode = val;
+      this.getData(this.hrCode,this.BUCode);
+      this.$toolFn.sessionSet('approveBUCode',val);
+    },
+    // 获取单位列表
+    getRegionBUList(){
+      var _this = this;
+      var reqUrl = '/server/api/v1/company/regionBUs';
+      _this.$http.post(reqUrl,{}).then(res => {
+        if(res.data.code == 0){
+          _this.regionBUList = res.data.data;
+          _this.BUCode = this.$toolFn.sessionGet('approveBUCode')?this.$toolFn.sessionGet('approveBUCode'):res.data.data[0].code;
+          _this.getData(this.BUCode);
+        }else{
+          _this.$message({type:'info',message:`报错：${res.data.code}`})
+        }
+      })
+    },
+    searchFun(list,search){
+      let newList = [];
+      for(let i = 0;i < list.length;i++){
+        for(let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0){
+            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+              newList.push(list[i]);
+              break;
+            }
+          }
+        };
+      }
+      return newList;
+    },
   },
   computed: {
     queryTableDate() {
+      var _this = this;
+      let tableData = _this.tableData;
+      if (_this.filter.searchKey != ""){
+        tableData = _this.searchFun(tableData,_this.filter);
+      }
+      _this.total = tableData.length;
       var begin = (this.curPage - 1) * this.pageSize;
       var end = this.curPage * this.pageSize;
-      return this.tableData.slice(begin, end);
+      return tableData.slice(begin, end);
     },
     pageTotal() {
       var pageTotal = Math.ceil(this.total / this.pageSize);

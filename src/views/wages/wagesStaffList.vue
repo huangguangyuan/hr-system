@@ -7,7 +7,7 @@
     <el-divider></el-divider>
     <!-- 搜索 -->
     <div class="search-wrap">
-      <el-input placeholder="请输入员工姓名" v-model="searchInner" @blur="searchFun">
+      <el-input placeholder="请输入关键字" v-model="filter.searchKey">
         <el-select
           v-model="BUCode"
           slot="prepend"
@@ -22,13 +22,11 @@
             :value="item.code"
           ></el-option>
         </el-select>
-        <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
       </el-input>
     </div>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
       <el-table-column prop="nameChinese" label="名称"></el-table-column>
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column label="头像">
         <template slot-scope="scope">
           <el-image
@@ -83,8 +81,8 @@ export default {
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
       isShowState: false, //是否显示状态
-      AvatarDefault:
-        "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" //默认头像
+      AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
+      filter:{searchKey:'',searchField:['nameChinese','genderTxt']}
     };
   },
   mounted() {
@@ -161,42 +159,19 @@ export default {
       this.$toolFn.sessionSet("staffBUCode", val);
     },
     // 根据name字段查找数据
-    searchFun() {
-      var _this = this;
-      if (_this.searchInner != "") {
-        var reqUrl = "/server/api/v1/staff/getByOptions";
-        var data = { nameChinese: _this.searchInner };
-        _this.$http.post(reqUrl, data).then(res => {
-          _this.isShowLoading = false;
-          _this.tableData = res.data.data
-            .map(item => {
-              // 性别
-              switch (item.gender) {
-                case "M":
-                  item.genderTxt = "男";
-                  break;
-                case "F":
-                  item.genderTxt = "女";
-                  break;
-                default:
-                  item.genderTxt = "未知";
-              }
-              return item;
-            })
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          _this.total = _this.tableData.length;
-        });
-      } else {
-        _this.getData(this.BUCode);
+    searchFun(list,search){
+      let newList = [];
+      for(let i = 0;i < list.length;i++){
+        for(let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0){
+            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+              newList.push(list[i]);
+              break;
+            }
+          }
+        };
       }
+      return newList;
     },
     // 打开详细页面
     openFun(index, res, key) {
@@ -210,9 +185,14 @@ export default {
   computed: {
     queryTableDate() {
       var _this = this;
+      let tableData = _this.tableData;
+      if (_this.filter.searchKey != ""){
+        tableData = _this.searchFun(tableData,_this.filter);
+      }
+      _this.total = tableData.length;
       var begin = (_this.curPage - 1) * _this.pageSize;
       var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      return tableData.slice(begin, end);
     },
     pageTotal() {
       var _this = this;

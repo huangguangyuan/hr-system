@@ -7,21 +7,19 @@
     </div>
     <!-- 搜索 -->
     <div class="search" v-if="userRight">
-      <el-input placeholder="请输入管理员名称" v-model="searchInner" @blur="searchFn">
+      <el-input placeholder="请输入关键字" v-model="filter.searchKey">
         <el-select v-model="BUCode" slot="prepend" placeholder="请选择" @change="changeBUCode" style="width:200px;">
           <el-option v-for='(item,index) in regionList' :key='index' :label="item.name" :value="item.code"></el-option>
         </el-select>
-        <el-button slot="append" icon="el-icon-search" @click="searchFn">搜 索</el-button>
       </el-input>
     </div>
     <!-- 列表内容 -->
     <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="roleTypeTxt" label="权限"></el-table-column>
-      <el-table-column prop="account" label="账号"></el-table-column>
+      <el-table-column sortable prop="name" label="名称"></el-table-column>
+      <el-table-column sortable prop="roleTypeTxt" label="权限"></el-table-column>
+      <el-table-column sortable prop="account" label="账号"></el-table-column>
       <!-- <el-table-column prop="mobile" label="手机"></el-table-column> -->
-      <el-table-column prop="isStatus" label="状态"></el-table-column>
+      <el-table-column sortable prop="isStatus" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="480px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="editFn(scope.$index, scope.row)">编辑</el-button>
@@ -128,6 +126,7 @@ export default {
       isShowLoading:false,//加载
       userInfo:{},
       userRight:true,
+      filter:{searchKey:'',searchField:['name','roleTypeTxt','account']}
     };
   },
   mounted() {
@@ -206,25 +205,19 @@ export default {
       this.isShowModifyPassword = res;
       this.isShowAddRole = res;
     },
-    // 搜索
-    searchFn() {
-      var _this = this;
-      if (_this.searchInner == "") {
-        _this.getData(this.BUCode);
-      } else {
-        var reqUrl = "/server/api/v1/admin/hrSys/getByOptions";
-        var data = { name: _this.searchInner };
-        _this.$http.post(reqUrl, data).then(res => {
-          _this.tableData = res.data.data.map(item => {
-            item.createTime = _this.$toolFn.timeFormat(item.createTime);
-            item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-            item.isStatus = item.status == 1 ? "启用" : "禁用";
-            item.children = item.nodes;
-            return item;
-          });
-          _this.total = _this.tableData.length;
-        });
+    searchFun(list,search){
+      let newList = [];
+      for(let i = 0;i < list.length;i++){
+        for(let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0){
+            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+              newList.push(list[i]);
+              break;
+            }
+          }
+        };
       }
+      return newList;
     },
     // 编辑
     editFn(index, res) {
@@ -309,9 +302,14 @@ export default {
   computed: {
     queryTableDate() {
       var _this = this;
+      let tableData = _this.tableData;
+      if (_this.filter.searchKey != ""){
+        tableData = _this.searchFun(tableData,_this.filter);
+      }
+      _this.total = tableData.length;
       var begin = (_this.curPage - 1) * _this.pageSize;
       var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      return tableData.slice(begin, end);
     },
     pageTotal() {
       var _this = this;

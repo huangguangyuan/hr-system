@@ -5,19 +5,19 @@
       <span>公司列表</span>
       <el-button type="warning" v-if="userInfo.roleTypeId == 3" size="small"  @click="isShowAddModule=true;curInfo.type='add'">新增公司</el-button>
     </div>
+    <!-- 搜索 -->
+    <div class="search-wrap">
+      <el-input placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
+    </div>
     <!-- 列表内容 -->
     <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="account" label="账号"></el-table-column>
-      <el-table-column prop="contactName" label="联系人"></el-table-column>
-      <el-table-column prop="contactTel" label="联系人电话"></el-table-column>
-      <el-table-column prop="contactEmail" label="联系人邮箱"></el-table-column>
-      <el-table-column prop="statusTxt" label="状态"></el-table-column>
-      <el-table-column prop="country" label="国家"></el-table-column>
-      <el-table-column prop="location" label="位置"></el-table-column>
+      <el-table-column sortable prop="name" label="名称"></el-table-column>
+      <el-table-column sortable prop="account" label="账号"></el-table-column>
+      <el-table-column sortable prop="contactName" label="联系人"></el-table-column>
+      <el-table-column sortable prop="contactTel" label="联系人电话"></el-table-column>
+      <el-table-column sortable prop="contactEmail" label="联系人邮箱"></el-table-column>
+      <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
       <el-table-column prop="logo" label="logo"></el-table-column>
-      <el-table-column prop="remarks" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -72,7 +72,8 @@ export default {
       curInfo: {}, //当前信息
       isShowAddModule: false, //是否显示增加模块
       isShowLoading: false, //是否显示loading页
-      userInfo:{}
+      userInfo:{},
+      filter:{searchKey:'',searchField:['name','account','contactName','contactTel','contactEmail','statusTxt','country']}
     };
   },
   mounted() {
@@ -106,7 +107,6 @@ export default {
               return 0;
             });
           _this.total = _this.tableData.length;
-          console.log(res);
         })
         .catch(err => {
           console.log(err);
@@ -193,14 +193,33 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    searchFun(list,search){
+      let newList = [];
+      for(let i = 0;i < list.length;i++){
+        for(let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0){
+            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+              newList.push(list[i]);
+              break;
+            }
+          }
+        };
+      }
+      return newList;
     }
   },
   computed: {
     queryTableDate() {
       var _this = this;
+      let tableData = _this.tableData;
+      if (_this.filter.searchKey != ""){
+        tableData = _this.searchFun(tableData,_this.filter);
+      }
+      _this.total = tableData.length;
       var begin = (_this.curPage - 1) * _this.pageSize;
       var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      return tableData.slice(begin, end);
     },
     pageTotal() {
       var _this = this;
@@ -232,6 +251,11 @@ export default {
 }
 .search {
   margin: 20px auto;
+}
+.search-wrap {
+  margin: 20px auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 </style>
 

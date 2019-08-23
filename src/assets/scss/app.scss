@@ -63,6 +63,11 @@ strong,span,i{font-style:normal;}
 .el-timeline-item:last-child .el-timeline-item__node{
 	background: #ff6600 !important
   }
+.search-wrap {
+	margin: 20px auto;
+	width: 100%;
+	box-sizing: border-box;
+  }
 // <--------------home样式-------------->
 .home{
 	.allCenter{display: flex;justify-content: center;align-items: center;align-content: center;}

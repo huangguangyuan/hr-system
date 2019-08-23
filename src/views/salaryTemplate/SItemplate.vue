@@ -7,7 +7,7 @@
     </div>
     <!-- 搜索 -->
     <div class="search-wrap">
-      <el-input placeholder="请输入内容" v-model="searchInner" @blur="searchFun">
+      <!-- <el-input placeholder="请输入内容" v-model="searchInner" @blur="searchFun"></el-input> -->
         <el-select
           v-model="cityCode"
           slot="prepend"
@@ -22,8 +22,8 @@
             :value="item.code"
           ></el-option>
         </el-select>
-        <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
-      </el-input>
+        <!-- <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button> -->
+
     </div>
 
     <!-- 列表内容 -->

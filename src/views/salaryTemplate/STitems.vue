@@ -7,16 +7,13 @@
     </div>
     <!-- 搜索 -->
     <div class="search-wrap">
-      <el-input placeholder="请输入内容" v-model="searchInner" @blur="searchFun">
-        <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
-      </el-input>
+      <el-input placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
     </div>
 
     <!-- 列表内容 -->
     <el-table v-loading='isShowLoading' :data="queryTableDate" stripe style="width: 100%" border>
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="taxableTxt" label="是否应税项目"></el-table-column>
+      <el-table-column sortable prop="name" label="名称"></el-table-column>
+      <el-table-column sortable prop="taxableTxt" label="是否应税项目"></el-table-column>
       <el-table-column prop="description" label="描述"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
@@ -62,6 +59,7 @@ export default {
       isShowLoading: false, //是否显示loading页
       searchInner: "", //搜索关键字
       curInfo: {}, //传值给子组件
+      filter:{searchKey:'',searchField:['name']}
     };
   },
   mounted() {
@@ -156,40 +154,32 @@ export default {
         });
     },
     // 搜索
-    searchFun() {
-      var _this = this;
-      if (_this.searchInner) {
-        var reqUrl = "/server/api/v1/salaryItem/getByOptions";
-        var data = { name: _this.searchInner };
-        _this.$http.post(reqUrl, data).then(res => {
-          _this.tableData = res.data.data.map(item => {
-            switch (item.taxable) {
-                case 0:
-                  item.taxableTxt = "否";
-                  break;
-                case 1:
-                  item.taxableTxt = "是";
-                  break;
-                default:
-                  item.taxableTxt = "未知";
-              }
-            item.createTime = _this.$toolFn.timeFormat(item.createTime);
-            item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-            return item;
-          });
-          _this.total = _this.tableData.length;
-        });
-      } else {
-        _this.getData();
+    searchFun(list,search){
+      let newList = [];
+      for(let i = 0;i < list.length;i++){
+        for(let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0){
+            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+              newList.push(list[i]);
+              break;
+            }
+          }
+        };
       }
-    }
+      return newList;
+    },
   },
   computed: {
     queryTableDate() {
       var _this = this;
+      let tableData = _this.tableData;
+      if (_this.filter.searchKey != ""){
+        tableData = _this.searchFun(tableData,_this.filter);
+      }
+      _this.total = tableData.length;
       var begin = (_this.curPage - 1) * _this.pageSize;
       var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      return tableData.slice(begin, end);
     },
     pageTotal() {
       var _this = this;

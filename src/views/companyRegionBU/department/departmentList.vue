@@ -7,7 +7,7 @@
     </div>
     <!-- 搜索 -->
     <div class="search-wrap">
-      <el-input placeholder="请输入部门名称" v-model="searchInner" @blur="searchFun">
+      <el-input placeholder="请输入关键字" v-model="filter.searchKey">
         <el-select
           v-model="BUCode"
           slot="prepend"
@@ -17,15 +17,13 @@
         >
           <el-option v-for='(item,index) in regionBUList' :key='index' :label="item.name" :value="item.code"></el-option>
         </el-select>
-        <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
       </el-input>
     </div>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id" border>
-      <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="id" label="ID"></el-table-column>
+      <el-table-column sortable prop="name" label="名称"></el-table-column>
       <el-table-column prop="description" label="描述"></el-table-column>
-      <el-table-column prop="isStatus" label="状态"></el-table-column>
+      <el-table-column sortable prop="isStatus" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="500px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click='modifyFun(scope.$index, scope.row)'>编辑</el-button>
@@ -86,7 +84,8 @@ export default {
       BUCode: "18fa0a70-62c5-11e9-93a9-f78fd132055e", //单位code
       isShowAddAccess: false, //是否显示新增权限页面
       isShowAddChild: false, //是否显示新增子权限页面
-      isShowLoading: false //是否显示loading页
+      isShowLoading: false, //是否显示loading页
+      filter:{searchKey:'',searchField:['name']}
     };
   },
   mounted() {
@@ -163,39 +162,19 @@ export default {
       this.getData(this.BUCode);
       this.$toolFn.sessionSet('departmentBUCode',val);
     },
-    // 根据name字段查找数据
-    searchFun() {
-      var _this = this;
-      if (_this.searchInner != "") {
-        var reqUrl = "/server/api/v1/buDepartment/getByOptions";
-        var data = { name: _this.searchInner };
-        _this.$http.post(reqUrl, data).then(res => {
-          if (res.data.code == 0) {
-            _this.tableData = res.data.data
-              .map(item => {
-                item.createTime = _this.$toolFn.timeFormat(item.createTime);
-                item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-                item.isStatus = item.status == 1 ? "启用" : "禁用";
-                item.children = item.nodes;
-                return item;
-              }) //倒序
-              .sort((a, b) => {
-                if (a.id < b.id) {
-                  return 1;
-                }
-                if (a.id > b.id) {
-                  return -1;
-                }
-                return 0;
-              });
-            _this.total = _this.tableData.length;
-          } else {
-            console.log(res.data.code);
+    searchFun(list,search){
+      let newList = [];
+      for(let i = 0;i < list.length;i++){
+        for(let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0){
+            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+              newList.push(list[i]);
+              break;
+            }
           }
-        });
-      } else {
-        _this.getData(this.BUCode);
+        };
       }
+      return newList;
     },
     // 修改权限
     modifyFun(index, res) {
@@ -271,9 +250,14 @@ export default {
   computed: {
     queryTableDate() {
       var _this = this;
+      let tableData = _this.tableData;
+      if (_this.filter.searchKey != ""){
+        tableData = _this.searchFun(tableData,_this.filter);
+      }
+      _this.total = tableData.length;
       var begin = (_this.curPage - 1) * _this.pageSize;
       var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      return tableData.slice(begin, end);
     },
     pageTotal() {
       var _this = this;

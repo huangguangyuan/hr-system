@@ -6,19 +6,18 @@
       <el-button type="warning" size="small" @click="isShowAddAdmin = true;modifyInfo.adminType = 'admin'">添加管理员</el-button>
     </div>
     <!-- 搜索 -->
-    <div class="search">
+    <!-- <div class="search">
       <el-input placeholder="请输入管理员名称" v-model="searchInner" @blur="searchFn">
         <el-button slot="append" icon="el-icon-search" @click="searchFn">搜 索</el-button>
       </el-input>
-    </div>
+    </div> -->
     <!-- 列表内容 -->
     <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="account" label="账号"></el-table-column>
-      <el-table-column prop="mobile" label="手机"></el-table-column>
-      <el-table-column prop="email" label="邮箱"></el-table-column>
-      <el-table-column prop="isStatus" label="状态"></el-table-column>
+      <el-table-column sortable prop="name" label="名称"></el-table-column>
+      <el-table-column sortable prop="account" label="账号"></el-table-column>
+      <el-table-column sortable prop="mobile" label="手机"></el-table-column>
+      <el-table-column sortable prop="email" label="邮箱"></el-table-column>
+      <el-table-column sortable prop="isStatus" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="480px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="editFn(scope.$index, scope.row)">编辑</el-button>
@@ -169,26 +168,6 @@ export default {
       this.isShowModifyAdmin = res;
       this.isShowModifyPassword = res;
       this.isShowAddRole = res;
-    },
-    // 搜索
-    searchFn() {
-      var _this = this;
-      if (_this.searchInner == "") {
-        _this.getData();
-      } else {
-        var reqUrl = "/server/api/v1/admin/getByOptions";
-        var data = { name: _this.searchInner };
-        _this.$http.post(reqUrl, data).then(res => {
-          _this.tableData = res.data.data.map(item => {
-            item.createTime = _this.$toolFn.timeFormat(item.createTime);
-            item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-            item.isStatus = item.status == 1 ? "启用" : "禁用";
-            item.children = item.nodes;
-            return item;
-          });
-          _this.total = _this.tableData.length;
-        });
-      }
     },
     // 编辑
     editFn(index, res) {

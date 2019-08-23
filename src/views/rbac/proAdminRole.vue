@@ -38,21 +38,15 @@
           ></el-option>
         </el-select>
       </div>
-      <el-input
-        placeholder="请输入内容"
-        v-model="searchInner"
-        class="input-with-select"
-        @blur="searchFun"
-      >
-        <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
-      </el-input>
+      <div class="search-wrap">
+        <el-input placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
+      </div>
     </div>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id" border>
-      <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="roleCode" label="角色代号"></el-table-column>
-      <el-table-column prop="isStatus" label="状态"></el-table-column>
+      <el-table-column sortable prop="name" label="名称"></el-table-column>
+      <el-table-column sortable prop="roleCode" label="角色代号"></el-table-column>
+      <el-table-column sortable prop="isStatus" label="状态"></el-table-column>
       <el-table-column prop="description" label="描述"></el-table-column>
       <el-table-column label="操作" fixed="right" width="500px">
         <template slot-scope="scope">
@@ -144,7 +138,8 @@ export default {
       roleTypeValue: "1", //角色类型
       searchInner: "", //搜索内容
       projectList: [], //项目列表
-      projectCode: "" //项目code
+      projectCode: "", //项目code
+      filter:{searchKey:'',searchField:['name','roleCode','description']}
     };
   },
   mounted() {
@@ -227,39 +222,6 @@ export default {
       this.getData(this.projectCode);
       this.$toolFn.sessionSet('proAdminRoleInitialize',{roleTypeValue:this.roleTypeValue,projectCode:this.projectCode});
     },
-    // 根据name字段查找数据
-    searchFun() {
-      var _this = this;
-      if (_this.searchInner != "") {
-        var reqUrl = "/server/api/v1/projectRole/getByOptions";
-        var data = { name: _this.searchInner };
-        _this.$http.post(reqUrl, data).then(res => {
-          if (res.data.code == 0) {
-            _this.tableData = res.data.data
-              .map(item => {
-                item.createTime = _this.$toolFn.timeFormat(item.createTime);
-                item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-                item.children = item.nodes;
-                return item;
-              }) //倒序
-              .sort((a, b) => {
-                if (a.id < b.id) {
-                  return 1;
-                }
-                if (a.id > b.id) {
-                  return -1;
-                }
-                return 0;
-              });
-            _this.total = _this.tableData.length;
-          } else {
-            console.log(res.data.code);
-          }
-        });
-      } else {
-        this.getData(this.projectCode);
-      }
-    },
     // 监听子组件发过来信息
     listenIsShowMask(res) {
       this.isShowAddRole = res;
@@ -341,14 +303,33 @@ export default {
             message: "已取消删除"
           });
         });
-    }
+    },
+    searchFun(list,search){
+      let newList = [];
+      for(let i = 0;i < list.length;i++){
+        for(let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0){
+            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+              newList.push(list[i]);
+              break;
+            }
+          }
+        };
+      }
+      return newList;
+    },
   },
   computed: {
     queryTableDate() {
       var _this = this;
+      let tableData = _this.tableData;
+      if (_this.filter.searchKey != ""){
+        tableData = _this.searchFun(tableData,_this.filter);
+      }
+      _this.total = tableData.length;
       var begin = (_this.curPage - 1) * _this.pageSize;
       var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      return tableData.slice(begin, end);
     },
     pageTotal() {
       var _this = this;
