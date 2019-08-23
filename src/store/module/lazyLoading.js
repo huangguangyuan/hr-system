@@ -163,6 +163,12 @@ const dynamicRouter = [
         name: 'applyMain',
         component: resolve => require(['@/views/staffApply/applyMain.vue'], resolve),
     },
+    // 工资清单
+    {
+        path: '/staffPayrollSlip',
+        name: 'staffPayrollSlip',
+        component: resolve => require(['@/views/wages/staffPayrollSlip.vue'], resolve),
+    },
     // <==========计薪==========>
     // 员工薪资计算
     {
@@ -201,6 +207,31 @@ const dynamicRouter = [
         path: '/wagesMain',
         name: 'wagesMain',
         component: resolve => require(['@/views/wages/wagesMain.vue'], resolve),
+    },
+    // 计粮数据列表
+    {
+        path: '/staffPayrollInfoList',
+        name: 'staffPayrollInfoList',
+        component: resolve => require(['@/views/wages/staffPayrollInfoList.vue'], resolve),
+    },
+    // 工资单列表
+    {
+        path: '/staffPayrollList',
+        name: 'staffPayrollList',
+        component: resolve => require(['@/views/wages/staffPayrollList.vue'], resolve),
+    },
+    // 工资汇总表
+    {
+        path: '/staffPayrollSummary',
+        name: 'staffPayrollSummary',
+        component: resolve => require(['@/views/wages/staffPayrollSummary.vue'], resolve),
+    },
+    // <==========消息中心==========>
+    // 消息列表
+    {
+        path: '/newsList',
+        name: 'newsList',
+        component: resolve => require(['@/views/news/newsList.vue'], resolve),
     },
 
 ]

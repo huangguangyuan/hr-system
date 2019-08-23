@@ -1,56 +1,35 @@
 <template>
-  <div class="wagesStaffList">
-    <!-- 头部内容 -->
-    <div class="my-top">
-      <span>员工基本信息</span>
-    </div>
-    <el-divider></el-divider>
+  <div class="newsList wrap">
     <!-- 搜索 -->
     <div class="search-wrap">
-      <el-input placeholder="请输入关键字" v-model="filter.searchKey">
-        <el-select
-          v-model="BUCode"
-          slot="prepend"
-          placeholder="请选择"
-          style="width:200px;"
-          @change="selectFun"
-        >
-          <el-option
-            v-for="(item,index) in regionBUlist"
-            :key="index"
-            :label="item.name"
-            :value="item.code"
-          ></el-option>
-        </el-select>
-      </el-input>
+      <el-select
+        v-model="BUCode"
+        slot="prepend"
+        placeholder="请选择"
+        style="width:200px;"
+        @change="selectFun"
+      >
+        <el-option
+          v-for="(item,index) in regionBUlist"
+          :key="index"
+          :label="item.name"
+          :value="item.code"
+        ></el-option>
+      </el-select>
     </div>
+    <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
-      <el-table-column prop="nameChinese" label="名称"></el-table-column>
-      <el-table-column label="头像">
+      <el-table-column prop="nameChinese" label="中文名"></el-table-column>
+      <el-table-column prop="nameEnglish" label="英文名"></el-table-column>
+      <el-table-column prop="salaryAmout" label="工资总额"></el-table-column>
+      <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-image
-            style="width: 50px; height: 50px;border-radius: 100%;"
-            :src="scope.row.photo?scope.row.photo:AvatarDefault"
-            fit="cover"
-          ></el-image>
-        </template>
-      </el-table-column>
-      <el-table-column prop="genderTxt" label="性别"></el-table-column>
-      <el-table-column label="操作" width="600px">
-        <template slot-scope="scope">
-          <!-- 缴纳社保/公积金信息 -->
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
             @click="openFun(scope.$index, scope.row, 'staffWagesConfig')"
-          >配 置</el-button>
-          <!-- 生成员工工资单 -->
-          <el-button
-            size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
-            @click="genStaffPayroll(scope.$index, scope.row)"
-          >生成工资单</el-button>
+          >详 细</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -65,16 +44,12 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
-    <!-- 生成员工工资单 -->
-    <el-dialog title="生成工资单" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <gen-staff-payroll v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></gen-staff-payroll>
-    </el-dialog>
   </div>
 </template>
 <script>
-import genStaffPayroll from './genStaffPayroll.vue';
+import { deflate } from "zlib";
 export default {
-  name: "wagesStaffList",
+  name: "newsList",
   inject: ["reload"],
   data() {
     return {
@@ -88,9 +63,6 @@ export default {
       BUCode: "", //角色类型
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
-      isShowState: false, //是否显示状态
-      AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
-      filter:{searchKey:'',searchField:['nameChinese','genderTxt']}
     };
   },
   mounted() {
@@ -116,7 +88,7 @@ export default {
     },
     //获取项目数据列表
     getData(BUCode) {
-      var reqUrl = "/server/api/v1/staff/getAll";
+      var reqUrl = "/server/api/v1/payroll/staff/staffPayrollInfoList";
       var myData = { BUCode: BUCode };
       this.isShowLoading = true;
       this.$http
@@ -125,17 +97,6 @@ export default {
           this.isShowLoading = false;
           this.tableData = res.data.data
             .map(item => {
-              // 性别
-              switch (item.gender) {
-                case "M":
-                  item.genderTxt = "男";
-                  break;
-                case "F":
-                  item.genderTxt = "女";
-                  break;
-                default:
-                  item.genderTxt = "未知";
-              }
               return item;
             })
             .sort((a, b) => {
@@ -148,6 +109,7 @@ export default {
               return 0;
             });
           this.total = this.tableData.length;
+          console.log(this.tableData);
         })
         .catch(err => {
           console.log(err);
@@ -163,21 +125,6 @@ export default {
       this.getData(this.BUCode);
       this.$toolFn.sessionSet("staffBUCode", val);
     },
-    // 根据name字段查找数据
-    searchFun(list,search){
-      let newList = [];
-      for(let i = 0;i < list.length;i++){
-        for(let key in list[i]) {
-          if (search.searchField.indexOf(key) >= 0){
-            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
-              newList.push(list[i]);
-              break;
-            }
-          }
-        };
-      }
-      return newList;
-    },
     // 打开详细页面
     openFun(index, res, key) {
       this.$store.commit({
@@ -185,38 +132,20 @@ export default {
         wagesInfo: res,
         wagesKey: key
       });
-    },
-    // 生成工资单
-    genStaffPayroll(index, res){
-      this.isShowAddAccess = true;
-      this.curInfo = res;
-      this.curInfo.hrCode = this.hrCode;
-    },
-    // 接收子组件发送信息
-    listenIsShowMask(res) {
-      this.isShowAddAccess = false;
     }
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.searchFun(tableData,_this.filter);
-      }
-      _this.total = tableData.length;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
-      return tableData.slice(begin, end);
+      var begin = (this.curPage - 1) * this.pageSize;
+      var end = this.curPage * this.pageSize;
+      return this.tableData.slice(begin, end);
     },
     pageTotal() {
       var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     }
   },
-  components: {
-    genStaffPayroll
-  }
+  components: {}
 };
 </script>
 <style scoped lang="scss">
