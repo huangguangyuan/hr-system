@@ -47,6 +47,12 @@
             icon="hr-icon-gongjijinjiaoyimingxi"
             @click="openFun(scope.$index, scope.row, 'staffWagesConfig')"
           >配 置</el-button>
+          <!-- 生成员工工资单 -->
+          <el-button
+            size="mini"
+            icon="hr-icon-gongjijinjiaoyimingxi"
+            @click="genStaffPayroll(scope.$index, scope.row)"
+          >生成工资单</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,10 +67,14 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
+    <!-- 生成员工工资单 -->
+    <el-dialog title="生成工资单" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+      <gen-staff-payroll v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></gen-staff-payroll>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { deflate } from "zlib";
+import genStaffPayroll from './genStaffPayroll.vue';
 export default {
   name: "wagesStaffList",
   inject: ["reload"],
@@ -78,50 +88,44 @@ export default {
       searchInner: "", //搜索内容
       regionBUlist: [], //单位列表
       BUCode: "", //角色类型
-      staffState: "", //员工状态
-      staffID: "", //员工ID
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
-      isShowState: false, //是否显示状态
       AvatarDefault:
-        "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" //默认头像
+        "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
+      hrCode: "baa7b350-96f4-11e9-9069-bf35c07c51d4"
     };
   },
   mounted() {
-    var _this = this;
-    _this.InitializationFun();
+    this.InitializationFun();
   },
   methods: {
     // 初始化
     InitializationFun() {
-      var _this = this;
-      _this.getregionBU();
+      this.getregionBU();
     },
     // 获取单位列表
     getregionBU() {
-      var _this = this;
       var reqUrl = "/server/api/v1/company/regionBUs";
-      _this.$http.post(reqUrl, {}).then(res => {
+      this.$http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
-          _this.regionBUlist = res.data.data;
-          _this.BUCode = this.$toolFn.sessionGet("staffBUCode")
+          this.regionBUlist = res.data.data;
+          this.BUCode = this.$toolFn.sessionGet("staffBUCode")
             ? this.$toolFn.sessionGet("staffBUCode")
             : res.data.data[0].code;
-          _this.getData(this.BUCode);
+          this.getData(this.BUCode);
         }
       });
     },
     //获取项目数据列表
     getData(BUCode) {
-      var _this = this;
       var reqUrl = "/server/api/v1/staff/getAll";
       var myData = { BUCode: BUCode };
-      _this.isShowLoading = true;
-      _this.$http
+      this.isShowLoading = true;
+      this.$http
         .post(reqUrl, myData)
         .then(res => {
-          _this.isShowLoading = false;
-          _this.tableData = res.data.data
+          this.isShowLoading = false;
+          this.tableData = res.data.data
             .map(item => {
               // 性别
               switch (item.gender) {
@@ -145,7 +149,7 @@ export default {
               }
               return 0;
             });
-          _this.total = _this.tableData.length;
+          this.total = this.tableData.length;
         })
         .catch(err => {
           console.log(err);
@@ -153,8 +157,7 @@ export default {
     },
     // 获取当前页数
     curChange(val) {
-      var _this = this;
-      _this.curPage = val;
+      this.curPage = val;
     },
     // 获取单位BUCode
     selectFun(val) {
@@ -164,13 +167,12 @@ export default {
     },
     // 根据name字段查找数据
     searchFun() {
-      var _this = this;
-      if (_this.searchInner != "") {
+      if (this.searchInner != "") {
         var reqUrl = "/server/api/v1/staff/getByOptions";
-        var data = { nameChinese: _this.searchInner };
-        _this.$http.post(reqUrl, data).then(res => {
-          _this.isShowLoading = false;
-          _this.tableData = res.data.data
+        var data = { nameChinese: this.searchInner };
+        this.$http.post(reqUrl, data).then(res => {
+          this.isShowLoading = false;
+          this.tableData = res.data.data
             .map(item => {
               // 性别
               switch (item.gender) {
@@ -194,10 +196,10 @@ export default {
               }
               return 0;
             });
-          _this.total = _this.tableData.length;
+          this.total = this.tableData.length;
         });
       } else {
-        _this.getData(this.BUCode);
+        this.getData(this.BUCode);
       }
     },
     // 打开详细页面
@@ -207,22 +209,32 @@ export default {
         wagesInfo: res,
         wagesKey: key
       });
+    },
+    // 生成工资单
+    genStaffPayroll(index, res){
+      this.isShowAddAccess = true;
+      this.curInfo = res;
+      this.curInfo.hrCode = this.hrCode;
+    },
+    // 接收子组件发送信息
+    listenIsShowMask(res) {
+      this.isShowAddAccess = false;
     }
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      var begin = (this.curPage - 1) * this.pageSize;
+      var end = this.curPage * this.pageSize;
+      return this.tableData.slice(begin, end);
     },
     pageTotal() {
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total / _this.pageSize);
+      var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     }
   },
-  components: {}
+  components: {
+    genStaffPayroll
+  }
 };
 </script>
 <style scoped lang="scss">

@@ -276,6 +276,15 @@ let sidebarInfo = [
                 rightCode: "applyMain",
                 items: [{}]
             },
+            {
+                id: '105',
+                authUrl: '/staffPayrollSlip',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '工资清单',
+                rightCode: "staffPayrollSlip",
+                items: [{}]
+            },
         ]
     },
     {
@@ -358,6 +367,52 @@ let sidebarInfo = [
                 isMenu: 1,
                 name: '员工配置',
                 rightCode: "wagesMain",
+                items: [{}]
+            },
+            {
+                id: '132',
+                authUrl: '/staffPayrollInfoList',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '计粮数据',
+                rightCode: "staffPayrollInfoList",
+                items: [{}]
+            },
+            {
+                id: '133',
+                authUrl: '/staffPayrollList',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '工资单列表',
+                rightCode: "staffPayrollList",
+                items: [{}]
+            },
+            {
+                id: '134',
+                authUrl: '/staffPayrollSummary',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '工资汇总表',
+                rightCode: "staffPayrollSummary",
+                items: [{}]
+            }
+        ]
+    },
+    {
+        id: '140',
+        authUrl: 'null',
+        iconUrl: 'el-icon-user',
+        isMenu: 0,
+        name: '消息中心',
+        rightCode: "news",
+        items: [
+            {
+                id: '141',
+                authUrl: '/newsList',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '消息列表',
+                rightCode: "newsList",
                 items: [{}]
             }
         ]
