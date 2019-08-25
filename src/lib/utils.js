@@ -1,14 +1,16 @@
 let toolFn = {
     // 转换时间格式方法
     timeFormat:(time,fmt)=>{
-        if (fmt && fmt != ""){
-            time =  toolFn.formatTime(time,fmt);
-        }
         var dateee = new Date(time).toJSON();
         var newTime = new Date(+new Date(dateee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');
+        if (fmt && fmt != ""){
+            newTime =  toolFn.formatTime(newTime,fmt);
+        }
+
         return newTime;
     },
     formatTime:(time,fmt)=>{
+        fmt = new Date(time);
         if (/(y+)/.test(fmt)) {
             fmt = fmt.replace(RegExp.$1, (time.getFullYear() + '').substr(4 - RegExp.$1.length));
         }

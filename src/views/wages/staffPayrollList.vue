@@ -2,12 +2,14 @@
   <div class="staffPayrollList wrap">
     <!-- 搜索 -->
     <div class="search-wrap">
+      
       <el-select
         v-model="seachMsg.BUCode"
         slot="prepend"
         placeholder="请选择"
         style="width:200px;"
         @change="selectFun"
+        class="selectItem"
       >
         <el-option
           v-for="(item,index) in regionBUlist"
@@ -23,12 +25,14 @@
         value-format="yyyy"
         format="yyyy"
         @change="selectYear"
+        class="selectItem"
       ></el-date-picker>
       <el-select
         style="width:200px;"
         v-model="seachMsg.month"
         placeholder="请选择月份"
         @change="selectMonth"
+        class="selectItem"
       >
         <el-option label="1月" value="1"></el-option>
         <el-option label="2月" value="2"></el-option>
@@ -43,19 +47,20 @@
         <el-option label="11月" value="11"></el-option>
         <el-option label="12月" value="12"></el-option>
       </el-select>
-
+        <el-input class="selectItem" placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
       <el-button type="primary" class="buPayrollConfirmBtn" @click='buPayrollConfirmFun(seachMsg.BUCode)'>确认出粮信息</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="totalAmount" label="收入总额"></el-table-column>
-      <el-table-column prop="grossPay" label="税前金额"></el-table-column>
-      <el-table-column prop="taxableWages" label="应税金额"></el-table-column>
-      <el-table-column prop="taxAmount" label="个人所得税"></el-table-column>
-      <el-table-column prop="notTaxableAmount" label="不应税金额"></el-table-column>
-      <el-table-column prop="typeIdTxt" label="工资单状态"></el-table-column>
+      <el-table-column sortable prop="staffNo" label="员工编号"></el-table-column>
+      <el-table-column prop="nameChinese" label="姓名"></el-table-column>
+      <el-table-column sortable prop="totalAmount" label="收入总额"></el-table-column>
+      <el-table-column sortable prop="grossPay" label="税前金额"></el-table-column>
+      <el-table-column sortable prop="taxableWages" label="应税金额"></el-table-column>
+      <el-table-column sortable prop="taxAmount" label="个人所得税"></el-table-column>
+      <el-table-column sortable prop="notTaxableAmount" label="不应税金额"></el-table-column>
+      <el-table-column sortable prop="typeIdTxt" label="工资单状态"></el-table-column>
       <el-table-column label="操作" width="300">
         <template slot-scope="scope">
           <el-button
@@ -138,7 +143,8 @@ export default {
         year: "", //年份
         month: "" //月份
       },
-      hrCode: "2c269360-970f-11e9-9069-bf35c07c51d4"
+      hrCode: "2c269360-970f-11e9-9069-bf35c07c51d4",
+      filter:{searchKey:'',searchField:['nameChinese','staffNo']},
     };
   },
   mounted() {
@@ -147,11 +153,14 @@ export default {
   methods: {
     // 初始化
     InitializationFun() {
+    var date = new Date();
+    this.seachMsg = {
+              year: date.getYear().toString(),
+              month: date.getMonth().toString()
+            };      
       if (this.$toolFn.sessionGet("staffPayrollListSearch")) {
         this.seachMsg = {
-          year: this.$toolFn
-            .sessionGet("staffPayrollListSearch")
-            .year.toString(),
+          year: this.$toolFn.sessionGet("staffPayrollListSearch").year.toString(),
           month: this.$toolFn
             .sessionGet("staffPayrollListSearch")
             .month.toString()
@@ -271,13 +280,33 @@ export default {
       this.isShowAddAccess = false;
       this.isShowConfirm = false;
       this.isShowbuConfirm = false;
-    }
+    },
+    searchFun(list,search){
+      let newList = [];
+      for(let i = 0;i < list.length;i++){
+        for(let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0){
+            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+              newList.push(list[i]);
+              break;
+            }
+          }
+        };
+      }
+      return newList;
+    },
   },
   computed: {
     queryTableDate() {
+      var _this = this;
+      let tableData = _this.tableData;
+      if (_this.filter.searchKey != ""){
+        tableData = _this.searchFun(tableData,_this.filter);
+      }
+      _this.total = tableData.length;
       var begin = (this.curPage - 1) * this.pageSize;
       var end = this.curPage * this.pageSize;
-      return this.tableData.slice(begin, end);
+      return tableData.slice(begin, end);
     },
     pageTotal() {
       var pageTotal = Math.ceil(this.total / this.pageSize);
@@ -309,10 +338,24 @@ export default {
   }
 }
 .search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
+    margin: 20px auto;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+  .selectItem {
+    display: flex;
+    min-width: 200px;
+    align-items: center;
+    font-size: 14px;
+    color: rgb(237, 137, 55);
+    margin-right: 15px;
+  }
   .el-date-editor {
     margin-left: 15px;
     margin-right: 15px;

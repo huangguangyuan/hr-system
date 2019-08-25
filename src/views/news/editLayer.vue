@@ -1,11 +1,14 @@
 <template>
   <div class="editLayer">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" v-if="ruleForm.userRight" >
       <el-form-item label="消息类型：" prop="typeId">
         <el-select v-model="ruleForm.typeId" placeholder="请选择消息类型">
           <el-option label="公开信息" value="1"></el-option>
           <el-option label="指定信息" value="2"></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="所属公司/地区/单位" prop="codeList" v-if='ruleForm.typeId == "2"'>
+        <el-cascader v-model="ruleForm.codeList" :props="props"></el-cascader>
       </el-form-item>
       <el-form-item label="消息标题：" prop="title">
         <el-input v-model="ruleForm.title"></el-input>
@@ -13,14 +16,21 @@
       <el-form-item label="消息内容：" prop="content">
         <el-input type="textarea" v-model="ruleForm.content"></el-input>
       </el-form-item>
-      <el-form-item label="所属公司/地区/单位" prop="codeList" v-if='ruleForm.typeId == "2"'>
-        <el-cascader v-model="ruleForm.codeList" :props="props"></el-cascader>
-      </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="ruleForm.userRight" >
         <el-button type="primary" @click="submitForm('ruleForm')">提 交</el-button>
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" v-if="!ruleForm.userRight" >
+      <h1 style="text-align:center">{{ruleForm.title}}</h1>
+      
+      <p style="padding:15px;">{{ruleForm.content}}</p>
+      <el-divider></el-divider>
+      <el-form-item >
+        <el-button @click="cancelFn" style="float:right">关闭</el-button>
+      </el-form-item>
+    </el-form>
+
   </div>
 </template>
 <script>
@@ -34,6 +44,7 @@ export default {
     const _that = this;
     return {
       ruleForm: {
+        userRight:false,
         typeId: "",
         title:"",
         content:"",
@@ -100,6 +111,7 @@ export default {
     // 初始化
     initializeFun() {
       if (this.curInfo.type == "modify") {
+        this.ruleForm.userRight = this.curInfo.userRight;
         this.ruleForm.typeId = this.curInfo.typeId.toString();
         this.ruleForm.title = this.curInfo.title.toString();
         this.ruleForm.content = this.curInfo.content;
@@ -155,7 +167,6 @@ export default {
         regionCode:this.ruleForm.codeList[1] || '',
         BUCode:this.ruleForm.codeList[2] || ''
       };
-      console.log(data);
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();

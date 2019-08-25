@@ -2,6 +2,7 @@
   <div class="staffPayrollInfoList wrap">
     <!-- 搜索 -->
     <div class="search-wrap">
+      <el-input placeholder="请输入关键字" v-model="filter.searchKey">
       <el-select
         v-model="BUCode"
         slot="prepend"
@@ -15,7 +16,9 @@
           :label="item.name"
           :value="item.code"
         ></el-option>
+        
       </el-select>
+      </el-input>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
@@ -63,6 +66,7 @@ export default {
       BUCode: "", //角色类型
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
+      filter:{searchKey:'',searchField:['nameChinese','nameEnglish','salaryAmout']},
     };
   },
   mounted() {
@@ -132,13 +136,33 @@ export default {
         wagesInfo: res,
         wagesKey: key
       });
-    }
+    },
+    searchFun(list,search){
+      let newList = [];
+      for(let i = 0;i < list.length;i++){
+        for(let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0){
+            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+              newList.push(list[i]);
+              break;
+            }
+          }
+        };
+      }
+      return newList;
+    },
   },
   computed: {
     queryTableDate() {
+      var _this = this;
+      let tableData = _this.tableData;
+      if (_this.filter.searchKey != ""){
+        tableData = _this.searchFun(tableData,_this.filter);
+      }
+      _this.total = tableData.length;
       var begin = (this.curPage - 1) * this.pageSize;
       var end = this.curPage * this.pageSize;
-      return this.tableData.slice(begin, end);
+      return tableData.slice(begin, end);
     },
     pageTotal() {
       var pageTotal = Math.ceil(this.total / this.pageSize);

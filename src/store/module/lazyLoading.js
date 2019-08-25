@@ -233,7 +233,6 @@ const dynamicRouter = [
         name: 'newsList',
         component: resolve => require(['@/views/news/newsList.vue'], resolve),
     },
-
 ]
 
 export { lazy }
