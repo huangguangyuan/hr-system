@@ -10,6 +10,9 @@
       <el-form-item label="计粮周期截止日：">
         <el-input v-model="ruleForm.endDate" class="setWidth" type="number" min="0" max="31"></el-input><span class="setTip">  计粮周期截止日，31为当月最后一天</span>
       </el-form-item>
+      <el-form-item label="薪水发放日：">
+        <el-input v-model="ruleForm.payDay" class="setWidth" type="number" min="0" max="31"></el-input><span class="setTip">  薪水发放日，31为当月最后一天</span>
+      </el-form-item>
       <el-form-item label="备注：">
         <el-input v-model="ruleForm.remarks"></el-input>
       </el-form-item>      
@@ -32,6 +35,7 @@ export default {
         forMonth:"0",
         startDate:"1",
         endDate:"31",
+        payDay:"31",
         remarks:""
       }, //表单信息
     };
@@ -47,6 +51,7 @@ export default {
         this.ruleForm.forMonth = this.curInfo.forMonth;
         this.ruleForm.startDate = this.curInfo.startDate;
         this.ruleForm.endDate = this.curInfo.endDate;
+        this.ruleForm.payDay = this.curInfo.payDay;
         this.ruleForm.remarks = this.curInfo.remarks;
       }
     },

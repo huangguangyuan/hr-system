@@ -306,7 +306,7 @@
       </el-form-item>
       <!-- 按钮组 -->
       <el-form-item class="btn-ground">
-        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')" size="medium">确定添加</el-button>
+        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')" size="medium">确定{{curInfo.type = "modify"?"更新":"添加"}}</el-button>
         <el-button @click="cancelFn" size="medium">取 消</el-button>
       </el-form-item>
     </el-form>

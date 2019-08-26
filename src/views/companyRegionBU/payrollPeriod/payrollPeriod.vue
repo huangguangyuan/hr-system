@@ -14,6 +14,9 @@
       <el-col :span="7">
         <div class="grid-content">计粮周期截止日：<span>{{tableData.endDateTxt}}</span></div>
       </el-col>
+      <el-col :span="7">
+        <div class="grid-content">薪水发放日：<span>{{tableData.payDayTxt}}</span></div>
+      </el-col>      
       <el-col :span="21">
         <div class="grid-content">备注：<span>{{tableData.remarks}}</span></div>
       </el-col>
@@ -53,6 +56,7 @@ export default {
           this.isContent = true;
           this.tableData.forMonthTxt = this.forMonthTxt(this.tableData.forMonth);
           this.tableData.endDateTxt = this.endDateTxt(this.tableData.endDate);
+          this.tableData.payDayTxt = this.endDateTxt(this.tableData.payDay);
         }
       });
     },

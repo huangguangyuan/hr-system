@@ -29,9 +29,9 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="登录账户：">
+            <!-- <el-form-item label="登录账户：">
               <span>{{ props.row.account }}</span>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="员工编号：">
               <span>{{ props.row.staffNo }}</span>
             </el-form-item>
@@ -217,7 +217,7 @@
     </div>
     <!-- 添加员工 -->
     <el-dialog
-      title="添加员工"
+      title="编辑员工"
       width="60%"
       :visible.sync="isShowAddAccess"
       :close-on-click-modal="false"

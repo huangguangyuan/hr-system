@@ -11,8 +11,8 @@
           <p>后台管理系统</p>
         </div>
         <div class="right">
-          <el-badge is-dot class="item">
-            <i class="el-icon-bell"></i>
+          <el-badge is-dot class="item" >
+            <i class="el-icon-bell" @click="goLink('/newsList')"></i>
           </el-badge>
           <img src="@/assets/images/face_ico.jpg" alt>
           <el-dropdown>
@@ -112,6 +112,9 @@ export default {
     this.initializeFun();
   },
   methods: {
+    goLink(path){
+      this.$router.replace({ path: path});
+    },
     switchUser(switchUser){
       var reqUrl = "/server/api/v1/hrSys/loginRelated";
       var postJson = {
@@ -306,7 +309,11 @@ export default {
 <style scoped lang="scss">
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 220px;
+
 }
+  .el-icon-bell{
+    cursor: pointer;
+  }
 </style>
 
 

@@ -35,7 +35,7 @@
         </el-upload>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
+        <el-button v-if="userRight" type="primary" @click="submitForm('ruleForm')">确定</el-button>
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>
@@ -139,15 +139,13 @@ export default {
     // 修改
     modifyFun() {
       var _this = this;
-      var reqUrl = "/server/api/v1/staff/education/update";
+      var reqUrl = "/server/api/v1/staff/warning/update";
       var data = {
         id: _this.curInfo.id,
         staffCode: _this.curInfo.staffCode,
-        school: _this.ruleForm.school,
-        degree: _this.ruleForm.degree,
-        startDate: _this.ruleForm.startDate,
-        endDate: _this.ruleForm.endDate,
-        details: _this.ruleForm.details,
+        issueTime: _this.ruleForm.issueTime,
+        issueBy: _this.ruleForm.issueBy,
+        contents: _this.ruleForm.contents,
         fileSrc: _this.ruleForm.fileSrc
       };
       _this.$http.post(reqUrl, data).then(res => {

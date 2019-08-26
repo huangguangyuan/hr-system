@@ -32,7 +32,11 @@
     </div>
     <!--startprint-->
     <el-divider></el-divider>
-    <ul class="msgList">
+    <div  v-if="!tableData">
+      暂无薪水数据
+    </div>
+    <div  v-if="tableData">
+    <ul class="msgList" v-if="tableData">
       <li v-if="tableData.name">
         <span class="title">{{tableData.name.title}}</span>：
         <span class="val">{{tableData.name.val}}</span>
@@ -114,7 +118,7 @@
         <span class="val">{{tableData.netAmount.val || '暂无'}}</span>
       </li>
     </ul>
-    <div class="table-wrap">
+    <div class="table-wrap" v-if="tableData">
       <div class="table-item">
         <el-divider>基础收入列表</el-divider>
         <el-table
@@ -150,7 +154,13 @@
       </div>
     </div>
     <!--endprint-->
-    <el-button type="primary" class="printBtn" @click='doPrint'>打 印</el-button>
+    <div class="btnSet">
+      <el-button type="primary" class="printBtn" @click='doPrint'>打 印</el-button>
+      <el-button type="primary" class="printBtn" @click='doPrint'>下 载</el-button>
+    </div>
+
+    </div>
+
   </div>
 </template>
 <script>
@@ -174,15 +184,15 @@ export default {
     // 初始化
     InitializationFun() {
       var myDate = new Date();
+      var date = new Date();
+      this.seachMsg = {
+                year: date.getFullYear().toString(),
+                month: (date.getMonth()+1).toString()
+              };
       if (this.$toolFn.sessionGet("staffPayrollSlip")) {
         this.seachMsg = {
           year: this.$toolFn.sessionGet("staffPayrollSlip").year.toString(),
           month: this.$toolFn.sessionGet("staffPayrollSlip").month.toString()
-        };
-      } else {
-        this.seachMsg = {
-          year: myDate.getFullYear(),
-          month: myDate.getMonth() + 1
         };
       }
       this.getData(
@@ -299,10 +309,15 @@ export default {
     width: 32%;
   }
 }
-.printBtn {
-  display: block;
-  margin: 30px auto 30px;
+.btnSet{
+  text-align:center;
+  margin: 30px;
+  .printBtn {
+    display:inline-block;
+    margin: 20px;
+  }
 }
+
 </style>
 
 

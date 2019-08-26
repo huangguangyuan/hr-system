@@ -48,7 +48,7 @@
         <el-option label="12月" value="12"></el-option>
       </el-select>
         <el-input class="selectItem" placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
-      <el-button type="primary" class="buPayrollConfirmBtn" @click='buPayrollConfirmFun(seachMsg.BUCode)'>确认出粮信息</el-button>
+      <el-button type="primary" class="buPayrollConfirmBtn" @click='buPayrollConfirmFun(seachMsg.BUCode)'>确认单位薪水数据</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
@@ -110,7 +110,7 @@
       ></staff-payroll-confirm>
     </el-dialog>
     <!-- 单位确认工资 -->
-    <el-dialog title="单位确认出粮信息" :visible.sync="isShowbuConfirm" :close-on-click-modal="false">
+    <el-dialog title="确认单位薪水数据" :visible.sync="isShowbuConfirm" :close-on-click-modal="false">
       <bu-payroll-confirm
         v-if="isShowbuConfirm"
         :curInfo="curInfo"
@@ -155,8 +155,8 @@ export default {
     InitializationFun() {
     var date = new Date();
     this.seachMsg = {
-              year: date.getYear().toString(),
-              month: date.getMonth().toString()
+              year: date.getFullYear().toString(),
+              month: (date.getMonth()+1).toString()
             };      
       if (this.$toolFn.sessionGet("staffPayrollListSearch")) {
         this.seachMsg = {
@@ -271,7 +271,10 @@ export default {
     buPayrollConfirmFun(res){
       this.curInfo = {
         BUCode: res,
-        hrCode: this.hrCode
+        hrCode: this.hrCode,
+        year:this.seachMsg.year,
+        month:this.seachMsg.month,
+        payrollPeriod:res.payrollPeriod,
       };
       this.isShowbuConfirm = true;
     },

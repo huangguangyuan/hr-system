@@ -55,8 +55,8 @@ export default {
   data() {
     return {
       ruleForm: {
-        year: "",
-        month: "",
+        year: this.curInfo.year,
+        month: this.curInfo.month,
         payDay: ""
       }, //表单信息
       isShow: true, //是否显示
@@ -69,7 +69,9 @@ export default {
       }
     };
   },
-  mounted() {},
+  mounted() {
+    this.payrollPeriod(this.curInfo.BUCode);
+  },
   methods: {
     // 提交表单
     submitForm(formName) {
@@ -80,6 +82,16 @@ export default {
           console.log("error submit!!");
           return false;
         }
+      });
+    },
+    // 获取单位出粮期
+    payrollPeriod(BUCode) {
+      var reqUrl = "/server/api/v1/payroll/payrollPeriodByBUCode";
+      this.$http.post(reqUrl, {BUCode: BUCode}).then(res => {
+        if (res.data.code == 0) {
+          this.ruleForm.payDay = new Date( this.ruleForm.year.toString() + "-" + this.ruleForm.month.toString() + "-" + res.data.data.payDay.toString());
+        }
+
       });
     },
     // 生成工资单

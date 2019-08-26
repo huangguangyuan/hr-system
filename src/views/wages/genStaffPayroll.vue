@@ -33,7 +33,13 @@ export default {
       }
     };
   },
-  mounted() {},
+  mounted() {
+    var date = new Date();
+    this.ruleForm = {
+              year: date.getFullYear().toString(),
+              month: (date.getMonth()+1).toString()
+            };
+  },
   methods: {
     // 提交表单
     submitForm(formName) {

@@ -3,6 +3,7 @@
     <!-- 搜索 -->
     <div class="search-wrap">
       <el-select
+        class="selectItem"
         v-model="seachMsg.BUCode"
         slot="prepend"
         placeholder="请选择"
@@ -17,6 +18,7 @@
         ></el-option>
       </el-select>
       <el-date-picker
+        class="selectItem"
         v-model="seachMsg.year"
         type="year"
         placeholder="选择年"
@@ -25,6 +27,7 @@
         @change="selectYear"
       ></el-date-picker>
       <el-select
+         class="selectItem"
         style="width:200px;"
         v-model="seachMsg.month"
         placeholder="请选择月份"
@@ -43,6 +46,7 @@
         <el-option label="11月" value="11"></el-option>
         <el-option label="12月" value="12"></el-option>
       </el-select>
+      <!-- <el-input class="selectItem" placeholder="请输入关键字" v-model="filter.searchKey"></el-input> -->
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
@@ -159,7 +163,8 @@ export default {
         BUCode: "", //角色类型
         year: "", //年份
         month: "" //月份
-      }
+      },
+      filter:{searchKey:'',searchField:['nameChinese','staffNo']},
     };
   },
   mounted() {
@@ -168,13 +173,19 @@ export default {
   methods: {
     // 初始化
     InitializationFun() {
+    this.getregionBU();
+    var date = new Date();
+    this.seachMsg = {
+              year: date.getFullYear().toString(),
+              month: (date.getMonth()+1).toString()
+            };     
       if (this.$toolFn.sessionGet("staffPayrollSummary")) {
         this.seachMsg = {
-          year: this.$toolFn.sessionGet("staffPayrollSummary").year.toString(),
-          month: this.$toolFn.sessionGet("staffPayrollSummary").month.toString()
+          year: this.$toolFn.sessionGet("staffPayrollSummary").year,
+          month: this.$toolFn.sessionGet("staffPayrollSummary").month
         };
       }
-      this.getregionBU();
+      
     },
     // 获取单位列表
     getregionBU() {
@@ -259,13 +270,33 @@ export default {
         parseInt(this.seachMsg.month)
       );
       this.$toolFn.sessionSet("staffPayrollSummary", this.seachMsg);
-    }
+    },
+    searchFun(list,search){
+      let newList = [];
+      for(let i = 0;i < list.length;i++){
+        for(let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0){
+            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+              newList.push(list[i]);
+              break;
+            }
+          }
+        };
+      }
+      return newList;
+    },
   },
   computed: {
     queryTableDate() {
+      var _this = this;
+      let tableData = _this.tableData;
+      if (_this.filter.searchKey != ""){
+        tableData = _this.searchFun(tableData,_this.filter);
+      }
+      _this.total = tableData.length;
       var begin = (this.curPage - 1) * this.pageSize;
       var end = this.curPage * this.pageSize;
-      return this.tableData.slice(begin, end);
+      return tableData.slice(begin, end);
     },
     pageTotal() {
       var pageTotal = Math.ceil(this.total / this.pageSize);
@@ -293,12 +324,24 @@ export default {
   }
 }
 .search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
+    margin: 20px auto;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+  .selectItem {
+    display: flex;
+    min-width: 200px;
+    align-items: center;
+    font-size: 14px;
+    color: rgb(237, 137, 55);
+    margin-right: 15px;
+  }
   .el-date-editor {
-    margin-left: 15px;
     margin-right: 15px;
   }
   .buPayrollConfirmBtn {

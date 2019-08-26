@@ -9,16 +9,16 @@
       <div class="my-top">
         <el-button-group>
           <el-button type="primary" icon="el-icon-edit" @click="modifyFun(tableData)">修 改</el-button>
-          <el-button type="primary" icon="el-icon-setting" @click="setStatus(tableData.status)">状 态</el-button>
+          <!-- <el-button type="primary" icon="el-icon-setting" @click="setStatus(tableData.status)">状 态</el-button> -->
           <el-button type="primary" icon="el-icon-delete" @click="handleDelete">删 除</el-button>
         </el-button-group>
       </div>
       <el-divider>基础信息</el-divider>
       <ul class="infoList">
-        <li>
+        <!-- <li>
           <span>ID：</span>
           <span>{{tableData.id}}</span>
-        </li>
+        </li> -->
         <li>
           <span>社保账号：</span>
           <span>{{tableData.SIAccount}}</span>
@@ -29,7 +29,7 @@
         </li>
         <li>
           <span>该地社保首次购买社保：</span>
-          <span>{{tableData.SICityFirst}}</span>
+          <span>{{tableData.SICityFirst==1?'是':'否'}}</span>
         </li>
         <li>
           <span>社保基数：</span>
@@ -45,7 +45,7 @@
         </li>
         <li>
           <span>该地首次购买公积金：</span>
-          <span>{{tableData.HCCityFirst}}</span>
+          <span>{{tableData.HCCityFirst==1?'是':'否'}}</span>
         </li>
         <li>
           <span>公积金实际金额：</span>
@@ -57,11 +57,11 @@
         </li>
         <li>
           <span>户籍类型：</span>
-          <span>{{tableData.householdId}}</span>
+          <span>{{tableData.householdIdTxt}}</span>
         </li>
         <li>
           <span>是否生效：</span>
-          <span>{{tableData.status}}</span>
+          <span>{{tableData.status==1?'是':'否'}}</span>
         </li>
         <li>
           <span>备注：</span>
@@ -135,7 +135,8 @@ export default {
           if (res.data.code == 0) {
             this.isContent = true;
             this.tableData = res.data.data;
-            this.schemeSIList = res.data.data.SISchemeDetail.schemeSIList.map(
+            this.tableData.householdIdTxt = this.householdIdTxt(this.tableData.householdId);
+            this.schemeSIList = res.data.data.SISchemeDetail.schemeSIList.filter(f=>f.paymentId == 2).map(
               item => {
                 switch (item.typeId) {
                   case 1:
@@ -171,7 +172,7 @@ export default {
                 return item;
               }
             );
-            this.schemeHCList = res.data.data.HCSchemeDetail.schemeHCList.map(
+            this.schemeHCList = res.data.data.HCSchemeDetail.schemeHCList.filter(f=>f.paymentId == 2).map(
               item => {
                 switch (item.paymentId) {
                   case 1:
@@ -279,6 +280,30 @@ export default {
         type: "getPayrollInfo",
         payrollKey: "payrollList"
       });
+    },
+    householdIdTxt(id){
+      var str = "";
+      switch (id) {
+        case 1:
+          str = "外地农村";
+          break;
+        case 2:
+          str = "外地城镇";
+          break;
+        case 3:
+          str = "本地农村";
+          break;
+        case 4:
+          str = "本地城镇";
+          break;
+        case 5:
+          str = "港澳台";
+          break;
+        case 6:
+          str = "外籍";
+          break;
+      }
+      return str;
     }
   },
   computed: {
