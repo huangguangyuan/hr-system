@@ -40,7 +40,7 @@
         ></el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>
@@ -102,7 +102,7 @@ export default {
         BUCode: this.curInfo.BUCode,
         year: parseInt(this.ruleForm.year),
         month: parseInt(this.ruleForm.month),
-        payDay: this.ruleForm.payDay
+        payDay:this.$toolFn.timeFormat(this.ruleForm.payDay,"yyyy-MM-dd")
       };
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {

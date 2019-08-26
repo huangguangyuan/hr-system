@@ -23,8 +23,19 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
+      <el-table-column prop="staffNo" label="员工编号"></el-table-column>
       <el-table-column prop="nameChinese" label="中文名"></el-table-column>
       <el-table-column prop="nameEnglish" label="英文名"></el-table-column>
+      <el-table-column prop="nameChinese" label="名称"></el-table-column>
+      <el-table-column label="头像">
+        <template slot-scope="scope">
+          <el-image
+            style="width: 50px; height: 50px;border-radius: 100%;"
+            :src="scope.row.photo?scope.row.photo:AvatarDefault"
+            fit="cover"
+          ></el-image>
+        </template>
+      </el-table-column>
       <el-table-column prop="salaryAmout" label="工资总额"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">

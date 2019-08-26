@@ -6,11 +6,10 @@ let toolFn = {
         if (fmt && fmt != ""){
             newTime =  toolFn.formatTime(newTime,fmt);
         }
-
         return newTime;
     },
     formatTime:(time,fmt)=>{
-        fmt = new Date(time);
+        time = new Date(time);
         if (/(y+)/.test(fmt)) {
             fmt = fmt.replace(RegExp.$1, (time.getFullYear() + '').substr(4 - RegExp.$1.length));
         }
@@ -19,7 +18,9 @@ let toolFn = {
             'd+': time.getDate(),
             'h+': time.getHours(),
             'm+': time.getMinutes(),
-            's+': time.getSeconds()
+            's+': time.getSeconds(),
+            "q+" : Math.floor((time.getMonth()+3)/3), //季度   
+            "S"  : time.getMilliseconds()  
         };
         for (let k in o) {
             if (new RegExp(`(${k})`).test(fmt)) {

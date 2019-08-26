@@ -1,7 +1,7 @@
 <template>
   <div class="staffPayrollDetail">
     <el-divider>工资表信息</el-divider>
-    <el-row :gutter="12">
+    <el-row :gutter="12" v-if="details.payrollInfo">
       <el-col :span="8">
         <el-card shadow="always" v-if="details.payrollInfo">中文名：{{details.payrollInfo.nameChinese}}</el-card>
       </el-col>
@@ -20,11 +20,11 @@
       <el-col :span="8">
         <el-card
           shadow="always"
-          v-if="details.payrollInfo"
+          
         >税款起征点：{{details.payrollInfo.taxThreshold}}</el-card>
       </el-col>
     </el-row>
-    <el-table :data="details.payrollInfo.salaryItems" stripe style="width: 100%">
+    <el-table v-if="details.payrollInfo" :data="details.payrollInfo.salaryItems" stripe style="width: 100%">
       <el-table-column prop="amount" label="金 额"></el-table-column>
       <el-table-column prop="name" label="项目名称"></el-table-column>
       <el-table-column prop="taxable" label="是否应税"></el-table-column>

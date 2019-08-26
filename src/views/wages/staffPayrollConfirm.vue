@@ -2,7 +2,7 @@
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="220px">
       
-      <el-form-item label="工资单装填：" prop="typeId">
+      <el-form-item label="工资单状态：" prop="typeId">
         <el-radio-group v-model="ruleForm.typeId">
           <el-radio label="1">通过</el-radio>
           <el-radio label="2">有疑问，需重新审核</el-radio>

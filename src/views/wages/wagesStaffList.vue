@@ -26,6 +26,8 @@
     </div>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
+
+      <el-table-column prop="staffNo" label="员工编号"></el-table-column>
       <el-table-column prop="nameChinese" label="名称"></el-table-column>
       <el-table-column label="头像">
         <template slot-scope="scope">
@@ -46,7 +48,13 @@
             @click="openFun(scope.$index, scope.row, 'staffWagesConfig')"
           >配 置</el-button>
           <!-- 生成员工工资单 -->
+          <el-button v-if="scope.row.typeId == 1"
+            size="mini"
+            icon="hr-icon-gongjijinjiaoyimingxi"
+            @click="openFun(scope.$index, scope.row, 'staffWagesConfig')"
+          >薪水数据</el-button>
           <el-button
+          v-if="scope.row.typeId == 1"
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
             @click="genStaffPayroll(scope.$index, scope.row)"
@@ -90,6 +98,7 @@ export default {
       isShowAddAccess: false, //是否显示新增页面
       isShowState: false, //是否显示状态
       AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
+      hrCode: "2c269360-970f-11e9-9069-bf35c07c51d4",
       filter:{searchKey:'',searchField:['nameChinese','genderTxt']}
     };
   },
@@ -116,7 +125,7 @@ export default {
     },
     //获取项目数据列表
     getData(BUCode) {
-      var reqUrl = "/server/api/v1/staff/getAll";
+      var reqUrl = "/server/api/v1/payroll/staff/staffPayrollInfoList";
       var myData = { BUCode: BUCode };
       this.isShowLoading = true;
       this.$http

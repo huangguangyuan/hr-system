@@ -8,7 +8,7 @@
         <el-date-picker v-model="ruleForm.month" type="month" placeholder="选择月" value-format="MM" format="M"></el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>
@@ -64,7 +64,7 @@ export default {
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("更新成功~");
+          this.$message.success("生成成功~");
         } else {
           this.$message.error(res.data.msg);
         }

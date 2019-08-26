@@ -61,13 +61,18 @@
       <el-table-column sortable prop="taxAmount" label="个人所得税"></el-table-column>
       <el-table-column sortable prop="notTaxableAmount" label="不应税金额"></el-table-column>
       <el-table-column sortable prop="typeIdTxt" label="工资单状态"></el-table-column>
-      <el-table-column label="操作" width="300">
+      <el-table-column label="操作" width="400">
         <template slot-scope="scope">
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
             @click="openFun(scope.$index, scope.row)"
           >详 细</el-button>
+          <el-button
+            size="mini"
+            icon="hr-icon-gongjijinjiaoyimingxi"
+            @click="deleteFun(scope.$index, scope.row)"
+          >删 除</el-button>
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
@@ -259,6 +264,29 @@ export default {
       this.isShowAddAccess = true;
       this.curInfo.code = res.code;
     },
+    // 确认工资单
+    deleteFun(index, res) {
+      this.$confirm("确定删除此工资单吗", "提 示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          var data = {
+                code:res.code,
+                hrCode:this.hrCode
+            }
+          this.$http
+            .post("/server/api/v1/payroll/staff/staffPayrollListDelete", data)
+            .then(res => {
+              if (res.data.code == 0) {
+                this.reload();
+                this.$message.success("操作成功~");
+              }else{
+                this.$message.warning(res.data.msg);
+              }
+            });
+        })
+    },    
     // 确认工资单
     confirmFun(index, res) {
       this.curInfo = {
