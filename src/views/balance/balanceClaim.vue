@@ -75,7 +75,7 @@ export default {
   },
   mounted() {
     this.getRegionBUList();
-    this.getData(this.hrCode,this.BUCode);
+    //this.getData(this.hrCode,this.BUCode);
   },
   methods: {
     //获取数据列表
@@ -126,7 +126,7 @@ export default {
         if(res.data.code == 0){
           _this.regionBUList = res.data.data;
           _this.BUCode = this.$toolFn.sessionGet('approveBUCode')?this.$toolFn.sessionGet('approveBUCode'):res.data.data[0].code;
-          _this.getData(this.BUCode);
+          this.getData(this.hrCode,this.BUCode);
         }else{
           _this.$message({type:'info',message:`报错：${res.data.code}`})
         }

@@ -92,7 +92,7 @@ export default {
     }else if (_this.userInfo.roleTypeId == 3){
       _this.rightStatus = [1,2,3,4];
     }
-    _this.getData(_this.hrCode,_this.BUCode);
+    //_this.getData(_this.hrCode,_this.BUCode);
   },
   methods: {
     approveTxt(item){//显示文字并判断是否有权限审批
@@ -159,7 +159,7 @@ export default {
         if(res.data.code == 0){
           _this.regionBUList = res.data.data;
           _this.BUCode = this.$toolFn.sessionGet('approveBUCode')?this.$toolFn.sessionGet('approveBUCode'):res.data.data[0].code;
-          _this.getData(this.BUCode);
+          this.getData(this.hrCode,this.BUCode);
         }else{
           _this.$message({type:'info',message:`报错：${res.data.code}`})
         }
