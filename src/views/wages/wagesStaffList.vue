@@ -39,7 +39,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="genderTxt" label="性别"></el-table-column>
-      <el-table-column label="操作" width="600px">
+      <el-table-column label="操作" width="400px">
         <template slot-scope="scope">
           <!-- 缴纳社保/公积金信息 -->
           <el-button
@@ -51,7 +51,7 @@
           <el-button v-if="scope.row.typeId == 1"
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
-            @click="openFun(scope.$index, scope.row, 'staffWagesConfig')"
+            @click="openFun(scope.$index, scope.row, 'salaryDate')"
           >薪水数据</el-button>
           <el-button
           v-if="scope.row.typeId == 1"

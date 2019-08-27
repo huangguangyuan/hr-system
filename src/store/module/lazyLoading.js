@@ -208,12 +208,6 @@ const dynamicRouter = [
         name: 'wagesMain',
         component: resolve => require(['@/views/wages/wagesMain.vue'], resolve),
     },
-    // 计粮数据列表
-    {
-        path: '/staffPayrollInfoList',
-        name: 'staffPayrollInfoList',
-        component: resolve => require(['@/views/wages/staffPayrollInfoList.vue'], resolve),
-    },
     // 工资单列表
     {
         path: '/staffPayrollList',

@@ -365,17 +365,8 @@ let sidebarInfo = [
                 authUrl: '/wagesMain',
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
-                name: '员工配置',
-                rightCode: "wagesMain",
-                items: [{}]
-            },
-            {
-                id: '132',
-                authUrl: '/staffPayrollInfoList',
-                iconUrl: 'el-icon-document',
-                isMenu: 1,
                 name: '计粮数据',
-                rightCode: "staffPayrollInfoList",
+                rightCode: "wagesMain",
                 items: [{}]
             },
             {
