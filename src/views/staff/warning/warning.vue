@@ -6,9 +6,8 @@
     </div>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="hrName" label="发起人"></el-table-column>
-      <el-table-column prop="issueTime" label="发起时间"></el-table-column>
+      <el-table-column sortable prop="issueTime" label="发起时间"></el-table-column>
       <el-table-column prop="contents" label="内容"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope" >
@@ -33,7 +32,7 @@
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     <!-- 添加学历 -->
-    <el-dialog title="添加警告信" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+    <el-dialog title="警告信" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
       <editLayer v-if="isShowAddAccess" :userRight_props="userRight" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>
@@ -56,12 +55,20 @@ export default {
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
       isShowLoading: false, //是否显示loading页
-      userRight:false
+      userRight:false,
+      staffCode:"",
+      userInfo:{}
     };
   },
   mounted() {
     this.userRight = this.userRight_props;
-    this.getData(this.staffInfo.code);
+    this.userInfo = this.$toolFn.localGet("userInfo");
+    if (this.userInfo.roleTypeId != 1){
+      this.staffCode = this.staffInfo.code;
+    }else{
+      this.staffCode = this.userInfo.staffCode;
+    }
+    this.getData(this.staffCode);
   },
   methods: {
     //获取数据列表
@@ -75,33 +82,16 @@ export default {
         .then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data.map(item => {
-            item.issueTime = _this.$toolFn
-              .timeFormat(item.issueTime)
-              .slice(0, 10);
-              item.hrName = '';
-              this.getHRadminName(item.issueBy).then(res => {
-                item.hrName = res;
-              });
-            return item;
+          item.issueTime = _this.$toolFn.timeFormat(item.issueTime).slice(0, 10);
+              // this.getHRadminName(item.issueBy).then(res => {
+              //   item.hrName = res;
+              // });
+          return item;
           });
         })
         .catch(err => {
           console.log(err);
         });
-    },
-    // 获取管理员名称
-    getHRadminName(code){
-      var p = new Promise((resolve, reject) => {
-        var reqUrl = '/server/api/v1/admin/hrSys/getByCode';
-        var data = {code:code}
-        var name = '';
-        this.$http.post(reqUrl,data).then(res => {
-          if (res.data.code == 0) {
-            resolve(res.data.data.name);
-          }
-        });
-      })
-      return p;
     },
     // 获取当前页数
     curChange(val) {
@@ -118,6 +108,7 @@ export default {
       this.curInfo = {
         type: "add",
         staffCode: this.staffInfo.code,
+        issueBy:this.userInfo.userCode,
         BUCode:this.staffInfo.BUCode
       };
     },
@@ -127,6 +118,12 @@ export default {
       this.curInfo = res;
       this.curInfo.type = "modify";
       this.curInfo.BUCode = this.staffInfo.BUCode;
+      this.curInfo.showText = false;
+      this.curInfo.issueBy = this.userInfo.userCode;
+      if (this.userInfo.roleTypeId == 1){
+        this.curInfo.showText = true;
+      }
+      console.log(this.curInfo);
     },
     // 删除单个
     handleDelete(index, res) {

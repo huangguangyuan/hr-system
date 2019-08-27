@@ -43,7 +43,7 @@
             <p><span>{{info.payrollWaitingConformCount}}</span>人</p>
             <div class="icons" style="background-image: url(data:image/png;base64,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);background-size: cover;"></div>
           </div>
-          <div class="downPart" style="background-image: linear-gradient(-90deg,#e2e1e5 4%,#cdbed1 96%);">
+          <div class="downPart" style="background-image: linear-gradient(-90deg,#e2e1e5 4%,#cdbed1 96%);" @click="goLink('/staffPayrollList')">
             待确认工资
             <i class="el-icon-caret-right"></i>
           </div>
@@ -103,30 +103,25 @@
               </div>
               <p>报销结算</p>
             </li>
-            <!-- <li  @click="goLink('/calculator')">
+            <li  @click="goLink('/calculator')">
               <div>
                 <i class="el-icon-s-custom"></i>
               </div>
               <p>个税计算器</p>
-            </li> -->
+            </li>
             <li>
+              <div>
+                <i @click="goLink('/wagesMain')" class="el-icon-document-checked"></i>
+              </div>
+              <p>计粮数据</p>
+            </li>
+            <li @click="goLink('/staffPayrollList')">
               <div>
                 <i class="el-icon-document"></i>
               </div>
-              <p>生成工资单</p>
+              <p>工资单</p>
             </li>
-            <li>
-              <div>
-                <i class="el-icon-document-checked"></i>
-              </div>
-              <p>确认工资单</p>
-            </li>
-            <li>
-              <div>
-                <i class="el-icon-notebook-2"></i>
-              </div>
-              <p>确认出粮信息</p>
-            </li>
+
           </ul>
         </div>
       </el-col>

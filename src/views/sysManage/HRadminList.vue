@@ -28,7 +28,7 @@
             icon="el-icon-edit-outline"
             @click="modifyPassWord(scope.$index, scope.row)"
           >修改密码</el-button>
-          <el-button  v-if="userRight" size="mini" icon="el-icon-plus" @click="addRole(scope.$index, scope.row)">添加角色</el-button>
+          <el-button  v-if="userRight" size="mini" icon="el-icon-plus" @click="addRole(scope.$index, scope.row)">编辑角色</el-button>
           <el-button  v-if="userRight"
             size="mini"
             icon="el-icon-warning"
@@ -64,7 +64,7 @@
     </el-dialog>
     <!-- 修改管理员 -->
     <el-dialog
-      title="修改信息"
+      title="编辑信息"
       :visible.sync="isShowModifyAdmin"
       :close-on-click-modal="false"
       
@@ -79,7 +79,7 @@
     </el-dialog>
     <!-- 修改密码 -->
     <el-dialog
-      title="修改密码"
+      title="编辑密码"
       :visible.sync="isShowModifyPassword"
       :close-on-click-modal="false"
       width="65%"
@@ -91,7 +91,7 @@
       ></modify-password>
     </el-dialog>
     <!-- 增加角色 -->
-    <el-dialog title="添加角色" :visible.sync="isShowAddRole" :close-on-click-modal="false" width="40%">
+    <el-dialog title="编辑角色" :visible.sync="isShowAddRole" :close-on-click-modal="false" width="40%">
       <add-role
         v-if="isShowAddRole"
         v-on:listenIsShowAddAdmin="IsShowAddAdminFn"

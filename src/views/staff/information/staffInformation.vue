@@ -250,7 +250,7 @@
       <el-form-item label="密码：" prop="password">
         <el-input v-model="accountInfo.password" show-password></el-input>
       </el-form-item>
-      <el-form-item label="关联系统管理员账户：" prop="hrCode" >
+      <el-form-item v-if="userInfo.roleTypeId == 3" label="关联系统管理员账户：" prop="hrCode" >
         <el-select v-model="accountInfo.hrCode" placeholder="请选择关联系统管理员" >
         <el-option v-for="item in HRadminList" :key="item.id" :label="item.name" :value="item.code"></el-option>
       </el-select>
@@ -292,12 +292,14 @@ export default {
       accountInfo:{},
       HRadminList:[],//管理员列表
       userRight:false,
+      userInfo:{},
       filter:{searchKey:'',searchField:['account','staffNo','nameChinese','nameEnglish','staffAlias','position','genderTxt',
       'dateOfBirth','address','mobile','email','IDNo','ethnic','politicalBackground','hukouTypeTxt','martialStatusTxt','emergencyContact','SIAccount','medicalSchemeAccoun','HCAccount','SIAccount']}
     };
   },
   mounted() {
     var _this = this;
+    this.userInfo = this.$toolFn.localGet("userInfo");
     _this.userRight = _this.userRight_props;
     _this.InitializationFun();
   },

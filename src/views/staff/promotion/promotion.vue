@@ -6,13 +6,12 @@
     </div>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="position" label="职位"></el-table-column>
-      <el-table-column prop="salary" label="工资"></el-table-column>
+      <el-table-column sortable prop="salary" label="工资"></el-table-column>
       <el-table-column prop="reportTo" label="上级"></el-table-column>
       <el-table-column prop="staffGrade" label="员工职级"></el-table-column>
-      <el-table-column prop="startDate" label="开始日期"></el-table-column>
-      <el-table-column prop="endDateTxt" label="结束日期"></el-table-column>
+      <el-table-column sortable prop="startDate" label="开始日期"></el-table-column>
+      <el-table-column sortable prop="endDateTxt" label="结束日期"></el-table-column>
       <el-table-column prop="remarks" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px" v-if="userRight">
         <template slot-scope="scope">

@@ -32,7 +32,7 @@
     </div>
     <!--startprint-->
     <el-divider></el-divider>
-    <div  v-if="!tableData">
+    <div class="nothing" v-if="!tableData">
       暂无薪水数据
     </div>
     <div  v-if="tableData">
@@ -174,7 +174,8 @@ export default {
       seachMsg: {
         year: "", //年份
         month: "" //月份
-      }
+      },
+      userInfo:{}
     };
   },
   mounted() {
@@ -183,6 +184,11 @@ export default {
   methods: {
     // 初始化
     InitializationFun() {
+      this.userInfo = this.$toolFn.localGet("userInfo");
+
+      if (this.userInfo.roleTypeId == 1){
+          this.staffCode = this.userInfo.staffCode;
+      }
       var myDate = new Date();
       var date = new Date();
       this.seachMsg = {
@@ -317,7 +323,12 @@ export default {
     margin: 20px;
   }
 }
-
+.nothing{
+  text-align:center;
+  padding: 15px;
+  font-size: 14px;
+  color: #99a9bf
+}
 </style>
 
 

@@ -6,11 +6,11 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <el-table-column prop="createTime" label="申请时间" width="200"></el-table-column>
-      <el-table-column prop="totalDay" label="请假天数"></el-table-column>
-      <el-table-column prop="totalAmount" label="扣除金额"></el-table-column>
+      <el-table-column sortable prop="createTime" label="申请时间" width="200"></el-table-column>
+      <el-table-column sortable prop="totalDay" label="请假天数"></el-table-column>
+      <el-table-column sortable prop="totalAmount" label="扣除金额"></el-table-column>
       <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column>
-      <el-table-column prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button

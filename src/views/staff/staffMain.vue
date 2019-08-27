@@ -1,12 +1,14 @@
 <template>
   <div class="wrap staffMain">
-    <staff-information v-if='!isShowDetails' :userRight_props="userRight"></staff-information>
-    <staff-details v-else  :userRight_props="userRight"></staff-details>
+    <staff-information v-if='!isShowDetails && userInfo.roleTypeId != 1' :userRight_props="userRight"></staff-information>
+    <staff-details v-if='isShowDetails && userInfo.roleTypeId !=1'  :userRight_props="userRight"></staff-details>
+    <warning v-if="userInfo.roleTypeId == 1"></warning>
   </div>
 </template>
 <script>
 import staffInformation from "./information/staffInformation.vue";
 import staffDetails from "./details/staffDetails.vue";
+import warning from "./warning/warning.vue";
 export default {
   name: "staffMain",
   inject: ["reload"],
@@ -35,7 +37,8 @@ export default {
   },
   components: {
     staffInformation,
-    staffDetails
+    staffDetails,
+    warning
   }
 };
 </script>

@@ -1,11 +1,11 @@
 <template>
   <div class="editLayer">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
-      <el-form-item label="发起人：" prop="issueBy">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" v-if="!ruleForm.showText">
+      <!-- <el-form-item label="发起人：" prop="issueBy">
         <el-select v-model="ruleForm.issueBy" placeholder="请选择发起人">
           <el-option v-for='item in HRadminList' :key='item.code' :label="item.name" :value="item.code"></el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="发起时间：" prop="issueTime">
         <el-date-picker
           v-model="ruleForm.issueTime"
@@ -39,6 +39,21 @@
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>
+    <el-form
+      :model="ruleForm"
+      ref="ruleForm"
+      label-width="160px"
+      v-if="ruleForm.showText"
+    >
+
+      <p style="padding:15px;">{{ruleForm.contents}}</p>
+      <p style="text-align:right;padding:5px;">发起人：{{ruleForm.hrName}}</p>
+      <p style="text-align:right;padding:5px;">{{ruleForm.issueTime}}</p>
+      <el-divider></el-divider>
+      <el-form-item>
+        <el-button @click="cancelFn" style="float:right">关闭</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 <script>
@@ -53,17 +68,19 @@ export default {
       ruleForm: {
         staffCode: "",
         issueBy: "",
+        hrName:"",
         issueTime: "",
         contents: "",
-        fileSrc: ""
+        fileSrc: "",
+        showText:false
       }, //表单信息
       isShow: true, //是否显示
       fileList: [],
       HRadminList:[],//HR管理员列表
       rules: {
-        issueBy: [
-          { required: true, message: "请选择发起人", trigger: "blur" }
-        ],
+        // issueBy: [
+        //   { required: true, message: "请选择发起人", trigger: "blur" }
+        // ],
         issueTime: [
           { required: true, message: "请选择发起时间", trigger: "blur" }
         ],
@@ -80,12 +97,13 @@ export default {
   methods: {
     // 初始化
     initializeFun() {
-      this.getHRadminList();
+      this.ruleForm.hrName = this.curInfo.hrName;
+      this.ruleForm.issueBy = this.curInfo.issueBy;
       if (this.curInfo.type == "modify") {
         this.ruleForm.issueTime = this.curInfo.issueTime;
-        this.ruleForm.issueBy = this.curInfo.issueBy;
         this.ruleForm.fileSrc = this.curInfo.fileSrc;
         this.ruleForm.contents = this.curInfo.contents;
+        this.ruleForm.showText = this.curInfo.showText;
       }
     },
     // 获取HR管理员列表

@@ -50,6 +50,8 @@ export default {
     this.userInfo = this.$toolFn.localGet("userInfo");
     if (this.userInfo.roleTypeId == 1 ){
       this.staffCode = this.userInfo.staffCode;
+    }else if(this.userInfo.roleTypeId == 2 ){
+      
     }
     this.getStaffInfo();
     this.activeName = this.$toolFn.sessionGet('applyActiveName') || 'claim'
