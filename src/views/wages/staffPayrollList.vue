@@ -2,7 +2,6 @@
   <div class="staffPayrollList wrap">
     <!-- 搜索 -->
     <div class="search-wrap">
-      
       <el-select
         v-model="seachMsg.BUCode"
         slot="prepend"
@@ -47,8 +46,12 @@
         <el-option label="11月" value="11"></el-option>
         <el-option label="12月" value="12"></el-option>
       </el-select>
-        <el-input class="selectItem" placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
-      <el-button type="primary" class="buPayrollConfirmBtn" @click='buPayrollConfirmFun(seachMsg.BUCode)'>确认单位薪水数据</el-button>
+      <el-input class="selectItem" placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
+      <el-button
+        type="primary"
+        class="buPayrollConfirmBtn"
+        @click="buPayrollConfirmFun(seachMsg.BUCode)"
+      >确认单位薪水数据</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
@@ -61,7 +64,7 @@
       <el-table-column sortable prop="taxAmount" label="个人所得税"></el-table-column>
       <el-table-column sortable prop="notTaxableAmount" label="不应税金额"></el-table-column>
       <el-table-column sortable prop="typeIdTxt" label="工资单状态"></el-table-column>
-      <el-table-column label="操作" width="400">
+      <el-table-column label="操作" width="470">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -79,6 +82,11 @@
             @click="confirmFun(scope.$index, scope.row)"
             v-if="scope.row.typeId == 0"
           >确认工资单</el-button>
+          <el-button
+            size="mini"
+            icon="hr-icon-gongjijinjiaoyimingxi"
+            @click="staffPayrollYearFun(scope.$index, scope.row)"
+          >全年工资单</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -122,12 +130,21 @@
         v-on:listenIsShowMask="listenIsShowMask"
       ></bu-payroll-confirm>
     </el-dialog>
+    <!-- 全年工资单 -->
+    <el-dialog title="全年工资单" :visible.sync="isShowPayrollYear" :close-on-click-modal="false" width="70%">
+      <staff-payroll-year
+        v-if="isShowPayrollYear"
+        :curInfo="curInfo"
+        v-on:listenIsShowMask="listenIsShowMask"
+      ></staff-payroll-year>
+    </el-dialog>
   </div>
 </template>
 <script>
 import staffPayrollDetail from "./staffPayrollDetail.vue";
 import staffPayrollConfirm from "./staffPayrollConfirm.vue";
 import buPayrollConfirm from "./buPayrollConfirm.vue";
+import staffPayrollYear from "./staffPayrollYear.vue";
 export default {
   name: "staffPayrollList",
   inject: ["reload"],
@@ -143,13 +160,14 @@ export default {
       isShowAddAccess: false, //是否显示新增页面
       isShowConfirm: false, //是否显示确认工资单
       isShowbuConfirm: false, //是否显示单位确认工资
+      isShowPayrollYear: false, //是否显示全年工资单
       seachMsg: {
         BUCode: "", //角色类型
         year: "", //年份
         month: "" //月份
       },
       hrCode: "2c269360-970f-11e9-9069-bf35c07c51d4",
-      filter:{searchKey:'',searchField:['nameChinese','staffNo']},
+      filter: { searchKey: "", searchField: ["nameChinese", "staffNo"] }
     };
   },
   mounted() {
@@ -158,14 +176,16 @@ export default {
   methods: {
     // 初始化
     InitializationFun() {
-    var date = new Date();
-    this.seachMsg = {
-              year: date.getFullYear().toString(),
-              month: (date.getMonth()+1).toString()
-            };      
+      var date = new Date();
+      this.seachMsg = {
+        year: date.getFullYear().toString(),
+        month: (date.getMonth() + 1).toString()
+      };
       if (this.$toolFn.sessionGet("staffPayrollListSearch")) {
         this.seachMsg = {
-          year: this.$toolFn.sessionGet("staffPayrollListSearch").year.toString(),
+          year: this.$toolFn
+            .sessionGet("staffPayrollListSearch")
+            .year.toString(),
           month: this.$toolFn
             .sessionGet("staffPayrollListSearch")
             .month.toString()
@@ -267,26 +287,26 @@ export default {
     // 确认工资单
     deleteFun(index, res) {
       this.$confirm("确定删除此工资单吗", "提 示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(() => {
-          var data = {
-                code:res.code,
-                hrCode:this.hrCode
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        var data = {
+          code: res.code,
+          hrCode: this.hrCode
+        };
+        this.$http
+          .post("/server/api/v1/payroll/staff/staffPayrollListDelete", data)
+          .then(res => {
+            if (res.data.code == 0) {
+              this.reload();
+              this.$message.success("操作成功~");
+            } else {
+              this.$message.warning(res.data.msg);
             }
-          this.$http
-            .post("/server/api/v1/payroll/staff/staffPayrollListDelete", data)
-            .then(res => {
-              if (res.data.code == 0) {
-                this.reload();
-                this.$message.success("操作成功~");
-              }else{
-                this.$message.warning(res.data.msg);
-              }
-            });
-        })
-    },    
+          });
+      });
+    },
     // 确认工资单
     confirmFun(index, res) {
       this.curInfo = {
@@ -296,43 +316,55 @@ export default {
       this.isShowConfirm = true;
     },
     // 确认单位出粮信息
-    buPayrollConfirmFun(res){
+    buPayrollConfirmFun(res) {
       this.curInfo = {
         BUCode: res,
         hrCode: this.hrCode,
-        year:this.seachMsg.year,
-        month:this.seachMsg.month,
-        payrollPeriod:res.payrollPeriod,
+        year: this.seachMsg.year,
+        month: this.seachMsg.month,
+        payrollPeriod: res.payrollPeriod
       };
       this.isShowbuConfirm = true;
+    },
+    // 获取全年工资信息
+    staffPayrollYearFun(index, res){
+      this.curInfo = {
+        code: res.staffCode
+      };
+      this.isShowPayrollYear = true;
     },
     // 接收子组件发送信息
     listenIsShowMask(res) {
       this.isShowAddAccess = false;
       this.isShowConfirm = false;
       this.isShowbuConfirm = false;
+      this.isShowPayrollYear = false;
     },
-    searchFun(list,search){
+    searchFun(list, search) {
       let newList = [];
-      for(let i = 0;i < list.length;i++){
-        for(let key in list[i]) {
-          if (search.searchField.indexOf(key) >= 0){
-            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+      for (let i = 0; i < list.length; i++) {
+        for (let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0) {
+            if (
+              list[i][key] != undefined &&
+              list[i][key] != "" &&
+              list[i][key].toString().includes(search.searchKey)
+            ) {
               newList.push(list[i]);
               break;
             }
           }
-        };
+        }
       }
       return newList;
-    },
+    }
   },
   computed: {
     queryTableDate() {
       var _this = this;
       let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.searchFun(tableData,_this.filter);
+      if (_this.filter.searchKey != "") {
+        tableData = _this.searchFun(tableData, _this.filter);
       }
       _this.total = tableData.length;
       var begin = (this.curPage - 1) * this.pageSize;
@@ -347,7 +379,8 @@ export default {
   components: {
     staffPayrollDetail,
     staffPayrollConfirm,
-    buPayrollConfirm
+    buPayrollConfirm,
+    staffPayrollYear
   }
 };
 </script>
@@ -369,16 +402,16 @@ export default {
   }
 }
 .search-wrap {
-    margin: 20px auto;
-    width: 100%;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
+  margin: 20px auto;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
   .selectItem {
     display: flex;
     min-width: 200px;
