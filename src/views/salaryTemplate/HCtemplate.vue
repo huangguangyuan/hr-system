@@ -20,7 +20,6 @@
     </div>
     <!-- 列表内容 -->
     <el-table v-loading='isShowLoading' :data="queryTableDate" stripe style="width: 100%" border>
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
       <el-table-column prop="baseLower" label="基数下限"></el-table-column>
       <el-table-column prop="paymentRatio" label="缴纳比例"></el-table-column>
