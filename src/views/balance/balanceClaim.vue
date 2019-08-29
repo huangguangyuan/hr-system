@@ -90,7 +90,7 @@ export default {
           this.tableData = res.data.data.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
             item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
-            item.nameChinese = item.staff.nameChinese;
+            item.nameChinese = item.staff ? item.staff.nameChinese :"";
             return item;
           });
           this.total = this.tableData.length;

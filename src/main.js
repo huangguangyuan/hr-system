@@ -30,9 +30,9 @@ axios.interceptors.request.use(function (config) { // 每次请求时会从local
   if (userInfo && userInfo.token != "") {
     config.headers.common['token'] = userInfo.token;
   } else {
-    router.replace({
-      path: '/' // 到登录页重新获取token
-    })
+    // router.replace({
+    //   path: '/' // 到登录页重新获取token
+    // })
   }
   return config
 }, function (error) {

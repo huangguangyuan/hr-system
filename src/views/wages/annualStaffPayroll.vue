@@ -107,7 +107,7 @@ export default {
       curPage: 1, //当前页数
       isShowLoading: false, //是否显示loading页
       year: "2019",
-      staffCode:'7ef51e60-9e01-11e9-bde5-6d1157612d12'
+      staffCode:''
     };
   },
   mounted() {

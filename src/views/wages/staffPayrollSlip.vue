@@ -170,7 +170,7 @@ export default {
   data() {
     return {
       tableData: {},
-      staffCode: "7ef51e60-9e01-11e9-bde5-6d1157612d12",
+      staffCode: "",
       seachMsg: {
         year: "", //年份
         month: "" //月份

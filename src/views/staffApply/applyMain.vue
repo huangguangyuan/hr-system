@@ -22,7 +22,7 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="报销申请" name="claim">
         <span slot="label"><i class="hr-icon-baoxiaoshenqing"></i> 报销申请</span>
-        <claim-list :staffCode_props="staffCode"></claim-list>
+        <claim-list :staffCode_props="staffCode" ></claim-list>
       </el-tab-pane>
       <el-tab-pane label="请假申请" name="holidaysApply">
         <span slot="label"><i class="hr-icon-qingjiashenqing"></i> 请假申请</span>
@@ -42,19 +42,21 @@ export default {
       circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
       staffInfo:{},
       activeName:'claim',
-      staffCode: "7ef51e60-9e01-11e9-bde5-6d1157612d12",
-      userInfo:{}
+      staffCode: "",
+      userInfo:{},
+      show:false
     };
   },
-  mounted() {
+  beforeMount(){
     this.userInfo = this.$toolFn.localGet("userInfo");
     if (this.userInfo.roleTypeId == 1 ){
       this.staffCode = this.userInfo.staffCode;
     }else if(this.userInfo.roleTypeId == 2 ){
-      
     }
     this.getStaffInfo();
     this.activeName = this.$toolFn.sessionGet('applyActiveName') || 'claim'
+  },
+  mounted() {
   },
   methods: {
     // 获取员工信息

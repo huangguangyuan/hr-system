@@ -99,6 +99,7 @@ import sidebarInfo from "@/lib/sidebarInfo.js";
 import navMenus from "@/components/navMenus.vue";
 export default {
   name: "home",
+  inject: ["reload"],
   data() {
     return {
       sidebarInfo: [], //左侧导航栏数据
@@ -133,6 +134,7 @@ export default {
             }).then(res => {
               var userInfo = this.$toolFn.localGet("userInfo");
               this.userInfo = userInfo;
+              this.reload();
               if (userInfo.roleTypeId == 1){
                 this.$router.push({ path: "/applyMain" });
               }else{

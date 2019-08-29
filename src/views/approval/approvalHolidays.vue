@@ -123,7 +123,7 @@ export default {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
             item.isBalanceTxt = item.isBalance == 1?'是':'否';
             item.isWithpayTxt = item.isWithpay == 1?'是':'否';
-            item.nameChinese = item.staff.nameChinese;
+            item.nameChinese = item.staff ? item.staff.nameChinese :"";
             return item;
           });
           this.total = this.tableData.length;
