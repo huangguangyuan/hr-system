@@ -115,10 +115,7 @@ export default {
         this.ruleForm.companyCode = this.curInfo.companyCode;
         this.ruleForm.regionCode = this.curInfo.regionCode;
         this.ruleForm.BUCode = this.curInfo.BUCode;
-        this.getCompanys().then(res => {
-          this.selectCompany(this.curInfo.companyCode);
-          this.selectRegion(this.curInfo.regionCode);
-        });
+        this.valuableFun();
       }else{
         this.getCompanys();
       }
@@ -135,6 +132,12 @@ export default {
         });
       });
     },
+    //有返回值
+    async valuableFun(){
+      await this.getCompanys();
+      await this.selectCompany(this.curInfo.companyCode);
+      await this.selectRegion(this.curInfo.regionCode);
+    }, 
     // 选择公司
     selectCompany(val) {
       var code = this.companyList.filter(item => {
