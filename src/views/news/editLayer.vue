@@ -106,7 +106,7 @@ export default {
   },
   methods: {
     // 初始化
-    initializeFun() {
+    async initializeFun() {
       if (this.curInfo.type == "modify") {
         this.ruleForm.userRight = this.curInfo.userRight;
         this.ruleForm.typeId = this.curInfo.typeId.toString();
@@ -115,7 +115,9 @@ export default {
         this.ruleForm.companyCode = this.curInfo.companyCode;
         this.ruleForm.regionCode = this.curInfo.regionCode;
         this.ruleForm.BUCode = this.curInfo.BUCode;
-        this.valuableFun();
+        await this.getCompanys();
+        this.selectCompany(this.curInfo.companyCode);
+        this.selectRegion(this.curInfo.regionCode);
       }else{
         this.getCompanys();
       }
@@ -132,12 +134,6 @@ export default {
         });
       });
     },
-    //有返回值
-    async valuableFun(){
-      await this.getCompanys();
-      await this.selectCompany(this.curInfo.companyCode);
-      await this.selectRegion(this.curInfo.regionCode);
-    }, 
     // 选择公司
     selectCompany(val) {
       var code = this.companyList.filter(item => {
