@@ -281,8 +281,17 @@ let sidebarInfo = [
                 authUrl: '/staffPayrollSlip',
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
-                name: '工资清单',
+                name: '月份工资清单',
                 rightCode: "staffPayrollSlip",
+                items: [{}]
+            },
+            {
+                id: '106',
+                authUrl: '/annualStaffPayroll',
+                iconUrl: 'el-icon-document',
+                isMenu: 1,
+                name: '全年工资清单',
+                rightCode: "annualStaffPayroll",
                 items: [{}]
             },
         ]

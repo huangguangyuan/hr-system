@@ -163,11 +163,17 @@ const dynamicRouter = [
         name: 'applyMain',
         component: resolve => require(['@/views/staffApply/applyMain.vue'], resolve),
     },
-    // 工资清单
+    // 每月工资清单
     {
         path: '/staffPayrollSlip',
         name: 'staffPayrollSlip',
         component: resolve => require(['@/views/wages/staffPayrollSlip.vue'], resolve),
+    },
+    // 全年工资清单
+    {
+        path: '/annualStaffPayroll',
+        name: 'annualStaffPayroll',
+        component: resolve => require(['@/views/wages/annualStaffPayroll.vue'], resolve),
     },
     // <==========计薪==========>
     // 员工薪资计算
