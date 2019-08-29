@@ -8,16 +8,12 @@
       <div class="my-top">
         <el-button-group>
           <el-button type="primary" icon="el-icon-edit" @click="modifyFun(tableData)">修 改</el-button>
-          <el-button type="primary" icon="el-icon-setting" @click="setStatus(tableData.status)">状 态</el-button>
+          <!-- <el-button type="primary" icon="el-icon-setting" @click="setStatus(tableData.status)">状 态</el-button> -->
           <el-button type="primary" icon="el-icon-delete" @click="handleDelete">删 除</el-button>
         </el-button-group>
       </div>
       <el-divider>基础信息</el-divider>
       <ul class="infoList">
-        <li>
-          <span>ID：</span>
-          <span>{{tableData.id}}</span>
-        </li>
         <li>
           <span>MPF账号：</span>
           <span>{{tableData.account}}</span>

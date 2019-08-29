@@ -10,7 +10,7 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
-      <el-table-column prop="id" label="ID"></el-table-column>
+      <el-table-column prop="name" label="项目"></el-table-column>
       <el-table-column prop="amount" label="应税金额"></el-table-column>
       <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
       <el-table-column prop="remarks" label="备 注"></el-table-column>

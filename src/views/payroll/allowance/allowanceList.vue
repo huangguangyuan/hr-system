@@ -10,7 +10,6 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="津贴名称"></el-table-column>
       <el-table-column prop="amount" label="津贴金额"></el-table-column>
       <el-table-column prop="includeInPayrollTxt" label="是否包含在薪酬里"></el-table-column>

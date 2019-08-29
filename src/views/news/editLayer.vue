@@ -123,7 +123,7 @@ export default {
         this.getCompanys();
       }
     },
-    getCompanys() {
+     getCompanys() {
       var _this = this;
       var reqUrl = "/server/api/v1/company/companysWithChild";
       return new Promise((resolve, reject) => {

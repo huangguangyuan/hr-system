@@ -2,7 +2,7 @@
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="220px">
       
-      <el-form-item label="税前工资：" prop="salary">
+      <el-form-item label="基本工资：" prop="salary">
         <el-input v-model="ruleForm.salary" oninput = "value=value.replace(/[^\d.]/g,'')"></el-input>
       </el-form-item>
       <el-form-item label="是否正常缴纳社保：" prop="needSI">

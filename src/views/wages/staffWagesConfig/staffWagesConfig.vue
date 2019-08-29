@@ -13,7 +13,7 @@
       <el-divider></el-divider>
       <el-row :gutter="12">
         <el-col :span="8">
-          <el-card shadow="always">税前工资：{{configureMsg.salary}}</el-card>
+          <el-card shadow="always">基本工资：{{configureMsg.salary}}</el-card>
         </el-col>
         <el-col :span="8">
           <el-card shadow="always">是否正常缴纳社保：{{configureMsg.needSI}}</el-card>
