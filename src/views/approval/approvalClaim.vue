@@ -66,9 +66,9 @@ export default {
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      hrCode: "baa7b350-96f4-11e9-9069-bf35c07c51d4",
+      hrCode: "",
       userInfo:{},
-      BUCode: "18fa0a70-62c5-11e9-93a9-f78fd132055e", //单位code
+      BUCode: "", //单位code
       rightStatus:[], //当前管理员可审批的申请类型
       regionBUList:[],//单位列表
       filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip']}
@@ -123,7 +123,7 @@ export default {
           this.tableData = res.data.data.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
             item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
-            item.nameChinese = item.staff.nameChinese;
+            item.nameChinese = item.staff ? item.staff.nameChinese :"";
             return item;
           });
           this.total = this.tableData.length;

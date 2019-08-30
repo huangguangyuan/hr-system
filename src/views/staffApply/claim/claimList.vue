@@ -70,6 +70,7 @@ export default {
     };
   },
   mounted() {
+    console.log(this.staffCode_props);
     this.getData(this.staffCode);
   },
   methods: {

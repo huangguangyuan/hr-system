@@ -81,7 +81,7 @@ export default {
       curInfo: {}, //当前内容
       searchInner: "", //搜索内容
       regionBUList:[],//单位列表
-      BUCode: "18fa0a70-62c5-11e9-93a9-f78fd132055e", //单位code
+      BUCode: "", //单位code
       isShowAddAccess: false, //是否显示新增权限页面
       isShowAddChild: false, //是否显示新增子权限页面
       isShowLoading: false, //是否显示loading页

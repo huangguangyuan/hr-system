@@ -14,33 +14,28 @@
         </el-select>
       </el-form-item>
       <el-form-item label="所属公司" v-if="ruleForm.typeId == '2'">
-        <el-select v-model="ruleForm.companyCode" placeholder="请选择所属公司" @change="selectCompany">
+        <el-select v-model="ruleForm.companyCode" placeholder="请选择所属公司" @change="selectCompany" :disabled="curInfo.type == 'modify'">
           <el-option
             v-for="item in companyList"
-            :key="item.id"
+            :key="item.code"
             :label="item.name"
             :value="item.code"
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="所属地区" v-if="ruleForm.typeId == '2'">
-        <el-select v-model="ruleForm.regionCode" placeholder="请选择地区" @change="selectRegion">
+      <el-form-item label="所属地区" v-if="ruleForm.typeId == '2'" :disabled="curInfo.type == 'modify'">
+        <el-select v-model="ruleForm.regionCode" placeholder="请选择地区" @change="selectRegion" :disabled="curInfo.type == 'modify'">
           <el-option
             v-for="item in regionList"
-            :key="item.id"
+            :key="item.code"
             :label="item.name"
             :value="item.code"
           ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="所属单位" v-if="ruleForm.typeId == '2'">
-        <el-select v-model="ruleForm.BUCode" placeholder="请选择地区">
-          <el-option
-            v-for="item in BUList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.code"
-          ></el-option>
+        <el-select v-model="ruleForm.BUCode" placeholder="请选择单位" :disabled="curInfo.type == 'modify'">
+          <el-option v-for="item in BUList" :key="item.code" :label="item.name" :value="item.code" ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="消息标题：" prop="title">
@@ -75,6 +70,7 @@
 let id = 0;
 import { setTimeout } from "timers";
 import axios from "axios";
+import { Promise } from "q";
 export default {
   name: "editLayer",
   inject: ["reload"],
@@ -83,7 +79,7 @@ export default {
     const _that = this;
     return {
       ruleForm: {
-        userRight: false,
+        userRight: true,
         typeId: "",
         title: "",
         content: "",
@@ -109,78 +105,8 @@ export default {
     this.initializeFun();
   },
   methods: {
-    // 获取公司列表
-    getCompanys() {
-      var _this = this;
-      var reqUrl = "/server/api/v1/company/companys";
-      return new Promise(resolve => {
-        _this.$http.post(reqUrl, {}).then(res => {
-          this.companyList = res.data.data.map(item => {
-            return {
-              id: item.id,
-              code: item.code,
-              name: item.name
-            };
-          });
-          resolve(this.companyList);
-        });
-      });
-    },
-    // 获取地区
-    getRegion(num) {
-      var _this = this;
-      var reqUrl = "/server/api/v1/company/company";
-      return new Promise(resolve => {
-        _this.$http.post(reqUrl, { id: parseInt(num) }).then(res => {
-          this.regionList = res.data.data.companyRegionList.map(item => {
-            return {
-              id: item.id,
-              code: item.code,
-              name: item.name
-            };
-          });
-          resolve(this.regionList);
-        });
-      });
-    },
-    // 获取单位
-    getUnit(num) {
-      var _this = this;
-      var reqUrl = "/server/api/v1/company/region";
-      return new Promise(resolve => {
-        _this.$http.post(reqUrl, { id: parseInt(num) }).then(res => {
-          this.BUList = res.data.data.BUList.map(item => {
-            return {
-              id: item.id,
-              code: item.code,
-              name: item.name
-            };
-          });
-          resolve(this.BUList);
-        });
-      });
-    },
-    // 选择公司
-    selectCompany(val){
-      var code = this.companyList.filter(item => {
-        return item.code == val;
-      })
-      this.getRegion(code[0].id).then(res => {
-        this.selectRegion(this.curInfo.regionCode);
-      });
-    },
-    // 选择地区
-    selectRegion(val){
-      var code = this.regionList.filter(item => {
-        return item.code == val;
-      });
-      this.getUnit(code[0].id);
-    },
     // 初始化
-    initializeFun() {
-      this.getCompanys().then(res => {
-        this.selectCompany(this.curInfo.companyCode);
-      })
+    async initializeFun() {
       if (this.curInfo.type == "modify") {
         this.ruleForm.userRight = this.curInfo.userRight;
         this.ruleForm.typeId = this.curInfo.typeId.toString();
@@ -189,7 +115,38 @@ export default {
         this.ruleForm.companyCode = this.curInfo.companyCode;
         this.ruleForm.regionCode = this.curInfo.regionCode;
         this.ruleForm.BUCode = this.curInfo.BUCode;
+        await this.getCompanys();
+        this.selectCompany(this.curInfo.companyCode);
+        this.selectRegion(this.curInfo.regionCode);
+      }else{
+        this.getCompanys();
       }
+    },
+     getCompanys() {
+      var _this = this;
+      var reqUrl = "/server/api/v1/company/companysWithChild";
+      return new Promise((resolve, reject) => {
+        _this.$http.post(reqUrl, {}).then(res => {
+          if (res.data.code == 0) {
+            _this.companyList = res.data.data;
+            resolve(_this.companyList);
+          }
+        });
+      });
+    },
+    // 选择公司
+    selectCompany(val) {
+      var code = this.companyList.filter(item => {
+        return item.code == val;
+      });
+      this.regionList = code[0].regions;
+    },
+    // 选择地区
+    selectRegion(val) {
+      var code = this.regionList.filter(item => {
+        return item.code == val;
+      });
+      this.BUList = code[0].bus;
     },
     // 提交表单
     submitForm(formName) {

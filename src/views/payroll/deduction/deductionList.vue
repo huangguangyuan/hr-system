@@ -10,7 +10,6 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="amount" label="扣除金额"></el-table-column>
       <el-table-column prop="status" label="是否生效">
         <template slot-scope="scope">

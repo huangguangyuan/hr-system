@@ -13,10 +13,10 @@
       <el-divider>基础信息</el-divider>
       <el-row :gutter="12">
         <el-col :span="8">
-          <el-card shadow="always">工资总额：{{msg.salaryAmout}}</el-card>
+          <el-card shadow="always">基本工资：{{msg.salaryAmout}}</el-card>
         </el-col>
         <el-col :span="8">
-          <el-card shadow="always">税款起征点：{{msg.taxThreshold}}</el-card>
+          <el-card shadow="always">个税起征点：{{msg.taxThreshold}}</el-card>
         </el-col>
         <el-col :span="8">
           <el-card shadow="always">银行卡类型：{{msg.bankName || '暂无信息'}}</el-card>
