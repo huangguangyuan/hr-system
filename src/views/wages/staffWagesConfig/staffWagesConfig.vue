@@ -1,6 +1,6 @@
 <template>
   <div class="staffWagesConfig">
-    <el-page-header @back="goBack" content="个人详情页面"></el-page-header>
+    <el-page-header @back="goBack" content="薪资配置"></el-page-header>
     <div class="header-info">
       <el-avatar :size="130" :src="circleUrl"></el-avatar>
       <div class="message">

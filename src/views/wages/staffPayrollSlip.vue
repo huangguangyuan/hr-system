@@ -32,10 +32,10 @@
     </div>
     <!--startprint-->
     <el-divider></el-divider>
-    <div class="nothing" v-if="!tableData">
+    <div class="nothing" v-if="!tableData.name">
       暂无薪水数据
     </div>
-    <div  v-if="tableData">
+    <div  v-if="tableData.name">
     <ul class="msgList" v-if="tableData">
       <li v-if="tableData.name">
         <span class="title">{{tableData.name.title}}</span>：

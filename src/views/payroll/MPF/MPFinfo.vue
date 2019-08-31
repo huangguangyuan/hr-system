@@ -27,6 +27,10 @@
           <span>{{tableData.serviceProviderName}}</span>
         </li>
         <li>
+          <span>缴纳信息：</span>
+          <span>{{tableData.mpfVoluntarily > 1?tableData.mpfVoluntarily + " 港元":tableData.mpfVoluntarily * 100 + " %"}}</span>
+        </li>        
+        <li>
           <span>缴纳日期：</span>
           <span>{{tableData.contributionDate}}</span>
         </li>
