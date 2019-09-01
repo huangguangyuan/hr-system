@@ -21,7 +21,7 @@
       <el-table-column sortable prop="createTime" label="创建日期" width="200"></el-table-column>
       <el-table-column sortable prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column sortable prop="totalDay" label="请假天数"></el-table-column>
-      <el-table-column sortable prop="totalAmount" label="金 额"></el-table-column>
+      <el-table-column sortable prop="totalAmount" label="应扣金额"></el-table-column>
       <el-table-column sortable prop="isWithpayTxt" label="是否带薪"></el-table-column>
       <el-table-column prop="nextStepTip" label="下一步提示"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>

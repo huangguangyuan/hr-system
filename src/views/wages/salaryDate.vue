@@ -18,6 +18,18 @@
         <el-col :span="12" v-if="msg.taxThreshold != 0">
           <el-card shadow="always">个税起征点：{{msg.taxThreshold}}</el-card>
         </el-col>
+        <el-col :span="12" v-if="msg.holidaysApplyList && msg.allowanceList.length > 0">
+        <el-card shadow="always">津贴总额：{{arrSum(msg.allowanceList,'amount')}}</el-card>
+      </el-col>
+      <el-col :span="12" v-if="msg.holidaysApplyList && msg.salaryItems.length > 0">
+        <el-card shadow="always">应税项目总额：{{arrSum(msg.salaryItems,'amount')}}</el-card>
+      </el-col>
+      <!-- <el-col :span="12" v-if="msg.holidaysApplyList && msg.expensesClaimList.length > 0">
+        <el-card shadow="always">费用报销总额：{{arrSum(msg.expensesClaimList,'amount')}}</el-card>
+      </el-col>
+      <el-col :span="12" v-if="msg.holidaysApplyList && msg.holidaysApplyList.length > 0">
+        <el-card shadow="always">请假应扣总额：{{arrSum(msg.holidaysApplyList,'amount')}}</el-card>
+      </el-col> -->
         <!-- <el-col :span="8">
           <el-card shadow="always">银行卡类型：{{msg.bankName || '暂无信息'}}</el-card>
         </el-col> -->
@@ -59,62 +71,37 @@
         </el-col>
       </el-row>
       <el-divider>津贴清单</el-divider>
-      <el-table :data="msg.allowanceList" stripe border style="width: 100%">
+      <el-table :data="msg.allowanceList" stripe border show-summary style="width: 100%">
         <el-table-column prop="name" label="津贴项目名称"></el-table-column>
         <el-table-column prop="amount" label="津贴金额（元）"></el-table-column>
       </el-table>
       <el-divider>应税项目</el-divider>
-      <el-table :data="msg.salaryItems" stripe border style="width: 100%">
+      <el-table :data="msg.salaryItems" stripe border show-summary style="width: 100%">
         <el-table-column prop="name" label="项目名称"></el-table-column>
         <el-table-column prop="amount" label="金 额"></el-table-column>
         <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
       </el-table>
       <el-divider v-if="msg.expensesClaimList && msg.expensesClaimList.length > 0">费用报销清单</el-divider>
-      <el-table :data="msg.expensesClaimList" v-if="msg.expensesClaimList  && msg.expensesClaimList.length > 0" stripe border style="width: 100%">
+      <el-table :data="msg.expensesClaimList" v-if="msg.expensesClaimList  && msg.expensesClaimList.length > 0" stripe border show-summary style="width: 100%">
         <el-table-column prop="totalAmount" label="报销金额（元）"></el-table-column>
         <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
-        <el-table-column prop="balanceMon" label="结算月份"></el-table-column>
+        <el-table-column prop="balanceMonTxt" label="结算月份"></el-table-column>
       </el-table>
       <el-divider v-if="msg.holidaysApplyList && msg.holidaysApplyList.length > 0">请假清单</el-divider>
-      <el-table :data="msg.holidaysApplyList" v-if="msg.holidaysApplyList  && msg.holidaysApplyList.length > 0" stripe border style="width: 100%">
+      <el-table :data="msg.holidaysApplyList" v-if="msg.holidaysApplyList  && msg.holidaysApplyList.length > 0" stripe border show-summary style="width: 100%">
         <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>
         <el-table-column prop="totalDay" label="请假天数"></el-table-column>
         <el-table-column prop="totalAmount" label="扣除金额"></el-table-column>
         <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
-        <el-table-column prop="balanceMon" label="结算月份"></el-table-column>
+        <el-table-column prop="balanceMonTxt" label="结算月份"></el-table-column>
       </el-table>
       <el-divider v-if="msg.payrollSpecialDeductionList">专项扣除清单</el-divider>
-      <el-table v-if="msg.payrollSpecialDeductionList" :data="msg.payrollSpecialDeductionList" stripe border style="width: 100%">
+      <el-table v-if="msg.payrollSpecialDeductionList" :data="msg.payrollSpecialDeductionList" stripe border show-summary style="width: 100%">
         <el-table-column prop="amount" label="专项扣除金额"></el-table-column>
         <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
         <el-table-column prop="typeIdTxt" label="专项扣除类型"></el-table-column>
       </el-table>
 
-
-       <el-divider>住房公积金清单</el-divider>
-        <el-table :data="msg.HCList" stripe border show-summary>
-          <el-table-column prop="paymentTxt" label="付款对象"></el-table-column>
-          <el-table-column prop="typeTxt" label="类型"></el-table-column>
-          <el-table-column prop="payment" label="金额(元)"></el-table-column>
-        </el-table>
-        <el-divider>社保清单</el-divider>
-        <el-table :data="msg.SIList" stripe border show-summary>
-          <el-table-column prop="paymentTxt" label="付款对象"></el-table-column>
-          <el-table-column prop="typeTxt" label="类型"></el-table-column>
-          <el-table-column prop="payment" label="金额(元)"></el-table-column>
-        </el-table>
-        <el-divider>专项扣除清单</el-divider>
-        <el-table :data="msg.specialDeductionList" stripe border show-summary>
-          <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
-          <el-table-column prop="typeIdTxt" label="专项扣除类型"></el-table-column>
-          <el-table-column prop="amount" label="专项扣除金额"></el-table-column>
-        </el-table>
-        <el-divider>MPF清单</el-divider>
-        <el-table :data="msg.MPFList" stripe border show-summary>
-          <el-table-column prop="paymentTxt" label="缴费对象"></el-table-column>
-          <el-table-column prop="typeTxt" label="类 型"></el-table-column>
-          <el-table-column prop="payment" label="金额(元)"></el-table-column>
-        </el-table>
         </div>
   </div>
 </template>
@@ -137,6 +124,13 @@ export default {
     this.getData();
   },
   methods: {
+    arrSum(list,val){
+      var n = 0;
+      list.map(m=>{
+        n += parseFloat(m[val]);
+      })
+      return parseFloat(n)
+    },
     // 返回
     goBack() {
       this.$store.commit({
@@ -153,6 +147,7 @@ export default {
           this.msg = res.data.data;
           this.msg.expensesClaimList.map(item => {
             item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
+            item.balanceMonTxt= item.balanceMon + "月";
             return item;
           });
           if(this.msg.payrollSpecialDeductionList){
@@ -186,6 +181,7 @@ export default {
           });
           this.msg.holidaysApplyList.map(item => {
             item.typeIdTxt = item.details[0].typeId == 1 ? "生效" : "未生效";
+            item.balanceMonTxt= item.balanceMon + "月";
             switch(item.details[0].typeId){
                 case 1:
                     item.typeIdTxt = '事假';

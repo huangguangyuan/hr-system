@@ -115,24 +115,38 @@ export default {
         this.ruleForm.companyCode = this.curInfo.companyCode;
         this.ruleForm.regionCode = this.curInfo.regionCode;
         this.ruleForm.BUCode = this.curInfo.BUCode;
-        await this.getCompanys();
-        this.selectCompany(this.curInfo.companyCode);
-        this.selectRegion(this.curInfo.regionCode);
+        //await this.getCompanys();
+        if (this.ruleForm.userRight){
+          var res = await this.getCompanys();
+          this.companyList = res.data.data;
+          this.selectCompany(this.curInfo.companyCode);
+          this.selectRegion(this.curInfo.regionCode);
+        }
       }else{
-        this.getCompanys();
+        if (this.ruleForm.userRight){
+          var res = await this.getCompanys();
+          this.companyList = res.data.data;
+        }
       }
     },
-     getCompanys() {
-      var _this = this;
+    //  getCompanys() {
+    //   var _this = this;
+    //   var reqUrl = "/server/api/v1/company/companysWithChild";
+    //   return new Promise((resolve, reject) => {
+    //     _this.$http.post(reqUrl, {}).then(res => {
+    //       if (res.data.code == 0) {
+    //         _this.companyList = res.data.data;
+    //         resolve(_this.companyList);
+    //       }
+    //     });
+    //   });
+    // },
+    async getCompanys() {
       var reqUrl = "/server/api/v1/company/companysWithChild";
-      return new Promise((resolve, reject) => {
-        _this.$http.post(reqUrl, {}).then(res => {
-          if (res.data.code == 0) {
-            _this.companyList = res.data.data;
-            resolve(_this.companyList);
-          }
-        });
-      });
+      return Promise.resolve(
+        this.$http.post(reqUrl, {}).then(res => {
+          return res;
+      }));
     },
     // 选择公司
     selectCompany(val) {

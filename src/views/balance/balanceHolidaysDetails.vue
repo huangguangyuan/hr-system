@@ -1,8 +1,8 @@
 <template>
   <div class="approvalHolidaysDetails">
     <el-table :data="tableData" stripe>
-      <el-table-column prop="startDate" label="请假开始时间" width="200"></el-table-column>
-      <el-table-column prop="endDate" label="请假结束时间" width="200"></el-table-column>
+      <el-table-column prop="startDate" label="开始时间" width="200"></el-table-column>
+      <el-table-column prop="endDate" label="结束时间" width="200"></el-table-column>
       <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>
       <el-table-column prop="remarks" label="备 注"></el-table-column>
     </el-table>
@@ -41,7 +41,7 @@
           <el-option label="12月" value="12"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="扣除金额：" v-if='curInfo.isWithpay == 1'>
+      <el-form-item label="扣除金额：" v-if='curInfo.isWithpay == 0'>
         <el-input type="text" v-model="ruleForm.totalAmount"></el-input>
       </el-form-item>
       <el-form-item label="备注：">
@@ -110,7 +110,7 @@ export default {
           item.typeIdTxt = '新建';
           break;
         case 100:
-          item.typeIdTxt = '结算';
+          item.typeIdTxt = '结算' ;
           break;
         default:
           item.typeIdTxt = '未知';
@@ -159,7 +159,6 @@ export default {
           this.reload();
           this.$message.success('操作成功！');
         }else{
-          this.reload();
           this.$message.error(res.data.msg);
         }
       })

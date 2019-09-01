@@ -34,6 +34,7 @@ export default {
   props: ["curInfo"],
   data() {
     return {
+      holidayItem:{},
       tableData: [],
       getClaimList: [],
       approveHisList:[],//审批流程
@@ -48,6 +49,7 @@ export default {
           })[0].val;
           return item;
       })
+      this.holidayItem = this.curInfo;
       this.tableData = this.curInfo.details.map(item => {
         item.startDate = this.$toolFn.timeFormat(item.startDate);
         item.endDate = this.$toolFn.timeFormat(item.endDate);
@@ -57,35 +59,36 @@ export default {
       if(this.curInfo.status == 999){
         this.step = 0;
       }
+      // 审批流程
+      this.approveHisList = this.curInfo.approveHis.map(item => {
+        item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
+        item.finishFlagTxt = item.finishFlag == 0?'否':'是';
+        switch(item.typeId){
+          case 1:
+            item.typeIdTxt = '批准';
+            break;
+          case 2:
+            item.typeIdTxt = '不批准';
+            break;
+          case 3:
+            item.typeIdTxt = '转派';
+            break;
+          case 90:
+            item.typeIdTxt = '撤回';
+            break;
+          case 99:
+            item.typeIdTxt = '新建';
+            break;
+          case 100:
+            item.typeIdTxt = '结算 ( 结算月份 '+ this.holidayItem.balanceMon + " 月 " + (this.holidayItem.totalAmount != 0?"， 应扣 ： " + this.holidayItem.totalAmount+ " 元 ":"，带薪" ) + " )" ;
+            break;
+          default:
+            item.typeIdTxt = '未知';
+        }
+        return item;
+      });
     });
-    // 审批流程
-    this.approveHisList = this.curInfo.approveHis.map(item => {
-      item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
-      item.finishFlagTxt = item.finishFlag == 0?'否':'是';
-      switch(item.typeId){
-        case 1:
-          item.typeIdTxt = '批准';
-          break;
-        case 2:
-          item.typeIdTxt = '不批准';
-          break;
-        case 3:
-          item.typeIdTxt = '转派';
-          break;
-        case 90:
-          item.typeIdTxt = '撤回';
-          break;
-        case 99:
-          item.typeIdTxt = '新建';
-          break;
-        case 100:
-          item.typeIdTxt = '结算';
-          break;
-        default:
-          item.typeIdTxt = '未知';
-      }
-      return item;
-    });
+
   },
   methods: {
     // 数据转换

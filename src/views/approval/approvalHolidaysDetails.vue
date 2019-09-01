@@ -1,8 +1,8 @@
 <template>
   <div class="approvalHolidaysDetails">
     <el-table :data="tableData" stripe>
-      <el-table-column prop="startDate" label="请假开始时间" width="200"></el-table-column>
-      <el-table-column prop="endDate" label="请假结束时间" width="200"></el-table-column>
+      <el-table-column prop="startDate" label="开始时间" width="200"></el-table-column>
+      <el-table-column prop="endDate" label="结束时间" width="200"></el-table-column>
       <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>
       <el-table-column prop="remarks" label="备 注"></el-table-column>
     </el-table>
@@ -48,6 +48,7 @@ export default {
   props: ["curInfo"],
   data() {
     return {
+      holidayItem:{},
       tableData: [],
       getClaimList: [],
       approveHisList:[],//审批流程
@@ -73,43 +74,49 @@ export default {
           })[0].val;
           return item;
       })
+      
+      this.holidayItem = this.curInfo;
       this.tableData = this.curInfo.details.map(item => {
         item.startDate = this.$toolFn.timeFormat(item.startDate);
         item.endDate = this.$toolFn.timeFormat(item.endDate);
         return item;
       });
+      
+      // 审批流程
+      this.approveHisList = this.curInfo.approveHis.map(item => {
+        item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
+        item.finishFlagTxt = item.finishFlag == 0?'否':'是';
+        if (item.finishFlag == 1){
+          this.isFinish = true;
+        }
+        switch(item.typeId){
+          case 1:
+            item.typeIdTxt = '批准';
+            break;
+          case 2:
+            item.typeIdTxt = '不批准';
+            break;
+          case 3:
+            item.typeIdTxt = '转派';
+            break;
+          case 90:
+            item.typeIdTxt = '撤回';
+            break;
+          case 99:
+            item.typeIdTxt = '新建';
+            break;
+          case 100:
+            item.typeIdTxt = '结算 ( 结算月份 '+ this.holidayItem.balanceMon + " 月 " + (this.holidayItem.totalAmount != 0?"， 应扣 ： " + this.holidayItem.totalAmount+ " 元 ":"，带薪" ) + " )" ;
+            break;
+          default:
+            item.typeIdTxt = '未知';
+        }
+        return item;
+      });
     });
-    // 审批流程
-    this.approveHisList = this.curInfo.approveHis.map(item => {
-      item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
-      item.finishFlagTxt = item.finishFlag == 0?'否':'是';
-      if (item.finishFlag == 1){
-        this.isFinish = true;
-      }
-      switch(item.typeId){
-        case 1:
-          item.typeIdTxt = '批准';
-          break;
-        case 2:
-          item.typeIdTxt = '不批准';
-          break;
-        case 3:
-          item.typeIdTxt = '转派';
-          break;
-        case 90:
-          item.typeIdTxt = '撤回';
-          break;
-        case 99:
-          item.typeIdTxt = '新建';
-          break;
-        case 100:
-          item.typeIdTxt = '结算';
-          break;
-        default:
-          item.typeIdTxt = '未知';
-      }
-      return item;
-    });
+
+    
+
   },
   methods: {
     // 数据转换

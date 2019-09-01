@@ -53,6 +53,7 @@ export default {
   props: ["curInfo"],
   data() {
     return {
+      claimItem:{},
       tableData: [], //数据列表
       getClaimList: [], //审批类型
       approveHisList: [], //审批流程
@@ -78,39 +79,41 @@ export default {
         })[0].val;
         return item;
       });
+      this.claimItem = this.curInfo;
       this.tableData = this.curInfo.details;
+      // 审批流程
+      this.approveHisList = this.curInfo.approveHis.map(item => {
+        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.finishFlagTxt = item.finishFlag == 0 ? "否" : "是";
+        if (item.finishFlag == 1){
+          this.isFinish = true;
+        }
+        switch (item.typeId) {
+          case 1:
+            item.typeIdTxt = "批准";
+            break;
+          case 2:
+            item.typeIdTxt = "不批准";
+            break;
+          case 3:
+            item.typeIdTxt = "转派";
+            break;
+          case 90:
+            item.typeIdTxt = "撤回";
+            break;
+          case 99:
+            item.typeIdTxt = "新建";
+            break;
+          case 100:
+            item.typeIdTxt = '结算 ( 结算月份 '+ this.claimItem.balanceMon + " 月 " + (this.claimItem.totalAmount != 0?"， 总金额 ： " + this.claimItem.totalAmount + " 元 ":"" ) + " )" ;
+            break;
+          default:
+            item.typeIdTxt = "未知";
+        }
+        return item;
+      });
     });
-    // 审批流程
-    this.approveHisList = this.curInfo.approveHis.map(item => {
-      item.createTime = this.$toolFn.timeFormat(item.createTime);
-      item.finishFlagTxt = item.finishFlag == 0 ? "否" : "是";
-      if (item.finishFlag == 1){
-        this.isFinish = true;
-      }
-      switch (item.typeId) {
-        case 1:
-          item.typeIdTxt = "批准";
-          break;
-        case 2:
-          item.typeIdTxt = "不批准";
-          break;
-        case 3:
-          item.typeIdTxt = "转派";
-          break;
-        case 90:
-          item.typeIdTxt = "撤回";
-          break;
-        case 99:
-          item.typeIdTxt = "新建";
-          break;
-        case 100:
-          item.typeIdTxt = "结算";
-          break;
-        default:
-          item.typeIdTxt = "未知";
-      }
-      return item;
-    });
+
   },
   methods: {
     // 数据转换,用于把类型转换成对应的文字
@@ -153,7 +156,6 @@ export default {
           this.reload();
           this.$message.success('审批成功~');
         }else{
-          this.reload();
           this.$message.error(res.data.msg);
         }
       })

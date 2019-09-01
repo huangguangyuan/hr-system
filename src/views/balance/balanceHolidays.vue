@@ -65,12 +65,18 @@ export default {
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
       hrCode: "",
+      userInfo:"",
       BUCode: "", //单位code
       regionBUList:[],//单位列表
       filter:{searchKey:'',searchField:['nameChinese']}
     };
   },
   mounted() {
+    var _this = this;
+    _this.userInfo = _this.$toolFn.localGet("userInfo");
+    if (_this.userInfo.roleTypeId == 2 ){
+      _this.hrCode = _this.userInfo.userCode;
+    }
     this.getRegionBUList();
     //this.getData(this.hrCode,this.BUCode);
   },
