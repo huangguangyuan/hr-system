@@ -7,13 +7,15 @@ import VueAxios from 'vue-axios'
 import Element from 'element-ui'
 import Qs from 'qs'
 import Utile from './lib/utils'
+import cacheRequest from './lib/apis/apiUrl.js'
 import '@/assets/scss/element-variables.scss'
 import '@/assets/scss/app.scss';
 
 Vue.config.productionTip = false
 Vue.use(VueAxios,axios);
-Vue.use(Element)
-Vue.use(Utile)
+Vue.use(Element);
+Vue.use(Utile);
+Vue.use(cacheRequest);
 
 Vue.prototype.$qs = Qs;
 
@@ -55,10 +57,5 @@ axios.interceptors.response.use(function (response) { // -1 token过期无效
   return response;
 }, function (error) {
   console.log(error);
-
   return Promise.reject(error)
 })
-
-// axios.defaults.headers.common['token'] = myVue.$toolFn.localGet('token');
-
-
