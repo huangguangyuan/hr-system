@@ -5,9 +5,8 @@ import store from './store/index'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import Element from 'element-ui'
-import Qs from 'qs'
 import Utile from './lib/utils'
-import cacheRequest from './lib/apis/apiUrl.js'
+import myApi from './lib/apis/myApi'
 import '@/assets/scss/element-variables.scss'
 import '@/assets/scss/app.scss';
 
@@ -15,9 +14,7 @@ Vue.config.productionTip = false
 Vue.use(VueAxios,axios);
 Vue.use(Element);
 Vue.use(Utile);
-Vue.use(cacheRequest);
-
-Vue.prototype.$qs = Qs;
+Vue.use(myApi);
 
 let myVue = new Vue({
   router,

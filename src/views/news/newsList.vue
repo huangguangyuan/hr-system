@@ -106,7 +106,7 @@ export default {
   },
   methods: {
     aa:async function(){
-      console.log(await this.$cacheRequest.companysWithChild({},this));
+      //console.log(await this.$myApi.companysWithChild(this,{isCache:true}));
     },
     //获取项目数据列表
     getData(typeId) {
