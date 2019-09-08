@@ -4,7 +4,7 @@
       <el-form-item label="所属单位：" prop="BUCode">
         <el-select v-model="ruleForm.BUCode" placeholder="请选择所属单位">
           <el-option
-            v-for="item in regionList"
+            v-for="item in regionBUs"
             :key="item.code"
             :label="item.name"
             :value="item.code"
@@ -79,7 +79,7 @@ export default {
         lev:'',
         serveId:''
       },
-      regionList: [],
+      regionBUs: [],
       rules: {
         account: [
           { required: true, message: "请输入账号名", trigger: "blur" },
@@ -126,14 +126,12 @@ export default {
   },
   methods: {
     // 获取单位列表
-    getBUCodeFun() {
+    async getBUCodeFun() {
       var _this = this;
-      var reqUrl = "/server/api/v1/company/regionBUs";
-      _this.$http.post(reqUrl, {}).then(res => {
-        if (res.data.code == 0) {
-          this.regionList = res.data.data;
-        }
-      });
+      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+      if (regionBUs) {
+          this.regionBUs = regionBUs;
+      }
     },
     //提交表单
     submitForm(formName) {

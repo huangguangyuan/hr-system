@@ -29,6 +29,8 @@ axios.interceptors.request.use(function (config) { // 每次请求时会从local
   if (userInfo && userInfo.token != "") {
     config.headers.common['token'] = userInfo.token;
   } else {
+    sessionStorage.clear();
+    localStorage.clear();
     // router.replace({
     //   path: '/' // 到登录页重新获取token
     // })
@@ -48,7 +50,7 @@ axios.interceptors.response.use(function (response) { // -1 token过期无效
         pathUrl ="/hr";
       }
       router.replace({
-        path: pathUrl // 到登录页重新获取token
+        path: pathUrl
       })
   }
   return response;

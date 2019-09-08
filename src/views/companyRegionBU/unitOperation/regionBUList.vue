@@ -178,9 +178,7 @@ export default {
       if (params && params.companyCode != ""){
         myData.companyCode = params.companyCode
       }
-      _this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      _this.$http.post(reqUrl, myData).then(res => {
           _this.loading = false;
           _this.tableData = res.data.data
             .map(item => {
@@ -198,9 +196,6 @@ export default {
             });
           _this.total = _this.tableData.length;
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 获取当前页数
     curChange(val) {

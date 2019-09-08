@@ -152,18 +152,14 @@ export default {
       this.$toolFn.sessionSet('approveBUCode',val);
     },
     // 获取单位列表
-    getRegionBUList(){
+    async getRegionBUList(){
       var _this = this;
-      var reqUrl = '/server/api/v1/company/regionBUs';
-      _this.$http.post(reqUrl,{}).then(res => {
-        if(res.data.code == 0){
-          _this.regionBUList = res.data.data;
-          _this.BUCode = this.$toolFn.sessionGet('approveBUCode')?this.$toolFn.sessionGet('approveBUCode'):res.data.data[0].code;
-          this.getData(this.hrCode,this.BUCode);
-        }else{
-          _this.$message({type:'info',message:`报错：${res.data.code}`})
-        }
-      })
+      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+      if (regionBUs) {
+        _this.regionBUList = regionBUs;
+        _this.BUCode = this.$toolFn.sessionGet('approveBUCode')?this.$toolFn.sessionGet('approveBUCode'):_this.regionBUList[0].code;
+        this.getData(this.hrCode,this.BUCode);
+      }
     },
     searchFun(list,search){
       let newList = [];

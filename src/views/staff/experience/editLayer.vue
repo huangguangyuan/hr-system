@@ -32,9 +32,14 @@
         <el-upload
           class="upload-demo"
           action="http://134.175.150.60:9527/app/api/v1/file/fileUpload"
-          :on-change="handleChange"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :on-success="handleSuccess"
+          :on-error="handlEerror"
+          :before-remove="handlBeforeRemove"
           :file-list="fileList"
-          :limit="1"
+          
+          :limit="3"
           :on-exceed="handleExceed"
           :before-upload="beforeAvatarUpload"
         >
@@ -108,6 +113,16 @@ export default {
         this.ruleForm.details = this.curInfo.details;
         this.ruleForm.startDate = this.curInfo.startDate;
         this.ruleForm.endDate = this.curInfo.endDate;
+        if (this.curInfo.fileSrc && this.curInfo.fileSrc != ""){
+          var fileSrcArr = this.curInfo.fileSrc.split(',');
+          for (let index = 0; index < fileSrcArr.length; index++) {
+             this.fileList.push({
+              name: '文件' + (index + 1),
+              url: fileSrcArr[index]
+            });
+          }
+        }
+       
       }
     },
     // 提交表单
@@ -164,8 +179,12 @@ export default {
         startDate: this.$toolFn.timeFormat(_this.ruleForm.startDate),
         endDate: this.$toolFn.timeFormat(_this.ruleForm.endDate),
         details: _this.ruleForm.details,
-        fileSrc: _this.ruleForm.fileSrc
+        fileSrc:''
       };
+      for (let index = 0; index < _this.fileList.length; index++) {
+        const element = _this.fileList[index];
+        data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
+      }
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
@@ -180,9 +199,15 @@ export default {
       var _this = this;
       _this.$emit("listenIsShowMask", false);
     },
+    handlePreview(file){
+      let a = document.createElement('a')
+        a.href = file.url;
+        a.target = '_blank';
+        a.click();
+    },
     // 限制当前文件个数
     handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件`);
+      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件`);
     },
     // 限制上传文件格式
     beforeAvatarUpload(file){
@@ -198,12 +223,40 @@ export default {
       }
       return isOk;
     },
-    // 获取上传文件路径
-    handleChange(file, fileList) {
-      setTimeout(()=>{
-        this.ruleForm.fileSrc = file.response.data.path;
-      },500);
+    //上传成功
+    handleSuccess(file, fileList) {
+        this.fileList.push({name:'文件' + (this.fileList.length + 1),url:file.data.path});
     },
+    //删除
+    handlBeforeRemove(file, fileList) {
+     return Promise.resolve((this.$confirm("确认删除文件?","提 示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          return true;
+        }).catch(() => {
+          return reject(false);
+        }))
+     )
+    },
+    //删除
+    handleRemove(file, fileList) {
+      this.fileList = fileList;
+      
+    },
+    //获取上传文件路径
+    handlEerror(err, file, fileList) {
+        console.log(err);
+        // console.log(fileList);
+        // this.ruleForm.fileSrc = file.response.data.path;
+    },
+    // //获取上传文件路径
+    // handlProgress(event, file, fileList) {
+    //      console.log(event);
+    //     // console.log(fileList);
+    //     // this.ruleForm.fileSrc = file.response.data.path;
+    // },   
     // 重置
     resetForm(formName) {
       this.$refs[formName].resetFields();

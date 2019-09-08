@@ -67,7 +67,7 @@
             size="mini"
             icon="hr-icon-yingshui"
             @click="openFun(scope.$index, scope.row, 'salaryItem')"
-          >应税项目</el-button>
+          >（非）应税项目</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -119,18 +119,14 @@ export default {
       _this.getregionBU();
     },
     // 获取单位列表
-    getregionBU() {
+    async getregionBU() {
       var _this = this;
-      var reqUrl = "/server/api/v1/company/regionBUs";
-      _this.$http.post(reqUrl, {}).then(res => {
-        if (res.data.code == 0) {
-          _this.regionBUlist = res.data.data;
-          _this.BUCode = this.$toolFn.sessionGet("staffBUCode")
-            ? this.$toolFn.sessionGet("staffBUCode")
-            : res.data.data[0].code;
+      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+      if (regionBUs) {
+          _this.regionBUlist = regionBUs;
+          _this.BUCode = this.$toolFn.sessionGet("staffBUCode") ? this.$toolFn.sessionGet("staffBUCode"): _this.regionBUlist[0].code;
           _this.getData(this.BUCode);
         }
-      });
     },
     //获取项目数据列表
     getData(BUCode) {

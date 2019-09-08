@@ -10,9 +10,10 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
-      <el-table-column prop="name" label="项目"></el-table-column>
-      <el-table-column prop="amount" label="应税金额"></el-table-column>
-      <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
+      <el-table-column sortable prop="name" label="项目"></el-table-column>
+      <el-table-column sortable prop="taxableTxt" label="是否应税"></el-table-column>
+      <el-table-column sortable prop="amount" label="应税金额"></el-table-column>
+      <el-table-column sortable prop="statusTxt" label="是否生效"></el-table-column>
       <el-table-column prop="remarks" label="备 注"></el-table-column>
       <el-table-column label="操作" width="300px">
         <template slot-scope="scope">
@@ -87,6 +88,7 @@ export default {
           this.tableData = res.data.data
             .map(item => {
               item.statusTxt = item.status == '1'?'是':'否';
+              item.taxableTxt = item.taxable == '1'?'是':'否';
               return item;
             })
             .sort((a, b) => {

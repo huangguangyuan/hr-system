@@ -194,23 +194,17 @@ export default {
       this.getregionBU();
     },
     // 获取单位列表
-    getregionBU() {
-      var reqUrl = "/server/api/v1/company/regionBUs";
-      this.$http.post(reqUrl, {}).then(res => {
-        if (res.data.code == 0) {
-          this.regionBUlist = res.data.data;
-          this.seachMsg.BUCode = this.$toolFn.sessionGet(
-            "staffPayrollListSearch"
-          )
-            ? this.$toolFn.sessionGet("staffPayrollListSearch").BUCode
-            : res.data.data[0].code;
+    async getregionBU() {
+      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+      if (regionBUs) {
+          this.regionBUlist = regionBUs;
+          this.seachMsg.BUCode = this.$toolFn.sessionGet("staffPayrollListSearch")? this.$toolFn.sessionGet("staffPayrollListSearch").BUCode : this.regionBUlist[0].code;
           this.getData(
             this.seachMsg.BUCode,
             parseInt(this.seachMsg.year),
             parseInt(this.seachMsg.month)
           );
         }
-      });
     },
     //获取项目数据列表
     getData(BUCode, year, month) {

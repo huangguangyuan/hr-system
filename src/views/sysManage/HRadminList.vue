@@ -135,7 +135,7 @@ export default {
   },
   methods: {
     // 初始化
-    initializeFun(){
+     initializeFun(){
       this.userInfo = this.$toolFn.localGet("userInfo");
       if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301){
         this.userRight = false;
@@ -148,8 +148,7 @@ export default {
       var reqUrl = "/server/api/v1/admin/hrSys/getAll";
       var myData = { BUCode: code };
       _this.isShowLoading =true;
-      _this.$http
-        .post(reqUrl, myData)
+      _this.$http.post(reqUrl, myData)
         .then(res => {
           _this.isShowLoading =false;
           _this.tableData = res.data.data
@@ -170,23 +169,20 @@ export default {
               return 0;
             });
           _this.total = _this.tableData.length;
-          console.log(_this.tableData);
         })
         .catch(err => {
           console.log(err);
         });
     },
     // 获取单位列表
-    getBUCodeFun(){
+    async getBUCodeFun(){
       var _this = this;
-      var reqUrl = '/server/api/v1/company/regionBUs';
-      _this.$http.post(reqUrl,{}).then(res => {
-        if (res.data.code == 0) {
-          this.regionList = res.data.data;
-          this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):res.data.data[0].code;
+      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+        if (regionBUs) {
+          this.regionList = regionBUs;
+          this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):this.regionList[0].code;
           this.getData(this.BUCode);
         }
-      });
     },
     // 选择单位
     changeBUCode(code){

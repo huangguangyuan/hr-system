@@ -133,19 +133,15 @@ export default {
       });
     },
     // 获取单位列表
-    getRegionBUList(){
+    async getRegionBUList(){
       var _this = this;
-      var reqUrl = '/server/api/v1/company/regionBUs';
-      _this.$http.post(reqUrl,{}).then(res => {
-        if(res.data.code == 0){
-          _this.regionBUList = res.data.data;
-          _this.BUCode = this.$toolFn.sessionGet('departmentBUCode')?this.$toolFn.sessionGet('departmentBUCode'):res.data.data[0].code;
+      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+      if (regionBUs) {
+          _this.regionBUList = regionBUs;
+          _this.BUCode = this.$toolFn.sessionGet('departmentBUCode')?this.$toolFn.sessionGet('departmentBUCode'):_this.regionBUList[0].code;
           _this.getData(this.BUCode);
-        }else{
-          _this.$message({type:'info',message:`报错：${res.data.code}`})
         }
-      })
-    },
+      },
     // 获取当前页数
     curChange(val) {
       var _this = this;

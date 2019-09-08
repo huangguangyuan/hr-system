@@ -1,17 +1,17 @@
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px">
-      <el-form-item label="额外应税项目：" prop="salaryItemCode">
-        <el-select v-model="ruleForm.salaryItemCode" placeholder="请选择额外应税项目">
+      <el-form-item label="项目：" prop="salaryItemCode">
+        <el-select v-model="ruleForm.salaryItemCode" placeholder="请选择（非）应税项目">
           <el-option
             v-for="item in salaryCodeList"
             :key="item.id"
-            :label="item.name"
+            :label="item.name + ' ( ' + (item.taxable == 1?'应税':'非应税') + ' )'"
             :value="item.code"
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="应税金额：" prop="amount">
+      <el-form-item label="金额：" prop="amount">
         <el-input v-model="ruleForm.amount" oninput="value=value.replace(/[^\d.]/g,'')"></el-input>
       </el-form-item>
       <el-form-item label="是否生效：" prop="status">
@@ -81,7 +81,7 @@ export default {
       var data = {BUCode: this.curInfo.BUCode}
       this.$http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
-          this.salaryCodeList = res.data.data
+          this.salaryCodeList = res.data.data;
         }else{
           this.$message.error(res.data.msg);
         }

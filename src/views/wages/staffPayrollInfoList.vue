@@ -90,16 +90,12 @@ export default {
     },
     // 获取单位列表
     getregionBU() {
-      var reqUrl = "/server/api/v1/company/regionBUs";
-      this.$http.post(reqUrl, {}).then(res => {
-        if (res.data.code == 0) {
-          this.regionBUlist = res.data.data;
-          this.BUCode = this.$toolFn.sessionGet("staffBUCode")
-            ? this.$toolFn.sessionGet("staffBUCode")
-            : res.data.data[0].code;
+      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+      if (regionBUs) {
+          this.regionBUlist = regionBUs;
+          this.BUCode = this.$toolFn.sessionGet("staffBUCode")? this.$toolFn.sessionGet("staffBUCode"): this.regionBUlist[0].code;
           this.getData(this.BUCode);
         }
-      });
     },
     //获取项目数据列表
     getData(BUCode) {

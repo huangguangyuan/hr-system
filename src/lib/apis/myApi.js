@@ -7,8 +7,10 @@
             return Promise.resolve(
                 vue.$http.post(url, pararm.data||{}).then(res => {
                     if (res.data.code == 0) {
-                        vue.$toolFn.sessionSet(name,JSON.stringify(res.data.data));
+                        vue.$toolFn.sessionSet(encodeURIComponent(url),res.data.data);
                         return res.data.data;
+                    }else{
+                        return null;
                     }
                 }));
         }else{
@@ -32,8 +34,9 @@
 
     //定义接口
     let myApi = {
-        post:(vue,url,params)=>apiMain(vue,url,params),//app登录接口
+        post:(vue,url,params)=>apiMain(vue,url,params),
         companysWithChild:(vue,params)=>apiMain(vue,'/server/api/v1/company/companysWithChild',params),//app登录接口
+        regionBUs:(vue,params)=>apiMain(vue,'/server/api/v1/company/regionBUs',params),//app登录接口
     };
 
     export default {

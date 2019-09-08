@@ -96,7 +96,6 @@ export default {
     };
   },
   mounted() {
-    let a =  this.aa();
     this.typeId = this.$toolFn.sessionGet('newsTypeId') || "1";
     this.userInfo = this.$toolFn.localGet("userInfo");
     if (this.userInfo.roleTypeId == 3 ){
@@ -105,9 +104,6 @@ export default {
     this.getData(parseInt(this.typeId));
   },
   methods: {
-    aa:async function(){
-      //console.log(await this.$myApi.companysWithChild(this,{isCache:true}));
-    },
     //获取项目数据列表
     getData(typeId) {
       var _this = this;
