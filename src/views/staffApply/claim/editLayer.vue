@@ -26,23 +26,7 @@
         </el-form-item>
         <el-divider></el-divider>
       </div>
-      <el-form-item label="文 件：">
-        <el-upload
-          class="upload-demo"
-          action="http://134.175.150.60:9527/app/api/v1/file/fileUpload"
-          :on-change="handleChange"
-          :file-list="fileList"
-          :limit="1"
-          :on-exceed="handleExceed"
-          :before-upload="beforeAvatarUpload"
-        >
-          <el-button plain>点击上传</el-button>
-          <div
-            slot="tip"
-            class="el-upload__tip"
-          >上传文件格式为：'.jpg','.png','.gif','.csv','.csv','.xlsx','.xls','.docx','.doc'</div>
-        </el-upload>
-      </el-form-item>
+      <fileUpload :fileUpload_props="fileUpload_props" @fileUpload_tf="fileUpload_tf"></fileUpload>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
         <el-button @click="addDomain">新增报销项目</el-button>
@@ -52,7 +36,7 @@
   </div>
 </template>
 <script>
-import { setTimeout } from "timers";
+import fileUpload from "@/components/fileUpload.vue";
 export default {
   name: "editLayer",
   inject: ["reload"],
@@ -65,6 +49,11 @@ export default {
         fileSrc: "",
         details: [{ title: "", amount: "", typeId: "", remarks: "" }]
       }, //表单信息
+      fileUpload_props:{
+        uploadUrl:'',
+        uploadFolder:'',
+        fileList:[]
+      },
       isShow: true, //是否显示
       fileList: [],
       claimTypeList: []
@@ -123,6 +112,7 @@ export default {
     // 新增
     addFun() {
       var totalAmount = 0;
+      var _this = this;
       for(var i = 0;i<this.ruleForm.details.length;i++){
           totalAmount += parseFloat(this.ruleForm.details[i].amount);
       }
@@ -134,11 +124,14 @@ export default {
       var reqUrl = "/server/api/v1/staff/claim/approveApply";
       var data = {
           staffCode:this.curInfo.staffCode,
-          fileSrc:this.ruleForm.fileSrc,
           totalAmount:totalAmount,
-          details:this.ruleForm.details
+          details:this.ruleForm.details,
+          fileSrc:''
       };
-      console.log(data);
+      for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
+        const element = _this.fileUpload_props.fileList[index];
+        data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
+      }
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
@@ -152,46 +145,17 @@ export default {
     cancelFn() {
       this.$emit("listenIsShowMask", false);
     },
-    // 限制当前文件个数
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件`
-      );
-    },
-    // 限制上传文件格式
-    beforeAvatarUpload(file) {
-      var isOk;
-      var fileType = [
-        ".jpg",
-        ".png",
-        ".gif",
-        ".csv",
-        ".csv",
-        ".xlsx",
-        ".xls",
-        ".docx",
-        ".doc"
-      ];
-      for (var i = 0; i < fileType.length; i++) {
-        if (file.name.indexOf(fileType[i]) != -1) {
-          isOk = true;
-        }
-      }
-      if (!isOk) {
-        this.$message.error("文件格式错误~");
-      }
-      return isOk;
-    },
-    // 获取上传文件路径
-    handleChange(file, fileList) {
-      setTimeout(() => {
-        this.ruleForm.fileSrc = file.response.data.path;
-      }, 500);
-    },
     // 重置
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    //获取子组件数据
+    fileUpload_tf(data){
+      this.fileUpload_props.fileList = data;
     }
+  },
+  components: {
+    fileUpload
   }
 };
 </script>

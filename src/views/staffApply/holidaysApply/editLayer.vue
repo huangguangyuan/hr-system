@@ -32,24 +32,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-
-      <el-form-item label="文 件：">
-        <el-upload
-          class="upload-demo"
-          action="http://134.175.150.60:9527/app/api/v1/file/fileUpload"
-          :on-change="handleChange"
-          :file-list="fileList"
-          :limit="1"
-          :on-exceed="handleExceed"
-          :before-upload="beforeAvatarUpload"
-        >
-          <el-button plain>点击上传</el-button>
-          <div
-            slot="tip"
-            class="el-upload__tip"
-          >上传文件格式为：'.jpg','.png','.gif','.csv','.csv','.xlsx','.xls','.docx','.doc'</div>
-        </el-upload>
-      </el-form-item>
+      <fileUpload :fileUpload_props="fileUpload_props" @fileUpload_tf="fileUpload_tf"></fileUpload>
       <el-form-item label="备 注：">
         <el-input v-model="ruleForm.remarks"></el-input>
       </el-form-item>
@@ -61,7 +44,7 @@
   </div>
 </template>
 <script>
-import { setTimeout } from "timers";
+import fileUpload from "@/components/fileUpload.vue";
 export default {
   name: "editLayer",
   inject: ["reload"],
@@ -77,6 +60,11 @@ export default {
         isWithpay:0,
         fileSrc: ""
       }, //表单信息
+      fileUpload_props:{
+        uploadUrl:'',
+        uploadFolder:'',
+        fileList:[]
+      },
       isShow: true, //是否显示
       fileList: [],
       holidaysApplyTypeList: [], //请假类型
@@ -142,9 +130,13 @@ export default {
         staffCode: this.curInfo.staffCode,
         totalDay: parseFloat(this.ruleForm.days),
         isWithpay: parseInt(this.ruleForm.isWithpay),
-        fileSrc: this.ruleForm.fileSrc,
-        details: details
+        details: details,
+        fileSrc:''
       };
+      for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
+        const element = _this.fileUpload_props.fileList[index];
+        data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
+      }
       
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
@@ -159,46 +151,17 @@ export default {
     cancelFn() {
       this.$emit("listenIsShowMask", false);
     },
-    // 限制当前文件个数
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件`
-      );
-    },
-    // 限制上传文件格式
-    beforeAvatarUpload(file) {
-      var isOk;
-      var fileType = [
-        ".jpg",
-        ".png",
-        ".gif",
-        ".csv",
-        ".csv",
-        ".xlsx",
-        ".xls",
-        ".docx",
-        ".doc"
-      ];
-      for (var i = 0; i < fileType.length; i++) {
-        if (file.name.indexOf(fileType[i]) != -1) {
-          isOk = true;
-        }
-      }
-      if (!isOk) {
-        this.$message.error("文件格式错误~");
-      }
-      return isOk;
-    },
-    // 获取上传文件路径
-    handleChange(file, fileList) {
-      setTimeout(() => {
-        this.ruleForm.fileSrc = file.response.data.path;
-      }, 500);
-    },
     // 重置
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    //获取子组件数据
+    fileUpload_tf(data){
+      this.fileUpload_props.fileList = data;
     }
+  },
+  components: {
+    fileUpload
   }
 };
 </script>

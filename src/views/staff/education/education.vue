@@ -103,6 +103,7 @@ export default {
     // 新增
     addFun() {
       this.isShowAddAccess = true;
+      this.curInfo = {};
       this.curInfo.type = "add";
       this.curInfo.staffCode = this.staffInfo.code;
     },

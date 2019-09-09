@@ -1,7 +1,21 @@
 <template>
   <div class="claimDetails">
+
+      <el-row :gutter="12">
+        <el-col :span="8">
+          <el-card shadow="always">申请时间：{{claimItem.createTime}}</el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="always">状态：{{claimItem.statusTxt}}</el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="always">结算金额：{{claimItem.totalAmount}}</el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="always">文件列表：</el-card>
+        </el-col>
+      </el-row>
     <el-table :data="tableData" stripe>
-      <!-- <el-table-column prop="id" label="ID"></el-table-column> -->
       <el-table-column prop="title" label="报销项目名称"></el-table-column>
       <el-table-column prop="amount" label="报销金额"></el-table-column>
       <el-table-column prop="typeIdTxt" label="报销类型"></el-table-column>
@@ -18,6 +32,7 @@
           <el-step title="结算（完成）"></el-step>
         </el-steps>
     </div>
+
     <el-timeline>
       <el-timeline-item v-for='item in approveHisList' :key='item.id' :timestamp="item.createTime" placement="top">
         <el-card class="my-card">
