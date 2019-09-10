@@ -9,8 +9,6 @@ let projectModul = {
         }
     }
 }
-
-
 export default projectModul;
 
 

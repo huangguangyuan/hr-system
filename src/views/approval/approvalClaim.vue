@@ -19,6 +19,7 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
       <el-table-column sortable prop="nameChinese" label="申请人"></el-table-column>
+      <el-table-column sortable prop="deptName" label="部门"></el-table-column>
       <el-table-column sortable prop="createTime" label="创建日期"></el-table-column>
       <el-table-column sortable prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column sortable prop="totalAmount" label="结算金额"></el-table-column>

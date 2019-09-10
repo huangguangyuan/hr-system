@@ -112,13 +112,13 @@ export default {
     // 获取HR管理员列表
     getHRadminList(BUCode){
       // 报销管理员
-      this.$http.post("/server/api/v1/admin/hrSys/getByLev",{BUCode: BUCode,lev:[301,501,521]}).then(res => {
+      this.$http.post("/server/api/v1/admin/hrSys/getByLev",{BUCode: BUCode,lev:[521]}).then(res => {
         if(res.data.data){
           this.HRadminList = res.data.data;
         }
       });
       // 假期管理员
-      this.$http.post("/server/api/v1/admin/hrSys/getByLev",{BUCode: BUCode,lev:[301,501,511]}).then(res => {
+      this.$http.post("/server/api/v1/admin/hrSys/getByLev",{BUCode: BUCode,lev:[511]}).then(res => {
         if(res.data.data){
           this.HRadminList2 = res.data.data;
         }
