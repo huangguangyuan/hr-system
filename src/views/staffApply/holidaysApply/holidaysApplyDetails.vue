@@ -12,7 +12,7 @@
         <el-col :span="8" v-if="holidayItem.totalAmount != 0">
           <el-card shadow="always">扣除金额：{{holidayItem.totalAmount}}</el-card>
         </el-col>
-        <el-col :span="8" v-if="holidayItem.totalAmount != 0">
+        <el-col :span="8">
           <el-card shadow="always">是否带薪：{{holidayItem.isWithpayTxt}}</el-card>
         </el-col>        
         <el-col :span="8" v-if="fileList.length > 0">
@@ -119,6 +119,12 @@ export default {
 
   },
   methods: {
+    openFile(item){
+        let a = document.createElement('a')
+          a.href = item;
+          a.target = '_blank';
+          a.click();
+    },
     // 数据转换
     dataConvert() {
       var _this = this;

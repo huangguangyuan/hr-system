@@ -165,16 +165,12 @@ export default {
         })
     },
     // 获取公司列表
-    getCompanyData(){
+    async getCompanyData(){
         var _this = this;
-        var reqUrl = '/server/api/v1/company/companys';
-        _this.$http.post(reqUrl,{}).then(res => {
-          if(res.data.code == 0){
-            _this.companyList = res.data.data
-          }else{
-            _this.$message(res.data.msg);
-          }
-        })
+        var companys = await _this.$myApi.companys(_this,{isCache:true});
+        if (companys) {
+            _this.companyList = companys;
+        }
     },
     // 取消
     cancelFn() {

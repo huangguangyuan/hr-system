@@ -1,12 +1,33 @@
 <template>
   <div class="approvalClaimDetails">
-    <el-table :data="tableData" stripe>
-      <el-table-column prop="title" label="报销项目名称"></el-table-column>
-      <el-table-column prop="amount" label="报销金额"></el-table-column>
-      <el-table-column prop="typeIdTxt" label="报销类型"></el-table-column>
-      <el-table-column prop="remarks" label="备 注"></el-table-column>
-    </el-table>
-    <el-divider></el-divider>
+    <el-divider content-position="left">报销明细</el-divider>
+    <div class="view-detail">
+      <el-row :gutter="12">
+        <el-col :span="8">
+          <el-card shadow="always">申请人：{{claimItem.nameChinese}}</el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="always">申请时间：{{claimItem.createTime}}</el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="always">结算金额：{{claimItem.totalAmount}}</el-card>
+        </el-col>
+        <el-col :span="8" v-if="fileList.length > 0">
+          <el-card shadow="always">文件：
+            <el-link class="margin" icon="el-icon-download"  v-for="(item,key) in fileList" :key="key" @click="openFile(item)">文件{{key+1}}</el-link> 
+          </el-card>
+        </el-col>
+      </el-row>
+      <br />
+        <el-table :data="tableData" stripe>
+        <el-table-column prop="title" label="项目名称"></el-table-column>
+        <el-table-column prop="amount" label="报销金额"></el-table-column>
+        <el-table-column prop="typeIdTxt" label="报销类型"></el-table-column>
+        <el-table-column prop="remarks" label="备 注"></el-table-column>
+      </el-table>
+    </div>
+    <br />
+<el-divider content-position="left">审批流程</el-divider>
     <el-timeline>
       <el-timeline-item
         v-for="item in approveHisList"
@@ -57,6 +78,7 @@ export default {
       tableData: [], //数据列表
       getClaimList: [], //审批类型
       approveHisList: [], //审批流程
+      fileList:[],
       ruleForm: {
         approve: "",
         remarks: ""
@@ -80,6 +102,9 @@ export default {
         return item;
       });
       this.claimItem = this.curInfo;
+      if (this.claimItem.fileSrc && this.claimItem.fileSrc != ''){
+        this.fileList = this.claimItem.fileSrc.split(',');
+      }
       this.tableData = this.curInfo.details;
       // 审批流程
       this.approveHisList = this.curInfo.approveHis.map(item => {
@@ -116,6 +141,12 @@ export default {
 
   },
   methods: {
+    openFile(item){
+        let a = document.createElement('a')
+          a.href = item;
+          a.target = '_blank';
+          a.click();
+    },
     // 数据转换,用于把类型转换成对应的文字
     dataConvert() {
       var _this = this;
@@ -166,6 +197,16 @@ export default {
 </script>
 <style scoped lang="scss">
 .approvalClaimDetails {
+  .view-detail{
+    width: 95%;
+    margin: 0 auto;
+    .el-card{
+      margin-top:20px;
+      .margin{
+        margin:0 15px
+      }
+    }
+  }
   .my-card {
     p {
       margin-top: 10px;

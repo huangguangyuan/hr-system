@@ -83,21 +83,16 @@ export default {
   },
   methods: {
     //获取项目数据列表
-    getData() {
+    async getData() {
       var _this = this;
       _this.isShowLoading = true;
-      var reqUrl = "/server/api/v1/company/companys";
-      var myData = {};
-      _this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      var companys = await _this.$myApi.companys(_this,{isCache:true});
+      if (companys) {
           _this.isShowLoading = false;
-          _this.tableData = res.data.data
-            .map(item => {
+          _this.tableData = companys.map(item => {
               item.statusTxt = item.status == 1 ? "启用" : "禁用";
               return item;
-            })
-            .sort((a, b) => {
+            }).sort((a, b) => {
               if (a.id < b.id) {
                 return 1;
               }
@@ -107,10 +102,7 @@ export default {
               return 0;
             });
           _this.total = _this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+        }
     },
     // 获取当前页数
     curChange(val) {

@@ -36,7 +36,8 @@
     let myApi = {
         post:(vue,url,params)=>apiMain(vue,url,params),
         companysWithChild:(vue,params)=>apiMain(vue,'/server/api/v1/company/companysWithChild',params),//app登录接口
-        regionBUs:(vue,params)=>apiMain(vue,'/server/api/v1/company/regionBUs',params),//app登录接口
+        companys:(vue,params)=>apiMain(vue,'/server/api/v1/company/companys',params),//公司接口
+        regionBUs:(vue,params)=>apiMain(vue,'/server/api/v1/company/regionBUs',params),//单位接口
     };
 
     export default {

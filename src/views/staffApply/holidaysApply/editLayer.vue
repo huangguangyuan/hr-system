@@ -115,6 +115,7 @@ export default {
     },
     // 新增
     addFun() {
+      var _this = this;
       var reqUrl = "/server/api/v1/staff/holidaysApply/approveApply";
       var details = [
         {

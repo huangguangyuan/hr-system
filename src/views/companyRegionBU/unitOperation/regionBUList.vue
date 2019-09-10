@@ -152,16 +152,14 @@ export default {
   },
   methods: {
     // 获取单位列表
-    getCompanyCodeFun(){
+    async getCompanyCodeFun(){
       var _this = this;
-      var reqUrl = '/server/api/v1/company/companys';
-      _this.$http.post(reqUrl,{}).then(res => {
-        if (res.data.code == 0) {
-          this.companyList = res.data.data;
-          this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):res.data.data[0].code;
+      var companys = await _this.$myApi.companys(_this,{isCache:true});
+      if (companys) {
+          this.companyList = companys;
+          this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):this.companyList[0].code;
           this.getData({companyCode:this.companyCode});
         }
-      });
     },
     // 选择单位
     changeCompanyCode(code){

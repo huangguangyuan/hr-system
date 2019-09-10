@@ -16,12 +16,12 @@
         </el-col>
       </el-row>
       <br />
-      <el-table :data="tableData" stripe>
-      <el-table-column prop="title" label="项目名称"></el-table-column>
-      <el-table-column prop="amount" label="报销金额"></el-table-column>
-      <el-table-column prop="typeIdTxt" label="报销类型"></el-table-column>
-      <el-table-column prop="remarks" label="备 注"></el-table-column>
-    </el-table>
+        <el-table :data="tableData" stripe>
+        <el-table-column prop="title" label="项目名称"></el-table-column>
+        <el-table-column prop="amount" label="报销金额"></el-table-column>
+        <el-table-column prop="typeIdTxt" label="报销类型"></el-table-column>
+        <el-table-column prop="remarks" label="备 注"></el-table-column>
+      </el-table>
     </div>
     <br />
 <el-divider content-position="left">审批流程</el-divider>
