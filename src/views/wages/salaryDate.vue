@@ -81,27 +81,29 @@
         <el-table-column prop="amount" label="金 额"></el-table-column>
         <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
       </el-table>
-      <el-divider v-if="msg.expensesClaimList && msg.expensesClaimList.length > 0">费用报销清单</el-divider>
-      <el-table :data="msg.expensesClaimList" v-if="msg.expensesClaimList  && msg.expensesClaimList.length > 0" stripe border show-summary style="width: 100%">
-        <el-table-column prop="totalAmount" label="报销金额（元）"></el-table-column>
-        <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
-        <el-table-column prop="balanceMonTxt" label="结算月份"></el-table-column>
-      </el-table>
-      <el-divider v-if="msg.holidaysApplyList && msg.holidaysApplyList.length > 0">请假清单</el-divider>
-      <el-table :data="msg.holidaysApplyList" v-if="msg.holidaysApplyList  && msg.holidaysApplyList.length > 0" stripe border show-summary style="width: 100%">
-        <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>
-        <el-table-column prop="totalDay" label="请假天数"></el-table-column>
-        <el-table-column prop="totalAmount" label="扣除金额"></el-table-column>
-        <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
-        <el-table-column prop="balanceMonTxt" label="结算月份"></el-table-column>
-      </el-table>
       <el-divider v-if="msg.payrollSpecialDeductionList">专项扣除清单</el-divider>
       <el-table v-if="msg.payrollSpecialDeductionList" :data="msg.payrollSpecialDeductionList" stripe border show-summary style="width: 100%">
         <el-table-column prop="amount" label="专项扣除金额"></el-table-column>
         <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
         <el-table-column prop="typeIdTxt" label="专项扣除类型"></el-table-column>
       </el-table>
-
+      <el-divider v-if="msg.expensesClaimList && msg.expensesClaimList.length > 0">费用报销清单</el-divider>
+      <el-table :data="msg.expensesClaimList" v-if="msg.expensesClaimList  && msg.expensesClaimList.length > 0" stripe border show-summary style="width: 100%">
+        <el-table-column prop="balanceMonTxt" label="结算月份"></el-table-column>
+        <el-table-column prop="createTime" label="申请时间"></el-table-column>
+        <!-- <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column> -->
+        <el-table-column prop="totalAmount" label="报销金额（元）"></el-table-column>
+        
+      </el-table>
+      <el-divider v-if="msg.holidaysApplyList && msg.holidaysApplyList.length > 0">请假清单</el-divider>
+      <el-table :data="msg.holidaysApplyList" v-if="msg.holidaysApplyList  && msg.holidaysApplyList.length > 0" stripe border show-summary style="width: 100%">
+        <el-table-column prop="balanceMonTxt" label="结算月份"></el-table-column>
+        <el-table-column prop="createTime" label="申请时间"></el-table-column>
+        <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>
+        <el-table-column prop="totalDay" label="请假天数"></el-table-column>
+        <el-table-column prop="totalAmount" label="扣除金额"></el-table-column>
+        <!-- <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column> -->
+      </el-table>
         </div>
   </div>
 </template>
@@ -148,6 +150,7 @@ export default {
           this.msg.expensesClaimList.map(item => {
             item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
             item.balanceMonTxt= item.balanceMon + "月";
+            item.createTime = this.$toolFn.timeFormat(item.createTime);
             return item;
           });
           if(this.msg.payrollSpecialDeductionList){
@@ -182,29 +185,30 @@ export default {
           this.msg.holidaysApplyList.map(item => {
             item.typeIdTxt = item.details[0].typeId == 1 ? "生效" : "未生效";
             item.balanceMonTxt= item.balanceMon + "月";
-            switch(item.details[0].typeId){
-                case 1:
-                    item.typeIdTxt = '事假';
-                    break;
-                case 2:
-                    item.typeIdTxt = '年假';
-                    break;
-                case 3:
-                    item.typeIdTxt = '病假';
-                    break;
-                case 4:
-                    item.typeIdTxt = '婚假';
-                    break;
-                case 5:
-                    item.typeIdTxt = '产假/陪产假';
-                    break;
-                case 6:
-                    item.typeIdTxt = '丧假';
-                    break;
-                case 50:
-                    item.typeIdTxt = '其他';
-                    break;
-            };
+            item.createTime = this.$toolFn.timeFormat(item.createTime);
+            // switch(item.details[0].typeId){
+            //     case 1:
+            //         item.typeIdTxt = '事假';
+            //         break;
+            //     case 2:
+            //         item.typeIdTxt = '年假';
+            //         break;
+            //     case 3:
+            //         item.typeIdTxt = '病假';
+            //         break;
+            //     case 4:
+            //         item.typeIdTxt = '婚假';
+            //         break;
+            //     case 5:
+            //         item.typeIdTxt = '产假/陪产假';
+            //         break;
+            //     case 6:
+            //         item.typeIdTxt = '丧假';
+            //         break;
+            //     case 50:
+            //         item.typeIdTxt = '其他';
+            //         break;
+            // };
             item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
           });
           this.staffInsuredInfo = res.data.data.staffInsuredInfo;

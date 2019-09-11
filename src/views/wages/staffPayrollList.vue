@@ -166,7 +166,7 @@ export default {
         year: "", //年份
         month: "" //月份
       },
-      hrCode: "2c269360-970f-11e9-9069-bf35c07c51d4",
+      hrCode: "",
       filter: { searchKey: "", searchField: ["nameChinese", "staffNo"] }
     };
   },
