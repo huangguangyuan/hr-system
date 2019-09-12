@@ -21,8 +21,11 @@
         <el-col :span="12" v-if="msg.holidaysApplyList && msg.allowanceList.length > 0">
         <el-card shadow="always">津贴总额：{{arrSum(msg.allowanceList,'amount')}}</el-card>
       </el-col>
-      <el-col :span="12" v-if="msg.holidaysApplyList && msg.salaryItems.length > 0">
-        <el-card shadow="always">应税项目总额：{{arrSum(msg.salaryItems,'amount')}}</el-card>
+      <el-col :span="12" v-if="msg.salaryItemsNeedTax.length > 0">
+        <el-card shadow="always">应税项目总额：{{arrSum(msg.salaryItemsNeedTax,'amount')}}</el-card>
+      </el-col>
+      <el-col :span="12" v-if=" msg.salaryItemsNotNeedTax.length > 0">
+        <el-card shadow="always">非应税项目总额：{{arrSum(msg.salaryItemsNotNeedTax,'amount')}}</el-card>
       </el-col>
       <!-- <el-col :span="12" v-if="msg.holidaysApplyList && msg.expensesClaimList.length > 0">
         <el-card shadow="always">费用报销总额：{{arrSum(msg.expensesClaimList,'amount')}}</el-card>
@@ -76,11 +79,17 @@
         <el-table-column prop="amount" label="津贴金额（元）"></el-table-column>
       </el-table>
       <el-divider>应税项目</el-divider>
-      <el-table :data="msg.salaryItems" stripe border show-summary style="width: 100%">
+      <el-table :data="msg.salaryItemsNeedTax" stripe border show-summary style="width: 100%">
         <el-table-column prop="name" label="项目名称"></el-table-column>
         <el-table-column prop="amount" label="金 额"></el-table-column>
         <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
       </el-table>
+      <el-divider>非应税项目</el-divider>
+      <el-table :data="msg.salaryItemsNotNeedTax" stripe border show-summary style="width: 100%">
+        <el-table-column prop="name" label="项目名称"></el-table-column>
+        <el-table-column prop="amount" label="金 额"></el-table-column>
+        <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
+      </el-table>      
       <el-divider v-if="msg.payrollSpecialDeductionList">专项扣除清单</el-divider>
       <el-table v-if="msg.payrollSpecialDeductionList" :data="msg.payrollSpecialDeductionList" stripe border show-summary style="width: 100%">
         <el-table-column prop="amount" label="专项扣除金额"></el-table-column>
@@ -179,9 +188,12 @@ export default {
             });
           }
 
-          this.msg.salaryItems.map(item => {
+          this.msg.salaryItemsNeedTax.map(item => {
             item.statusTxt = item.status == 1 ? "生效" : "未生效";
           });
+          this.msg.salaryItemsNotNeedTax.map(item => {
+            item.statusTxt = item.status == 1 ? "生效" : "未生效";
+          });          
           this.msg.holidaysApplyList.map(item => {
             item.typeIdTxt = item.details[0].typeId == 1 ? "生效" : "未生效";
             item.balanceMonTxt= item.balanceMon + "月";

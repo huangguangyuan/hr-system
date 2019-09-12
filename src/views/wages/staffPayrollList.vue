@@ -167,10 +167,16 @@ export default {
         month: "" //月份
       },
       hrCode: "",
+      userInfo:{},
       filter: { searchKey: "", searchField: ["nameChinese", "staffNo"] }
     };
   },
   mounted() {
+    var _this = this;
+    _this.userInfo = _this.$toolFn.localGet("userInfo");
+    if (_this.userInfo.roleTypeId == 2 ){
+      _this.hrCode = _this.userInfo.userCode;
+    }
     this.InitializationFun();
   },
   methods: {
@@ -195,6 +201,7 @@ export default {
     },
     // 获取单位列表
     async getregionBU() {
+      var _this = this;
       var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
       if (regionBUs) {
           this.regionBUlist = regionBUs;

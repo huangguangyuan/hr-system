@@ -99,10 +99,16 @@ export default {
       isShowState: false, //是否显示状态
       AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
       hrCode: "",
+      userInfo:{},
       filter:{searchKey:'',searchField:['nameChinese','genderTxt']}
     };
   },
   mounted() {
+    var _this = this;
+    _this.userInfo = _this.$toolFn.localGet("userInfo");
+    if (_this.userInfo.roleTypeId == 2 ){
+      _this.hrCode = _this.userInfo.userCode;
+    }
     this.InitializationFun();
   },
   methods: {

@@ -90,6 +90,7 @@ export default {
     },
     // 获取单位列表
     getregionBU() {
+      var _this = this;
       var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
       if (regionBUs) {
           this.regionBUlist = regionBUs;
