@@ -1,5 +1,5 @@
 <template>
-  <div class="salaryDate">
+  <div class="salaryDate" v-loading="loading" element-loading-text="加载中...">
     <el-page-header @back="goBack" content="薪资数据"></el-page-header>
     <div class="header-info">
       <el-avatar :size="130" :src="circleUrl"></el-avatar>
@@ -9,35 +9,26 @@
         <el-divider></el-divider>
       </div>
     </div>
-    <div class="container">
+    <div class="container" >
       <el-divider>基础信息</el-divider>
       <el-row :gutter="12">
         <el-col :span="12">
-          <el-card shadow="always">基本工资：{{msg.salaryAmout}}</el-card>
+            <el-card shadow="always">基本工资：{{msg.salaryAmout}}</el-card>
+          </el-col>
+          <el-col :span="12" v-if="msg.taxThreshold != 0">
+            <el-card shadow="always">个税起征点：{{msg.taxThreshold}}</el-card>
+          </el-col>
+        <el-col :span="12" >
+          <el-card shadow="always">津贴总额：{{arrSum(msg.allowanceList,'amount')}}</el-card>
         </el-col>
-        <el-col :span="12" v-if="msg.taxThreshold != 0">
-          <el-card shadow="always">个税起征点：{{msg.taxThreshold}}</el-card>
+        <el-col :span="12" >
+          <el-card shadow="always">应税项目总额：{{arrSum(msg.salaryItemsNeedTax,'amount')}}</el-card>
         </el-col>
-        <el-col :span="12" v-if="msg.holidaysApplyList && msg.allowanceList.length > 0">
-        <el-card shadow="always">津贴总额：{{arrSum(msg.allowanceList,'amount')}}</el-card>
-      </el-col>
-      <el-col :span="12" v-if="msg.salaryItemsNeedTax.length > 0">
-        <el-card shadow="always">应税项目总额：{{arrSum(msg.salaryItemsNeedTax,'amount')}}</el-card>
-      </el-col>
-      <el-col :span="12" v-if=" msg.salaryItemsNotNeedTax.length > 0">
-        <el-card shadow="always">非应税项目总额：{{arrSum(msg.salaryItemsNotNeedTax,'amount')}}</el-card>
-      </el-col>
-      <!-- <el-col :span="12" v-if="msg.holidaysApplyList && msg.expensesClaimList.length > 0">
-        <el-card shadow="always">费用报销总额：{{arrSum(msg.expensesClaimList,'amount')}}</el-card>
-      </el-col>
-      <el-col :span="12" v-if="msg.holidaysApplyList && msg.holidaysApplyList.length > 0">
-        <el-card shadow="always">请假应扣总额：{{arrSum(msg.holidaysApplyList,'amount')}}</el-card>
-      </el-col> -->
-        <!-- <el-col :span="8">
-          <el-card shadow="always">银行卡类型：{{msg.bankName || '暂无信息'}}</el-card>
-        </el-col> -->
+        <el-col :span="12" >
+          <el-card shadow="always">非应税项目总额：{{arrSum(msg.salaryItemsNotNeedTax,'amount')}}</el-card>
+        </el-col>
       </el-row>
-            <el-divider  v-if="staffInsuredInfo">社保信息</el-divider>
+      <el-divider  v-if="staffInsuredInfo">社保信息</el-divider>
       <el-row :gutter="12" v-if="staffInsuredInfo">
         <el-col :span="8">
           <el-card shadow="always">社保账号：{{staffInsuredInfo.SIAccount}}</el-card>
@@ -122,13 +113,14 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      loading:true,
       circleUrl: "",
       msg: {}, //员工薪资信息
       staffInsuredInfo: {}, //员工社保、公积金信息
       staffInsuredInfoMPF:{}//mpf
     };
   },
-  mounted() {
+  beforeMount() {
     this.circleUrl =
       this.staffInfo.photo ||
       "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
@@ -136,7 +128,11 @@ export default {
   },
   methods: {
     arrSum(list,val){
+      if (!list || !val){
+        return 0;
+      }
       var n = 0;
+      
       list.map(m=>{
         n += parseFloat(m[val]);
       })
@@ -151,6 +147,7 @@ export default {
     },
     // 获取数据
     getData() {
+      var _this = this;
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollInfo";
       var data = { staffCode: this.staffInfo.code };
       this.$http.post(reqUrl, data).then(res => {
@@ -222,10 +219,13 @@ export default {
             //         break;
             // };
             item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
+            
           });
           this.staffInsuredInfo = res.data.data.staffInsuredInfo;
           this.staffInsuredInfoMPF = res.data.data.staffInsuredInfoMPF;
+          _this.loading = false;
         }
+        
       });
     }
   },
