@@ -10,24 +10,6 @@
       </div>
     </div>
     <div class="container" >
-      <el-divider>基础信息</el-divider>
-      <el-row :gutter="12">
-        <el-col :span="12">
-            <el-card shadow="always">基本工资：{{msg.salaryAmout}}</el-card>
-          </el-col>
-          <el-col :span="12" v-if="msg.taxThreshold != 0">
-            <el-card shadow="always">个税起征点：{{msg.taxThreshold}}</el-card>
-          </el-col>
-        <el-col :span="12" >
-          <el-card shadow="always">津贴总额：{{arrSum(msg.allowanceList,'amount')}}</el-card>
-        </el-col>
-        <el-col :span="12" >
-          <el-card shadow="always">应税项目总额：{{arrSum(msg.salaryItemsNeedTax,'amount')}}</el-card>
-        </el-col>
-        <el-col :span="12" >
-          <el-card shadow="always">非应税项目总额：{{arrSum(msg.salaryItemsNotNeedTax,'amount')}}</el-card>
-        </el-col>
-      </el-row>
       <el-divider  v-if="staffInsuredInfo">社保信息</el-divider>
       <el-row :gutter="12" v-if="staffInsuredInfo">
         <el-col :span="8">
@@ -47,6 +29,24 @@
         </el-col>
         <el-col :span="8">
           <el-card shadow="always">基本医疗保险卡号：{{staffInsuredInfo.medicalSchemeAccount || '暂无信息'}}</el-card>
+        </el-col>
+      </el-row>
+      <el-divider>基础信息</el-divider>
+      <el-row :gutter="12">
+        <el-col :span="12">
+            <el-card shadow="always">基本工资：{{msg.salaryAmout}}</el-card>
+          </el-col>
+          <el-col :span="12" v-if="msg.taxThreshold != 0">
+            <el-card shadow="always">个税起征点：{{msg.taxThreshold}}</el-card>
+          </el-col>
+        <el-col :span="12" >
+          <el-card shadow="always">津贴总额：{{arrSum(msg.allowanceList,'amount')}}</el-card>
+        </el-col>
+        <el-col :span="12" >
+          <el-card shadow="always">应税项目总额：{{arrSum(msg.salaryItemsNeedTax,'amount')}}</el-card>
+        </el-col>
+        <el-col :span="12" >
+          <el-card shadow="always">非应税项目总额：{{arrSum(msg.salaryItemsNotNeedTax,'amount')}}</el-card>
         </el-col>
       </el-row>
       <el-divider  v-if="staffInsuredInfoMPF">MPF数据</el-divider>
@@ -72,20 +72,21 @@
       <el-divider>应税项目</el-divider>
       <el-table :data="msg.salaryItemsNeedTax" stripe border show-summary style="width: 100%">
         <el-table-column prop="name" label="项目名称"></el-table-column>
-        <el-table-column prop="amount" label="金 额"></el-table-column>
         <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
+        <el-table-column prop="amount" label="金 额"></el-table-column>
       </el-table>
       <el-divider>非应税项目</el-divider>
       <el-table :data="msg.salaryItemsNotNeedTax" stripe border show-summary style="width: 100%">
         <el-table-column prop="name" label="项目名称"></el-table-column>
-        <el-table-column prop="amount" label="金 额"></el-table-column>
+        
         <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
+        <el-table-column prop="amount" label="金 额"></el-table-column>
       </el-table>      
       <el-divider v-if="msg.payrollSpecialDeductionList">专项扣除清单</el-divider>
       <el-table v-if="msg.payrollSpecialDeductionList" :data="msg.payrollSpecialDeductionList" stripe border show-summary style="width: 100%">
-        <el-table-column prop="amount" label="专项扣除金额"></el-table-column>
-        <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
         <el-table-column prop="typeIdTxt" label="专项扣除类型"></el-table-column>
+        <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
+        <el-table-column prop="amount" label="专项扣除金额"></el-table-column>
       </el-table>
       <el-divider v-if="msg.expensesClaimList && msg.expensesClaimList.length > 0">费用报销清单</el-divider>
       <el-table :data="msg.expensesClaimList" v-if="msg.expensesClaimList  && msg.expensesClaimList.length > 0" stripe border show-summary style="width: 100%">

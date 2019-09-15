@@ -21,7 +21,7 @@
         <el-card shadow="always">请假应扣总额：-{{arrSum(holidayList,'totalAmount')}}</el-card>
       </el-col>
       <el-col :span="8" >
-        <el-card shadow="always">应税收入总额：{{details.totalAmount}}</el-card>
+        <el-card shadow="always">收入总额：{{details.totalAmount}}</el-card>
       </el-col>
       <el-col :span="8">
         <el-card shadow="always">社保应扣总额：-{{arrSum(SIList,'payment')}}</el-card>
@@ -33,10 +33,13 @@
         <el-card shadow="always">税前金额：{{details.grossPay}}</el-card>
       </el-col>
       <el-col :span="8">
-        <el-card shadow="always">应纳税工资：{{details.taxAmount}}</el-card>
+        <el-card shadow="always">应税金额：{{details.taxableWages}}</el-card>
       </el-col>
       <el-col :span="8">
-        <el-card shadow="always">个人所得税：{{details.taxableWages}}</el-card>
+        <el-card shadow="always">个人所得税：{{details.taxAmount}}</el-card>
+      </el-col>
+      <el-col :span="8">
+        <el-card shadow="always">税后收入：{{netAmount}}</el-card>
       </el-col>
       <el-col :span="8">
         <el-card shadow="always">非应税金额：{{details.notTaxableAmount}}</el-card>
@@ -44,8 +47,9 @@
       <el-col :span="8" v-if="claimList.length > 0">
         <el-card shadow="always">报销总额：{{arrSum(claimList,'totalAmount')}}</el-card>
       </el-col>
+
       <el-col :span="8">
-        <el-card shadow="always">实际收入：{{details.notTaxableAmount}}</el-card>
+        <el-card shadow="always">实际收入：{{reallyAmount}}</el-card>
       </el-col>
     </el-row>
     <el-divider v-if="allowanceList.length > 0">津贴清单</el-divider>
@@ -119,7 +123,9 @@ export default {
       specialDeductionList: [],
       taxableItemsList: [],
       notTaxableItemsList: [],
-      MPFList:[]
+      MPFList:[],
+      netAmount:0,
+      reallyAmount:0
     };
   },
   mounted() {
@@ -128,6 +134,9 @@ export default {
   methods: {
     arrSum(list,val){
       var n = 0;
+      if (!list || list.length <= 0 || val == ""){
+        return 0;
+      }
       list.map(m=>{
         n += parseFloat(m[val]);
       })
@@ -140,14 +149,17 @@ export default {
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.details = res.data.data;
-          this.HCList = res.data.data.detail.HCList;
-          this.SIList = res.data.data.detail.SIList;
-          this.allowanceList = res.data.data.detail.allowanceList;
-          this.claimList = res.data.data.detail.claimList.map(item => {
+          if (!this.details){
+            return;
+          }
+          this.HCList = this.details.detail.HCList;
+          this.SIList = this.details.detail.SIList;
+          this.allowanceList = this.details.detail.allowanceList;
+          this.claimList = this.details.detail.claimList.map(item => {
             item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
             return item;
           });
-          this.holidayList = res.data.data.detail.holidayList.map(item => {
+          this.holidayList = this.details.detail.holidayList.map(item => {
             item.typeIdTxt = item.details[0].typeId == 1 ? "生效" : "未生效";
             switch (item.details[0].typeId) {
               case 1:
@@ -175,7 +187,7 @@ export default {
             item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
             return item;
           });
-          this.specialDeductionList = res.data.data.detail.specialDeductionList.map(
+          this.specialDeductionList = this.details.detail.specialDeductionList.map(
             item => {
               item.statusTxt = item.status == 1 ? "生效" : "未生效";
               switch (item.typeId) {
@@ -201,10 +213,13 @@ export default {
               return item;
             }
           );
-          this.taxableItemsList = res.data.data.detail.taxableItemsList;
-          this.notTaxableItemsList = res.data.data.detail.notTaxableItemsList;
-          this.MPFList = res.data.data.detail.MPFList || [];
-          console.log(this.details);
+          this.taxableItemsList = this.details.detail.taxableItemsList;
+          this.notTaxableItemsList = this.details.detail.notTaxableItemsList;
+          this.MPFList = this.details.detail.MPFList || [];
+          //console.log(this.details);
+          
+          this.netAmount = parseFloat(this.details.grossPay - this.details.taxAmount).toFixed(2);
+          this.reallyAmount = parseFloat(this.netAmount) + parseFloat(this.details.notTaxableAmount) + parseFloat(this.arrSum(this.claimList,'totalAmount'));
         }
       });
     }

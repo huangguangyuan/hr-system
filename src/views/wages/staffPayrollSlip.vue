@@ -16,6 +16,7 @@
         placeholder="请选择月份"
         @change="selectMonth"
       >
+        <el-option label="全年" value="0"></el-option>
         <el-option label="1月" value="1"></el-option>
         <el-option label="2月" value="2"></el-option>
         <el-option label="3月" value="3"></el-option>
@@ -30,140 +31,164 @@
         <el-option label="12月" value="12"></el-option>
       </el-select>
     </div>
-    <!--startprint-->
-    <el-divider></el-divider>
-    <div class="nothing" v-if="!tableData.name">
-      暂无薪水数据
-    </div>
-    <div  v-if="tableData.name">
-    <ul class="msgList" v-if="tableData">
-      <li v-if="tableData.name">
-        <span class="title">{{tableData.name.title}}</span>：
-        <span class="val">{{tableData.name.val}}</span>
-      </li>
-      <li v-if="tableData.staffNo">
-        <span class="title">{{tableData.staffNo.title}}</span>：
-        <span class="val">{{tableData.staffNo.val}}</span>
-      </li>
-      <li v-if="tableData.buName">
-        <span class="title">{{tableData.buName.title}}</span>：
-        <span class="val">{{tableData.buName.val}}</span>
-      </li>
-      <li v-if="tableData.payrollPeriod">
-        <span class="title">{{tableData.payrollPeriod.title}}</span>：
-        <span class="val">{{tableData.payrollPeriod.val}}</span>
-      </li>
-      <li v-if="tableData.IDNo">
-        <span class="title">{{tableData.IDNo.title}}</span>：
-        <span class="val">{{tableData.IDNo.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.position">
-        <span class="title">{{tableData.position.title}}</span>：
-        <span class="val">{{tableData.position.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.departmentName">
-        <span class="title">{{tableData.departmentName.title}}</span>：
-        <span class="val">{{tableData.departmentName.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.insuredCity">
-        <span class="title">{{tableData.insuredCity.title}}</span>：
-        <span class="val">{{tableData.insuredCity.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.bankName">
-        <span class="title">{{tableData.bankName.title}}</span>：
-        <span class="val">{{tableData.bankName.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.bankAccountNo">
-        <span class="title">{{tableData.bankAccountNo.title}}</span>：
-        <span class="val">{{tableData.bankAccountNo.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.payDay">
-        <span class="title">{{tableData.payDay.title}}</span>：
-        <span class="val">{{tableData.payDay.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.remarks">
-        <span class="title">{{tableData.remarks.title}}</span>：
-        <span class="val">{{tableData.remarks.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.totalAmount">
-        <span class="title">{{tableData.totalAmount.title}}</span>：
-        <span class="val">{{tableData.totalAmount.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.SI">
-        <span class="title">{{tableData.SI.title}}</span>：
-        <span class="val">{{tableData.SI.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.HC">
-        <span class="title">{{tableData.HC.title}}</span>：
-        <span class="val">{{tableData.HC.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.specialDeduction">
-        <span class="title">{{tableData.specialDeduction.title}}</span>：
-        <span class="val">{{tableData.specialDeduction.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.grossPay">
-        <span class="title">{{tableData.grossPay.title}}</span>：
-        <span class="val">{{tableData.grossPay.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.taxableWages">
-        <span class="title">{{tableData.taxableWages.title}}</span>：
-        <span class="val">{{tableData.taxableWages.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.taxAmount">
-        <span class="title">{{tableData.taxAmount.title}}</span>：
-        <span class="val">{{tableData.taxAmount.val || '暂无'}}</span>
-      </li>
-      <li v-if="tableData.netAmount">
-        <span class="title">{{tableData.netAmount.title}}</span>：
-        <span class="val">{{tableData.netAmount.val || '暂无'}}</span>
-      </li>
-    </ul>
-    <div class="table-wrap" v-if="tableData">
-      <div class="table-item">
-        <el-divider>基础收入列表</el-divider>
-        <el-table
-          v-if="tableData.staffSalaryItemTaxableList"
-          :data="tableData.staffSalaryItemTaxableList"
-          stripe
-          border
-        >
-          <el-table-column prop="title" label="名 称"></el-table-column>
-          <el-table-column prop="val" label="金 额"></el-table-column>
-        </el-table>
+    <div class="monthPayroll" v-if="isShowPayrollMonth">
+      <!--startprint-->
+      <el-divider></el-divider>
+      <div class="nothing" v-if="!tableData">
+        暂无薪水数据
       </div>
+      <div>
+        <br >
+        <el-divider v-if="tableData" content-position="left">个人信息</el-divider>
+        <ul class="msgList" v-if="tableData">
+          <li v-if="tableData.name">
+            <span class="title">{{tableData.name.title}}</span>：
+            <span class="val">{{tableData.name.val}}</span>
+          </li>
+          <li v-if="tableData.staffNo">
+            <span class="title">{{tableData.staffNo.title}}</span>：
+            <span class="val">{{tableData.staffNo.val}}</span>
+          </li>
+          <li v-if="tableData.buName">
+            <span class="title">{{tableData.buName.title}}</span>：
+            <span class="val">{{tableData.buName.val}}</span>
+          </li>
+          <li v-if="tableData.payrollPeriod">
+            <span class="title">{{tableData.payrollPeriod.title}}</span>：
+            <span class="val">{{tableData.payrollPeriod.val}}</span>
+          </li>
+          <li v-if="tableData.IDNo">
+            <span class="title">{{tableData.IDNo.title}}</span>：
+            <span class="val">{{tableData.IDNo.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.position">
+            <span class="title">{{tableData.position.title}}</span>：
+            <span class="val">{{tableData.position.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.departmentName">
+            <span class="title">{{tableData.departmentName.title}}</span>：
+            <span class="val">{{tableData.departmentName.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.insuredCity">
+            <span class="title">{{tableData.insuredCity.title}}</span>：
+            <span class="val">{{tableData.insuredCity.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.bankName">
+            <span class="title">{{tableData.bankName.title}}</span>：
+            <span class="val">{{tableData.bankName.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.bankAccountNo">
+            <span class="title">{{tableData.bankAccountNo.title}}</span>：
+            <span class="val">{{tableData.bankAccountNo.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.payDay">
+            <span class="title">{{tableData.payDay.title}}</span>：
+            <span class="val">{{tableData.payDay.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.remarks">
+            <span class="title">{{tableData.remarks.title}}</span>：
+            <span class="val">{{tableData.remarks.val || '暂无'}}</span>
+          </li>
 
-      <div class="table-item">
-        <el-divider>不应税项目列表</el-divider>
-        <el-table
-          v-if="tableData.staffSalaryItemNotTaxableList"
-          :data="tableData.staffSalaryItemNotTaxableList"
-          stripe
-          border
-        >
-          <el-table-column prop="title" label="名 称"></el-table-column>
-          <el-table-column prop="val" label="金 额"></el-table-column>
-        </el-table>
-      </div>
-      <div class="table-item">
-        <el-divider>社保明细</el-divider>
-        <el-table v-if="tableData.SIList" :data="tableData.SIList.val" stripe border>
-          <el-table-column prop="paymentTxt" label="支付对象"></el-table-column>
-          <el-table-column prop="typeTxt" label="类型"></el-table-column>
-          <el-table-column prop="payment" label="金 额"></el-table-column>
-        </el-table>
-      </div>
-    </div>
-    <!--endprint-->
-    <div class="btnSet">
-      <el-button type="primary" class="printBtn" @click='doPrint'>打 印</el-button>
-      <el-button type="primary" class="printBtn" @click='doPrint'>下 载</el-button>
-    </div>
+        </ul>
+        <br >
+        <el-divider v-if="tableData" content-position="left">薪资构成</el-divider>
+        <ul class="msgList" v-if="tableData">
+          <li v-if="tableData.totalAmount">
+            <span class="title">{{tableData.totalAmount.title}}</span>：
+            <span class="val">{{tableData.totalAmount.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.SI">
+            <span class="title">{{tableData.SI.title}}</span>：
+            <span class="val">{{tableData.SI.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.HC">
+            <span class="title">{{tableData.HC.title}}</span>：
+            <span class="val">{{tableData.HC.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.specialDeduction">
+            <span class="title">{{tableData.specialDeduction.title}}</span>：
+            <span class="val">{{tableData.specialDeduction.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.grossPay">
+            <span class="title">{{tableData.grossPay.title}}</span>：
+            <span class="val">{{tableData.grossPay.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.taxableWages">
+            <span class="title">{{tableData.taxableWages.title}}</span>：
+            <span class="val">{{tableData.taxableWages.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.taxAmount">
+            <span class="title">{{tableData.taxAmount.title}}</span>：
+            <span class="val">{{tableData.taxAmount.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.netAmount">
+            <span class="title">{{tableData.netAmount.title}}</span>：
+            <span class="val">{{tableData.netAmount.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.netAmount">
+            <span class="title">{{tableData.netAmount.title}}</span>：
+            <span class="val">{{tableData.netAmount.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.netAmount">
+            <span class="title">{{tableData.netAmount.title}}</span>：
+            <span class="val">{{tableData.netAmount.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.netAmount">
+            <span class="title">{{tableData.netAmount.title}}</span>：
+            <span class="val">{{tableData.netAmount.val || '暂无'}}</span>
+          </li>
+        </ul>
+        <div class="table-wrap" v-if="tableData">
+          <div class="table-item">
+            <el-divider>基础收入列表</el-divider>
+            <el-table
+              v-if="tableData.staffSalaryItemTaxableList"
+              :data="tableData.staffSalaryItemTaxableList"
+              stripe
+              border
+            >
+              <el-table-column prop="title" label="名 称"></el-table-column>
+              <el-table-column prop="val" label="金 额"></el-table-column>
+            </el-table>
+          </div>
 
+          <div class="table-item">
+            <el-divider>不应税项目列表</el-divider>
+            <el-table
+              v-if="tableData.staffSalaryItemNotTaxableList"
+              :data="tableData.staffSalaryItemNotTaxableList"
+              stripe
+              border
+            >
+              <el-table-column prop="title" label="名 称"></el-table-column>
+              <el-table-column prop="val" label="金 额"></el-table-column>
+            </el-table>
+          </div>
+          <div class="table-item">
+            <el-divider>社保明细</el-divider>
+            <el-table v-if="tableData.SIList" :data="tableData.SIList.val" stripe border>
+              <el-table-column prop="paymentTxt" label="支付对象"></el-table-column>
+              <el-table-column prop="typeTxt" label="类型"></el-table-column>
+              <el-table-column prop="payment" label="金 额"></el-table-column>
+            </el-table>
+          </div>
+        </div>
+        <!--endprint-->
+        <div class="btnSet">
+          <el-button type="primary" class="printBtn" @click='doPrint'>打 印</el-button>
+          <el-button type="primary" class="printBtn" @click='doPrint'>下 载</el-button>
+        </div>
+      </div>
+    </div>
+    <div class="yearPayroll" v-if="isShowPayrollYear">
+      <staff-payroll-year :curInfo="curInfo" ></staff-payroll-year>
     </div>
 
   </div>
 </template>
 <script>
+import staffPayrollYear from "./staffPayrollYear.vue";
 export default {
   name: "staffPayrollSlip",
   inject: ["reload"],
@@ -175,7 +200,10 @@ export default {
         year: "", //年份
         month: "" //月份
       },
-      userInfo:{}
+      userInfo:{},
+      curInfo:{},
+      isShowPayrollMonth:true,
+      isShowPayrollYear:false,
     };
   },
   mounted() {
@@ -185,22 +213,22 @@ export default {
     // 初始化
     InitializationFun() {
       this.userInfo = this.$toolFn.localGet("userInfo");
-
       if (this.userInfo.roleTypeId == 1){
           this.staffCode = this.userInfo.staffCode;
       }
+      this.curInfo.code = this.staffCode;
       var myDate = new Date();
       var date = new Date();
       this.seachMsg = {
                 year: date.getFullYear().toString(),
                 month: (date.getMonth()+1).toString()
               };
-      if (this.$toolFn.sessionGet("staffPayrollSlip")) {
-        this.seachMsg = {
-          year: this.$toolFn.sessionGet("staffPayrollSlip").year.toString(),
-          month: this.$toolFn.sessionGet("staffPayrollSlip").month.toString()
-        };
-      }
+      // if (this.$toolFn.sessionGet("staffPayrollSlip")) {
+      //   this.seachMsg = {
+      //     year: this.$toolFn.sessionGet("staffPayrollSlip").year.toString(),
+      //     month: this.$toolFn.sessionGet("staffPayrollSlip").month.toString()
+      //   };
+      // }
       this.getData(
         this.staffCode,
         parseInt(this.seachMsg.year),
@@ -215,11 +243,8 @@ export default {
         year: year,
         month: month
       };
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           this.tableData = res.data.data[0];
-          console.log(this.tableData);
         })
         .catch(err => {
           console.log(err);
@@ -234,16 +259,33 @@ export default {
         parseInt(this.seachMsg.month)
       );
       this.$toolFn.sessionSet("staffPayrollSlip", this.seachMsg);
+      // this.isShowPayrollMonth = false;
+      // this.isShowPayrollYear = true;
+      // this.curInfo.isShowYear = false;
+      this.curInfo.year = this.seachMsg.year;
+      //this.seachMsg.month = "0";
+      this.selectMonth("0");
+      
     },
     // 选择月份
     selectMonth(val) {
       this.seachMsg.month = val;
-      this.getData(
-        this.staffCode,
-        parseInt(this.seachMsg.year),
-        parseInt(this.seachMsg.month)
-      );
-      this.$toolFn.sessionSet("staffPayrollSlip", this.seachMsg);
+      if (this.seachMsg.month != "0"){
+        this.getData(
+          this.staffCode,
+          parseInt(this.seachMsg.year),
+          parseInt(this.seachMsg.month)
+        );
+        this.isShowPayrollMonth = true;
+        this.isShowPayrollYear = false;
+        this.curInfo.year = this.seachMsg.year;
+      }else{
+        this.isShowPayrollMonth = false;
+        this.isShowPayrollYear = true;
+        this.curInfo.isShowYear = false;
+        this.curInfo.year = this.seachMsg.year;
+      }
+      //this.$toolFn.sessionSet("staffPayrollSlip", this.seachMsg);
     },
     // 打印
     doPrint() {
@@ -258,7 +300,7 @@ export default {
     }
   },
   computed: {},
-  components: {}
+  components: {staffPayrollYear}
 };
 </script>
 <style scoped lang="scss">

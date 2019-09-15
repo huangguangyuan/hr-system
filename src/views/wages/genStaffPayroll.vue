@@ -53,22 +53,40 @@ export default {
       });
     },
     // 生成工资单
-    addFun() {
-      var reqUrl = "/server/api/v1/payroll/staff/genStaffPayroll";
+    async addFun() {
+      //var reqUrl = "/server/api/v1/payroll/staff/genStaffPayroll";
       var data = {
           hrCode:this.curInfo.hrCode,
-          staffCode:this.curInfo.code,
+          //staffCode:this.curInfo.code,
           year:parseInt(this.ruleForm.year),
           month:parseInt(this.ruleForm.month)
       };
-      this.$http.post(reqUrl, data).then(res => {
-        if (res.data.code == 0) {
-          this.reload();
-          this.$message.success("生成成功~");
-        } else {
-          this.$message.error(res.data.msg);
+      if (this.curInfo.typeId == 2){
+        this.$message.success(" 工资单正在生成，请稍后...");
+        for (let index = 0; index < this.curInfo.createItems.length; index++) {
+          const element = this.curInfo.createItems[index];
+          data.staffCode = element.code;
+          await this.$toolFn.sleep(1000);
+          var genStaffPayroll = await this.$myApi.genStaffPayroll(this,data);
+          if (genStaffPayroll && genStaffPayroll.data.code == 0) {
+            this.$message.success(element.nameChinese+" 工资单生成成功");
+          } else {
+            this.$message.error(element.nameChinese + genStaffPayroll.data.msg);
+          }
         }
-      });
+        await this.$toolFn.sleep(2000);
+        this.$message.success("工资单生成完毕");
+      }else if(this.curInfo.typeId == 1){
+        data.staffCode = this.curInfo.code;
+          var genStaffPayroll = await this.$myApi.genStaffPayroll(this,data);
+          if (genStaffPayroll && genStaffPayroll.data.code == 0) {
+            this.reload();
+            this.$message.success("生成成功~");
+          } else {
+            this.$message.error(res.data.msg);
+          }
+      }
+
     },
     // 取消
     cancelFn() {

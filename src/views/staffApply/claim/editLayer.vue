@@ -28,7 +28,7 @@
       </div>
       <fileUpload :fileUpload_props="fileUpload_props" @fileUpload_tf="fileUpload_tf"></fileUpload>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">确定添加</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
         <el-button @click="addDomain">新增报销项目</el-button>
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>

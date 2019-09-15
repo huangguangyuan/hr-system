@@ -5,6 +5,10 @@
       <span>员工基本信息</span>
     </div>
     <el-divider></el-divider>
+    <div class="addBtn-wrap" >
+      <el-button type="primary" @click="createSelectedItem">生成选中项工资单</el-button>
+      <el-button type="danger" @click='createAll'>生成所有工资单</el-button>
+    </div>
     <!-- 搜索 -->
     <div class="search-wrap">
       <el-input placeholder="请输入关键字" v-model="filter.searchKey">
@@ -25,8 +29,9 @@
       </el-input>
     </div>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
-
+    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe ref="multipleTable" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55">
+      </el-table-column>
       <el-table-column prop="staffNo" label="员工编号"></el-table-column>
       <el-table-column prop="nameChinese" label="名称"></el-table-column>
       <el-table-column label="头像">
@@ -100,7 +105,8 @@ export default {
       AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
       hrCode: "",
       userInfo:{},
-      filter:{searchKey:'',searchField:['nameChinese','genderTxt']}
+      filter:{searchKey:'',searchField:['nameChinese','genderTxt']},
+      multipleSelection: []
     };
   },
   mounted() {
@@ -115,6 +121,21 @@ export default {
     // 初始化
     InitializationFun() {
       this.getregionBU();
+    },
+    handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
+    createSelectedItem(){
+      this.isShowAddAccess = true;
+      this.curInfo.createItems = this.multipleSelection;
+      this.curInfo.hrCode = this.hrCode;
+      this.curInfo.typeId = 2;
+    },
+    createAll(){
+      this.isShowAddAccess = true;
+      this.curInfo.createItems = this.queryTableDate;
+      this.curInfo.hrCode = this.hrCode;
+      this.curInfo.typeId = 2;
     },
     // 获取单位列表
     async getregionBU() {
@@ -202,7 +223,9 @@ export default {
     genStaffPayroll(index, res){
       this.isShowAddAccess = true;
       this.curInfo = res;
+      this.curInfo.createItems = [];
       this.curInfo.hrCode = this.hrCode;
+      this.curInfo.typeId = 1;
     },
     // 接收子组件发送信息
     listenIsShowMask(res) {

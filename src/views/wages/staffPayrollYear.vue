@@ -1,7 +1,7 @@
 <template>
   <div class="staffPayrollYear">
     <!-- 搜索 -->
-    <div class="search-wrap">
+    <div class="search-wrap" v-if="isShowYear">
       <el-date-picker
         class="selectItem"
         v-model="year"
@@ -102,6 +102,7 @@ export default {
   props: ["curInfo"],
   data() {
     return {
+      isShowYear:true,
       tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
@@ -111,6 +112,13 @@ export default {
     };
   },
   mounted() {
+    if (this.curInfo.year){
+      this.year = this.curInfo.year;
+    }
+    if (this.curInfo.isShowYear != undefined){
+      this.isShowYear = this.curInfo.isShowYear;
+    }
+    
     this.getData(this.curInfo.code, parseInt(this.year));
   },
   methods: {

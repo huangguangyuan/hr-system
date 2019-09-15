@@ -61,7 +61,10 @@ let toolFn = {
     localRemove: function (name) {
         localStorage.removeItem(name)
     },
-    // ==================cookie设置缓存==================
+    async sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms))
+    }
+    
 }
 
 export default {
