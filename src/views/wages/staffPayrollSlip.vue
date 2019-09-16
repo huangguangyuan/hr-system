@@ -45,10 +45,6 @@
             <span class="title">{{tableData.name.title}}</span>：
             <span class="val">{{tableData.name.val}}</span>
           </li>
-          <li v-if="tableData.staffNo">
-            <span class="title">{{tableData.staffNo.title}}</span>：
-            <span class="val">{{tableData.staffNo.val}}</span>
-          </li>
           <li v-if="tableData.buName">
             <span class="title">{{tableData.buName.title}}</span>：
             <span class="val">{{tableData.buName.val}}</span>
@@ -94,10 +90,15 @@
         <br >
         <el-divider v-if="tableData" content-position="left">薪资构成</el-divider>
         <ul class="msgList" v-if="tableData">
+          <li v-if="tableData.holiday">
+            <span class="title">{{tableData.holiday.title}}</span>：
+            <span class="val">{{tableData.holiday.val || '暂无'}}</span>
+          </li>  
           <li v-if="tableData.totalAmount">
             <span class="title">{{tableData.totalAmount.title}}</span>：
             <span class="val">{{tableData.totalAmount.val || '暂无'}}</span>
           </li>
+        
           <li v-if="tableData.SI">
             <span class="title">{{tableData.SI.title}}</span>：
             <span class="val">{{tableData.SI.val || '暂无'}}</span>
@@ -141,18 +142,26 @@
         </ul>
         <div class="table-wrap" v-if="tableData">
           <div class="table-item">
-            <el-divider>基础收入列表</el-divider>
+            <el-divider>收入列表</el-divider>
             <el-table
               v-if="tableData.staffSalaryItemTaxableList"
               :data="tableData.staffSalaryItemTaxableList"
               stripe
               border
+              show-summary
             >
               <el-table-column prop="title" label="名 称"></el-table-column>
               <el-table-column prop="val" label="金 额"></el-table-column>
             </el-table>
           </div>
-
+          <div class="table-item">
+            <el-divider>社保/公积金明细</el-divider>
+            <el-table v-if="tableData.SIList" :data="tableData.SIList.val" stripe border show-summary>
+              <!-- <el-table-column prop="paymentTxt" label="支付对象"></el-table-column> -->
+              <el-table-column prop="typeTxt" label="类型"></el-table-column>
+              <el-table-column prop="payment" label="金 额"></el-table-column>
+            </el-table>
+          </div>
           <div class="table-item">
             <el-divider>不应税项目列表</el-divider>
             <el-table
@@ -160,19 +169,13 @@
               :data="tableData.staffSalaryItemNotTaxableList"
               stripe
               border
+              show-summary
             >
               <el-table-column prop="title" label="名 称"></el-table-column>
               <el-table-column prop="val" label="金 额"></el-table-column>
             </el-table>
           </div>
-          <div class="table-item">
-            <el-divider>社保明细</el-divider>
-            <el-table v-if="tableData.SIList" :data="tableData.SIList.val" stripe border>
-              <el-table-column prop="paymentTxt" label="支付对象"></el-table-column>
-              <el-table-column prop="typeTxt" label="类型"></el-table-column>
-              <el-table-column prop="payment" label="金 额"></el-table-column>
-            </el-table>
-          </div>
+
         </div>
         <!--endprint-->
         <div class="btnSet">
