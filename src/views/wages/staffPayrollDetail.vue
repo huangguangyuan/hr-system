@@ -49,7 +49,7 @@
       </el-col>
 
       <el-col :span="8">
-        <el-card shadow="always">实际收入：{{reallyAmount}}</el-card>
+        <el-card shadow="always">实发工资：{{reallyAmount}}</el-card>
       </el-col>
     </el-row>
     <el-divider v-if="allowanceList.length > 0">津贴清单</el-divider>
