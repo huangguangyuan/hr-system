@@ -4,7 +4,9 @@ module.exports = {
     baseUrl: process.env.NODE_ENV === "production" ? "./" : "/",
     outputDir: "dist",
     assetsDir: "assets",
+    runtimeCompiler: true,
     lintOnSave: false,
+    productionSourceMap: false,
     filenameHashing: false,
     configureWebpack: (config) => {
         if (process.env.NODE_ENV === 'production') {

@@ -18,28 +18,28 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <div class="table-wrap" v-if="tableData">
-          <div class="table-item"  v-if="props.row.allowanceList.length > 0">
+          <div class="table-item"  v-if="props.row.allowanceList && props.row.allowanceList.length > 0">
             <el-divider>津贴清单</el-divider>
             <el-table :data="props.row.allowanceList" stripe border show-summary size="mini">
               <el-table-column prop="name" label="名 称"></el-table-column>
               <el-table-column prop="amount" label="金额(元)"></el-table-column>
             </el-table>
           </div>
-          <div class="table-item" v-if="props.row.taxableItemsList.length > 0" >
+          <div class="table-item" v-if="props.row.taxableItemsList && props.row.taxableItemsList.length > 0" >
             <el-divider>应税项目清单</el-divider>
             <el-table :data="props.row.taxableItemsList" stripe border show-summary>
             <el-table-column prop="name" label="项目名称"></el-table-column>
             <el-table-column prop="amount" label="金额(元)"></el-table-column>
             </el-table>
           </div>
-          <div class="table-item" v-if="props.row.notTaxableItemsList.length > 0" >
+          <div class="table-item" v-if="props.row.notTaxableItemsList && props.row.notTaxableItemsList.length > 0" >
             <el-divider>非应税项目清单</el-divider>
             <el-table  :data="props.row.notTaxableItemsList" stripe border show-summary>
               <el-table-column prop="name" label="项目名称"></el-table-column>
               <el-table-column prop="amount" label="金额(元)"></el-table-column>
             </el-table>
           </div>          
-          <div class="table-item"  v-if="props.row.holidayList.length > 0">
+          <div class="table-item"  v-if="props.row.holidayList && props.row.holidayList.length > 0">
           <el-divider>请假清单</el-divider>
           <el-table :data="props.row.holidayList" stripe border show-summary size="mini">
             <el-table-column prop="balanceMon" label="结算月份"></el-table-column>
@@ -49,40 +49,40 @@
             <el-table-column prop="totalAmount" label="扣除金额(元)"></el-table-column>
           </el-table>
           </div>
-          <div class="table-item"  v-if="props.row.SIList.length > 0">
+          <div class="table-item"  v-if="props.row.SIList &&  props.row.SIList.length > 0">
           <el-divider>社保清单</el-divider>
           <el-table :data="props.row.SIList" stripe border show-summary size="mini">
             <el-table-column prop="typeTxt" label="类型"></el-table-column>
             <el-table-column prop="payment" label="金额(元)"></el-table-column>
           </el-table>
           </div>
-          <div class="table-item"  v-if="props.row.HCList.length > 0">
+          <div class="table-item"  v-if="props.row.HCList &&  props.row.HCList.length > 0">
           <el-divider>住房公积金清单</el-divider>
           <el-table :data="props.row.HCList" border show-summary size="mini">
             <el-table-column prop="typeTxt" label="缴纳类型"></el-table-column>
             <el-table-column prop="payment" label="金额（元）"></el-table-column>
           </el-table>
           </div>
-          <div class="table-item" v-if="props.row.claimList.length > 0">
+          <div class="table-item" v-if="props.row.claimList && props.row.claimList.length > 0">
           <el-divider >报销清单</el-divider>
           <el-table :data="props.row.claimList" stripe border show-summary size="mini">
             <el-table-column prop="balanceMon" label="结算月份"></el-table-column>
             <el-table-column prop="totalAmount" label="报销金额(元)"></el-table-column>
           </el-table>
           </div>
-           <div class="table-item" v-if="props.row.specialDeductionList.length > 0">
+          <div class="table-item" v-if="props.row.specialDeductionList && props.row.specialDeductionList.length > 0">
           <el-divider >专项扣除清单</el-divider>
           <el-table :data="props.row.specialDeductionList" stripe border show-summary size="mini">
             <el-table-column prop="typeIdTxt" label="专项扣除类型"></el-table-column>
             <el-table-column prop="amount" label="专项扣除金额"></el-table-column>
           </el-table>
           </div>
-          <div class="table-item" v-if="props.row.MPFList.length > 0">
-          <el-divider >MPF清单</el-divider>
-          <el-table :data="props.row.MPFList"  stripe border show-summary size="mini">
-            <el-table-column prop="typeTxt" label="类 型"></el-table-column>
-            <el-table-column prop="payment" label="金额(元)"></el-table-column>
-          </el-table>
+          <div class="table-item" v-if="props.row.MPFList && props.row.MPFList.length > 0">
+            <el-divider >MPF清单</el-divider>
+            <el-table :data="props.row.MPFList"  stripe border show-summary size="mini">
+              <el-table-column prop="paymentTxt" label="类 型"></el-table-column>
+              <el-table-column prop="payment" label="金额(元)"></el-table-column>
+            </el-table>
           </div>
           </div>
         </template>
@@ -163,11 +163,14 @@ export default {
           this.isShowLoading = false;
           this.tableData = res.data.data
             .map(item => {
-              item.claimList.map(nodes => {
-                nodes.isBalanceTxt = nodes.isBalance == 1 ? "已结算" : "未结算";
-                return nodes;
-              });
-              item.holidayList.map(nodes => {
+              if(item.claimList){
+                item.claimList.map(nodes => {
+                  nodes.isBalanceTxt = nodes.isBalance == 1 ? "已结算" : "未结算";
+                  return nodes;
+                });
+              }
+              if(item.holidayList){
+                item.holidayList.map(nodes => {
                 nodes.typeIdTxt =
                   nodes.details[0].typeId == 1 ? "生效" : "未生效";
                 switch (nodes.details[0].typeId) {
@@ -196,31 +199,35 @@ export default {
                 nodes.isBalanceTxt = nodes.isBalance == 1 ? "已结算" : "未结算";
                 return nodes;
               });
-              item.specialDeductionList.map(nodes => {
-                nodes.statusTxt = nodes.status == 1 ? "生效" : "未生效";
-                switch (nodes.typeId) {
-                  case 1:
-                    nodes.typeIdTxt = "赡养老人";
-                    break;
-                  case 2:
-                    nodes.typeIdTxt = "子女教育";
-                    break;
-                  case 3:
-                    nodes.typeIdTxt = "房贷利息";
-                    break;
-                  case 4:
-                    nodes.typeIdTxt = "住房租金";
-                    break;
-                  case 5:
-                    nodes.typeIdTxt = "继续教育";
-                    break;
-                  case 6:
-                    nodes.typeIdTxt = "大病医疗";
-                    break;
-                }
-                return nodes;
-              });
-              item.MPFList = item.MPFList || '';
+              }
+              if(item.holidayList){
+                item.specialDeductionList.map(nodes => {
+                  nodes.statusTxt = nodes.status == 1 ? "生效" : "未生效";
+                  switch (nodes.typeId) {
+                    case 1:
+                      nodes.typeIdTxt = "赡养老人";
+                      break;
+                    case 2:
+                      nodes.typeIdTxt = "子女教育";
+                      break;
+                    case 3:
+                      nodes.typeIdTxt = "房贷利息";
+                      break;
+                    case 4:
+                      nodes.typeIdTxt = "住房租金";
+                      break;
+                    case 5:
+                      nodes.typeIdTxt = "继续教育";
+                      break;
+                    case 6:
+                      nodes.typeIdTxt = "大病医疗";
+                      break;
+                  }
+                  return nodes;
+                });
+              }
+
+              //item.MPFList = item.MPFList || '';
               return item;
             })
             .sort((a, b) => {
