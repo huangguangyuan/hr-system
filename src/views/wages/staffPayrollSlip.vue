@@ -37,7 +37,7 @@
       <div class="nothing" v-if="!tableData">
         暂无薪水数据
       </div>
-      <div>
+      <div id="monthPayrollData" class="monthPayrollData">
         <br >
         <el-divider v-if="tableData" content-position="left">个人信息</el-divider>
         <ul class="msgList" v-if="tableData">
@@ -178,10 +178,11 @@
 
         </div>
         <!--endprint-->
-        <div class="btnSet">
+        <br />
+      </div>
+      <div class="btnSet">
           <el-button type="primary" class="printBtn" @click='doPrint'>打 印</el-button>
-          <el-button type="primary" class="printBtn" @click='doPrint'>下 载</el-button>
-        </div>
+          <el-button type="primary" class="printBtn" @click='creatPdf'>下 载</el-button>
       </div>
     </div>
     <div class="yearPayroll" v-if="isShowPayrollYear">
@@ -206,7 +207,7 @@ export default {
       userInfo:{},
       curInfo:{},
       isShowPayrollMonth:true,
-      isShowPayrollYear:false,
+      isShowPayrollYear:false
     };
   },
   mounted() {
@@ -300,6 +301,13 @@ export default {
       window.document.body.innerHTML = prnhtml;
       window.print();
       window.document.body.innerHTML=bdhtml; 
+    },
+    creatPdf() {
+      var data = {
+        title:"测试",
+        bdhtml: document.querySelector('#monthPayrollData')
+      }
+      this.getPdf(data);
     }
   },
   computed: {},
@@ -373,6 +381,9 @@ export default {
   padding: 15px;
   font-size: 14px;
   color: #99a9bf
+}
+.monthPayrollData{
+  padding: 25px;
 }
 </style>
 

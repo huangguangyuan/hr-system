@@ -11,13 +11,13 @@
       <el-col :span="8">
         <el-card shadow="always">基本工资：{{details.salary}}</el-card>
       </el-col>
-      <el-col :span="8" v-if="allowanceList.length > 0">
+      <el-col :span="8" v-if="allowanceList && allowanceList.length > 0">
         <el-card shadow="always">津贴总额：{{arrSum(allowanceList,'amount')}}</el-card>
       </el-col>
-      <el-col :span="8" v-if="taxableItemsList.length > 0">
+      <el-col :span="8" v-if="taxableItemsList && taxableItemsList.length > 0">
         <el-card shadow="always">应税项目总额：{{arrSum(taxableItemsList,'amount')}}</el-card>
       </el-col>
-      <el-col :span="8" v-if="holidayList.length > 0">
+      <el-col :span="8" v-if="holidayList && holidayList.length > 0">
         <el-card shadow="always">请假应扣总额：-{{arrSum(holidayList,'totalAmount')}}</el-card>
       </el-col>
       <el-col :span="8" >
@@ -44,7 +44,7 @@
       <el-col :span="8">
         <el-card shadow="always">非应税金额：{{details.notTaxableAmount}}</el-card>
       </el-col>
-      <el-col :span="8" v-if="claimList.length > 0">
+      <el-col :span="8" v-if="claimList && claimList.length > 0">
         <el-card shadow="always">报销总额：{{arrSum(claimList,'totalAmount')}}</el-card>
       </el-col>
 
@@ -52,55 +52,55 @@
         <el-card shadow="always">实发工资：{{reallyAmount}}</el-card>
       </el-col>
     </el-row>
-    <el-divider v-if="allowanceList.length > 0">津贴清单</el-divider>
-    <el-table v-if="allowanceList.length > 0" :data="allowanceList" stripe border show-summary>
+    <el-divider v-if="allowanceList && allowanceList.length > 0">津贴清单</el-divider>
+    <el-table v-if="allowanceList && allowanceList.length > 0" :data="allowanceList" stripe border show-summary>
       <el-table-column prop="name" label="名 称"></el-table-column>
       <el-table-column prop="amount" label="金额(元)"></el-table-column>
     </el-table>
-    <el-divider v-if="taxableItemsList.length > 0">应税项目清单</el-divider>
-    <el-table  v-if="taxableItemsList.length > 0"  :data="taxableItemsList" stripe border show-summary>
+    <el-divider v-if="taxableItemsList && taxableItemsList.length > 0">应税项目清单</el-divider>
+    <el-table  v-if="taxableItemsList && taxableItemsList.length > 0"  :data="taxableItemsList" stripe border show-summary>
       <el-table-column prop="name" label="项目名称"></el-table-column>
       <el-table-column prop="amount" label="金额(元)"></el-table-column>
     </el-table>
-    <el-divider v-if="notTaxableItemsList.length > 0">非应税项目清单</el-divider>
-    <el-table  v-if="notTaxableItemsList.length > 0" :data="notTaxableItemsList" stripe border show-summary>
+    <el-divider v-if="notTaxableItemsList && notTaxableItemsList.length > 0">非应税项目清单</el-divider>
+    <el-table  v-if="notTaxableItemsList && notTaxableItemsList.length > 0" :data="notTaxableItemsList" stripe border show-summary>
       <el-table-column prop="name" label="项目名称"></el-table-column>
       <el-table-column prop="amount" label="金额(元)"></el-table-column>
     </el-table>
-    <el-divider v-if="claimList.length > 0">报销清单</el-divider>
-    <el-table v-if="claimList.length > 0" :data="claimList" stripe border show-summary>
+    <el-divider v-if="claimList && claimList.length > 0">报销清单</el-divider>
+    <el-table v-if="claimList && claimList.length > 0" :data="claimList" stripe border show-summary>
       <el-table-column prop="balanceMon" label="结算月份"></el-table-column>
       <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column prop="totalAmount" label="报销金额(元)"></el-table-column>
     </el-table>
-    <el-divider v-if="holidayList.length > 0">请假清单</el-divider>
-    <el-table v-if="holidayList.length > 0"  :data="holidayList" stripe border show-summary>
+    <el-divider v-if="holidayList && holidayList.length > 0">请假清单</el-divider>
+    <el-table v-if="holidayList && holidayList.length > 0"  :data="holidayList" stripe border show-summary>
       <el-table-column prop="balanceMon" label="结算月份"></el-table-column>
       <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>
       <el-table-column prop="totalDay" label="请假天数"></el-table-column>
       <el-table-column prop="totalAmount" label="扣除金额(元)"></el-table-column>
     </el-table>
-    <el-divider v-if="HCList.length > 0">住房公积金清单</el-divider>
-    <el-table v-if="HCList.length > 0"  :data="HCList" stripe border show-summary>
+    <el-divider v-if="HCList && HCList.length > 0">住房公积金清单</el-divider>
+    <el-table v-if="HCList && HCList.length > 0"  :data="HCList" stripe border show-summary>
       <el-table-column prop="paymentTxt" label="付款对象"></el-table-column>
       <el-table-column prop="typeTxt" label="类型"></el-table-column>
       <el-table-column prop="payment" label="金额(元)"></el-table-column>
     </el-table>
-    <el-divider v-if="SIList.length > 0">社保清单</el-divider>
-    <el-table v-if="SIList.length > 0"  :data="SIList" stripe border show-summary>
+    <el-divider v-if="SIList && SIList.length > 0">社保清单</el-divider>
+    <el-table v-if="SIList && SIList.length > 0"  :data="SIList" stripe border show-summary>
       <el-table-column prop="paymentTxt" label="付款对象"></el-table-column>
       <el-table-column prop="typeTxt" label="类型"></el-table-column>
       <el-table-column prop="payment" label="金额(元)"></el-table-column>
     </el-table>
-    <el-divider v-if="specialDeductionList.length > 0">专项扣除清单</el-divider>
-    <el-table v-if="specialDeductionList.length > 0" :data="specialDeductionList" stripe border show-summary>
+    <el-divider v-if="specialDeductionList && specialDeductionList.length > 0">专项扣除清单</el-divider>
+    <el-table v-if="specialDeductionList && specialDeductionList.length > 0" :data="specialDeductionList" stripe border show-summary>
       <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
       <el-table-column prop="typeIdTxt" label="专项扣除类型"></el-table-column>
       <el-table-column prop="amount" label="专项扣除金额"></el-table-column>
     </el-table>
-    <el-divider v-if="MPFList.length > 0">MPF清单</el-divider>
-    <el-table v-if="MPFList.length > 0" :data="MPFList" stripe border show-summary>
+    <el-divider v-if="MPFList && MPFList.length > 0">MPF清单</el-divider>
+    <el-table v-if="MPFList && MPFList.length > 0" :data="MPFList" stripe border show-summary>
       <el-table-column prop="paymentTxt" label="缴费对象"></el-table-column>
       <el-table-column prop="typeTxt" label="类 型"></el-table-column>
       <el-table-column prop="payment" label="金额(元)"></el-table-column>

@@ -9,12 +9,14 @@ import Utile from './lib/utils'
 import myApi from './lib/apis/myApi'
 import '@/assets/scss/element-variables.scss'
 import '@/assets/scss/app.scss';
+import htmlToPdf from '@/lib/htmlToPDF'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios,axios);
 Vue.use(Element);
 Vue.use(Utile);
 Vue.use(myApi);
+Vue.use(htmlToPdf);
 
 let myVue = new Vue({
   router,

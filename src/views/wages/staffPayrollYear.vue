@@ -17,72 +17,85 @@
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
       <el-table-column type="expand">
         <template slot-scope="props">
-          <el-divider v-if="props.row.allowanceList">津贴清单</el-divider>
-          <el-table v-if="props.row.allowanceList" :data="props.row.allowanceList" stripe border show-summary size="mini">
-            <el-table-column prop="name" label="名 称"></el-table-column>
+          <div class="table-wrap" v-if="tableData">
+          <div class="table-item"  v-if="props.row.allowanceList.length > 0">
+            <el-divider>津贴清单</el-divider>
+            <el-table :data="props.row.allowanceList" stripe border show-summary size="mini">
+              <el-table-column prop="name" label="名 称"></el-table-column>
+              <el-table-column prop="amount" label="金额(元)"></el-table-column>
+            </el-table>
+          </div>
+          <div class="table-item" v-if="props.row.taxableItemsList.length > 0" >
+            <el-divider>应税项目清单</el-divider>
+            <el-table :data="props.row.taxableItemsList" stripe border show-summary>
+            <el-table-column prop="name" label="项目名称"></el-table-column>
             <el-table-column prop="amount" label="金额(元)"></el-table-column>
-          </el-table>
-          
-          <el-divider v-if="props.row.holidayList">请假清单</el-divider>
-          <el-table v-if="props.row.holidayList" :data="props.row.holidayList" stripe border show-summary size="mini">
+            </el-table>
+          </div>
+          <div class="table-item" v-if="props.row.notTaxableItemsList.length > 0" >
+            <el-divider>非应税项目清单</el-divider>
+            <el-table  :data="props.row.notTaxableItemsList" stripe border show-summary>
+              <el-table-column prop="name" label="项目名称"></el-table-column>
+              <el-table-column prop="amount" label="金额(元)"></el-table-column>
+            </el-table>
+          </div>          
+          <div class="table-item"  v-if="props.row.holidayList.length > 0">
+          <el-divider>请假清单</el-divider>
+          <el-table :data="props.row.holidayList" stripe border show-summary size="mini">
             <el-table-column prop="balanceMon" label="结算月份"></el-table-column>
             <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
             <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>
             <el-table-column prop="totalDay" label="请假天数"></el-table-column>
             <el-table-column prop="totalAmount" label="扣除金额(元)"></el-table-column>
           </el-table>
-
-          <el-divider v-if="props.row.HCList">住房公积金清单</el-divider>
-          <el-table v-if="props.row.HCList" :data="props.row.HCList" border show-summary size="mini">
-            <el-table-column prop="paymentTxt" label="缴纳对象"></el-table-column>
-            <el-table-column prop="typeTxt" label="缴纳类型"></el-table-column>
-            <el-table-column prop="payment" label="金额（元）"></el-table-column>
-          </el-table>
-
-          <el-divider v-if="props.row.SIList">社保清单</el-divider>
-          <el-table v-if="props.row.SIList" :data="props.row.SIList" stripe border show-summary size="mini">
-            <el-table-column prop="paymentTxt" label="付款对象"></el-table-column>
+          </div>
+          <div class="table-item"  v-if="props.row.SIList.length > 0">
+          <el-divider>社保清单</el-divider>
+          <el-table :data="props.row.SIList" stripe border show-summary size="mini">
             <el-table-column prop="typeTxt" label="类型"></el-table-column>
             <el-table-column prop="payment" label="金额(元)"></el-table-column>
           </el-table>
-
-          <el-divider v-if="props.row.claimList">报销清单</el-divider>
-          <el-table v-if="props.row.claimList" :data="props.row.claimList" stripe border show-summary size="mini">
+          </div>
+          <div class="table-item"  v-if="props.row.HCList.length > 0">
+          <el-divider>住房公积金清单</el-divider>
+          <el-table :data="props.row.HCList" border show-summary size="mini">
+            <el-table-column prop="typeTxt" label="缴纳类型"></el-table-column>
+            <el-table-column prop="payment" label="金额（元）"></el-table-column>
+          </el-table>
+          </div>
+          <div class="table-item" v-if="props.row.claimList.length > 0">
+          <el-divider >报销清单</el-divider>
+          <el-table :data="props.row.claimList" stripe border show-summary size="mini">
             <el-table-column prop="balanceMon" label="结算月份"></el-table-column>
-            <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
             <el-table-column prop="totalAmount" label="报销金额(元)"></el-table-column>
           </el-table>
-
-          <el-divider v-if="props.row.specialDeductionList">专项扣除清单</el-divider>
-          <el-table v-if="props.row.specialDeductionList" :data="props.row.specialDeductionList" stripe border show-summary size="mini">
-            <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
+          </div>
+           <div class="table-item" v-if="props.row.specialDeductionList.length > 0">
+          <el-divider >专项扣除清单</el-divider>
+          <el-table :data="props.row.specialDeductionList" stripe border show-summary size="mini">
             <el-table-column prop="typeIdTxt" label="专项扣除类型"></el-table-column>
             <el-table-column prop="amount" label="专项扣除金额"></el-table-column>
           </el-table>
-
-          <el-divider v-if="props.row.taxableItemsList">应税项目清单</el-divider>
-          <el-table v-if="props.row.taxableItemsList" :data="props.row.taxableItemsList" stripe border show-summary size="mini">
-            <el-table-column prop="name" label="项目名称"></el-table-column>
-            <el-table-column prop="amount" label="金额(元)"></el-table-column>
-          </el-table>
-
-          <el-divider v-if="props.row.MPFList">MPF清单</el-divider>
-          <el-table :data="props.row.MPFList" v-if="props.row.MPFList" stripe border show-summary size="mini">
-            <el-table-column prop="paymentTxt" label="缴费对象"></el-table-column>
+          </div>
+          <div class="table-item" v-if="props.row.MPFList.length > 0">
+          <el-divider >MPF清单</el-divider>
+          <el-table :data="props.row.MPFList"  stripe border show-summary size="mini">
             <el-table-column prop="typeTxt" label="类 型"></el-table-column>
             <el-table-column prop="payment" label="金额(元)"></el-table-column>
           </el-table>
+          </div>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column prop="month" label="月份"></el-table-column>
+      <el-table-column prop="month" label="月份" ></el-table-column>
       <el-table-column prop="totalAmount" label="税前金额"></el-table-column>
       <el-table-column prop="totalAmountSum" label="累计税前金额"></el-table-column>
       <el-table-column prop="SHAmount" label="专项扣除"></el-table-column>
       <el-table-column prop="SHAmountSum" label="累计专项扣除"></el-table-column>
-      <el-table-column prop="specialDeductionAmount" label="专项附加"></el-table-column>
-      <el-table-column prop="specialDeductionAmountSum" label="累计专项附加"></el-table-column>
-      <el-table-column prop="taxThreshold" label="起征点"></el-table-column>
-      <el-table-column prop="taxThresholdSum" label="累计起征点"></el-table-column>     
+      <!-- <el-table-column prop="specialDeductionAmount" label="专项附加"></el-table-column>
+      <el-table-column prop="specialDeductionAmountSum" label="累计专项附加"></el-table-column> -->
+      <!-- <el-table-column prop="taxThreshold" label="起征点"></el-table-column>
+      <el-table-column prop="taxThresholdSum" label="累计起征点"></el-table-column>      -->
       <el-table-column prop="taxableWages" label="应税金额"></el-table-column>
       <el-table-column prop="taxableWagesSum" label="累计应税金额"></el-table-column> 
       <!-- <el-table-column prop="buName" label="所在单位"></el-table-column> -->
@@ -292,6 +305,18 @@ export default {
   }
   .buPayrollConfirmBtn {
     float: right;
+  } 
+
+}
+.table-wrap {
+  display: flex;
+  margin: 30px auto 0;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap:wrap;
+  align-items: flex-start;
+  .table-item {
+    width: 48%;
   }
 }
 </style>
