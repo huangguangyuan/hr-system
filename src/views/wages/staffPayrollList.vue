@@ -81,7 +81,7 @@
             icon="hr-icon-gongjijinjiaoyimingxi"
             @click="confirmFun(scope.$index, scope.row)"
             v-if="scope.row.typeId == 0"
-          >确认工资单</el-button>
+          >审核工资单</el-button>
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
@@ -213,6 +213,16 @@ export default {
           );
         }
     },
+    //0未审核1通过2有疑问，需重新审查
+    typeIdTxt(typeId){
+      let r = '未审核';
+      if (typeId == 1){
+        r = '确认';
+      }else if (typeId == 2){
+        r = '退回'
+      }
+      return r;
+    },
     //获取项目数据列表
     getData(BUCode, year, month) {
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollList";
@@ -228,7 +238,7 @@ export default {
           this.isShowLoading = false;
           this.tableData = res.data.data
             .map(item => {
-              item.typeIdTxt = item.typeId == 1 ? "已确认" : "未确认";
+              item.typeIdTxt = this.typeIdTxt(item.typeId);
               return item;
             })
             .sort((a, b) => {

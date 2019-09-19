@@ -5,7 +5,7 @@
       <el-form-item label="工资单状态：" prop="typeId">
         <el-radio-group v-model="ruleForm.typeId">
           <el-radio label="1">通过</el-radio>
-          <el-radio label="2">有疑问，需重新审核</el-radio>
+          <el-radio label="2">退回（有疑问，需重新计算）</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="备注：">
@@ -47,6 +47,10 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          if (this.ruleForm.typeId == 2 && this.ruleForm.remarks == ''){
+             this.$message.error("请填写退回备注");
+             return false;
+          }
           this.addFun();
         } else {
           console.log("error submit!!");

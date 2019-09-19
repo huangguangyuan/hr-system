@@ -95,7 +95,6 @@
     </el-table>
     <el-divider v-if="specialDeductionList && specialDeductionList.length > 0">专项扣除清单</el-divider>
     <el-table v-if="specialDeductionList && specialDeductionList.length > 0" :data="specialDeductionList" stripe border show-summary>
-      <el-table-column prop="statusTxt" label="是否生效"></el-table-column>
       <el-table-column prop="typeIdTxt" label="专项扣除类型"></el-table-column>
       <el-table-column prop="amount" label="专项扣除金额"></el-table-column>
     </el-table>
