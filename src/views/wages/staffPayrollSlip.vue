@@ -154,11 +154,19 @@
               <el-table-column prop="val" label="金 额"></el-table-column>
             </el-table>
           </div>
-          <div class="table-item">
+          <div class="table-item" v-if="tableData.SIList" >
             <el-divider>社保/公积金明细</el-divider>
-            <el-table v-if="tableData.SIList" :data="tableData.SIList.val" stripe border show-summary>
+            <el-table :data="tableData.SIList.val" stripe border show-summary>
               <!-- <el-table-column prop="paymentTxt" label="支付对象"></el-table-column> -->
               <el-table-column prop="typeTxt" label="类型"></el-table-column>
+              <el-table-column prop="payment" label="金 额"></el-table-column>
+            </el-table>
+          </div>
+          <div class="table-item" v-if="tableData.MPFList" >
+            <el-divider>MPF明细</el-divider>
+            <el-table :data="tableData.MPFList.val" stripe border show-summary>
+              <!-- <el-table-column prop="paymentTxt" label="支付对象"></el-table-column> -->
+              <el-table-column prop="paymentTxt" label="类 型"></el-table-column>
               <el-table-column prop="payment" label="金 额"></el-table-column>
             </el-table>
           </div>

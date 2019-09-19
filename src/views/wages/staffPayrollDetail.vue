@@ -12,23 +12,26 @@
         <el-card shadow="always">基本工资：{{details.salary}}</el-card>
       </el-col>
       <el-col :span="8" v-if="allowanceList && allowanceList.length > 0">
-        <el-card shadow="always">津贴总额：{{arrSum(allowanceList,'amount')}}</el-card>
+        <el-card shadow="always">津贴总额：{{details.detail.allowanceAmount}}</el-card>
       </el-col>
       <el-col :span="8" v-if="taxableItemsList && taxableItemsList.length > 0">
-        <el-card shadow="always">应税项目总额：{{arrSum(taxableItemsList,'amount')}}</el-card>
+        <el-card shadow="always">应税项目总额：{{details.detail.taxableItemsAmount}}</el-card>
       </el-col>
       <el-col :span="8" v-if="holidayList && holidayList.length > 0">
-        <el-card shadow="always">请假应扣总额：-{{arrSum(holidayList,'totalAmount')}}</el-card>
+        <el-card shadow="always">请假应扣总额：-{{details.detail.claimAmount}}</el-card>
       </el-col>
       <el-col :span="8" >
         <el-card shadow="always">收入总额：{{details.totalAmount}}</el-card>
       </el-col>
-      <el-col :span="8">
-        <el-card shadow="always">社保应扣总额：-{{arrSum(SIList,'payment')}}</el-card>
+      <el-col :span="8" v-if="SIList && SIList.length > 0">
+        <el-card shadow="always">社保应扣总额：-{{details.detail.SIAmount}}</el-card>
       </el-col>
-      <el-col :span="8">
-        <el-card shadow="always">公积金应扣总额：-{{arrSum(HCList,'payment')}}</el-card>
+      <el-col :span="8" v-if="HCList && HCList.length > 0">
+        <el-card shadow="always">公积金应扣总额：-{{details.detail.HCAmount}}</el-card>
       </el-col>
+      <el-col :span="8" v-if="MPFList && MPFList.length > 0">
+        <el-card shadow="always">MPF应扣总额：-{{details.detail.MPFAmount}}</el-card>
+      </el-col>      
       <el-col :span="8">
         <el-card shadow="always">税前金额：{{details.grossPay}}</el-card>
       </el-col>
@@ -42,10 +45,10 @@
         <el-card shadow="always">税后收入：{{netAmount}}</el-card>
       </el-col>
       <el-col :span="8">
-        <el-card shadow="always">非应税金额：{{details.notTaxableAmount}}</el-card>
+        <el-card shadow="always"  v-if="notTaxableItemsList && notTaxableItemsList.length > 0">非应税金额：{{details.detail.notTaxableItemsAmount}}</el-card>
       </el-col>
       <el-col :span="8" v-if="claimList && claimList.length > 0">
-        <el-card shadow="always">报销总额：{{arrSum(claimList,'totalAmount')}}</el-card>
+        <el-card shadow="always">报销总额：{{details.detail.claimAmount}}</el-card>
       </el-col>
 
       <el-col :span="8">
@@ -93,15 +96,16 @@
       <el-table-column prop="typeTxt" label="类型"></el-table-column>
       <el-table-column prop="payment" label="金额(元)"></el-table-column>
     </el-table>
-    <el-divider v-if="specialDeductionList && specialDeductionList.length > 0">专项扣除清单</el-divider>
+    <el-divider v-if="specialDeductionList && specialDeductionList.length > 0">专项附加扣除清单</el-divider>
     <el-table v-if="specialDeductionList && specialDeductionList.length > 0" :data="specialDeductionList" stripe border show-summary>
-      <el-table-column prop="typeIdTxt" label="专项扣除类型"></el-table-column>
-      <el-table-column prop="amount" label="专项扣除金额"></el-table-column>
+      <!-- <el-table-column prop="statusTxt" label="是否生效"></el-table-column> -->
+      <el-table-column prop="typeIdTxt" label="类型"></el-table-column>
+      <el-table-column prop="amount" label="金额"></el-table-column>
     </el-table>
     <el-divider v-if="MPFList && MPFList.length > 0">MPF清单</el-divider>
     <el-table v-if="MPFList && MPFList.length > 0" :data="MPFList" stripe border show-summary>
-      <el-table-column prop="paymentTxt" label="缴费对象"></el-table-column>
-      <el-table-column prop="typeTxt" label="类 型"></el-table-column>
+      <el-table-column prop="paymentTxt" label="类 型"></el-table-column>
+      <!-- <el-table-column prop="typeTxt" label="类 型"></el-table-column> -->
       <el-table-column prop="payment" label="金额(元)"></el-table-column>
     </el-table>
   </div>
@@ -154,39 +158,44 @@ export default {
           this.HCList = this.details.detail.HCList;
           this.SIList = this.details.detail.SIList;
           this.allowanceList = this.details.detail.allowanceList;
-          this.claimList = this.details.detail.claimList.map(item => {
-            item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
-            return item;
-          });
-          this.holidayList = this.details.detail.holidayList.map(item => {
-            item.typeIdTxt = item.details[0].typeId == 1 ? "生效" : "未生效";
-            switch (item.details[0].typeId) {
-              case 1:
-                item.typeIdTxt = "事假";
-                break;
-              case 2:
-                item.typeIdTxt = "年假";
-                break;
-              case 3:
-                item.typeIdTxt = "病假";
-                break;
-              case 4:
-                item.typeIdTxt = "婚假";
-                break;
-              case 5:
-                item.typeIdTxt = "产假/陪产假";
-                break;
-              case 6:
-                item.typeIdTxt = "丧假";
-                break;
-              case 50:
-                item.typeIdTxt = "其他";
-                break;
-            }
-            item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
-            return item;
-          });
-          this.specialDeductionList = this.details.detail.specialDeductionList.map(
+          if (this.details.detail.claimList){
+            this.claimList = this.details.detail.claimList.map(item => {
+              item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
+              return item;
+            });
+          }
+          if (this.details.detail.holidayList){
+            this.holidayList = this.details.detail.holidayList.map(item => {
+              item.typeIdTxt = item.details[0].typeId == 1 ? "生效" : "未生效";
+              switch (item.details[0].typeId) {
+                case 1:
+                  item.typeIdTxt = "事假";
+                  break;
+                case 2:
+                  item.typeIdTxt = "年假";
+                  break;
+                case 3:
+                  item.typeIdTxt = "病假";
+                  break;
+                case 4:
+                  item.typeIdTxt = "婚假";
+                  break;
+                case 5:
+                  item.typeIdTxt = "产假/陪产假";
+                  break;
+                case 6:
+                  item.typeIdTxt = "丧假";
+                  break;
+                case 50:
+                  item.typeIdTxt = "其他";
+                  break;
+              }
+              item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
+              return item;
+            });
+          }
+          if (this.details.detail.specialDeductionList){
+            this.specialDeductionList = this.details.detail.specialDeductionList.map(
             item => {
               item.statusTxt = item.status == 1 ? "生效" : "未生效";
               switch (item.typeId) {
@@ -210,8 +219,9 @@ export default {
                   break;
               }
               return item;
-            }
-          );
+            });
+          }
+
           this.taxableItemsList = this.details.detail.taxableItemsList;
           this.notTaxableItemsList = this.details.detail.notTaxableItemsList;
           this.MPFList = this.details.detail.MPFList || [];
