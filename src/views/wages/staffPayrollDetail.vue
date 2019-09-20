@@ -2,10 +2,16 @@
   <div class="staffPayrollDetail">
     <el-divider>工资表信息</el-divider>
     <el-row :gutter="12">
-      <el-col :span="12">
+      <el-col :span="8" >
+        <el-card class="showWarning" shadow="always">状态：{{typeIdTxt(details.typeId)}}</el-card>
+      </el-col>
+      <el-col :span="16" v-if="details.remarks != '' && details.typeId == 2" >
+        <el-card class="showWarning" shadow="always">备注：{{details.remarks}}</el-card>
+      </el-col>
+      <el-col :span="8">
         <el-card shadow="always">年份：{{details.year}}</el-card>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="8">
         <el-card shadow="always">月份：{{details.month}}</el-card>
       </el-col>
       <el-col :span="8">
@@ -133,8 +139,19 @@ export default {
   },
   mounted() {
     this.getDetails();
+
   },
   methods: {
+    //0未审核1通过2有疑问，需重新审查
+    typeIdTxt(typeId){
+      let r = '未审核';
+      if (typeId == 1){
+        r = '已确认';
+      }else if (typeId == 2){
+        r = '退回'
+      }
+      return r;
+    },
     arrSum(list,val){
       var n = 0;
       if (!list || list.length <= 0 || val == ""){
@@ -239,6 +256,9 @@ export default {
 .staffPayrollDetail {
   .el-card {
     margin-bottom: 12px;
+  }
+  .showWarning{
+    border: 1px solid #F7F709;
   }
 }
 </style>

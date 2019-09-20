@@ -1,7 +1,6 @@
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="220px">
-      
       <el-form-item label="工资单状态：" prop="typeId">
         <el-radio-group v-model="ruleForm.typeId">
           <el-radio label="1">通过</el-radio>
@@ -41,6 +40,8 @@ export default {
     };
   },
   mounted() {
+    this.ruleForm.typeId = this.curInfo.typeId.toString();
+    this.ruleForm.remarks = this.curInfo.remarks;
   },
   methods: {
     // 提交表单

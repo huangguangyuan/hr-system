@@ -64,7 +64,7 @@
       <el-table-column sortable prop="taxAmount" label="个人所得税"></el-table-column>
       <el-table-column sortable prop="notTaxableAmount" label="不应税金额"></el-table-column>
       <el-table-column sortable prop="typeIdTxt" label="工资单状态"></el-table-column>
-      <el-table-column label="操作" width="470">
+      <el-table-column label="操作" width="480">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -74,19 +74,26 @@
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
-            @click="deleteFun(scope.$index, scope.row)"
-          >删 除</el-button>
+            @click="staffPayrollYearFun(scope.$index, scope.row)"
+          >全年工资单</el-button>
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
             @click="confirmFun(scope.$index, scope.row)"
-            v-if="scope.row.typeId == 0"
+            v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >审核工资单</el-button>
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
-            @click="staffPayrollYearFun(scope.$index, scope.row)"
-          >全年工资单</el-button>
+            @click="rebuildStaffPayroll(scope.$index, scope.row)"
+            v-if="fun_right && genPayrollSlip_right && scope.row.typeId == 2"
+          >重新生成工资单</el-button>
+          <el-button
+            size="mini"
+            icon="hr-icon-gongjijinjiaoyimingxi"
+            @click="deleteFun(scope.$index, scope.row)"
+            v-if="fun_right && deletePayrollSlip_right"
+          >删 除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -131,7 +138,7 @@
       ></bu-payroll-confirm>
     </el-dialog>
     <!-- 全年工资单 -->
-    <el-dialog title="全年工资单" :visible.sync="isShowPayrollYear" :close-on-click-modal="false" width="70%">
+    <el-dialog title="全年工资单" :visible.sync="isShowPayrollYear" :close-on-click-modal="false" width="80%">
       <staff-payroll-year
         v-if="isShowPayrollYear"
         :curInfo="curInfo"
@@ -168,7 +175,11 @@ export default {
       },
       hrCode: "",
       userInfo:{},
-      filter: { searchKey: "", searchField: ["nameChinese", "staffNo"] }
+      filter: { searchKey: "", searchField: ["nameChinese", "staffNo"] },
+      approvePayrollSlip_right:false, //审批工资单权限
+      deletePayrollSlip_right:false, //删除工资单权限
+      genPayrollSlip_right:false,
+      fun_right:true //功能按钮
     };
   },
   mounted() {
@@ -177,6 +188,16 @@ export default {
     if (_this.userInfo.roleTypeId == 2 ){
       _this.hrCode = _this.userInfo.userCode;
     }
+    if ([301,401,411].indexOf(_this.userInfo.lev) >= 0){
+      this.approvePayrollSlip_right = true;
+    };
+    if ([301,601,611].indexOf(_this.userInfo.lev) >= 0){
+      this.genPayrollSlip_right = true;
+      this.deletePayrollSlip_right = true;
+    };
+    if ([701].indexOf(_this.userInfo.lev) >= 0){
+      this.fun_right = false;
+    };
     this.InitializationFun();
   },
   methods: {
@@ -217,7 +238,7 @@ export default {
     typeIdTxt(typeId){
       let r = '未审核';
       if (typeId == 1){
-        r = '确认';
+        r = '已确认';
       }else if (typeId == 2){
         r = '退回'
       }
@@ -322,10 +343,31 @@ export default {
     confirmFun(index, res) {
       this.curInfo = {
         code: res.code,
-        hrCode: this.hrCode
+        hrCode: this.hrCode,
+        typeId: res.typeId,
+        remarks: res.remarks
       };
       this.isShowConfirm = true;
     },
+    // 重新生成工资单
+    rebuildStaffPayroll(index, res) {
+        var data = {
+            code:res.code,
+            hrCode:this.hrCode,
+            staffCode:res.staffCode,
+            year: res.year,
+            month:res.month
+        };
+        this.$message('正在生成，请稍候!');
+        this.$http.post("/server/api/v1/payroll/staff/rebuildStaffPayroll", data).then(res => {
+            if (res.data.code == 0) {
+              this.reload();
+              this.$message.success("操作成功~");
+            } else {
+              this.$message.warning(res.data.msg);
+            }
+          });
+    },    
     // 确认单位出粮信息
     buPayrollConfirmFun(res) {
       this.curInfo = {
