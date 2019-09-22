@@ -51,6 +51,7 @@
         type="primary"
         class="buPayrollConfirmBtn"
         @click="buPayrollConfirmFun(seachMsg.BUCode)"
+        v-if="fun_right && approvePayrollSlip_right"
       >确认单位薪水数据</el-button>
     </div>
     <el-divider></el-divider>
