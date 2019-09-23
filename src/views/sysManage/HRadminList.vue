@@ -9,7 +9,7 @@
     <div class="search" v-if="userRight">
       <el-input placeholder="请输入关键字" v-model="filter.searchKey">
         <el-select v-model="BUCode" slot="prepend" placeholder="请选择" @change="changeBUCode" style="width:200px;">
-          <el-option v-for='(item,index) in regionList' :key='index' :label="item.name" :value="item.code"></el-option>
+          <el-option v-for='(item,index) in regionBUList' :key='index' :label="item.name" :value="item.code"></el-option>
         </el-select>
       </el-input>
     </div>
@@ -123,7 +123,7 @@ export default {
       isShowAddRole: false, //是否显示增加角色
       modifyInfo: {}, //当前列表信息
       BUCode:'',//单位code
-      regionList:[],//单位列表
+      regionBUList:[],//单位列表
       isShowLoading:false,//加载
       userInfo:{},
       userRight:true,
@@ -178,9 +178,9 @@ export default {
     async getBUCodeFun(){
       var _this = this;
       var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
-        if (regionBUs) {
-          this.regionList = regionBUs;
-          this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):this.regionList[0].code;
+        if (regionBUs && regionBUs.length > 0) {
+          this.regionBUList = regionBUs;
+          this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):this.regionBUList[0].code;
           this.getData(this.BUCode);
         }
     },

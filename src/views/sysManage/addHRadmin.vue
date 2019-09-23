@@ -129,7 +129,7 @@ export default {
     async getBUCodeFun() {
       var _this = this;
       var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
-      if (regionBUs) {
+      if (regionBUs && regionBUs.length > 0) {
           this.regionBUs = regionBUs;
       }
     },

@@ -122,7 +122,7 @@ export default {
     async getregionBU() {
       var _this = this;
       var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
-      if (regionBUs) {
+      if (regionBUs && regionBUs.length > 0) {
           _this.regionBUlist = regionBUs;
           _this.BUCode = this.$toolFn.sessionGet("staffBUCode") ? this.$toolFn.sessionGet("staffBUCode"): _this.regionBUlist[0].code;
           _this.getData(this.BUCode);

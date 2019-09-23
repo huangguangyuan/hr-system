@@ -86,8 +86,8 @@ export default {
     async getData() {
       var _this = this;
       _this.isShowLoading = true;
-      var companys = await _this.$myApi.companys(_this,{isCache:true});
-      if (companys) {
+      var companys = await _this.$myApi.companys(_this,{isCache:false});
+      if (companys && companys.length > 0) {
           _this.isShowLoading = false;
           _this.tableData = companys.map(item => {
               item.statusTxt = item.status == 1 ? "启用" : "禁用";
