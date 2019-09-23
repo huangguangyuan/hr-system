@@ -17,7 +17,15 @@
       <el-table-column sortable prop="contactTel" label="联系人电话"></el-table-column>
       <el-table-column sortable prop="contactEmail" label="联系人邮箱"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
-      <el-table-column prop="logo" label="logo"></el-table-column>
+      <el-table-column prop="logo" label="logo">
+        <template slot-scope="scope">
+          <el-image
+            style="width: 50px; height: 50px;border-radius: 100%;"
+            :src="scope.row.logo?scope.row.logo:AvatarDefault"
+            fit="scale-down"
+          ></el-image>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -73,7 +81,8 @@ export default {
       isShowAddModule: false, //是否显示增加模块
       isShowLoading: false, //是否显示loading页
       userInfo:{},
-      filter:{searchKey:'',searchField:['name','account','contactName','contactTel','contactEmail','statusTxt','country']}
+      filter:{searchKey:'',searchField:['name','account','contactName','contactTel','contactEmail','statusTxt','country']}, 
+      AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
     };
   },
   mounted() {

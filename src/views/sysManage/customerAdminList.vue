@@ -5,12 +5,16 @@
       <span>客户管理员列表</span>
     </div>
     <!-- 搜索 -->
-    <div class="search">
+    <!-- <div class="search">
       <el-input placeholder="请输入搜索关键字" v-model="searchInner" @blur="searchFn">
         <el-select v-model="companyCode" slot="prepend" placeholder="请选择公司" @change="changeCompanyCode" style="width:200px;">
           <el-option v-for='(item,index) in companyList' :key='index' :label="item.name" :value="item.code"></el-option>
         </el-select>
         <el-button slot="append" icon="el-icon-search" @click="searchFn">搜 索</el-button>
+      </el-input>
+    </div> -->
+    <div class="search" >
+      <el-input placeholder="请输入关键字" v-model="filter.searchKey">
       </el-input>
     </div>
     <!-- 列表内容 -->
@@ -21,13 +25,12 @@
       row-key="id"
       border
     >
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column sortable prop="name" label="名称"></el-table-column>
       <el-table-column prop="account" label="账号"></el-table-column>
       <el-table-column prop="mobile" label="手机"></el-table-column>
       <el-table-column prop="email" label="邮箱"></el-table-column>
-      <el-table-column prop="levTxt" label="类型"></el-table-column>
-      <el-table-column prop="isStatus" label="状态"></el-table-column>
+      <el-table-column sortable prop="levTxt" label="类型"></el-table-column>
+      <el-table-column sortable prop="isStatus" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="500px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="editFn(scope.$index, scope.row)">编辑</el-button>
@@ -140,7 +143,8 @@ export default {
       isShowLoading: false, //是否显示loading页
       modifyInfo: {}, //当前列表信息
       companyCode:"",
-      companyList:[]
+      companyList:[],
+      filter:{searchKey:'',searchField:['name','roleTypeTxt','account','mobile','email']}
     };
   },
   mounted() {
@@ -317,14 +321,33 @@ export default {
             message: "已取消删除"
           });
         });
-    }
+    },
+    searchFun(list,search){
+      let newList = [];
+      for(let i = 0;i < list.length;i++){
+        for(let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0){
+            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
+              newList.push(list[i]);
+              break;
+            }
+          }
+        };
+      }
+      return newList;
+    },
   },
   computed: {
     queryTableDate() {
       var _this = this;
+      let tableData = _this.tableData;
+      if (_this.filter.searchKey != ""){
+        tableData = _this.searchFun(tableData,_this.filter);
+      }
+      _this.total = tableData.length;
       var begin = (_this.curPage - 1) * _this.pageSize;
       var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      return tableData.slice(begin, end);
     },
     pageTotal() {
       var _this = this;

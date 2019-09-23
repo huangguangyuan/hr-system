@@ -39,8 +39,6 @@
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
-      
-
       <el-divider>
         <i class="el-icon-user"></i> 联系人信息
       </el-divider>
@@ -158,6 +156,7 @@ export default {
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
       this.isShow = false;
+      this.logoSrc = this.ruleForm.logo;
     }
   },
   methods: {

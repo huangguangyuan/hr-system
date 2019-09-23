@@ -25,7 +25,15 @@
         <el-input v-model="ruleForm.address"></el-input>
       </el-form-item>
       <el-form-item label="logo图片：">
-        <el-input v-model="ruleForm.logo"></el-input>
+        <el-upload
+          class="avatar-uploader"
+          action="/app/api/v1/file/imageUpload"
+          :show-file-list="false"
+          :on-success="uploadLogo"
+        >
+          <el-image v-if="ruleForm.logo" :src="logoSrc" class="avatar" fit="cover"></el-image>
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
       </el-form-item>
       <el-form-item label="备注：">
         <el-input v-model="ruleForm.remarks"></el-input>
@@ -79,6 +87,7 @@ export default {
         contactLocation: "",
         contactRemarks: ""
       },//表单信息
+      logoSrc:'',//图片路径
       rules: {
         companyCode: [
           { required: true, message: "请选择所属公司", trigger: "change" }
@@ -102,9 +111,15 @@ export default {
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
       this.isShow = false;
+      this.logoSrc = this.ruleForm.logo;
     }
   },
   methods: {
+    // 获取上传头像
+    uploadLogo(res, file) {
+      this.ruleForm.logo = res.data.path;
+      this.logoSrc = URL.createObjectURL(file.raw);
+    },
     // 提交表单
     submitForm(formName) {
       var _this = this;
@@ -184,7 +199,61 @@ export default {
   }
 };
 </script>
-<style scoped lang="scss">
-</style>
+<style lang="scss">
+.editTemplate {
+  .el-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    .el-form-item {
+      width: 49%;
+    }
+    h5 {
+      width: 100%;
+    }
+    .el-divider--horizontal {
+      margin-bottom: 60px;
+    }
+    .btn-ground {
+      width: 100%;
+      margin-top: 50px;
+      .el-form-item__content {
+        margin-left: 0 !important;
+        text-align: center;
+      }
+    }
+    .el-divider__text {
+      font-size: 16px;
+      color: #f28c38;
+    }
+    .el-divider i {
+      font-size: 16px;
+    }
+  }
+}
 
+.avatar-uploader .el-upload {
+  border: 1px dashed #ebb563;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 120px;
+  height: 120px;
+  line-height: 120px;
+  text-align: center;
+}
+.avatar {
+  width: 120px;
+  height: 120px;
+  display: block;
+}
+</style>
 

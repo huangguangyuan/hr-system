@@ -22,7 +22,15 @@
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
       <el-table-column prop="location" label="位置"></el-table-column>
       <el-table-column prop="address" label="地址"></el-table-column>
-      <el-table-column prop="logo" label="logo"></el-table-column>
+      <el-table-column prop="logo" label="logo">
+        <template slot-scope="scope">
+          <el-image
+            style="width: 50px; height: 50px;border-radius: 100%;"
+            :src="scope.row.logo?scope.row.logo:AvatarDefault"
+            fit="scale-down"
+          ></el-image>
+        </template>
+      </el-table-column>
       <el-table-column prop="remarks" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
@@ -82,7 +90,8 @@ export default {
       companyCode:"",
       companyList:[],
       userInfo:{},
-      userRight:true
+      userRight:true,
+      AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
     };
   },
   mounted() {

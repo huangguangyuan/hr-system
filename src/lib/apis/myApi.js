@@ -20,7 +20,14 @@
 
     //请求
     function apiFn(vue,url,pararm) {
-        return vue.$http.post(url, pararm||{});
+        return Promise.resolve(
+            vue.$http.post(url, pararm||{}).then(res => {
+                if (res.data.code == 0) {
+                    return res.data.data;
+                }else{
+                    return null;
+                }
+            }));
     }
 
     function apiMain(vue,url,pararm){

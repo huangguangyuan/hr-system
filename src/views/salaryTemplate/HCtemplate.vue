@@ -81,14 +81,12 @@ export default {
     //获取城市数据列表
     getData() {
       var _this = this;
-      var reqUrl = "/server/api/v1/cityHC/getByOptions";
+      var reqUrl = "/server/api/v1/cityHC/getAll";
       var myData = {
         cityCode: _this.cityCode
       };
       _this.isShowLoading = true;
-      _this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      _this.$http.post(reqUrl, myData).then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data
             .map(item => {

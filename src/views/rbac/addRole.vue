@@ -20,9 +20,9 @@
       <el-form-item label="描述：" prop="description">
         <el-input v-model="ruleForm.description"></el-input>
       </el-form-item>
-      <el-form-item label="分组：" prop="lev">
+      <!-- <el-form-item label="分组：" prop="lev">
         <el-input v-model="ruleForm.lev" placeholder='分组900以上默认角色'></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="角色类型：" prop="typeId">
         <el-radio-group v-model="ruleForm.typeId">
           <el-radio label="1">管理员角色</el-radio>
@@ -56,7 +56,7 @@ export default {
         projectList: [],
         roleCode: "",
         description: "",
-        lev:"",
+        lev:"0",
         typeId: "",
         status: ""
       },

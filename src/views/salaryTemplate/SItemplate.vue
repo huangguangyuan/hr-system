@@ -214,7 +214,7 @@ export default {
     searchFun() {
       var _this = this;
       if (_this.searchInner) {
-        var reqUrl = "/server/api/v1/citySI/getByOptions";
+        var reqUrl = "/server/api/v1/citySI/getAll";
         var data = { id: _this.searchInner };
         _this.$http.post(reqUrl, data).then(res => {
           _this.tableData = res.data.data.map(item => {
