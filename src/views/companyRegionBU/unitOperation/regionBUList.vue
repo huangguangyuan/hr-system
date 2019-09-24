@@ -73,7 +73,7 @@
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="350px">
         <template slot-scope="scope">
-          <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" v-if="userRight">编辑</el-button>
           <el-button v-if="userRight"
             size="mini"
             icon="el-icon-warning"
@@ -137,16 +137,19 @@ export default {
       companyCode:"",
       companyList:[],
       userInfo:{},
-      userRight:true
+      userRight:false
     };
   },
   mounted() {
     var _this = this;
     _this.userInfo = _this.$toolFn.localGet("userInfo");
     _this.getCompanyCodeFun();
-    if (_this.userInfo.roleTypeId == 4 && _this.userInfo.lev >= 221){
-      this.userRight = false;
+    if (_this.userInfo.roleTypeId == 4 && _this.userInfo.lev >= 201){
+      this.userRight = true;
     }
+    if (_this.userInfo.roleTypeId == 3 && _this.userInfo.lev == 301){
+      this.userRight = true;
+    }    
     //_this.getData();
     
   },

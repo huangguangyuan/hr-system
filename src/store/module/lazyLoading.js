@@ -99,7 +99,7 @@ const dynamicRouter = [
         name: 'cityList',
         component: resolve => require(['@/views/salaryTemplate/cityList.vue'], resolve),
     },
-    // 社保模块
+    // 社保模版
     {
         path: '/SItemplate',
         name: 'SItemplate',

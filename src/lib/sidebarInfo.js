@@ -123,7 +123,7 @@ let sidebarInfo = [
                 authUrl: "/SItemplate",
                 iconUrl: "el-icon-document",
                 isMenu: 1,
-                name: "社保模块",
+                name: "社保模版",
                 items: [{}],
                 rightCode: "SItemplate",
             },
