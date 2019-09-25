@@ -611,6 +611,7 @@ export default {
         account:_this.ruleForm.account,
         password: md5(_this.ruleForm.password),
         hrCode: _this.ruleForm.hrCode,
+        staffNo: _this.ruleForm.staffNo,
       };
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {

@@ -15,6 +15,9 @@
     </div> -->
     <div class="search" >
       <el-input placeholder="请输入关键字" v-model="filter.searchKey">
+      <el-select v-model="companyCode" slot="prepend" placeholder="请选择公司" @change="changeCompanyCode" style="width:200px;">
+          <el-option v-for='(item,index) in companyList' :key='index' :label="item.name" :value="item.code"></el-option>
+        </el-select>
       </el-input>
     </div>
     <!-- 列表内容 -->

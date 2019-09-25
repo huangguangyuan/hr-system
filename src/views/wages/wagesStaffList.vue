@@ -6,8 +6,8 @@
     </div>
     <el-divider></el-divider>
     <div class="addBtn-wrap" >
-      <el-button type="primary" @click="createSelectedItem">生成选中项工资单</el-button>
-      <el-button type="danger" @click='createAll'>生成所有工资单</el-button>
+      <el-button type="primary" v-if="genPayrollSlip_right" @click="createSelectedItem">生成选中项工资单</el-button>
+      <el-button type="danger" v-if="genPayrollSlip_right" @click='createAll'>生成所有工资单</el-button>
     </div>
     <!-- 搜索 -->
     <div class="search-wrap">
@@ -49,19 +49,19 @@
           <!-- 缴纳社保/公积金信息 -->
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-setting"
             @click="openFun(scope.$index, scope.row, 'staffWagesConfig')"
           >配 置</el-button>
           <!-- 生成员工工资单 -->
           <el-button v-if="scope.row.typeId == 1"
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-c-scale-to-original"
             @click="openFun(scope.$index, scope.row, 'salaryDate')"
           >薪水数据</el-button>
           <el-button
-          v-if="scope.row.typeId == 1"
+          v-if="scope.row.typeId == 1 && genPayrollSlip_right"
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-notebook-2"
             @click="genStaffPayroll(scope.$index, scope.row)"
           >生成工资单</el-button>
         </template>
@@ -106,7 +106,8 @@ export default {
       hrCode: "",
       userInfo:{},
       filter:{searchKey:'',searchField:['nameChinese','genderTxt']},
-      multipleSelection: []
+      multipleSelection: [],
+      genPayrollSlip_right:false
     };
   },
   mounted() {
@@ -115,6 +116,9 @@ export default {
     if (_this.userInfo.roleTypeId == 2 ){
       _this.hrCode = _this.userInfo.userCode;
     }
+    if ([301,401,411].indexOf(_this.userInfo.lev) >= 0){
+      this.genPayrollSlip_right = true;
+    };
     this.InitializationFun();
   },
   methods: {
