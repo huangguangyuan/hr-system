@@ -48,9 +48,9 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (this.ruleForm.typeId == 2 && this.ruleForm.remarks == ''){
+          if (this.ruleForm.typeId == 2 && (!this.ruleForm.remarks || this.ruleForm.remarks == '')){
              this.$message.error("请填写退回备注");
-             return false;
+             return;
           }
           this.addFun();
         } else {
@@ -68,10 +68,11 @@ export default {
         typeId:parseInt(this.ruleForm.typeId),
         remarks:this.ruleForm.remarks
       };
+
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("确认成功~");
+          this.$message.success("操作成功~");
         } else {
           this.$message.error(res.data.msg);
         }

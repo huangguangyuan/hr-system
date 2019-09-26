@@ -51,7 +51,7 @@
         type="primary"
         class="buPayrollConfirmBtn"
         @click="buPayrollConfirmFun(seachMsg.BUCode)"
-        v-if="fun_right && approvePayrollSlip_right"
+        v-if="fun_right && approveBUPayrollS_right"
       >确认单位薪水数据</el-button>
     </div>
     <el-divider></el-divider>
@@ -179,7 +179,8 @@ export default {
       filter: { searchKey: "", searchField: ["nameChinese", "staffNo"] },
       approvePayrollSlip_right:false, //审批工资单权限
       deletePayrollSlip_right:false, //删除工资单权限
-      genPayrollSlip_right:false,
+      genPayrollSlip_right:false,//重新生成工资单
+      approveBUPayrollS_right:false,//确认单位工资单
       fun_right:true //功能按钮
     };
   },
@@ -189,13 +190,18 @@ export default {
     if (_this.userInfo.roleTypeId == 2 ){
       _this.hrCode = _this.userInfo.userCode;
     }
-    if ([301,401,411].indexOf(_this.userInfo.lev) >= 0){
+    if ([301,801].indexOf(_this.userInfo.lev) >= 0){
       this.approvePayrollSlip_right = true;
     };
-    if ([301,601,611].indexOf(_this.userInfo.lev) >= 0){
+    if ([301,401,411].indexOf(_this.userInfo.lev) >= 0){
+      this.approveBUPayrollS_right = true;
       this.genPayrollSlip_right = true;
       this.deletePayrollSlip_right = true;
     };
+    // if ([301,601,611].indexOf(_this.userInfo.lev) >= 0){
+    //   this.genPayrollSlip_right = true;
+    //   this.deletePayrollSlip_right = true;
+    // };
     if ([701].indexOf(_this.userInfo.lev) >= 0){
       this.fun_right = false;
     };

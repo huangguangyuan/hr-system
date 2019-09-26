@@ -66,6 +66,10 @@ export default {
           //var sidebar = this.temporaryData;
           sessionStorage.clear();
           localStorage.clear();
+          this.$store.commit({
+            type: "getNavTabs",
+            navTabs: []
+          });
           this.$toolFn.localSet("userInfo", res.data.data.data);
           var sidebar = res.data.data.data.roles[0].menuList.map(item => {
             item.id = item.id.toString();

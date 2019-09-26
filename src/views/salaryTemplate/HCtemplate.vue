@@ -14,7 +14,7 @@
         style="width:200px;"
         @change="changeCity"
       >
-        <el-option label="全部" value=""></el-option>
+        <!-- <el-option label="全部" value=""></el-option> -->
         <el-option v-for="item in cityList" :key="item.code" :label="item.name" :value="item.code"></el-option>
       </el-select>
     </div>

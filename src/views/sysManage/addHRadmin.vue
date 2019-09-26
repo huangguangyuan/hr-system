@@ -22,6 +22,7 @@
           <el-option label="人事主管" value="601"></el-option>
           <el-option label="人事文员" value="611"></el-option>
           <el-option label="信息复核" value="701"></el-option>
+          <el-option label="会计主管" value="801"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="服务归属：" prop="serveId">

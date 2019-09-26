@@ -28,7 +28,7 @@
             icon="el-icon-edit-outline"
             @click="modifyPassWord(scope.$index, scope.row)"
           >修改密码</el-button>
-          <el-button  v-if="userRight && [3,4].indexOf(userInfo.roleTypeId) >= 0" size="mini" icon="el-icon-plus" @click="addRole(scope.$index, scope.row)">编辑角色</el-button>
+          <!-- <el-button  v-if="userRight && [3,4].indexOf(userInfo.roleTypeId) >= 0" size="mini" icon="el-icon-plus" @click="addRole(scope.$index, scope.row)">编辑角色</el-button> -->
           <el-button  v-if="userRight"
             size="mini"
             icon="el-icon-warning"
