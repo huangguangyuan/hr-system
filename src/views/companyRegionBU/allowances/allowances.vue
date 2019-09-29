@@ -1,9 +1,9 @@
 <template>
-  <div class="salaryItems">
+  <div class="allowances">
     <div class="addBtn-wrap">
-      <el-select v-model="salaryItemIds" multiple placeholder="请选择薪资应税模板" class='selectCode'>
+      <el-select v-model="allowanceIds" multiple placeholder="请选择津贴项目模板" class='selectCode'>
         <el-option
-          v-for="item in salaryItemTemplateList"
+          v-for="item in allowanceTemplateList"
           :key="item.id"
           :label="item.name"
           :value="item.id"
@@ -14,9 +14,7 @@
     </div>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="薪资项目"></el-table-column>
-      <el-table-column prop="taxableTxt" label="是否应税项目"></el-table-column>
       <el-table-column prop="createTime" label="创建时间"></el-table-column>
       <el-table-column prop="description" label="描述"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
@@ -42,8 +40,8 @@
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     
-    <!-- 新增薪资应税项目 -->
-    <el-dialog title="新增薪资应税项目" :visible.sync="isShowEdit" :close-on-click-modal="false" width="65%">
+    <!-- 新增津贴项目项目 -->
+    <el-dialog title="新增津贴项目项目" :visible.sync="isShowEdit" :close-on-click-modal="false" width="65%">
       <edit-layer v-if='isShowEdit' v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo"></edit-layer>
     </el-dialog>
   </div>
@@ -51,7 +49,7 @@
 <script>
 import editLayer from './editLayer.vue'
 export default {
-  name: "salaryItems",
+  name: "allowances",
   inject: ["reload"],
   data() {
     return {
@@ -60,25 +58,23 @@ export default {
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
       curInfo: {}, //记录当前内容信息
-      salaryItemTemplateList: [], //薪资应税项目列表
-      salaryItemIds: [], //薪资应税项目ID列表
+      allowanceTemplateList: [], //津贴项目项目列表
+      allowanceIds: [], //津贴项目项目ID列表
       isShowEdit: false, //是否显示新增权限页面
       isShowLoading: false //是否显示loading页
     };
   },
   mounted() {
     this.getData(this.BUInfo.code);
-    this.getSalaryItemTemplate();
+    this.getAllowanceTemplate();
   },
   methods: {
     //获取数据列表
     getData(BUCode) {
-      var reqUrl = "/server/api/v1/bu/salaryItems";
+      var reqUrl = "/server/api/v1/bu/allowances";
       var myData = { BUCode: BUCode };
       this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           if (res.data.code == 0) {
             this.tableData = res.data.data.map(item => {
@@ -93,11 +89,11 @@ export default {
         });
     },
     // 获取薪资应对项目模板
-    getSalaryItemTemplate() {
-      var reqUrl = "/server/api/v1/salaryItem/getAll";
+    getAllowanceTemplate() {
+      var reqUrl = "/server/api/v1/allowance/getAll";
       this.$http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
-          this.salaryItemTemplateList = res.data.data;
+          this.allowanceTemplateList = res.data.data;
         } else {
           this.$message.error(res.data.msg || res.data.code);
         }
@@ -112,20 +108,20 @@ export default {
     listenIsShowMask(res) {
       this.isShowEdit = false;
     },
-    // 添加薪资应税模板
+    // 添加津贴项目模板
     addFun() {
-      if(this.salaryItemIds.length == 0){
-          this.$message.info('请选择薪资应税模板');
+      if(this.allowanceIds.length == 0){
+          this.$message.info('请选择津贴项目模板');
           return false;
       }
-      var reqUrl = '/server/api/v1/bu/selectedSalaryItems';
-      var data = {BUCode:this.BUInfo.code,salaryItemIds:this.salaryItemIds}
+      var reqUrl = '/server/api/v1/bu/selectedAllowances';
+      var data = {BUCode:this.BUInfo.code,allowanceIds:this.allowanceIds}
       this.$http.post(reqUrl,data).then(res => {
           if(res.data.code == 0){
               this.reload();
               this.$message.success('添加成功！');
           }else{
-              this.reload();
+              //this.reload();
               this.$message.error(res.data.msg);
           }
       })
@@ -152,7 +148,7 @@ export default {
         })
         .then(() => {
           _this.$http
-            .post("/server/api/v1/bu/salaryItemDelete", { code: res.code })
+            .post("/server/api/v1/bu/allowanceDelete", { code: res.code })
             .then(res => {
               _this.reload();
               _this.$message.success("删除成功！");

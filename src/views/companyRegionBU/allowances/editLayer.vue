@@ -1,0 +1,120 @@
+<template>
+  <div class="editLayer">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px">
+      <el-form-item label="津贴项目名称：" prop="proName" >
+        <el-input v-model="ruleForm.proName"></el-input>
+      </el-form-item>
+      <el-form-item label="备 注：">
+        <el-input v-model="ruleForm.description"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
+        <el-button @click="cancelFn">取 消</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+<script>
+import { setTimeout } from "timers";
+export default {
+  name: "editLayer",
+  inject: ["reload"],
+  props: ["curInfo"],
+  data() {
+    return {
+      ruleForm: {
+        proName: "",
+        taxable: "",
+        description: ""
+      }, //表单信息
+      rules: {
+        proName: [
+          { required: true, message: "请选择津贴项目名称", trigger: "blur" }
+        ]
+      }
+    };
+  },
+  mounted() {
+    this.initializeFun();
+  },
+  methods: {
+    // 初始化
+    initializeFun() {
+      if (this.curInfo.type == "modify") {
+          this.ruleForm.proName = this.curInfo.name;
+          this.ruleForm.description = this.curInfo.description;
+      }
+    },
+    // 提交表单
+    submitForm(formName) {
+      var _this = this;
+      _this.$refs[formName].validate(valid => {
+        if (valid) {
+          switch (_this.curInfo.type) {
+            case "add":
+              _this.addFun();
+              break;
+            case "modify":
+              _this.modifyFun();
+              break;
+          }
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    // 新增
+    addFun() {
+      var reqUrl = "/server/api/v1/bu/allowanceAdd";
+      var data = {
+        BUCode: this.BUInfo.code,
+        name: this.ruleForm.proName,
+        description: this.ruleForm.description
+      };
+      this.$http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
+          this.reload();
+          this.$message.success("新增成功~");
+        } else {
+          this.$message.error(res.data.msg);
+        }
+      });
+    },
+    // 修改
+    modifyFun() {
+      var reqUrl = "/server/api/v1/bu/allowanceUpdate";
+      var data = {
+        code: this.curInfo.code,
+        name: this.ruleForm.proName,
+        description: this.ruleForm.description
+      };
+      this.$http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
+          this.reload();
+          this.$message.success("修改成功~");
+        } else {
+          this.$message(res.data.msg);
+        }
+      });
+    },
+    // 取消
+    cancelFn() {
+      var _this = this;
+      _this.$emit("listenIsShowMask", false);
+    }
+  },
+  computed: {
+    BUInfo() {
+      return this.$store.state.BUModule.BUInfo;
+    }
+  }
+};
+</script>
+<style scoped lang="scss">
+.el-upload__tip {
+  margin-top: 0;
+}
+</style>
+
+
