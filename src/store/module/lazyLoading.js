@@ -123,6 +123,12 @@ const dynamicRouter = [
         name: 'STitems',
         component: resolve => require(['@/views/salaryTemplate/STitems.vue'], resolve),
     },
+    // 津贴项目模版
+    {
+        path: '/allowanceItems',
+        name: 'allowanceItems',
+        component: resolve => require(['@/views/salaryTemplate/allowanceItems.vue'], resolve),
+    },
     // <==========公司==========>
     // 公司
     {
