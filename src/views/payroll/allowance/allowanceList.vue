@@ -113,6 +113,7 @@ export default {
       this.isShowEditLayer = true;
       this.curInfo = {
         staffCode: this.payrollInfo.code,
+        BUCode: this.payrollInfo.BUCode,
         type: "add"
       };
     },

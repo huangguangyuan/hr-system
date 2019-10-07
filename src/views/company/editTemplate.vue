@@ -91,7 +91,23 @@ export default {
           { required: true, message: "请输入账号", trigger: "blur" },
           { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        contactTel: [
+          { required: false, message: "请输入手机号码", trigger: "blur" },
+          {
+            pattern: /^\d+$/,
+            message: "请输入正确的手机号码",
+            trigger: ["blur"]
+          }
+        ],
+        contactEmail: [
+          { required: false, message: "请输入电子邮箱", trigger: "blur" },
+          {
+            pattern: /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,
+            message: "请输入正确的邮箱",
+            trigger: ["blur"]
+          }
+        ]
       },
       isShow: true //是否显示
     };
@@ -133,6 +149,7 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/company/companyAdd";
       var data = _this.ruleForm;
+      console.log(data);
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();

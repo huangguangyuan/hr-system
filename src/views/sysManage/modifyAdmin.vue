@@ -4,10 +4,10 @@
       <el-form-item label="名称：" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="邮箱：" prop="email">
+      <el-form-item label="邮箱：" prop="email" v-if='modifyInfo.adminType!="customerAdmin"'>
         <el-input v-model="ruleForm.email"></el-input>
       </el-form-item>
-      <el-form-item label="手机：" prop="mobile">
+      <el-form-item label="手机：" prop="mobile"  v-if='modifyInfo.adminType!="customerAdmin"'>
         <el-input v-model="ruleForm.mobile"></el-input>
       </el-form-item>
       <el-form-item  label="服务归属：" prop="serveId" v-if='userRight && modifyInfo.adminType=="HRadmin"'>

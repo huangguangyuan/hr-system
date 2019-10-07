@@ -523,7 +523,7 @@ export default {
     initialize() {
       if (this.curInfo.type == "modify") {
         this.isShow = false;
-        this.ruleForm = this.curInfo;
+        this.ruleForm = JSON.parse(JSON.stringify(this.curInfo));
         this.ruleForm.hukouType = this.curInfo.hukouType?this.curInfo.hukouType.toString():null;
         this.ruleForm.martialStatus = this.curInfo.martialStatus?this.curInfo.martialStatus.toString():null;
         this.ruleForm.annualLeaveWriteOffMethod = this.curInfo.annualLeaveWriteOffMethod?this.curInfo.annualLeaveWriteOffMethod.toString():null;
@@ -682,9 +682,10 @@ export default {
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
-          _this.$message("修改成功~");
+          _this.$message.success("修改成功~");
         } else {
-          _this.$message(res.data.msg);
+          
+          _this.$message.error(res.data.msg);
         }
       });
     },

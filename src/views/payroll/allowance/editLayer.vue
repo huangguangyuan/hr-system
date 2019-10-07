@@ -1,8 +1,18 @@
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px">
-      <el-form-item label="津贴名称：" prop="name">
-        <el-input v-model="ruleForm.name"></el-input>
+      <el-form-item label="津贴名称：" prop="name" v-if="curInfo.type == 'modify'">
+        <el-input v-model="ruleForm.name" readonly="readonly"></el-input>
+      </el-form-item>
+      <el-form-item label="津贴名称：" prop="name" v-if="curInfo.type == 'add'">
+        <el-select v-model="ruleForm.name" placeholder="请选择津贴项目">
+          <el-option
+            v-for="item in allowanceList"
+            :key="item.name"
+            :value="item.name"
+            :label="item.name"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="津贴金额：" prop="amount">
         <el-input v-model="ruleForm.amount" oninput = "value=value.replace(/[^\d.]/g,'')"></el-input>
@@ -50,7 +60,8 @@ export default {
         includeInpayroll: [
           { required: true, message: "请选择是否包含在薪酬里", trigger: "change" }
         ]
-      }
+      },
+      allowanceList: [], //香港MPF方案列表
     };
   },
   mounted() {
@@ -65,7 +76,19 @@ export default {
         this.ruleForm.includeInpayroll = this.curInfo.includeInPayroll.toString();
         this.ruleForm.remarks = this.curInfo.remarks;
         this.isShow = false;
+      }else{
+        this.getAllowanceList();
       }
+    },
+        // 获取MPF方案列表
+    getAllowanceList() {
+      var reqUrl = "/server/api/v1/bu/allowances";
+      var data = { BUCode: this.curInfo.BUCode };
+      this.$http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
+          this.allowanceList = res.data.data;
+        }
+      });
     },
     // 提交表单
     submitForm(formName) {
