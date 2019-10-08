@@ -126,7 +126,7 @@ export default {
         if (res.data.code == 0){
           sessionStorage.clear();
           localStorage.clear();
-          _this.$store.commit({
+          this.$store.commit({
             type: "getNavTabs",
             navTabs: []
           });

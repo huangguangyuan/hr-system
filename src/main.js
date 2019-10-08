@@ -48,7 +48,7 @@ axios.interceptors.response.use(function (response) { // -1 token过期无效
       let userInfo = myVue.$toolFn.localGet('userInfo');
       myVue.$toolFn.localRemove('userInfo');
       let pathUrl = "/";
-      if (userInfo.roleTypeId == 2 || userInfo.roleTypeId == 1){
+      if (userInfo && (userInfo.roleTypeId == 2 || userInfo.roleTypeId == 1)){
         pathUrl ="/hr";
       }
       router.replace({

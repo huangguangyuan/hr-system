@@ -84,7 +84,7 @@ export default {
       _this.hrCode = _this.userInfo.userCode;
       if (_this.userInfo.lev == 301){
         _this.rightStatus = [1,2,3];
-      }else if ([501,511].indexOf(_this.userInfo.lev) >= 0){//主管，假期审批主管
+      }else if ([501,521].indexOf(_this.userInfo.lev) >= 0){//主管，假期审批主管
         _this.rightStatus = [1];
       }else if ([601,611].indexOf(_this.userInfo.lev) >= 0){//人事，人事文员
         _this.rightStatus = [2];

@@ -29,8 +29,8 @@
         <el-steps :active="step" align-center >
           <el-step title="申请"></el-step>
           <el-step title="主管审批"></el-step>
-          <el-step title="人事审批"></el-step>
-          <el-step title="财务审批"></el-step>
+          <!-- <el-step title="人事审批"></el-step>
+          <el-step title="财务审批"></el-step> -->
           <el-step title="结算（完成）"></el-step>
         </el-steps>
     </div>
