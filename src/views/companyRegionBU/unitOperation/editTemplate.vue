@@ -42,13 +42,13 @@
       <el-divider>
         <i class="el-icon-user"></i> 联系人信息
       </el-divider>
-      <el-form-item label="联系人：">
+      <el-form-item label="联系人：" >
         <el-input v-model="ruleForm.contactName"></el-input>
       </el-form-item>
-      <el-form-item label="联系人电话：">
+      <el-form-item label="联系人手机："  prop="contactTel">
         <el-input v-model="ruleForm.contactTel"></el-input>
       </el-form-item>
-      <el-form-item label="联系人邮箱：">
+      <el-form-item label="联系人邮箱：" prop="contactEmail">
         <el-input v-model="ruleForm.contactEmail"></el-input>
       </el-form-item>
       <el-form-item label="联系人职位：">
@@ -148,7 +148,23 @@ export default {
           { required: true, message: "请输入账号", trigger: "blur" },
           { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        contactTel: [
+          { required: false, message: "请输入手机号码", trigger: "blur" },
+          {
+            pattern: /^\d+$/,
+            message: "请输入正确的手机号码",
+            trigger: ["blur"]
+          }
+        ],
+        contactEmail: [
+          { required: false, message: "请输入电子邮箱", trigger: "blur" },
+          {
+            pattern: /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,
+            message: "请输入正确的邮箱",
+            trigger: ["blur"]
+          }
+        ]
       }
     };
   },

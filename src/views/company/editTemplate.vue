@@ -33,13 +33,13 @@
       <el-form-item label="备注：">
         <el-input v-model="ruleForm.remarks"></el-input>
       </el-form-item>
-      <el-form-item label="联系人：">
+      <el-form-item label="联系人：" >
         <el-input v-model="ruleForm.contactName"></el-input>
       </el-form-item>
-      <el-form-item label="联系人电话：">
+      <el-form-item label="联系人手机：" prop="contactTel">
         <el-input v-model="ruleForm.contactTel"></el-input>
       </el-form-item>
-      <el-form-item label="联系人邮箱：">
+      <el-form-item label="联系人邮箱：" prop="contactEmail">
         <el-input v-model="ruleForm.contactEmail"></el-input>
       </el-form-item>
       <el-form-item label="联系人职位：">

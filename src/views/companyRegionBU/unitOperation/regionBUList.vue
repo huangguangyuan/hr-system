@@ -40,7 +40,7 @@
             <el-form-item label="联系人名称：">
               <span>{{ props.row.contactName }}</span>
             </el-form-item>
-            <el-form-item label="联系人电话：">
+            <el-form-item label="联系人手机：">
               <span>{{ props.row.contactTel }}</span>
             </el-form-item>
             <el-form-item label="联系人邮箱：">

@@ -1,12 +1,22 @@
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px">
-      <el-form-item label="项目：" prop="salaryItemCode">
-        <el-select v-model="ruleForm.salaryItemCode" placeholder="请选择（非）应税项目">
+      <el-form-item label="应税项目：" prop="salaryItemCode" v-if="ruleForm.taxable == 1">
+        <el-select v-model="ruleForm.salaryItemCode" placeholder="请选择应税项目">
           <el-option
             v-for="item in salaryCodeList"
             :key="item.id"
-            :label="item.name + ' ( ' + (item.taxable == 1?'应税':'非应税') + ' )'"
+            :label="item.name"
+            :value="item.code"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="非应税项目：" prop="salaryItemCode"  v-if="ruleForm.taxable == 0">
+        <el-select v-model="ruleForm.salaryItemCode" placeholder="请选择非应税项目">
+          <el-option
+            v-for="item in salaryCodeList"
+            :key="item.id"
+            :label="item.name"
             :value="item.code"
           ></el-option>
         </el-select>
@@ -43,7 +53,8 @@ export default {
         salaryItemCode: "",
         amount: "",
         status: "",
-        remarks: ""
+        remarks: "",
+        taxable:-1
       }, //表单信息
       isShow: true, //是否显示
       salaryCodeList: [],//应税项目列表
@@ -67,6 +78,7 @@ export default {
     // 初始化
     initializeFun() {
       this.getSalaryItemCode();
+      this.ruleForm.taxable = this.curInfo.taxable;
       if (this.curInfo.type == "modify") {
         this.ruleForm.salaryItemCode = this.curInfo.salaryItemCode;
         this.ruleForm.amount = this.curInfo.amount;
@@ -81,7 +93,11 @@ export default {
       var data = {BUCode: this.curInfo.BUCode}
       this.$http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
-          this.salaryCodeList = res.data.data;
+          this.salaryCodeList = res.data.data.filter(item => {
+                 if (item.taxable == this.ruleForm.taxable){
+                   return item;
+                 }
+               });
         }else{
           this.$message.error(res.data.msg);
         }

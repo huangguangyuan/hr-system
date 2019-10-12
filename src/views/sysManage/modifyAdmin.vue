@@ -48,7 +48,7 @@ export default {
         mobile: [
           { required: false, message: "请输入手机号码", trigger: "blur" },
           {
-            pattern: /^[1][3,4,5,7,8][0-9]{9}$/,
+            pattern: /^\d+$/,
             message: "请输入正确的手机号码",
             trigger: ["blur"]
           }
@@ -56,8 +56,8 @@ export default {
         email: [
           { required: false, message: "请输入电子邮箱", trigger: "blur" },
           {
-            pattern: /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/,
-            message: "请输入正确的邮箱号",
+            pattern: /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,
+            message: "请输入正确的邮箱",
             trigger: ["blur"]
           }
         ]

@@ -17,7 +17,7 @@
       <el-table-column sortable prop="account" label="账号"></el-table-column>
       <el-table-column prop="companyName" label="所属公司"></el-table-column>
       <el-table-column prop="contactName" label="联系人"></el-table-column>
-      <el-table-column prop="contactTel" label="联系人电话"></el-table-column>
+      <el-table-column prop="contactTel" label="联系人手机"></el-table-column>
       <el-table-column prop="contactEmail" label="联系人邮箱"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
       <el-table-column prop="location" label="位置"></el-table-column>

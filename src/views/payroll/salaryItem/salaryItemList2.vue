@@ -1,6 +1,6 @@
 <template>
   <div class="salaryItemList">
-    <el-page-header @back="goBack" content="额外应税项目"></el-page-header>
+    <el-page-header @back="goBack" content="非应税项目"></el-page-header>
     <el-divider></el-divider>
     <!-- 头部内容 -->
     <div class="my-top">
@@ -10,9 +10,8 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
-      <el-table-column sortable prop="name" label="应税项目"></el-table-column>
-      <!-- <el-table-column sortable prop="taxableTxt" label="是否应税"></el-table-column> -->
-      <el-table-column sortable prop="amount" label="应税金额"></el-table-column>
+      <el-table-column sortable prop="name" label="非应税项目"></el-table-column>
+      <el-table-column sortable prop="amount" label="金额"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="是否生效"></el-table-column>
       <el-table-column prop="remarks" label="备 注"></el-table-column>
       <el-table-column label="操作" width="300px">
@@ -42,7 +41,7 @@
 
     <!-- 新增 -->
     <el-dialog
-      title="新增应税项目"
+      title="新增非应税项目"
       :visible.sync="isShowEditLayer"
       :close-on-click-modal="false"
       width="55%"
@@ -58,7 +57,7 @@
 <script>
 import editLayer from "./editLayer.vue";
 export default {
-  name: "salaryItemList",
+  name: "salaryItemList2",
   inject: ["reload"],
   data() {
     return {
@@ -86,8 +85,8 @@ export default {
         .then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data
-          .filter(item => {
-                 if (item.taxable == 1){
+               .filter(item => {
+                 if (item.taxable == 0){
                    return item;
                  }
                })
@@ -122,7 +121,7 @@ export default {
       this.curInfo = {
         staffCode: this.payrollInfo.code,
         BUCode: this.payrollInfo.BUCode,
-        taxable:1,
+        taxable:0,
         type: "add"
       };
     },
@@ -131,7 +130,7 @@ export default {
       this.isShowEditLayer = true;
       this.curInfo = res;
       this.curInfo.type = "modify";
-      this.curInfo.taxable = 1;
+      this.curInfo.taxable = 0;
       this.curInfo.BUCode = this.payrollInfo.BUCode;
     },
     // 删除

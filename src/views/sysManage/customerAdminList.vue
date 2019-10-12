@@ -181,13 +181,15 @@ export default {
         myData.companyCode = params.companyCode
       }
       _this.isShowLoading = true;
-      _this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      _this.$http.post(reqUrl, myData).then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data
             .map(item => {
               item.isStatus = item.status == 1 ? "启用" : "禁用";
+              item.mobile =  item.companyTel || ""  + item.companyRegionTel || "" + item.BUTel || "";
+              item.email = item.companyEmail || "" + item.companyRegionEmail || "" + item.BUEmail || "";
+              item.mobile = _this.$toolFn.isNotOrEmpty(item.mobile)?"":item.mobile;
+              item.email = _this.$toolFn.isNotOrEmpty(item.email)?"":item.email;
               item.children = item.childrenList.map(childItem => {
                 childItem.isStatus = item.status == 1 ? "启用" : "禁用";
                 return childItem;

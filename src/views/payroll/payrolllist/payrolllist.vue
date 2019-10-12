@@ -40,7 +40,7 @@
         </template>
       </el-table-column>
       <el-table-column sortable prop="genderTxt" label="性别"></el-table-column>
-      <el-table-column label="操作" width="600px">
+      <el-table-column label="操作" width="700px">
         <template slot-scope="scope">
           <!-- 缴纳社保/公积金信息 -->
           <el-button
@@ -57,17 +57,22 @@
             @click="openFun(scope.$index, scope.row, 'deduction')"
           >专项扣除</el-button>
           <!-- 津贴 -->
-          <el-button
+          <!-- <el-button
             size="mini"
             icon="hr-icon-gangweijintie"
             @click="openFun(scope.$index, scope.row, 'allowance')"
-          >津 贴</el-button>
+          >津 贴</el-button> -->
           <!-- 应税项目 -->
           <el-button
             size="mini"
             icon="hr-icon-yingshui"
             @click="openFun(scope.$index, scope.row, 'salaryItem')"
-          >（非）应税项目</el-button>
+          >应税项目</el-button>
+          <el-button
+            size="mini"
+            icon="hr-icon-yingshui"
+            @click="openFun(scope.$index, scope.row, 'salaryItem2')"
+          >非应税项目</el-button>
         </template>
       </el-table-column>
     </el-table>

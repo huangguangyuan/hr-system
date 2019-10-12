@@ -61,6 +61,12 @@ let toolFn = {
     localRemove: function (name) {
         localStorage.removeItem(name)
     },
+    isNotOrEmpty:function(str){
+        if (!str || str == "" || str == "null"){
+            return true;
+        }
+        return false;
+    },
     async sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms))
     }

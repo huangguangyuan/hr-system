@@ -69,9 +69,9 @@ export default {
       isShow: true, //是否显示
       fileList: [],
       rules: {
-        salary: [
-          { required: true, message: "请输入工资金额", trigger: "blur" }
-        ],
+        // salary: [
+        //   { required: true, message: "请输入工资金额", trigger: "blur" }
+        // ],
         position: [
           { required: true, message: "请输入职位名称", trigger: "blur" }
         ]

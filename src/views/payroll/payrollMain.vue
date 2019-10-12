@@ -4,6 +4,7 @@
     <deduction-list v-if="payrollKey == 'deduction'"></deduction-list>
     <allowance-list v-if="payrollKey == 'allowance'"></allowance-list>
     <salary-item-list v-if="payrollKey == 'salaryItem'"></salary-item-list>
+    <salary-item-list2 v-if="payrollKey == 'salaryItem2'"></salary-item-list2>
     <insured v-if="payrollKey == 'insured'"></insured>
     <MPFinfo v-if="payrollKey == 'MPFinfo'"></MPFinfo>
   </div>
@@ -13,6 +14,7 @@ import payrollList from './payrolllist/payrolllist.vue';
 import deductionList from './deduction/deductionList.vue';
 import allowanceList from './allowance/allowanceList.vue';
 import salaryItemList from './salaryItem/salaryItemList.vue';
+import salaryItemList2 from './salaryItem/salaryItemList2.vue';
 import insured from './insured/insured.vue';
 import MPFinfo from './MPF/MPFinfo.vue';
 export default {
@@ -31,7 +33,7 @@ export default {
     }
   },
   components: {
-    payrollList,deductionList,allowanceList,salaryItemList,insured,MPFinfo
+    payrollList,deductionList,allowanceList,salaryItemList,salaryItemList2,insured,MPFinfo
   }
 };
 </script>
