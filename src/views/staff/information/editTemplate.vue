@@ -106,7 +106,6 @@
           <el-option label="853-澳门" value="853"></el-option>
         </el-select>
       </el-form-item>
-
       <el-form-item label="国籍：" prop="nationality">
         <el-select v-model="ruleForm.nationality" placeholder="请选择所属国籍">
           <el-option label="中国大陆" value="中国大陆"></el-option>
@@ -236,12 +235,14 @@
       <el-divider>
         <i class="hr-icon-yuangongfulitaizhang"></i> 薪资福利
       </el-divider>
-
-      <el-form-item label="年假清空方法：" prop="annualLeaveWriteOffMethod">
+      <el-form-item label="年假清空方法：" prop="annualLeaveWriteOffMethod" style="width: 98%;">
         <el-radio-group v-model="ruleForm.annualLeaveWriteOffMethod">
           <el-radio label="1">年结</el-radio>
           <el-radio label="2">自定义日期结算</el-radio>
         </el-radio-group>
+        <el-form-item label="请选择结算日期：" prop="annualLeaveEntitled">
+          <el-input v-model="ruleForm.annualLeaveEntitled"></el-input>
+        </el-form-item>
       </el-form-item>
       <el-form-item label="每年可享有薪年假：" prop="annualLeaveEntitled">
         <el-input v-model="ruleForm.annualLeaveEntitled"></el-input>
