@@ -36,7 +36,6 @@ export default {
   },
   mounted() {
     var _this = this;
-    console.log(this.curInfo);
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
       this.ruleForm.taxable = this.ruleForm.taxable.toString();
@@ -62,7 +61,7 @@ export default {
     // 添加
     addFun() {
       var _this = this;
-      var reqUrl = "/server/api/v1/allowance/add";
+      var reqUrl = "/server/api/v1/claim/add";
       var data = {
         name: _this.ruleForm.name,
         taxable: Number(_this.ruleForm.taxable),
@@ -80,7 +79,7 @@ export default {
     // 修改
     modifyFun() {
       var _this = this;
-      var reqUrl = "/server/api/v1/allowance/update";
+      var reqUrl = "/server/api/v1/claim/update";
       var data = {
         id: _this.ruleForm.id,
         name: _this.ruleForm.name,

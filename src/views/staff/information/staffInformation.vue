@@ -101,10 +101,10 @@
             <el-form-item label="入职日期：">
               <span>{{ props.row.dateOfJoining }}</span>
             </el-form-item>
-            <el-form-item label="离职日期：" v-if="props.row.status == "2"">
+            <el-form-item label="离职日期：" v-if="props.row.workStatus == "2"">
               <span>{{ props.row.dateOfLeaving }}</span>
             </el-form-item>
-            <el-form-item label="离职原因：" v-if="props.row.status == "2"">
+            <el-form-item label="离职原因：" v-if="props.row.workStatus == "2"">
               <span>{{ props.row.reasonOfLeaving }}</span>
             </el-form-item>
             <el-form-item label="工作地点：">
@@ -183,18 +183,20 @@
           <el-button v-if="userRight" size="mini" icon="el-icon-edit" @click="modifyAccountFun(scope.row.code)">编辑账号</el-button>
           <!-- 编辑 -->
           <el-button v-if="userRight" size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">编辑</el-button>
-          <!-- 状态 -->
+          <!-- 是否在职 -->
           <el-button v-if="userRight"
             size="mini"
             icon="el-icon-bangzhu"
-            @click="isShowState = true;staffID = scope.row.id;staffState = scope.row.status"
+            @click="isShowState = true;staffID = scope.row.id;workStatus = scope.row.workStatus"
           >状态</el-button>
+          <!-- 状态 -->
+          <el-button v-if="userRight" size="mini" icon="el-icon-warning" @click='prohibitFun(scope.$index, scope.row)'>{{scope.row.status==1?'禁用':'启用'}}</el-button>
           <!-- 删除 -->
-          <el-button v-if="userRight"
+          <!-- <el-button v-if="userRight"
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button>
+          >删除</el-button> -->
           <!-- 详细操作 -->
           <el-button
             size="mini"
@@ -230,8 +232,8 @@
       ></editTemplate>
     </el-dialog>
     <!-- 改变状态 -->
-    <el-dialog title="改变状态" :visible.sync="isShowState">
-      <el-radio-group v-model="staffState">
+    <el-dialog title="是否在职" :visible.sync="isShowState">
+      <el-radio-group v-model="workStatus">
         <el-radio :label="1">在职</el-radio>
         <el-radio :label="2">离职</el-radio>
         <el-radio :label="3">停薪留职</el-radio>
@@ -281,7 +283,7 @@ export default {
       searchInner: "", //搜索内容
       regionBUlist: [], //单位列表
       BUCode: "", //角色类型
-      staffState:'',//员工状态
+      workStatus:'',//员工状态
       staffID:'',//员工ID
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
@@ -309,6 +311,43 @@ export default {
       var _this = this;
       _this.getregionBU();
       
+    },
+    // 禁用
+    prohibitFun(index, res) {
+      var _this = this;
+      var txt = '';
+      var status = 1;
+      if(res.status == 1){
+          txt = '此操作将禁用该数据, 是否继续?'
+          status = 0;
+      }else{
+          txt = '此操作将启用该数据, 是否继续?'
+          status = 1;
+      }
+      _this
+        .$confirm(txt, "提 示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+        .then(() => {
+          var data = {
+                id:res.id,
+                status:status
+            }
+          _this.$http
+            .post("/server/api/v1/staff/update", data)
+            .then(res => {
+              _this.reload();
+              _this.$message.success("操作成功~");
+            });
+        })
+        .catch(() => {
+          _this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
     // 获取HR管理员列表
     getHRadminList(val){
@@ -344,7 +383,7 @@ export default {
           _this.tableData = res.data.data
             .map(item => {
               // 状态
-              switch (item.status) {
+              switch (item.workStatus) {
                 case 1:
                   item.statusTxt = "在职";
                   break;
@@ -534,14 +573,14 @@ export default {
     },
     // 改变状态
     changeState(index, res) {
-      if(this.staffState == ''){
+      if(this.workStatus == ''){
         this.$message.info('请选择状态');
         return false;
       }
       var reqUrl = '/server/api/v1/staff/update';
       var data = {
         id:this.staffID,
-        status:this.staffState
+        workStatus:this.workStatus
       }
       this.$http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){

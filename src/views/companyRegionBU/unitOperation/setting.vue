@@ -22,9 +22,13 @@
         <span slot="label"><i class="hr-icon-zinvjiaoyu"></i>薪资应税项目</span>
         <salary-items></salary-items>
       </el-tab-pane>
-      <el-tab-pane label="津贴项目" name="allowances">
+      <!-- <el-tab-pane label="津贴项目" name="claims">
         <span slot="label"><i class="hr-icon-zinvjiaoyu"></i>津贴项目</span>
         <allowances></allowances>
+      </el-tab-pane> -->
+      <el-tab-pane label="报销项目" name="claims">
+        <span slot="label"><i class="hr-icon-zinvjiaoyu"></i>报销项目</span>
+        <claims></claims>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -33,7 +37,8 @@
 import cityTemplate from '../cityTemplate/cityTemplate.vue'
 import payrollPeriod from '../payrollPeriod/payrollPeriod.vue'
 import salaryItems from '../salaryItems/salaryItems.vue'
-import allowances from '../allowances/allowances.vue'
+// import allowances from '../allowances/allowances.vue'
+import claims from '../claim/claims.vue'
 import schemeList from '../insuredScheme/schemeList.vue'
 export default {
   name: "setting",
@@ -65,7 +70,7 @@ export default {
     }
   },
   components: {
-    cityTemplate,payrollPeriod,salaryItems,schemeList,allowances
+    cityTemplate,payrollPeriod,salaryItems,schemeList,claims
   }
 };
 </script>

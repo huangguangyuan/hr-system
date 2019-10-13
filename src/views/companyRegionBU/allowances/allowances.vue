@@ -40,8 +40,8 @@
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     
-    <!-- 新增津贴项目项目 -->
-    <el-dialog title="新增津贴项目项目" :visible.sync="isShowEdit" :close-on-click-modal="false" width="65%">
+    <!-- 新增津贴项目 -->
+    <el-dialog title="新增津贴项目" :visible.sync="isShowEdit" :close-on-click-modal="false" width="65%">
       <edit-layer v-if='isShowEdit' v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo"></edit-layer>
     </el-dialog>
   </div>
@@ -58,8 +58,8 @@ export default {
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
       curInfo: {}, //记录当前内容信息
-      allowanceTemplateList: [], //津贴项目项目列表
-      allowanceIds: [], //津贴项目项目ID列表
+      allowanceTemplateList: [], //津贴项目列表
+      allowanceIds: [], //津贴项目ID列表
       isShowEdit: false, //是否显示新增权限页面
       isShowLoading: false //是否显示loading页
     };

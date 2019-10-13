@@ -63,8 +63,8 @@
       <el-form-item label="员工编号：" prop="staffNo">
         <el-input v-model="ruleForm.staffNo"></el-input>
       </el-form-item>
-      <el-form-item label="状态：" prop="status">
-        <el-radio-group v-model="ruleForm.status">
+      <el-form-item label="状态：" prop="workStatus">
+        <el-radio-group v-model="ruleForm.workStatus">
           <el-radio :label="1">在职</el-radio>
           <el-radio :label="2">离职</el-radio>
           <el-radio :label="3">停薪留职</el-radio>
@@ -200,7 +200,7 @@
           value-format="yyyy-MM-dd"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="离职日期：" prop="dateOfLeaving" v-if="ruleForm.status == '2'">
+      <el-form-item label="离职日期：" prop="dateOfLeaving" v-if="ruleForm.workStatus == '2'">
         <el-date-picker
           type="date"
           placeholder="选择日期"
@@ -210,7 +210,7 @@
           value-format="yyyy-MM-dd"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="离职原因：" prop="reasonOfLeaving" v-if="ruleForm.status == '2'">
+      <el-form-item label="离职原因：" prop="reasonOfLeaving" v-if="ruleForm.workStatus == '2'">
         <el-input v-model="ruleForm.reasonOfLeaving"></el-input>
       </el-form-item>
       <el-form-item label="出生地：" prop="dateOfPlace">
@@ -235,15 +235,19 @@
       <el-divider>
         <i class="hr-icon-yuangongfulitaizhang"></i> 薪资福利
       </el-divider>
-      <el-form-item label="年假清空方法：" prop="annualLeaveWriteOffMethod" style="width: 98%;">
+      <el-form-item label="年假清空方法：" prop="annualLeaveWriteOffMethod" >
         <el-radio-group v-model="ruleForm.annualLeaveWriteOffMethod">
           <el-radio label="1">年结</el-radio>
           <el-radio label="2">自定义日期结算</el-radio>
         </el-radio-group>
-        <el-form-item label="请选择结算日期：" prop="annualLeaveEntitled">
-          <el-input v-model="ruleForm.annualLeaveEntitled"></el-input>
-        </el-form-item>
       </el-form-item>
+      <el-form-item label="请选择年假结算日期：" prop="annualLeaveWriteOffDate" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
+          <el-date-picker
+            v-model="ruleForm.annualLeaveWriteOffDate"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
       <el-form-item label="每年可享有薪年假：" prop="annualLeaveEntitled">
         <el-input v-model="ruleForm.annualLeaveEntitled"></el-input>
       </el-form-item>
@@ -369,6 +373,7 @@ export default {
         HCAccount: "",
         medicalSchemeAccount: "",
         status: "",
+        workStatus: "",
         account:"",
         password:"",
         hrCode:"",
@@ -506,8 +511,8 @@ export default {
           { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
         gender: [{ required: true, message: "请选择性别", trigger: "change" }],
-        status: [
-          { required: true, message: "请选择员工状态", trigger: "change" }
+        workStatus: [
+          { required: true, message: "请选择员工在职状态", trigger: "change" }
         ],
         account: [{ required: true, message: "请填写账户", trigger: "change" }],
         password: [{ required: true, message: "请填写密码", trigger: "change" }],
@@ -530,8 +535,8 @@ export default {
         this.ruleForm.annualLeaveWriteOffMethod = this.curInfo.annualLeaveWriteOffMethod?this.curInfo.annualLeaveWriteOffMethod.toString():null;
         this.ruleForm.payrollType = this.curInfo.payrollType?this.curInfo.payrollType.toString():null;
         this.ruleForm.fileUnitMove = this.curInfo.fileUnitMove?this.curInfo.fileUnitMove.toString():null;
-        //this.ruleForm.status = this.ruleForm.status?this.ruleForm.status.toString():null;
-        //this.ruleForm.status = this.ruleForm.status;
+        //this.ruleForm.workStatus = this.ruleForm.workStatus?this.ruleForm.workStatus.toString():null;
+        //this.ruleForm.workStatus = this.ruleForm.workStatus;
         this.avatarSrc = this.ruleForm.photo;
         this.IDPositiveSrc = this.ruleForm.IDCopy;
         this.IDNegativeSrc = this.ruleForm.IDCopyBack;
@@ -608,12 +613,16 @@ export default {
         SIAccount: _this.ruleForm.SIAccount,
         HCAccount: _this.ruleForm.HCAccount,
         medicalSchemeAccount: _this.ruleForm.medicalSchemeAccount,
-        status: parseInt(_this.ruleForm.status),
+        workStatus: parseInt(_this.ruleForm.workStatus),
         account:_this.ruleForm.account,
         password: md5(_this.ruleForm.password),
         hrCode: _this.ruleForm.hrCode,
         staffNo: _this.ruleForm.staffNo,
       };
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveWriteOffDate == ""){
+        _this.$message.error("年假结算日期不能为空");
+        return false;
+      }
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
@@ -678,8 +687,12 @@ export default {
         postalAddress: _this.ruleForm.postalAddress,
         fringeBeneiftLimit: _this.ruleForm.fringeBeneiftLimit,
         departmentCode:_this.ruleForm.departmentCode,
-        status: parseInt(_this.ruleForm.status)
+        workStatus: parseInt(_this.ruleForm.workStatus)
       };
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && !_this.ruleForm.annualLeaveWriteOffDate){
+        _this.$message.error("年假结算日期不能为空");
+        return false;
+      }
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();

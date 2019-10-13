@@ -2,7 +2,7 @@
   <div class="wrap STitems">
     <!-- 头部内容 -->
     <div class="my-top">
-      <span>津贴项目项目</span>
+      <span>津贴项目</span>
       <el-button type="primary" size="small" @click="isShowAdd = true;curInfo.type='add'">添加项目</el-button>
     </div>
     <!-- 搜索 -->
@@ -37,7 +37,7 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
-    <!-- 添加津贴项目项目 -->
+    <!-- 添加津贴项目 -->
     <el-dialog title="添加津贴项目" :visible.sync="isShowAdd" :close-on-click-modal="false">
       <addAllowanceItems v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo" v-if="isShowAdd"></addAllowanceItems>
     </el-dialog>
