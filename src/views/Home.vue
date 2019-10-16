@@ -151,10 +151,10 @@ export default {
       });
     },
     logout(roleTypeId){
-      var reqUrl = "/server/api/v1/hrSys/logout";
+      var reqUrl = "/server/api/v1/admin/logout";
       var returnUrl = "/";
       if (roleTypeId == 1 || roleTypeId == 2){
-        reqUrl = "/server/api/v1/admin/logout";
+        reqUrl = "/server/api/v1/hrSys/logout";
         returnUrl = "/hr";
       }
       this.$http.post(reqUrl).then(res => {
