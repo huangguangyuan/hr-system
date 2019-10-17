@@ -5,22 +5,32 @@
         <div class="deleteBtn">
             <i class="el-icon-error" @click="removeDomain(domain)"></i>
         </div>
+        <el-form-item label="报销类型" :prop="'details.'+index+'.typeId'" :rules="{required: true, message: '请选择报销类型', trigger: 'change'}">
+          <el-select v-model="domain.typeId" placeholder="请选择报销类型">
+            <!-- <el-option
+              v-for="(item,_index) in claimTypeList"
+              :key="_index"
+              :label="item.val"
+              :value="item.typeId"
+            ></el-option> -->
+            <el-option
+              v-for="(item,_index) in claimTypeList"
+              :key="_index"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="报销日期" :prop="'details.'+index+'.claimDate'" :rules="{required: true, message: '报销日期不能为空', trigger: 'blur'}">
+         <el-date-picker v-model="domain.claimDate" value-format="yyyy-MM-dd"></el-date-picker>
+        </el-form-item>
         <el-form-item label="报销项目名称" :prop="'details.'+index+'.title'" :rules="{required: true, message: '报销项目名称不能为空', trigger: 'blur'}">
           <el-input v-model="domain.title"></el-input>
         </el-form-item>
         <el-form-item label="报销金额" :prop="'details.'+index+'.amount'" :rules="{required: true, message: '报销金额不能为空', trigger: 'blur'}">
           <el-input v-model="domain.amount"></el-input>
         </el-form-item>
-        <el-form-item label="报销类型" :prop="'details.'+index+'.typeId'" :rules="{required: true, message: '请选择报销类型', trigger: 'change'}">
-          <el-select v-model="domain.typeId" placeholder="请选择报销类型">
-            <el-option
-              v-for="(item,_index) in claimTypeList"
-              :key="_index"
-              :label="item.val"
-              :value="item.typeId"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+
         <el-form-item label="备注" :prop="'details.'+index+'.remarks'">
           <el-input v-model="domain.remarks"></el-input>
         </el-form-item>
@@ -47,7 +57,7 @@ export default {
         staffCode: "",
         totalAmount: "",
         fileSrc: "",
-        details: [{ title: "", amount: "", typeId: "", remarks: "" }]
+        details: [{ title: "", amount: "", typeId: "", remarks: "", claimDate: "" }]
       }, //表单信息
       fileUpload_props:{
         uploadUrl:'',
@@ -82,7 +92,7 @@ export default {
     },
     // 获取报销类型
     getClaimTypeId() {
-      var reqUrl = "/server/api/v1/staff/claim/getClaimTypeId";
+      var reqUrl = "/server/api/v1/staff/claim/getBUClaimType";
       this.$http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           this.claimTypeList = res.data.data;
@@ -96,6 +106,7 @@ export default {
         amount: "",
         typeId: "",
         remarks: "",
+        claimDate: "",
         key: Date.now()
       });
     },
