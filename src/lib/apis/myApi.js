@@ -25,7 +25,7 @@
                 if (res.data.code == 0) {
                     return res.data.data;
                 }else{
-                    return null;
+                    return res.data;
                 }
             }));
     }
@@ -40,13 +40,20 @@
         }
     }
 
+    function apiPost(vue,url,pararm){
+        return Promise.resolve(
+            vue.$http.post(url, pararm||{}).then(res => {
+                return res;
+            }));
+    }
+
     //定义接口
     let myApi = {
         post:(vue,url,params)=>apiMain(vue,url,params),
         companysWithChild:(vue,params)=>apiMain(vue,'/server/api/v1/company/companysWithChild',params),//app登录接口
         companys:(vue,params)=>apiMain(vue,'/server/api/v1/company/companys',params),//公司接口
         regionBUs:(vue,params)=>apiMain(vue,'/server/api/v1/company/regionBUs',params),//单位接口
-        genStaffPayroll:(vue,params)=>apiMain(vue,'/server/api/v1/payroll/staff/genStaffPayroll',params),//生成工资单
+        genStaffPayroll:(vue,params)=>apiPost(vue,'/server/api/v1/payroll/staff/genStaffPayroll',params),//生成工资单
     };
 
     export default {

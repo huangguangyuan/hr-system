@@ -2,7 +2,7 @@
   <div class="wrap payrollMain">
     <payroll-list v-if="payrollKey == 'payrollList'"></payroll-list>
     <deduction-list v-if="payrollKey == 'deduction'"></deduction-list>
-    <allowance-list v-if="payrollKey == 'allowance'"></allowance-list>
+    <!-- <allowance-list v-if="payrollKey == 'allowance'"></allowance-list> -->
     <salary-item-list v-if="payrollKey == 'salaryItem'"></salary-item-list>
     <salary-item-list2 v-if="payrollKey == 'salaryItem2'"></salary-item-list2>
     <insured v-if="payrollKey == 'insured'"></insured>

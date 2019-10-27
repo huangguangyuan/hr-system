@@ -200,6 +200,7 @@ export default {
     },
     // 打开详细页面
     openFun(index, res, key) {
+      console.log(res);
       this.$store.commit({
         type: "getPayrollInfo",
         payrollInfo: res,

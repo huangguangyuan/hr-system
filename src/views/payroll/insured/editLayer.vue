@@ -252,7 +252,6 @@ export default {
         status:parseInt(this.ruleForm.status),
         remarks:this.ruleForm.remarks
       };
-      console.log(data);
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();

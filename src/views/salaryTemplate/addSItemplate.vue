@@ -20,7 +20,7 @@
       <el-form-item label="缴纳比例：" prop="paymentRatio">
         <el-input v-model="ruleForm.paymentRatio"></el-input>
       </el-form-item>
-      <el-form-item label="类型" prop='typeId'>
+      <el-form-item label="类型" prop='typeId'  v-if='curInfo.type == "add"'>
         <el-radio-group v-model="ruleForm.typeId">
           <el-radio label="1">养老</el-radio>
           <el-radio label="2">医疗</el-radio>
@@ -30,7 +30,7 @@
           <el-radio label="6">大病</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="缴纳对象" prop='paymentId'>
+      <el-form-item label="缴纳对象" prop='paymentId'  v-if='curInfo.type == "add"'>
         <el-radio-group v-model="ruleForm.paymentId">
           <el-radio label="1">公司</el-radio>
           <el-radio label="2">个人</el-radio>

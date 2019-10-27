@@ -28,12 +28,17 @@
         <span slot="label"><i class="hr-icon-qingjiashenqing"></i> 请假申请</span>
         <holidays-apply-list :staffCode_props="staffCode"></holidays-apply-list>
       </el-tab-pane>
+      <el-tab-pane label="请假申请" name="holidaysApply">
+        <span slot="label"><i class="hr-icon-qingjiashenqing"></i> 假期统计</span>
+
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 <script>
 import claimList from './claim/claimList.vue';
 import holidaysApplyList from './holidaysApply/holidaysApplyList.vue'
+import staffHolidayStat from './staffHolidayStat/staffHolidayStat.vue'
 export default {
   name: "applyMain",
   inject: ["reload"],
@@ -79,7 +84,7 @@ export default {
     
   },
   components: {
-    claimList,holidaysApplyList
+    claimList,holidaysApplyList,staffHolidayStat
   }
 };
 </script>

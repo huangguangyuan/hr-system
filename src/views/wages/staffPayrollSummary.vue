@@ -90,9 +90,9 @@
             <el-form-item :label="props.row.bankAccountNo.title+'：'">
               <span>{{ props.row.bankAccountNo.val || '暂无信息' }}</span>
             </el-form-item>
-            <el-form-item :label="props.row.allowance.title+'：'">
+            <!-- <el-form-item :label="props.row.allowance.title+'：'">
               <span>{{ props.row.allowance.val || '暂无信息' }}</span>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item :label="props.row.payDay.title+'：'">
               <span>{{ props.row.payDay.val || '暂无信息' }}</span>
             </el-form-item>

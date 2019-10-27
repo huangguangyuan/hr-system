@@ -4,7 +4,7 @@
       <el-form-item label="津贴名称：" prop="name" v-if="curInfo.type == 'modify'">
         <el-input v-model="ruleForm.name" readonly="readonly"></el-input>
       </el-form-item>
-      <el-form-item label="津贴名称：" prop="name" v-if="curInfo.type == 'add'">
+      <!-- <el-form-item label="津贴名称：" prop="name" v-if="curInfo.type == 'add'">
         <el-select v-model="ruleForm.name" placeholder="请选择津贴项目">
           <el-option
             v-for="item in allowanceList"
@@ -13,7 +13,7 @@
             :label="item.name"
           ></el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="津贴金额：" prop="amount">
         <el-input v-model="ruleForm.amount" oninput = "value=value.replace(/[^\d.]/g,'')"></el-input>
       </el-form-item>
@@ -61,7 +61,7 @@ export default {
           { required: true, message: "请选择是否包含在薪酬里", trigger: "change" }
         ]
       },
-      allowanceList: [], //香港MPF方案列表
+      //allowanceList: [], //香港MPF方案列表
     };
   },
   mounted() {

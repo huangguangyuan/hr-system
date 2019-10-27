@@ -18,13 +18,13 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <div class="table-wrap" v-if="tableData">
-          <div class="table-item"  v-if="props.row.allowanceList && props.row.allowanceList.length > 0">
+          <!-- <div class="table-item"  v-if="props.row.allowanceList && props.row.allowanceList.length > 0">
             <el-divider>津贴清单</el-divider>
             <el-table :data="props.row.allowanceList" stripe border show-summary size="mini">
               <el-table-column prop="name" label="名 称"></el-table-column>
               <el-table-column prop="amount" label="金额(元)"></el-table-column>
             </el-table>
-          </div>
+          </div> -->
           <div class="table-item" v-if="props.row.taxableItemsList && props.row.taxableItemsList.length > 0" >
             <el-divider>应税项目清单</el-divider>
             <el-table :data="props.row.taxableItemsList" stripe border show-summary>

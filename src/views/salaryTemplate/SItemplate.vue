@@ -56,8 +56,8 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
-    <!-- 添加社保模板 -->
-    <el-dialog title="添加社保模板" :visible.sync="isShowAdd" :close-on-click-modal="false">
+    <!-- 社保模板 -->
+    <el-dialog title="社保模板" :visible.sync="isShowAdd" :close-on-click-modal="false">
       <addSItemplate v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo" v-if="isShowAdd"></addSItemplate>
     </el-dialog>
   </div>

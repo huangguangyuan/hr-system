@@ -136,6 +136,10 @@ export default {
             this.isContent = true;
             this.tableData = res.data.data;
             this.tableData.householdIdTxt = this.householdIdTxt(this.tableData.householdId);
+            if (!res.data.data.SISchemeDetail){
+              this.isContent = false;
+              return;
+            }
             this.schemeSIList = res.data.data.SISchemeDetail.schemeSIList.filter(f=>f.paymentId == 2).map(
               item => {
                 switch (item.typeId) {

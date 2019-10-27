@@ -60,7 +60,7 @@ export default {
       salaryCodeList: [],//应税项目列表
       rules: {
         amount: [
-          { required: true, message: "请输入津贴金额", trigger: "blur" }
+          { required: true, message: "请输入应税金额", trigger: "blur" }
         ],
         status: [
           { required: true, message: "请选择是否生效", trigger: "change" }

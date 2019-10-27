@@ -68,10 +68,11 @@ export default {
           data.staffCode = element.code;
           await this.$toolFn.sleep(1000);
           var genStaffPayroll = await this.$myApi.genStaffPayroll(this,data);
-          if (genStaffPayroll && genStaffPayroll.data.code == 0) {
+          //console.log(genStaffPayroll);
+          if (genStaffPayroll && genStaffPayroll.code == 0) {
             this.$message.success(element.nameChinese+" 工资单生成成功");
           } else {
-            this.$message.error(element.nameChinese + genStaffPayroll.data.msg);
+            this.$message.error(element.nameChinese + genStaffPayroll.msg);
           }
         }
         await this.$toolFn.sleep(2000);
@@ -79,11 +80,12 @@ export default {
       }else if(this.curInfo.typeId == 1){
           data.staffCode = this.curInfo.code;
           var genStaffPayroll = await this.$myApi.genStaffPayroll(this,data);
-          if (genStaffPayroll && genStaffPayroll.data.code == 0) {
+          //console.log(genStaffPayroll);
+          if (genStaffPayroll && genStaffPayroll.code == 0) {
             this.reload();
             this.$message.success("生成成功~");
           } else {
-            this.$message.error(genStaffPayroll.data.msg);
+            this.$message.error(genStaffPayroll.msg);
           }
       }
 

@@ -21,19 +21,19 @@
             icon="el-icon-edit"
             @click="schemeSIFun(scope.$index, scope.row)"
             v-if="scope.row.typeId == '1'"
-          >编辑社保</el-button>
+          >编辑社保缴纳明细</el-button>
           <el-button
             size="mini"
             icon="el-icon-edit"
             @click="schemeHCFun(scope.$index, scope.row)"
             v-if="scope.row.typeId == '2'"
-          >编辑公积金</el-button>
+          >编辑公积金缴纳明细</el-button>
           <el-button
             size="mini"
             icon="el-icon-edit"
             @click="isShowSchemeMPFFun(scope.$index, scope.row)"
             v-if="scope.row.typeId == '3'"
-          >编辑香港MPF</el-button>
+          >编辑香港MPF缴纳明细</el-button>
           <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">编辑</el-button>
           <el-button
             size="mini"
@@ -184,8 +184,9 @@ export default {
         })
         .then(() => {
           _this.$http
-            .post("/server/api/v1/bu/salaryItemDelete", { code: res.code })
+            .post("/server/api/v1/insuredScheme/delete", { id: res.id })
             .then(res => {
+              console.log(res);
               _this.reload();
               _this.$message.success("删除成功！");
             });

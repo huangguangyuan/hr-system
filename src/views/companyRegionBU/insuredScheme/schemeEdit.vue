@@ -4,19 +4,19 @@
       <el-form-item label="方案名称：" prop="name" v-if="isShow">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="选择城市模板" prop="cityCode">
+      <el-form-item label="选择城市模板" prop="cityCode" v-if='curInfo.type == "add"'>
         <el-select v-model="ruleForm.cityCode" placeholder="请选择活动区域">
           <el-option v-for="item in cityList" :key="item.code" :label="item.name" :value="item.code"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="类型：" prop="typeId">
+      <el-form-item label="类型：" prop="typeId"  v-if='curInfo.type == "add"'>
         <el-radio-group v-model="ruleForm.typeId">
           <el-radio label="1">社保</el-radio>
           <el-radio label="2">公积金</el-radio>
           <el-radio label="3">香港MPF</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="是否复制城市模板：" prop="copyTemp">
+      <el-form-item label="是否复制城市模板：" prop="copyTemp" v-if='curInfo.type == "add"'>
         <el-radio-group v-model="ruleForm.copyTemp">
           <el-radio label="1">是</el-radio>
           <el-radio label="2">否</el-radio>
@@ -38,6 +38,7 @@ export default {
   data() {
     return {
       ruleForm: {
+        id:0,
         cityCode: "",
         typeId: "",
         name: "",
@@ -73,6 +74,11 @@ export default {
     initializeFun() {
       this.getCityCode();
       if (this.curInfo.type == "modify") {
+        this.ruleForm.code = this.curInfo.code;
+        this.ruleForm.id = this.curInfo.id;
+        this.ruleForm.cityCode = this.curInfo.cityCode;
+        this.ruleForm.typeId = this.curInfo.typeId;
+        this.ruleForm.name = this.curInfo.name;
       }
     },
     // 获取城市模板
@@ -125,12 +131,12 @@ export default {
     },
     // 修改
     modifyFun() {
-      var reqUrl = "/server/api/v1/bu/salaryItemUpdate";
+      var reqUrl = "/server/api/v1/insuredScheme/update";
       var data = {
-        code: this.curInfo.code,
-        taxable: parseInt(this.ruleForm.taxable),
-        description: this.ruleForm.description
+        id: this.ruleForm.id,
+        name: this.ruleForm.name
       };
+      console.log(data);
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();

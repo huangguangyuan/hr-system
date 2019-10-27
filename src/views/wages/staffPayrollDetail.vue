@@ -17,9 +17,9 @@
       <el-col :span="8">
         <el-card shadow="always">基本工资：{{details.salary}}</el-card>
       </el-col>
-      <el-col :span="8" v-if="allowanceList && allowanceList.length > 0">
+      <!-- <el-col :span="8" v-if="allowanceList && allowanceList.length > 0">
         <el-card shadow="always">津贴总额：{{details.detail.allowanceAmount}}</el-card>
-      </el-col>
+      </el-col> -->
       <el-col :span="8" v-if="taxableItemsList && taxableItemsList.length > 0">
         <el-card shadow="always">应税项目总额：{{details.detail.taxableItemsAmount}}</el-card>
       </el-col>
@@ -61,11 +61,11 @@
         <el-card shadow="always">实发工资：{{reallyAmount}}</el-card>
       </el-col>
     </el-row>
-    <el-divider v-if="allowanceList && allowanceList.length > 0">津贴清单</el-divider>
+    <!-- <el-divider v-if="allowanceList && allowanceList.length > 0">津贴清单</el-divider>
     <el-table v-if="allowanceList && allowanceList.length > 0" :data="allowanceList" stripe border show-summary>
       <el-table-column prop="name" label="名 称"></el-table-column>
       <el-table-column prop="amount" label="金额(元)"></el-table-column>
-    </el-table>
+    </el-table> -->
     <el-divider v-if="taxableItemsList && taxableItemsList.length > 0">应税项目清单</el-divider>
     <el-table  v-if="taxableItemsList && taxableItemsList.length > 0"  :data="taxableItemsList" stripe border show-summary>
       <el-table-column prop="name" label="项目名称"></el-table-column>
@@ -174,7 +174,7 @@ export default {
           }
           this.HCList = this.details.detail.HCList;
           this.SIList = this.details.detail.SIList;
-          this.allowanceList = this.details.detail.allowanceList;
+          //this.allowanceList = this.details.detail.allowanceList;
           if (this.details.detail.claimList){
             this.claimList = this.details.detail.claimList.map(item => {
               item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";

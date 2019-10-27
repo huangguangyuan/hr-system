@@ -31,11 +31,11 @@
             <el-table-column prop="payment" label="金额(元)"></el-table-column>
           </el-table>
 
-          <el-divider>津贴清单</el-divider>
+          <!-- <el-divider>津贴清单</el-divider>
           <el-table :data="props.row.allowanceList" stripe border show-summary size="mini">
             <el-table-column prop="name" label="名 称"></el-table-column>
             <el-table-column prop="amount" label="金额(元)"></el-table-column>
-          </el-table>
+          </el-table> -->
 
           <el-divider>报销清单</el-divider>
           <el-table :data="props.row.claimList" stripe border show-summary size="mini">

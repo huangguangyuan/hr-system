@@ -45,7 +45,6 @@ export default {
   },
   mounted() {
     var _this = this;
-    console.log(this.curInfo);
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
       this.ruleForm.taxable = this.ruleForm.taxable.toString();

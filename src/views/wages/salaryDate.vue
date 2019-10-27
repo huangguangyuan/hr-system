@@ -13,13 +13,13 @@
       <el-divider  v-if="staffInsuredInfo">社保信息</el-divider>
       <el-row :gutter="12" v-if="staffInsuredInfo">
         <el-col :span="8">
-          <el-card shadow="always">社保账号：{{staffInsuredInfo.SIAccount}}</el-card>
+          <el-card shadow="always">社保账户：{{staffInsuredInfo.SIAccount}}</el-card>
         </el-col>
         <el-col :span="8">
           <el-card shadow="always">社保基数：{{staffInsuredInfo.SIBase}}</el-card>
         </el-col>
-        <el-col :span="8">
-          <el-card shadow="always">社保城市方案：{{staffInsuredInfo.SICity}}</el-card>
+        <el-col :span="8" v-if="staffInsuredInfo.SISchemeDetail && staffInsuredInfo.SISchemeDetail.city">
+          <el-card shadow="always">社保城市方案：{{staffInsuredInfo.SISchemeDetail.city.name}}</el-card>
         </el-col>
         <el-col :span="8">
           <el-card shadow="always">住房公积金账户：{{staffInsuredInfo.HCAccount}}</el-card>
@@ -27,9 +27,10 @@
         <el-col :span="8">
           <el-card shadow="always">公积金实际金额：{{staffInsuredInfo.HCRealityAoumt}}</el-card>
         </el-col>
-        <el-col :span="8">
-          <el-card shadow="always">基本医疗保险卡号：{{staffInsuredInfo.medicalSchemeAccount || '暂无信息'}}</el-card>
+        <el-col :span="8"  v-if="staffInsuredInfo.SISchemeDetail && staffInsuredInfo.HCSchemeDetail.city">
+          <el-card shadow="always">公积金城市方案：{{staffInsuredInfo.HCSchemeDetail.city.name}}</el-card>
         </el-col>
+ 
       </el-row>
       <el-divider>基础信息</el-divider>
       <el-row :gutter="12">
@@ -39,9 +40,9 @@
           <el-col :span="12" v-if="msg.taxThreshold != 0">
             <el-card shadow="always">个税起征点：{{msg.taxThreshold}}</el-card>
           </el-col>
-        <el-col :span="12" >
+        <!-- <el-col :span="12" >
           <el-card shadow="always">津贴总额：{{arrSum(msg.allowanceList,'amount')}}</el-card>
-        </el-col>
+        </el-col> -->
         <el-col :span="12" >
           <el-card shadow="always">应税项目总额：{{arrSum(msg.salaryItemsNeedTax,'amount')}}</el-card>
         </el-col>
@@ -64,11 +65,11 @@
           <el-card shadow="always">服务商名称：{{staffInsuredInfoMPF.serviceProviderName}}</el-card>
         </el-col>
       </el-row>
-      <el-divider>津贴清单</el-divider>
+      <!-- <el-divider>津贴清单</el-divider>
       <el-table :data="msg.allowanceList" stripe border show-summary style="width: 100%">
         <el-table-column prop="name" label="津贴项目名称"></el-table-column>
         <el-table-column prop="amount" label="津贴金额（元）"></el-table-column>
-      </el-table>
+      </el-table> -->
       <el-divider>应税项目</el-divider>
       <el-table :data="msg.salaryItemsNeedTax" stripe border show-summary style="width: 100%">
         <el-table-column prop="name" label="项目名称"></el-table-column>
