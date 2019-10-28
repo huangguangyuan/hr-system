@@ -1,22 +1,22 @@
 <template>
   <div class="holidaysApplyList">
-    <el-form-item>
+    <div>
       <el-radio-group v-model="holidayTypeSelected">
         <el-radio-button
           v-for="item in holidaysTypeList"
             :key="item.typeId"
-            :label="item.val"
-            :value="item.typeId"
+            :label="item.typeId"
           @click.native.prevent="changeType(item.typeId)"
-        >{{holidayType.title}}</el-radio-button>
+        >{{item.val}}</el-radio-button>
       </el-radio-group>
-    </el-form-item>
+    </div>
+<br />
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id" show-summary>
-      <el-table-column sortable prop="createTime" label="申请时间" width="200"></el-table-column>
-      <el-table-column sortable prop="totalDay" label="天数"></el-table-column>
+      <el-table-column prop="createTime" label="申请时间" width="200"></el-table-column>
+      <el-table-column prop="totalDay" label="天数"></el-table-column>
       <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column>
-      <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column prop="statusTxt" label="状态"></el-table-column>
       <!-- <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button
@@ -46,10 +46,10 @@ export default {
   name: "holidaysApplyList",
   inject: ["reload"],
   props: ["staffCode_props"],
-  holidayTypeSelected: "1",
-  holidaysTypeList: [],
   data() {
     return {
+      holidayTypeSelected: 1,
+      holidaysTypeList: [],
       tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
@@ -64,22 +64,29 @@ export default {
   },
   mounted() {
     this.getHolidaysApplyTypeFun();
-    this.getData(this.staffCode);
   },
   methods: {
+    changeType(typeId){
+      this.holidayTypeSelected = typeId;
+      this.getData(this.staffCode,typeId);
+    },
     // 获取请假类型
     getHolidaysApplyTypeFun() {
       var reqUrl = "/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId";
       this.$http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           this.holidaysTypeList = res.data.data;
+          this.holidayTypeSelected = this.holidaysTypeList[0].typeId;
+          //console.log(this.staffCode,this.holidayTypeSelected);
+          this.getData(this.staffCode,this.holidayTypeSelected);
+
         }
       });
     },
     //获取数据列表
-    getData(staffCode) {
-      var reqUrl = "/server/api/v1/staff/holidaysApply/staffHolidaysApplyList";
-      var myData = { staffCode: staffCode };
+    getData(staffCode,typeId) {
+      var reqUrl = "/server/api/v1/staff/holidaysApply/staffCompleteHolidays";
+      var myData = { staffCode: staffCode,typeId: parseInt(typeId) };
       this.isShowLoading = true;
       this.$http
         .post(reqUrl, myData)
@@ -145,7 +152,9 @@ export default {
     margin-right: 20px;
   }
 }
-
+.el-radio-button:focus:not(.is-focus):not(:active):not(.is-disabled){
+box-shadow:0 0 0 0 #f28c38;
+}
 </style>
 
 

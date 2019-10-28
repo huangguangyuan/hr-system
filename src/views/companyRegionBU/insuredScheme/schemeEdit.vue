@@ -114,12 +114,12 @@ export default {
       var reqUrl = "/server/api/v1/insuredScheme/add";
       var data = {
         BUCode: this.BUInfo.code,
+        
         cityCode: this.ruleForm.cityCode,
         typeId: parseInt(this.ruleForm.typeId),
         name: this.ruleForm.name,
         copyTemp: parseInt(this.ruleForm.copyTemp)
       };
-      console.log(data);
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
@@ -136,7 +136,6 @@ export default {
         id: this.ruleForm.id,
         name: this.ruleForm.name
       };
-      console.log(data);
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();

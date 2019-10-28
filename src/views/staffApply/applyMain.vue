@@ -28,9 +28,9 @@
         <span slot="label"><i class="hr-icon-qingjiashenqing"></i> 请假申请</span>
         <holidays-apply-list :staffCode_props="staffCode"></holidays-apply-list>
       </el-tab-pane>
-      <el-tab-pane label="请假申请" name="holidaysApply">
+      <el-tab-pane label="假期统计" name="holidaysStat">
         <span slot="label"><i class="hr-icon-qingjiashenqing"></i> 假期统计</span>
-
+        <staff-holiday-stat :staffCode_props="staffCode"></staff-holiday-stat>
       </el-tab-pane>
     </el-tabs>
   </div>
