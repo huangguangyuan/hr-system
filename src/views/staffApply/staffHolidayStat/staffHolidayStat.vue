@@ -1,9 +1,5 @@
 <template>
   <div class="holidaysApplyList">
-    <el-button-group>
-      <el-button type="primary" icon="el-icon-edit" @click="addFun">请假申请</el-button>
-    </el-button-group>
-    <el-divider></el-divider>
     <el-form-item>
       <el-radio-group v-model="holidayTypeSelected">
         <el-radio-button
@@ -16,12 +12,12 @@
       </el-radio-group>
     </el-form-item>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
+    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id" show-summary>
       <el-table-column sortable prop="createTime" label="申请时间" width="200"></el-table-column>
       <el-table-column sortable prop="totalDay" label="天数"></el-table-column>
       <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="300px">
+      <!-- <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -29,7 +25,7 @@
             @click="handleDetails(scope.$index, scope.row)"
           >查看详情</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <!-- 分页编码 -->
     <div class="pageInfo">
@@ -42,14 +38,6 @@
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
-    <!-- 请假申请表单 -->
-    <el-dialog title="请假申请表单" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
-      <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
-    </el-dialog>
-    <!-- 请假表单详情 -->
-    <el-dialog title="请假申请详情" :visible.sync="isShowDetails" :close-on-click-modal="false">
-      <holidays-apply-details v-if="isShowDetails" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></holidays-apply-details>
-    </el-dialog>
   </div>
 </template>
 <script>
