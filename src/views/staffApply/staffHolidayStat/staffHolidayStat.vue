@@ -67,6 +67,7 @@ export default {
   },
   methods: {
     changeType(typeId){
+      this.curPage = 1;
       this.holidayTypeSelected = typeId;
       this.getData(this.staffCode,typeId);
     },

@@ -26,13 +26,18 @@
       <el-table-column sortable prop="isWithpayTxt" label="是否带薪"></el-table-column>
       <el-table-column prop="nextStepTip" label="下一步提示"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="200px">
+      <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index,scope.row)"
           >查看{{approveTxt(scope.row)}}</el-button>
+          <el-button
+            size="mini"
+            icon="el-icon-info"
+            @click="handleStaffHolidays(scope.$index,scope.row)"
+          >员工假期记录</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -51,10 +56,14 @@
     <el-dialog title="请假申请详情" :visible.sync="isShowDetails" :close-on-click-modal="false">
       <approval-holidays-details v-if="isShowDetails" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></approval-holidays-details>
     </el-dialog>
+    <el-dialog title="假期记录" :visible.sync="isShowStaffHolidays" :close-on-click-modal="false">
+      <staff-holiday-stat v-if="isShowStaffHolidays" :staffCode_props="staffCode_props" v-on:listenIsShowMask="listenIsShowMask"></staff-holiday-stat>
+    </el-dialog>    
   </div>
 </template>
 <script>
 import approvalHolidaysDetails from "./approvalHolidaysDetails.vue";
+import staffHolidayStat from "../staffApply/staffHolidayStat/staffHolidayStat.vue";
 import { truncate } from 'fs';
 let id = 0;
 export default {
@@ -69,10 +78,12 @@ export default {
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
+      isShowStaffHolidays:false,
       hrCode: "",
       rightStatus:[], //当前管理员可审批的申请类型
       BUCode: "", //单位code
       regionBUList:[],//单位列表
+      staffCode_props:'',
       filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip']}
     };
   },
@@ -147,6 +158,11 @@ export default {
       this.curInfo = res;
       this.curInfo.hrCode = this.hrCode;
     },
+    // 员工假期记录
+    handleStaffHolidays(index, res){
+      this.isShowStaffHolidays= true;
+      this.staffCode_props = res.staffCode;
+    },
     selectFun(val) {
       this.BUCode = val;
       this.getData(this.hrCode,this.BUCode);
@@ -199,7 +215,7 @@ export default {
     }
   },
   components: {
-    approvalHolidaysDetails
+    approvalHolidaysDetails,staffHolidayStat
   }
 };
 </script>
