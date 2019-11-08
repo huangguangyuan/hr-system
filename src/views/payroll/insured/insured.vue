@@ -48,7 +48,7 @@
           <span>{{tableData.HCCityFirst==1?'是':'否'}}</span>
         </li>
         <li>
-          <span>公积金实际金额：</span>
+          <span>公积金基数：</span>
           <span>{{tableData.HCRealityAoumt}}</span>
         </li>
         <li>

@@ -25,7 +25,7 @@
           <el-card shadow="always">住房公积金账户：{{staffInsuredInfo.HCAccount}}</el-card>
         </el-col>
         <el-col :span="8">
-          <el-card shadow="always">公积金实际金额：{{staffInsuredInfo.HCRealityAoumt}}</el-card>
+          <el-card shadow="always">公积金基数：{{staffInsuredInfo.HCRealityAoumt}}</el-card>
         </el-col>
         <el-col :span="8"  v-if="staffInsuredInfo.SISchemeDetail && staffInsuredInfo.HCSchemeDetail.city">
           <el-card shadow="always">公积金城市方案：{{staffInsuredInfo.HCSchemeDetail.city.name}}</el-card>

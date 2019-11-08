@@ -43,7 +43,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="公积金实际金额：" prop="HCRealityAoumt">
+      <el-form-item label="公积金基数：" prop="HCRealityAoumt">
         <el-input
           v-model.number="ruleForm.HCRealityAoumt"
           oninput="value=value.replace(/[^\d.]/g,'')"
@@ -97,7 +97,7 @@ export default {
         HCAccount: "", //住房公积金账户
         HCCityFirst: "", //该地公积金首次购买社保
         HCSchemeCode: "", //社保缴费方案Code
-        HCRealityAoumt: "", //公积金实际金额
+        HCRealityAoumt: "", //公积金基数
         medicalSchemeAccount: "", //基本医疗保险卡号
         householdId: "", //户籍
         status: "", //是否生效
@@ -137,7 +137,7 @@ export default {
           { required: true, message: "请选择公积金方案", trigger: "change" }
         ],
         HCRealityAoumt: [
-          { required: true, message: "请输入公积金实际金额", trigger: "blur" }
+          { required: true, message: "请输入公积金基数", trigger: "blur" }
         ],
         medicalSchemeAccount: [
           { required: true, message: "请输入基本医疗保险卡号", trigger: "blur" }
