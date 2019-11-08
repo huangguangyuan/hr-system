@@ -8,7 +8,7 @@
         <el-input v-model="ruleForm.position"></el-input>
       </el-form-item>
       <el-form-item label="工作性质：">
-        <el-input v-model="ruleForm.jobNature"></el-input>
+        <el-input v-model="ruleForm.jobNature" maxlength="200"></el-input>
       </el-form-item>
       
       <el-form-item label="入职日期：" prop="startDate">

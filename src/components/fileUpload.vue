@@ -15,7 +15,7 @@
           :data="dataFiles"
         >
           <el-button plain>点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">上传文件格式为：'.jpg','.png','.gif','.csv','.csv','.xlsx','.xls','.docx','.doc'</div>
+          <div slot="tip" class="el-upload__tip">上传文件格式为：'.jpg','.png','.gif','.csv','.csv','.xlsx','.xls','.docx','.doc','.pdf'</div>
         </el-upload>
       </el-form-item>
 </template>
