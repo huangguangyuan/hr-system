@@ -43,7 +43,7 @@
     function apiPost(vue,url,pararm){
         return Promise.resolve(
             vue.$http.post(url, pararm||{}).then(res => {
-                return res;
+                return res.data;
             }));
     }
 

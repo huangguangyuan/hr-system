@@ -108,7 +108,7 @@ export default {
     },
     // 修改
     modifyFun() {
-      var reqUrl = "/server/api/v1/bu/insuredScheme/si/update";
+      var reqUrl = "/server/api/v1/bu/insuredScheme/hc/update";
       var data = {
         id: this.curInfo.id,
         cityCode: this.curInfo.cityCode,

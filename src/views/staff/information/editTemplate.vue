@@ -27,7 +27,7 @@
           <el-radio label="F">女</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="英文名：" prop="nameEnglish">
+      <el-form-item label="英文名："prop="nameEnglish">
         <el-input v-model="ruleForm.nameEnglish"></el-input>
       </el-form-item>
       <el-form-item label="个人头像：" prop="photo">
@@ -517,6 +517,7 @@ export default {
         account: [{ required: true, message: "请填写账户", trigger: "change" }],
         password: [{ required: true, message: "请填写密码", trigger: "change" }],
         staffNo: [{ required: true, message: "请填写员工编号", trigger: "change" }],
+        hukouType: [{ required: true, message: "请选择户口性质", trigger: "change" }]
       }
     };
   },

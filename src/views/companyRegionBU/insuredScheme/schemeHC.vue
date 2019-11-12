@@ -130,7 +130,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .post("/server/api/v1/bu/insuredScheme/si/delete", { id: res.id })
+            .post("/server/api/v1/bu/insuredScheme/hc/delete", { id: res.id })
             .then(res => {
               this.getAllData();
               this.$message.success("删除成功~");
