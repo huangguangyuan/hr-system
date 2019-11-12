@@ -47,7 +47,8 @@
         <el-input
           v-model.number="ruleForm.HCRealityAoumt"
           oninput="value=value.replace(/[^\d.]/g,'')"
-        ></el-input>
+          placeholder="不填写默认用社保基数"
+        ></el-input> <span style="color:#ccc">不填写默认用社保基数</span>
       </el-form-item>
 
       <el-form-item label="基本医疗保险卡号：" prop="medicalSchemeAccount">
@@ -136,9 +137,9 @@ export default {
         HCSchemeCode: [
           { required: true, message: "请选择公积金方案", trigger: "change" }
         ],
-        HCRealityAoumt: [
-          { required: true, message: "请输入公积金基数", trigger: "blur" }
-        ],
+        // HCRealityAoumt: [
+        //   { required: true, message: "请输入公积金基数", trigger: "blur" }
+        // ],
         medicalSchemeAccount: [
           { required: true, message: "请输入基本医疗保险卡号", trigger: "blur" }
         ],
