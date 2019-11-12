@@ -189,9 +189,9 @@ const dynamicRouter = [
     },
     // 编辑全年工资清单
     {
-        path: '/annualStaffPayrollEdit',
-        name: 'annualStaffPayrollEdit',
-        component: resolve => require(['@/views/wages/annualStaffPayrollEdit.vue'], resolve),
+        path: '/annualPayrollEdit',
+        name: 'annualPayrollEdit',
+        component: resolve => require(['@/views/wages/annualPayroll/annualPayrollEdit.vue'], resolve),
     },
     // <==========计薪==========>
     // 员工薪资计算
