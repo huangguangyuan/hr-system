@@ -1,8 +1,8 @@
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="220px">
-      <el-form-item label="税前金额：" prop="grossPay">
-        <el-input v-model="ruleForm.grossPay" oninput = "value=value.replace(/[^\d.]/g,'')"></el-input>
+      <el-form-item label="税前金额：" prop="taxableWages">
+        <el-input v-model="ruleForm.taxableWages" oninput = "value=value.replace(/[^\d.]/g,'')"></el-input>
       </el-form-item>      
       <el-form-item label="个人所得税：" prop="taxAmount">
         <el-input v-model="ruleForm.taxAmount" oninput = "value=value.replace(/[^\d.]/g,'')"></el-input>
@@ -25,13 +25,13 @@ export default {
         year:0,
         month:0,
         staffCode:'',
-        grossPay:'',
+        taxableWages:'',
         taxAmount:'',
       }, //表单信息
       isShow: true, //是否显示
       fileList: [],
       rules: {
-        grossPay: [
+        taxableWages: [
           { required: true, message: "请输入税前金额", trigger: "blur" }
         ],
         taxAmount: [
@@ -49,7 +49,7 @@ export default {
         this.ruleForm.year = this.curInfo.year;
         this.ruleForm.month = this.curInfo.month;
         this.ruleForm.staffCode = this.curInfo.code;
-        this.ruleForm.grossPay = this.curInfo.grossPay;
+        this.ruleForm.taxableWages = this.curInfo.taxableWages;
         this.ruleForm.taxAmount = this.curInfo.taxAmount;
     },
     // 提交表单
@@ -69,7 +69,7 @@ export default {
         year:parseInt(this.ruleForm.year),
         month:parseInt(this.ruleForm.month),
         staffCode:this.curInfo.staffCode,
-        grossPay:parseFloat(this.ruleForm.grossPay),
+        taxableWages:parseFloat(this.ruleForm.taxableWages),
         taxAmount:parseFloat(this.ruleForm.taxAmount)
       };
       this.$http.post(reqUrl, data).then(res => {

@@ -47,14 +47,14 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe show-summary >
       <el-table-column prop="month" label="月份"></el-table-column>
-      <el-table-column prop="grossPay" label="应税工资"></el-table-column>
+      <el-table-column prop="taxableWages" label="应税工资"></el-table-column>
       <el-table-column prop="taxAmount" label="个人所得税"></el-table-column>
-      <el-table-column prop="netAmount" label="税后工资"></el-table-column>
+      <!-- <el-table-column prop="netAmount" label="税后工资"></el-table-column> -->
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-edit"
             @click="modifyFun(scope.$index, scope.row)"
           >更 新</el-button>
         </template>
@@ -117,6 +117,7 @@ export default {
           this.regionBUlist = regionBUs;
           this.seachMsg.BUCode = this.$toolFn.sessionGet("annualPayrollEdit")? this.$toolFn.sessionGet("annualPayrollEdit").BUCode : this.regionBUlist[0].code;
           this.seachMsg.staffName = this.$toolFn.sessionGet("annualPayrollEdit") ? this.$toolFn.sessionGet("annualPayrollEdit").staffName : "";
+          this.seachMsg.staffCode = this.$toolFn.sessionGet("annualPayrollEdit") ? this.$toolFn.sessionGet("annualPayrollEdit").staffCode : "";
           this.loadAll(this.seachMsg.BUCode);
         }
     },
@@ -149,7 +150,7 @@ export default {
     },
     // 选择年份
     selectYear(val) {
-      this.getData(this.staffCode, parseInt(val));
+      this.getData(this.seachMsg.staffCode, parseInt(val));
       this.$toolFn.sessionSet("annualPayrollEdit", this.seachMsg);
     },
     staffList(queryString, cb) {
@@ -185,8 +186,9 @@ export default {
       handleSelect(item) {
         this.seachMsg.staffCode = item.code;
         this.seachMsg.staffName = item.nameChinese;
-        this.getData(item.code,this.seachMsg.year);
+        console.log(this.seachMsg);
         this.$toolFn.sessionSet("annualPayrollEdit", this.seachMsg);
+        this.getData(item.code,this.seachMsg.year);
       },
       // 编辑
       modifyFun(index, res) {
