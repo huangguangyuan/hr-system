@@ -71,8 +71,6 @@ export default {
     };
   },
   mounted() {
-    
-    
     this.circleUrl = this.staffInfo.photo?this.staffInfo.photo:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
     this.activeName = this.$toolFn.sessionGet('staffNavActive')?this.$toolFn.sessionGet('staffNavActive'):'education';
   },
