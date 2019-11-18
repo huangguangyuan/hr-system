@@ -517,7 +517,9 @@ export default {
         account: [{ required: true, message: "请填写账户", trigger: "change" }],
         password: [{ required: true, message: "请填写密码", trigger: "change" }],
         staffNo: [{ required: true, message: "请填写员工编号", trigger: "change" }],
-        hukouType: [{ required: true, message: "请选择户口性质", trigger: "change" }]
+        hukouType: [{ required: true, message: "请选择户口性质", trigger: "change" }],
+        martialStatus: [{ required: true, message: "请选择婚姻状况", trigger: "change" }],
+        photo:[{ required: true, message: "请上传个人头像", trigger: "change" }]
       }
     };
   },
