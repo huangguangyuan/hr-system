@@ -20,8 +20,8 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="社保基数：" prop="SIBase">
-        <el-input v-model="ruleForm.SIBase" oninput="value=value.replace(/[^\d.]/g,'')"></el-input>
+      <el-form-item label="社保基数：" prop="SIBase" >
+        <el-input v-model="ruleForm.SIBase" oninput = "value=value.replace(/[^\d.]/g,'')"></el-input>
       </el-form-item>
 
       <el-form-item label="住房公积金账户：" prop="HCAccount">
@@ -45,10 +45,7 @@
       </el-form-item>
       <el-form-item label="公积金基数：" prop="HCRealityAoumt">
         <el-input
-          v-model.number="ruleForm.HCRealityAoumt"
-          oninput="value=value.replace(/[^\d.]/g,'')"
-          placeholder="不填写默认用社保基数"
-        ></el-input> <span style="color:#ccc">不填写默认用社保基数</span>
+          v-model="ruleForm.HCRealityAoumt" oninput = "value=value.replace(/[^\d.]/g,'')" placeholder="不填写默认用社保基数"></el-input> <span style="color:#ccc">不填写默认用社保基数</span>
       </el-form-item>
 
       <el-form-item label="基本医疗保险卡号：" prop="medicalSchemeAccount">
