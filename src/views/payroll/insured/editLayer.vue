@@ -2,7 +2,7 @@
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px">
       <el-form-item label="社保账号：" prop="SIAccount">
-        <el-input v-model.number="ruleForm.SIAccount"></el-input>
+        <el-input v-model="ruleForm.SIAccount"></el-input>
       </el-form-item>
       <el-form-item label="该地社保首次购买社保：" prop="SICityFirst">
         <el-radio-group v-model="ruleForm.SICityFirst">
@@ -25,7 +25,7 @@
       </el-form-item>
 
       <el-form-item label="住房公积金账户：" prop="HCAccount">
-        <el-input v-model.number="ruleForm.HCAccount"></el-input>
+        <el-input v-model="ruleForm.HCAccount"></el-input>
       </el-form-item>
       <el-form-item label="该地公积金首次购买社保：" prop="HCCityFirst">
         <el-radio-group v-model="ruleForm.HCCityFirst">
@@ -49,7 +49,7 @@
       </el-form-item>
 
       <el-form-item label="基本医疗保险卡号：" prop="medicalSchemeAccount">
-        <el-input v-model.number="ruleForm.medicalSchemeAccount"></el-input>
+        <el-input v-model="ruleForm.medicalSchemeAccount"></el-input>
       </el-form-item>
       <el-form-item label="户籍：" prop="householdId">
         <el-radio-group v-model="ruleForm.householdId">
