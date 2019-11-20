@@ -200,7 +200,7 @@ export default {
                 return nodes;
               });
               }
-              if(item.holidayList){
+              if(item.specialDeductionList){
                 item.specialDeductionList.map(nodes => {
                   nodes.statusTxt = nodes.status == 1 ? "生效" : "未生效";
                   switch (nodes.typeId) {

@@ -68,8 +68,8 @@
           <span>{{tableData.remarks}}</span>
         </li>
       </ul>
-      <el-divider>{{tableData.SISchemeDetail.name}}</el-divider>
-      <el-table :data="schemeSIList" stripe>
+      <el-divider v-if="tableData.SISchemeDetail">{{tableData.SISchemeDetail.name}}</el-divider>
+      <el-table :data="schemeSIList" stripe v-if="tableData.SISchemeDetail">
         <el-table-column prop="id" label="id"></el-table-column>
         <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
         <el-table-column prop="baseLower" label="基数下线"></el-table-column>
@@ -77,8 +77,8 @@
         <el-table-column prop="typeIdTxt" label="类 型"></el-table-column>
         <el-table-column prop="paymentIdTxt" label="缴纳对象"></el-table-column>
       </el-table>
-      <el-divider>{{tableData.HCSchemeDetail.name}}</el-divider>
-      <el-table :data="schemeHCList" stripe>
+      <el-divider v-if="tableData.HCSchemeDetail">{{tableData.HCSchemeDetail.name}}</el-divider>
+      <el-table v-if="tableData.HCSchemeDetail" :data="schemeHCList" stripe>
         <el-table-column prop="id" label="id"></el-table-column>
         <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
         <el-table-column prop="baseLower" label="基数下线"></el-table-column>
@@ -129,14 +129,12 @@ export default {
     getData() {
       var reqUrl = "/server/api/v1/payroll/staff/insured/item";
       var myData = { staffCode: this.payrollInfo.code };
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           if (res.data.code == 0) {
             this.isContent = true;
             this.tableData = res.data.data;
             this.tableData.householdIdTxt = this.householdIdTxt(this.tableData.householdId);
-            if (!res.data.data.SISchemeDetail){
+            if (!res.data.data){
               this.isContent = false;
               return;
             }

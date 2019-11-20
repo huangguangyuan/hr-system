@@ -245,7 +245,7 @@ export default {
           //console.log(this.details);
           
           this.netAmount = parseFloat(this.details.grossPay - this.details.taxAmount).toFixed(2);
-          this.reallyAmount = parseFloat(this.netAmount) + parseFloat(this.details.notTaxableAmount) + parseFloat(this.arrSum(this.claimList,'totalAmount'));
+          this.reallyAmount = parseFloat(parseFloat(this.netAmount) + parseFloat(this.details.notTaxableAmount) + parseFloat(this.arrSum(this.claimList,'totalAmount'))).toFixed(2);
         }
       });
     }
