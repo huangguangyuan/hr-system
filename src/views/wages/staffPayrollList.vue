@@ -65,15 +65,24 @@
       <el-table-column type="selection" width="55" :reserve-selection="true" fixed></el-table-column>
       <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
       <el-table-column prop="nameChinese" label="姓名" width="100"></el-table-column>
-      <el-table-column sortable prop="staffNo" label="员工职位" width="100"></el-table-column>
+      <el-table-column sortable prop="position" label="员工职位" width="100"></el-table-column>
+      <el-table-column sortable prop="dateOfJoining" label="入职日期" width="100"></el-table-column>
+      <el-table-column sortable prop="salary" label="基本工资" width="100"></el-table-column>
+      <el-table-column sortable prop="taxableItemsAmount" label="应税项目总额" width="140"></el-table-column>
+      <el-table-column sortable prop="claimAmount" label="请假应扣总额" width="140"></el-table-column>
       <el-table-column sortable prop="totalAmount" label="收入总额" width="100"></el-table-column>
+      <el-table-column sortable prop="SIAmount" label="社保扣除" width="100"></el-table-column>
+      <el-table-column sortable prop="HCAmount" label="公积金扣除" width="130"></el-table-column>
+      <!-- <el-table-column sortable prop="MPFAmount" label="MPF扣除" width="120"></el-table-column> -->
       <el-table-column sortable prop="grossPay" label="税前金额" width="100"></el-table-column>
+      <el-table-column sortable prop="specialDeductionAmount" label="专项附加扣除" width="140"></el-table-column>
+      <el-table-column sortable prop="threshold" label="个税起征点扣除" width="160"></el-table-column>
       <el-table-column sortable prop="taxableWages" label="应税金额" width="100"></el-table-column>
       <el-table-column sortable prop="taxAmount" label="个人所得税" width="130"></el-table-column>
       <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column>
       <el-table-column sortable prop="adjAmount" label="调整金额" width="100"></el-table-column>
       <el-table-column sortable prop="typeIdTxt" label="工资单状态" width="130"></el-table-column>
-      <el-table-column label="操作" width="480">
+      <el-table-column label="操作" width="560">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -289,13 +298,12 @@ export default {
         month: month
       };
       this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data
             .map(item => {
               item.typeIdTxt = this.typeIdTxt(item.typeId);
+              item.dateOfJoining = this.$toolFn.timeFormat(item.dateOfJoining,'yyyy-MM-dd');
               return item;
             })
             .sort((a, b) => {
