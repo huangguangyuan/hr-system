@@ -29,8 +29,8 @@
       </el-input>
     </div>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe ref="multipleTable" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55">
+    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" >
+      <el-table-column type="selection" width="55" :reserve-selection="true">
       </el-table-column>
       <el-table-column prop="staffNo" label="员工编号"></el-table-column>
       <el-table-column prop="nameChinese" label="名称"></el-table-column>
@@ -119,6 +119,7 @@ export default {
     if ([301,401,411].indexOf(_this.userInfo.lev) >= 0){
       this.genPayrollSlip_right = true;
     };
+    this.multipleSelection = this.$toolFn.sessionGet("wagesStaffList_multipleSelection");
     this.InitializationFun();
   },
   methods: {
@@ -128,6 +129,7 @@ export default {
     },
     handleSelectionChange(val) {
         this.multipleSelection = val;
+        this.$toolFn.sessionSet("wagesStaffList_multipleSelection",this.multipleSelection);
       },
     createSelectedItem(){
       this.isShowAddAccess = true;
@@ -137,9 +139,13 @@ export default {
     },
     createAll(){
       this.isShowAddAccess = true;
-      this.curInfo.createItems = this.queryTableDate;
+      //this.curInfo.createItems = this.queryTableDate;
+      this.curInfo.createItems = this.tableData;
       this.curInfo.hrCode = this.hrCode;
       this.curInfo.typeId = 2;
+    },
+    getRowKeys(row) {
+      return row.id
     },
     // 获取单位列表
     async getregionBU() {
@@ -156,12 +162,9 @@ export default {
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollInfoList";
       var myData = { BUCode: BUCode };
       this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
-          this.tableData = res.data.data
-            .map(item => {
+          this.tableData = res.data.data.map(item => {
               // 性别
               switch (item.gender) {
                 case "M":
@@ -184,7 +187,18 @@ export default {
               }
               return 0;
             });
+            this.$nextTick(function(){
+            var selectItems = this.multipleSelection;
+            this.tableData.forEach(row => {
+              selectItems.find(s => {if (s.id === row.id){
+                this.$refs.multipleTable.toggleRowSelection(row);
+                }
+              })
+            });
+          })
           this.total = this.tableData.length;
+
+
         })
         .catch(err => {
           console.log(err);

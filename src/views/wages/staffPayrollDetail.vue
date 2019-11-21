@@ -56,9 +56,11 @@
       <el-col :span="8" v-if="claimList && claimList.length > 0">
         <el-card shadow="always">报销总额：{{details.detail.claimAmount}}</el-card>
       </el-col>
-
       <el-col :span="8">
-        <el-card shadow="always">实发工资：{{reallyAmount}}</el-card>
+        <el-card shadow="always">调整金额：{{details.adjAmount}}</el-card>
+      </el-col>
+      <el-col :span="8">
+        <el-card shadow="always">实发工资：{{ reallyAmount}}</el-card>
       </el-col>
     </el-row>
     <!-- <el-divider v-if="allowanceList && allowanceList.length > 0">津贴清单</el-divider>
@@ -114,6 +116,15 @@
       <!-- <el-table-column prop="typeTxt" label="类 型"></el-table-column> -->
       <el-table-column prop="payment" label="金额(元)"></el-table-column>
     </el-table>
+    <el-divider v-if="details.adjAmount && details.adjAmount != 0">调整项目</el-divider>
+      <el-row :gutter="12" v-if="details.adjAmount && details.adjAmount != 0">
+        <el-col :span="4" >
+          <el-card class="showWarning" shadow="always">金额：{{details.adjAmount}}</el-card>
+        </el-col>
+        <el-col :span="20" >
+          <el-card class="showWarning" shadow="always">备注：{{details.adjAmountRemarks}}</el-card>
+        </el-col>
+    </el-row>
   </div>
 </template>
 <script>
@@ -245,7 +256,7 @@ export default {
           //console.log(this.details);
           
           this.netAmount = parseFloat(this.details.grossPay - this.details.taxAmount).toFixed(2);
-          this.reallyAmount = parseFloat(parseFloat(this.netAmount) + parseFloat(this.details.notTaxableAmount) + parseFloat(this.arrSum(this.claimList,'totalAmount'))).toFixed(2);
+          this.reallyAmount = parseFloat(parseFloat(this.netAmount) + parseFloat(this.details.notTaxableAmount) + parseFloat(this.arrSum(this.claimList,'totalAmount')) + this.details.adjAmount).toFixed(2);
         }
       });
     }

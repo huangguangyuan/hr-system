@@ -1,6 +1,11 @@
 <template>
   <div class="staffPayrollList wrap">
     <!-- 搜索 -->
+    <div class="addBtn-wrap" >
+      <el-button type="primary" v-if="deletePayrollSlip_right">删除选中项工资单</el-button>
+      <el-button type="danger" v-if="genPayrollSlip_right">重新生成选中项工资单</el-button>
+      <el-button type="danger" v-if="approvePayrollSlip_right">审核选中项工资单</el-button>
+    </div>
     <div class="search-wrap">
       <el-select
         v-model="seachMsg.BUCode"
@@ -56,15 +61,18 @@
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
-      <el-table-column sortable prop="staffNo" label="员工编号"></el-table-column>
-      <el-table-column prop="nameChinese" label="姓名"></el-table-column>
-      <el-table-column sortable prop="totalAmount" label="收入总额"></el-table-column>
-      <el-table-column sortable prop="grossPay" label="税前金额"></el-table-column>
-      <el-table-column sortable prop="taxableWages" label="应税金额"></el-table-column>
-      <el-table-column sortable prop="taxAmount" label="个人所得税"></el-table-column>
-      <el-table-column sortable prop="notTaxableAmount" label="不应税金额"></el-table-column>
-      <el-table-column sortable prop="typeIdTxt" label="工资单状态"></el-table-column>
+    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200">
+      <el-table-column type="selection" width="55" :reserve-selection="true" fixed></el-table-column>
+      <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
+      <el-table-column prop="nameChinese" label="姓名" width="100"></el-table-column>
+      <el-table-column sortable prop="staffNo" label="员工职位" width="100"></el-table-column>
+      <el-table-column sortable prop="totalAmount" label="收入总额" width="100"></el-table-column>
+      <el-table-column sortable prop="grossPay" label="税前金额" width="100"></el-table-column>
+      <el-table-column sortable prop="taxableWages" label="应税金额" width="100"></el-table-column>
+      <el-table-column sortable prop="taxAmount" label="个人所得税" width="130"></el-table-column>
+      <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column>
+      <el-table-column sortable prop="adjAmount" label="调整金额" width="100"></el-table-column>
+      <el-table-column sortable prop="typeIdTxt" label="工资单状态" width="130"></el-table-column>
       <el-table-column label="操作" width="480">
         <template slot-scope="scope">
           <el-button
@@ -77,6 +85,12 @@
             icon="hr-icon-gongjijinjiaoyimingxi"
             @click="staffPayrollYearFun(scope.$index, scope.row)"
           >全年工资单</el-button>
+          <el-button
+            size="mini"
+            icon="hr-icon-gongjijinjiaoyimingxi"
+            @click="adjAmountFun(scope.$index, scope.row)"
+            v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
+          >调整金额</el-button>          
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
@@ -130,6 +144,14 @@
         v-on:listenIsShowMask="listenIsShowMask"
       ></staff-payroll-confirm>
     </el-dialog>
+    <!-- 调整金额 -->
+    <el-dialog title="调整金额" :visible.sync="isShowAdjAmountRemarks" :close-on-click-modal="false">
+      <adj-amount-edit
+        v-if="isShowAdjAmountRemarks"
+        :curInfo="curInfo"
+        v-on:listenIsShowMask="listenIsShowMask"
+      ></adj-amount-edit>
+    </el-dialog>    
     <!-- 单位确认工资 -->
     <el-dialog title="确认单位薪水数据" :visible.sync="isShowbuConfirm" :close-on-click-modal="false">
       <bu-payroll-confirm
@@ -153,6 +175,7 @@ import staffPayrollDetail from "./staffPayrollDetail.vue";
 import staffPayrollConfirm from "./staffPayrollConfirm.vue";
 import buPayrollConfirm from "./buPayrollConfirm.vue";
 import staffPayrollYear from "./staffPayrollYear.vue";
+import adjAmountEdit from "./adjAmountEdit.vue";
 export default {
   name: "staffPayrollList",
   inject: ["reload"],
@@ -169,6 +192,7 @@ export default {
       isShowConfirm: false, //是否显示确认工资单
       isShowbuConfirm: false, //是否显示单位确认工资
       isShowPayrollYear: false, //是否显示全年工资单
+      isShowAdjAmountRemarks: false, //是否显示调整金额
       seachMsg: {
         BUCode: "", //角色类型
         year: "", //年份
@@ -177,6 +201,7 @@ export default {
       hrCode: "",
       userInfo:{},
       filter: { searchKey: "", searchField: ["nameChinese", "staffNo"] },
+      multipleSelection: [],
       approvePayrollSlip_right:false, //审批工资单权限
       deletePayrollSlip_right:false, //删除工资单权限
       genPayrollSlip_right:false,//重新生成工资单
@@ -205,6 +230,7 @@ export default {
     if ([701].indexOf(_this.userInfo.lev) >= 0){
       this.fun_right = false;
     };
+    this.multipleSelection = this.$toolFn.sessionGet("staffPayrollList_multipleSelection");
     this.InitializationFun();
   },
   methods: {
@@ -217,15 +243,18 @@ export default {
       };
       if (this.$toolFn.sessionGet("staffPayrollListSearch")) {
         this.seachMsg = {
-          year: this.$toolFn
-            .sessionGet("staffPayrollListSearch")
-            .year.toString(),
-          month: this.$toolFn
-            .sessionGet("staffPayrollListSearch")
-            .month.toString()
+          year: this.$toolFn.sessionGet("staffPayrollListSearch").year.toString(),
+          month: this.$toolFn.sessionGet("staffPayrollListSearch").month.toString()
         };
       }
       this.getregionBU();
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      this.$toolFn.sessionSet("staffPayrollList_multipleSelection",this.multipleSelection);
+    },
+    getRowKeys(row) {
+      return row.id
     },
     // 获取单位列表
     async getregionBU() {
@@ -356,6 +385,16 @@ export default {
       };
       this.isShowConfirm = true;
     },
+    // 调整金额
+    adjAmountFun(index, res) {
+      this.curInfo = {
+        code: res.code,
+        hrCode: this.hrCode,
+        adjAmount:res.adjAmount,
+        adjAmountRemarks: res.adjAmountRemarks
+      };
+      this.isShowAdjAmountRemarks = true;
+    },
     // 重新生成工资单
     rebuildStaffPayroll(index, res) {
         var data = {
@@ -399,6 +438,7 @@ export default {
       this.isShowConfirm = false;
       this.isShowbuConfirm = false;
       this.isShowPayrollYear = false;
+      this.isShowAdjAmountRemarks = false;
     },
     searchFun(list, search) {
       let newList = [];
@@ -440,7 +480,8 @@ export default {
     staffPayrollDetail,
     staffPayrollConfirm,
     buPayrollConfirm,
-    staffPayrollYear
+    staffPayrollYear,
+    adjAmountEdit
   }
 };
 </script>
