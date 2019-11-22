@@ -85,35 +85,35 @@
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
-            @click="openFun(scope.$index, scope.row)"
+            @click.stop="openFun(scope.$index, scope.row)"
           >详 细</el-button>
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
-            @click="staffPayrollYearFun(scope.$index, scope.row)"
+            @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
           >全年工资单</el-button>
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
-            @click="adjAmountFun(scope.$index, scope.row)"
+            @click.stop="adjAmountFun(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >调整金额</el-button>          
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
-            @click="confirmFun(scope.$index, scope.row)"
+            @click.stop="confirmFun(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >审核工资单</el-button>
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
-            @click="rebuildStaffPayroll(scope.$index, scope.row)"
+            @click.stop="rebuildStaffPayroll(scope.$index, scope.row)"
             v-if="fun_right && genPayrollSlip_right && scope.row.typeId == 2"
           >重新生成工资单</el-button>
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
-            @click="deleteFun(scope.$index, scope.row)"
+            @click.stop="deleteFun(scope.$index, scope.row)"
             v-if="fun_right && deletePayrollSlip_right"
           >删 除</el-button>
         </template>
@@ -316,12 +316,15 @@ export default {
             });
           this.$nextTick(function(){
             var selectItems = this.multipleSelection;
-            this.tableData.forEach(row => {
+            if (selectItems && selectItems.length > 0){
+              this.tableData.forEach(row => {
                 selectItems.find(s => {if (s.id === row.id){
                   this.$refs.multipleTable.toggleRowSelection(row);
                   }
                 })
-            });
+              });
+            }
+
           })
           this.total = this.tableData.length;
         })
@@ -363,7 +366,7 @@ export default {
       );
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
     },
-    openRowFun(row){
+    openRowFun(row,event){
       this.openFun(0,row)
     },
     // 打开详细页面
