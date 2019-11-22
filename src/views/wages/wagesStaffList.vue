@@ -188,14 +188,14 @@ export default {
               return 0;
             });
             this.$nextTick(function(){
-            var selectItems = this.multipleSelection;
-            this.tableData.forEach(row => {
-              selectItems.find(s => {if (s.id === row.id){
-                this.$refs.multipleTable.toggleRowSelection(row);
-                }
-              })
-            });
-          })
+              var selectItems = this.multipleSelection;
+              this.tableData.forEach(row => {
+                  selectItems.find(s => {if (s.id === row.id){
+                    this.$refs.multipleTable.toggleRowSelection(row);
+                    }
+                  })
+              });
+            })
           this.total = this.tableData.length;
 
 

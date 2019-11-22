@@ -2,9 +2,7 @@
   <div class="staffPayrollList wrap">
     <!-- 搜索 -->
     <div class="addBtn-wrap" >
-      <el-button type="primary" v-if="deletePayrollSlip_right">删除选中项工资单</el-button>
-      <el-button type="danger" v-if="genPayrollSlip_right">重新生成选中项工资单</el-button>
-      <el-button type="danger" v-if="approvePayrollSlip_right">审核选中项工资单</el-button>
+      <el-button type="primary" v-if="deletePayrollSlip_right" @click="deleteSelectedFun">删除选中项工资单</el-button>
     </div>
     <div class="search-wrap">
       <el-select
@@ -61,7 +59,7 @@
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200">
+    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
       <el-table-column type="selection" width="55" :reserve-selection="true" fixed></el-table-column>
       <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
       <el-table-column prop="nameChinese" label="姓名" width="100"></el-table-column>
@@ -185,6 +183,7 @@ import staffPayrollConfirm from "./staffPayrollConfirm.vue";
 import buPayrollConfirm from "./buPayrollConfirm.vue";
 import staffPayrollYear from "./staffPayrollYear.vue";
 import adjAmountEdit from "./adjAmountEdit.vue";
+import { promises } from 'fs';
 export default {
   name: "staffPayrollList",
   inject: ["reload"],
@@ -315,6 +314,15 @@ export default {
               }
               return 0;
             });
+          this.$nextTick(function(){
+            var selectItems = this.multipleSelection;
+            this.tableData.forEach(row => {
+                selectItems.find(s => {if (s.id === row.id){
+                  this.$refs.multipleTable.toggleRowSelection(row);
+                  }
+                })
+            });
+          })
           this.total = this.tableData.length;
         })
         .catch(err => {
@@ -355,12 +363,15 @@ export default {
       );
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
     },
+    openRowFun(row){
+      this.openFun(0,row)
+    },
     // 打开详细页面
     openFun(index, res) {
       this.isShowAddAccess = true;
       this.curInfo.code = res.code;
     },
-    // 确认工资单
+    // 删除工资单
     deleteFun(index, res) {
       this.$confirm("确定删除此工资单吗", "提 示", {
         confirmButtonText: "确定",
@@ -381,6 +392,42 @@ export default {
               this.$message.warning(res.data.msg);
             }
           });
+      });
+    },
+    // 删除选中项工资单
+    async deleteSelectedFun() {
+      this.$confirm("确定删除吗", "提 示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        this.$message.success("正在删除，请稍候！");
+        var deleteItems = this.multipleSelection;
+        var promiseList = [];
+        for (let index = 0; index < deleteItems.length; index++) {
+          const element = deleteItems[index];
+          var data = {
+            code: element.code,
+            hrCode: this.hrCode
+          };
+          promiseList.push(Promise.resolve(
+              this.$http.post("/server/api/v1/payroll/staff/staffPayrollListDelete", data).then(res => {
+                if (res.data.code == 0) {
+                  this.$message.success(element.nameChinese + "工资单删除成功！");
+                } else {
+                  this.$message.warning(element.nameChinese + res.data.msg);
+                }
+              })
+          ));
+        }
+        Promise.all(
+            promiseList
+          ).then((all) => {
+            this.$message.success("删除成功！");
+            console.log(all);
+            this.reload();
+        })
+        
       });
     },
     // 确认工资单
@@ -545,6 +592,7 @@ export default {
     border-radius: 5px;
   }
 }
+
 </style>
 
 
