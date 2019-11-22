@@ -60,7 +60,7 @@ export default {
       var data = {
         hrCode:this.curInfo.hrCode,
         code:this.curInfo.code,
-        adjAmount:parseInt(this.ruleForm.adjAmount),
+        adjAmount:parseFloat(this.ruleForm.adjAmount),
         adjAmountRemarks:this.ruleForm.adjAmountRemarks
       };
 

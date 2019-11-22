@@ -120,6 +120,9 @@
             <el-form-item :label="props.row.claim.title+'：'">
               <span>{{ props.row.claim.val || '暂无信息' }}</span>
             </el-form-item>
+            <el-form-item :label="props.row.adjAmount.title+'：'">
+              <span>{{ props.row.adjAmount.val || 0 }}</span>
+            </el-form-item>            
             <el-form-item :label="props.row.staffSalaryItemNotTaxable1.title+'：'">
               <span>{{ props.row.staffSalaryItemNotTaxable1.val || '暂无信息' }}</span>
             </el-form-item>

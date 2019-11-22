@@ -127,6 +127,10 @@
             <span class="title">{{tableData.netAmount.title}}</span>：
             <span class="val">{{tableData.netAmount.val || '暂无'}}</span>
           </li>
+          <li v-if="tableData.netAmount">
+            <span class="title">{{tableData.netAmount.title}}</span>：
+            <span class="val">{{tableData.netAmount.val || '暂无'}}</span>
+          </li>
           <!-- <li v-if="tableData.netAmount">
             <span class="title">{{tableData.netAmount.title}}</span>：
             <span class="val">{{tableData.netAmount.val || '暂无'}}</span>
