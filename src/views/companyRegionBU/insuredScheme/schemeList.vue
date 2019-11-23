@@ -183,12 +183,38 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
-            .post("/server/api/v1/insuredScheme/delete", { id: res.id })
-            .then(res => {
-              console.log(res);
-              _this.reload();
-              _this.$message.success("删除成功！");
+          _this.$http.post("/server/api/v1/insuredScheme/staffByInsuredScheme", { code: res.code }).then(res => {
+              if (res.data.code == 0){
+                  let staffs = res.data.data;
+                  if (staffs.length > 0){
+                    _this.$confirm("此方案已有员工正在使用，删除会影响薪资计算，是否继续", "提 示", {
+                      confirmButtonText: "确定",
+                      cancelButtonText: "取消",
+                      type: "warning"
+                    }).then(() => {
+                      _this.$http.post("/server/api/v1/insuredScheme/delete", { id: res.id }).then(res => {
+                        if (res.data.code == 0){
+                          _this.reload();
+                          _this.$message.success("删除成功！");
+                        }else{
+                          _this.$message.error(res.msg);
+                        }
+                      });
+                    })
+                  }else{
+                    _this.$http.post("/server/api/v1/insuredScheme/delete", { id: res.id }).then(res => {
+                        if (res.data.code == 0){
+                          _this.reload();
+                          _this.$message.success("删除成功！");
+                        }else{
+                          _this.$message.error(res.msg);
+                        }
+                      });
+                  }
+
+              }else{
+                _this.$message.error(res.msg);
+              }
             });
         })
         .catch(() => {
