@@ -107,19 +107,19 @@
       <div class="container">
         <el-form :model="deductFrom" ref="deductFrom" label-width="100px">
           <el-form-item label="养老保险">
-            <el-input v-model.number="deductFrom.insurance1"></el-input>
+            <el-input v-model="deductFrom.insurance1"></el-input>
           </el-form-item>
           <el-form-item label="医疗保险">
-            <el-input v-model.number="deductFrom.insurance2"></el-input>
+            <el-input v-model="deductFrom.insurance2"></el-input>
           </el-form-item>
           <el-form-item label="失业保险">
-            <el-input v-model.number="deductFrom.insurance3"></el-input>
+            <el-input v-model="deductFrom.insurance3"></el-input>
           </el-form-item>
           <el-form-item label="住房公积金">
-            <el-input v-model.number="deductFrom.insurance4"></el-input>
+            <el-input v-model="deductFrom.insurance4"></el-input>
           </el-form-item>
           <el-form-item label="累计（元）">
-            <el-input v-model.number="totalDeduct" disabled></el-input>
+            <el-input v-model="totalDeduct" disabled></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit(deductFrom)">确 定</el-button>
