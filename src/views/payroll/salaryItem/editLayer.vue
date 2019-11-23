@@ -22,7 +22,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="金额：" prop="amount">
-        <el-input v-model="ruleForm.amount" oninput="value=value.replace(/[^\d.]/g,'')"></el-input>
+        <el-input v-model="ruleForm.amount" oninput="value=value.replace(^[-]?[0-9.]+$,'')"></el-input>
       </el-form-item>
       <el-form-item label="是否生效：" prop="status">
         <el-radio-group v-model="ruleForm.status">
