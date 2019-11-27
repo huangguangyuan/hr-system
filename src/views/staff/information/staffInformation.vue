@@ -213,9 +213,10 @@
         layout="prev, pager, next"
         :total="total"
         :page-size="pageSize"
+        :current-page="staffCurPage"
         @current-change="curChange"
       ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
+      <p>当前为第 {{staffCurPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     <!-- 添加员工 -->
     <el-dialog
@@ -278,7 +279,6 @@ export default {
       tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
       curInfo: {}, //当前内容
       searchInner: "", //搜索内容
       regionBUlist: [], //单位列表
@@ -318,10 +318,10 @@ export default {
       var txt = '';
       var status = 1;
       if(res.status == 1){
-          txt = '此操作将禁用该数据, 是否继续?'
+          txt = '此操作将启用该数据, 是否继续?'
           status = 0;
       }else{
-          txt = '此操作将启用该数据, 是否继续?'
+          txt = '此操作将禁用该数据, 是否继续?'
           status = 1;
       }
       _this
@@ -505,8 +505,10 @@ export default {
     },
     // 获取当前页数
     curChange(val) {
-      var _this = this;
-      _this.curPage = val;
+      this.$store.commit({
+        type: "getStaffCurPage",
+        staffCurPage: val,
+      });
     },
     // 接收子组件发送信息
     listenIsShowMask(res) {
@@ -630,14 +632,17 @@ export default {
         tableData = _this.searchFun(tableData,_this.filter);
       }
       _this.total = tableData.length;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
+      var begin = (_this.staffCurPage - 1) * _this.pageSize;
+      var end = _this.staffCurPage * _this.pageSize;
       return tableData.slice(begin, end);
     },
     pageTotal() {
       var _this = this;
       var pageTotal = Math.ceil(_this.total / _this.pageSize);
       return pageTotal;
+    },
+    staffCurPage(){
+      return this.$store.state.staffModule.staffCurPage;
     }
   },
   components: {

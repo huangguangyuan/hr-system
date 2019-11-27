@@ -74,9 +74,10 @@
         layout="prev, pager, next"
         :total="total"
         :page-size="pageSize"
+        :current-page="wagesCurPage"
         @current-change="curChange"
       ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
+      <p>当前为第 {{wagesCurPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     <!-- 生成员工工资单 -->
     <el-dialog title="生成工资单" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
@@ -94,7 +95,6 @@ export default {
       tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
       curInfo: {}, //当前内容
       searchInner: "", //搜索内容
       regionBUlist: [], //单位列表
@@ -206,7 +206,10 @@ export default {
     },
     // 获取当前页数
     curChange(val) {
-      this.curPage = val;
+      this.$store.commit({
+        type: "getWagesCurPage",
+        wagesCurPage: val
+      });
     },
     // 获取单位BUCode
     selectFun(val) {
@@ -258,13 +261,16 @@ export default {
         tableData = _this.searchFun(tableData,_this.filter);
       }
       _this.total = tableData.length;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
+      var begin = (_this.wagesCurPage - 1) * _this.pageSize;
+      var end = _this.wagesCurPage * _this.pageSize;
       return tableData.slice(begin, end);
     },
     pageTotal() {
       var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
+    },
+    wagesCurPage(){
+      return this.$store.state.wagesModule.wagesCurPage;
     }
   },
   components: {
