@@ -2,12 +2,16 @@
 let wagesModule = {
     state: {
         wagesKey:'wagesStaffList',
-        wagesInfo:{}
+        wagesInfo:{},
+        wagesCurPage:1
     },
     mutations: {
         getWagesInfo(state, payload) {
             state.wagesKey = payload.wagesKey;
             state.wagesInfo = payload.wagesInfo;
+        },
+        getWagesCurPage(state, payload){
+            state.wagesCurPage = payload.wagesCurPage;
         }
     }
 }

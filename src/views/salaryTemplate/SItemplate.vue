@@ -3,7 +3,7 @@
     <!-- 头部内容 -->
     <div class="my-top">
       <span>社保模版</span>
-      <el-button type="primary" size="small" @click="isShowAdd = true;curInfo.type='add'">添加城市</el-button>
+      <el-button type="primary" size="small" @click="isShowAdd = true;curInfo.type='add'">添加模板</el-button>
     </div>
     <!-- 搜索 -->
     <div class="search-wrap">
