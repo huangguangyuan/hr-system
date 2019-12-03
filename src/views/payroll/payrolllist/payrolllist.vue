@@ -83,9 +83,10 @@
         layout="prev, pager, next"
         :total="total"
         :page-size="pageSize"
+        :current-page="payrollCurPage"
         @current-change="curChange"
       ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
+      <p>当前为第 {{payrollCurPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
   </div>
 </template>
@@ -99,7 +100,6 @@ export default {
       tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
       curInfo: {}, //当前内容
       searchInner: "", //搜索内容
       regionBUlist: [], //单位列表
@@ -175,8 +175,10 @@ export default {
     },
     // 获取当前页数
     curChange(val) {
-      var _this = this;
-      _this.curPage = val;
+      this.$store.commit({
+        type: "getPayrollCurPage",
+        payrollCurPage: val,
+      });
     },
     // 获取单位BUCode
     selectFun(val) {
@@ -200,7 +202,6 @@ export default {
     },
     // 打开详细页面
     openFun(index, res, key) {
-      console.log(res);
       this.$store.commit({
         type: "getPayrollInfo",
         payrollInfo: res,
@@ -216,14 +217,17 @@ export default {
         tableData = _this.searchFun(tableData,_this.filter);
       }
       _this.total = tableData.length;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
+      var begin = (_this.payrollCurPage - 1) * _this.pageSize;
+      var end = _this.payrollCurPage * _this.pageSize;
       return tableData.slice(begin, end);
     },
     pageTotal() {
       var _this = this;
       var pageTotal = Math.ceil(_this.total / _this.pageSize);
       return pageTotal;
+    },
+    payrollCurPage(){
+      return this.$store.state.payrollModule.payrollCurPage;
     }
   },
   components: {}
