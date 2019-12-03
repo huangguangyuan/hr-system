@@ -144,7 +144,7 @@ export default {
     var _this = this;
     _this.userInfo = _this.$toolFn.localGet("userInfo");
     _this.getCompanyCodeFun();
-    if (_this.userInfo.roleTypeId == 4 && _this.userInfo.lev >= 201){
+    if (_this.userInfo.roleTypeId == 4 && _this.userInfo.lev >= 201 && _this.userInfo.lev <= 220){
       this.userRight = true;
     }
     if (_this.userInfo.roleTypeId == 3 && _this.userInfo.lev == 301){
