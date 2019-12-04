@@ -60,9 +60,9 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
-      <el-table-column type="selection" width="55" :reserve-selection="true" fixed></el-table-column>
-      <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
-      <el-table-column prop="nameChinese" label="姓名" width="100"></el-table-column>
+      <el-table-column type="selection" width="55" :reserve-selection="true" ></el-table-column>
+      <el-table-column sortable prop="staffNo" label="员工编号" width="100" ></el-table-column>
+      <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
       <el-table-column sortable prop="position" label="员工职位" width="100"></el-table-column>
       <el-table-column sortable prop="dateOfJoining" label="入职日期" width="100"></el-table-column>
       <el-table-column sortable prop="salary" label="基本工资" width="100"></el-table-column>
