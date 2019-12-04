@@ -3,6 +3,7 @@
     <!-- 搜索 -->
     <div class="addBtn-wrap" >
       <el-button type="primary" v-if="deletePayrollSlip_right" @click="deleteSelectedFun">删除选中项工资单</el-button>
+      <el-button type="primary" v-if="approvePayrollSlip_right" @click="approveSelectedFun">审核选中项工资单</el-button>
     </div>
     <div class="search-wrap">
       <el-select
@@ -432,6 +433,19 @@ export default {
         })
         
       });
+    },
+    // 审核选中项工资单
+    async approveSelectedFun() {
+      if (this.multipleSelection.length == 0){
+        this.$message.error("请选择项目");
+        return;
+      }
+      this.curInfo = {
+        hrCode: this.hrCode,
+        typeId:1,
+        codeArr:this.multipleSelection.map(m=>{return m.code})
+      };
+      this.isShowConfirm = true;
     },
     // 确认工资单
     confirmFun(index, res) {

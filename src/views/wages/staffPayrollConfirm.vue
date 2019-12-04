@@ -28,6 +28,7 @@ export default {
       ruleForm: {
         typeId:'',
         remarks:'',
+        ids:[]
       }, //表单信息
       isShow: true, //是否显示
       fileList: [],
@@ -42,6 +43,7 @@ export default {
   mounted() {
     this.ruleForm.typeId = this.curInfo.typeId.toString();
     this.ruleForm.remarks = this.curInfo.remarks;
+    this.ruleForm.codeArr = this.curInfo.codeArr;
   },
   methods: {
     // 提交表单
@@ -52,15 +54,15 @@ export default {
              this.$message.error("请填写退回备注");
              return;
           }
-          this.addFun();
+          this.approveFun();
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     },
-    // 新增
-    addFun() {
+    // 审批
+    approveFun() {
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollConfirm";
       var data = {
         hrCode:this.curInfo.hrCode,
@@ -68,11 +70,19 @@ export default {
         typeId:parseInt(this.ruleForm.typeId),
         remarks:this.ruleForm.remarks
       };
-
+      if (this.ruleForm.codeArr.length > 0){
+        reqUrl = "/server/api/v1/payroll/staff/staffPayrollConfirmMult";
+        data.codeArr = this.ruleForm.codeArr;
+      }
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("操作成功~");
+          if (res.data.msg != ""){
+            this.$message.error(res.data.msg);
+          }else{
+            this.$message.success("操作成功~" + res.data.msg);
+          }
+          
         } else {
           this.$message.error(res.data.msg);
         }
