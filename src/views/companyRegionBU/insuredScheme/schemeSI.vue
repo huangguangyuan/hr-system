@@ -73,7 +73,7 @@ export default {
       this.$http
         .post(reqUrl, myData)
         .then(res => {
-          console.log(res);
+          
           this.isShowLoading = false;
           this.tableData = res.data.data
             .map(item => {

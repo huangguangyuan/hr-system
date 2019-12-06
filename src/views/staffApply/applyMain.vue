@@ -11,7 +11,7 @@
         </p>
         <p>
           <i class="hr-icon-ccgl-caozuozhuangtai-4"></i>
-          <span>状态：{{staffInfo.status == 1?'在职':'离职'}}</span>
+          <span>状态：{{staffInfo.workStatus == 1?'在职':'离职'}}</span>
         </p>
         <p>
           <i class="hr-icon-shouji"></i>

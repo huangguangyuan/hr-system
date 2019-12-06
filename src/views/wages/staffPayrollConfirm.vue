@@ -28,7 +28,7 @@ export default {
       ruleForm: {
         typeId:'',
         remarks:'',
-        ids:[]
+        codeArr:[]
       }, //表单信息
       isShow: true, //是否显示
       fileList: [],
@@ -43,7 +43,7 @@ export default {
   mounted() {
     this.ruleForm.typeId = this.curInfo.typeId.toString();
     this.ruleForm.remarks = this.curInfo.remarks;
-    this.ruleForm.codeArr = this.curInfo.codeArr;
+    this.ruleForm.codeArr = this.curInfo.codeArr || [];
   },
   methods: {
     // 提交表单

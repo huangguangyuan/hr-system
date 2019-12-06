@@ -114,7 +114,6 @@ export default {
       var reqUrl = "/server/api/v1/insuredScheme/add";
       var data = {
         BUCode: this.BUInfo.code,
-        
         cityCode: this.ruleForm.cityCode,
         typeId: parseInt(this.ruleForm.typeId),
         name: this.ruleForm.name,
