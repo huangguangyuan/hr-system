@@ -130,8 +130,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="name.val" label="姓名"></el-table-column>
-      <el-table-column prop="IDNo.val" label="身份证号"></el-table-column>
-      <el-table-column prop="buName.val" label="单位名称"></el-table-column>
+      <!-- <el-table-column prop="IDNo.val" label="身份证号"></el-table-column>
+      <el-table-column prop="buName.val" label="单位名称"></el-table-column> -->
       <el-table-column prop="year.val" label="出粮年份"></el-table-column>
       <el-table-column prop="month.val" label="出粮月份"></el-table-column>
       <el-table-column prop="payrollPeriod.val" label="计粮周期"></el-table-column>
