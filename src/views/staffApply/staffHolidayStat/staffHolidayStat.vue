@@ -13,10 +13,10 @@
 <br />
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id" show-summary>
-      <el-table-column prop="createTime" label="申请时间" width="200"></el-table-column>
-      <el-table-column prop="totalDay" label="天数"></el-table-column>
-      <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column>
-      <el-table-column prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column prop="applyDate" label="日期" width="200"></el-table-column>
+      <el-table-column prop="applyDay" label="天数"></el-table-column>
+      <!-- <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column> -->
+      <el-table-column prop="remarks" label="备注"></el-table-column>
       <!-- <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button
@@ -86,16 +86,15 @@ export default {
     },
     //获取数据列表
     getData(staffCode,typeId) {
-      var reqUrl = "/server/api/v1/staff/holidaysApply/staffCompleteHolidays";
+      //var reqUrl = "/server/api/v1/staff/holidaysApply/staffCompleteHolidays";
+      var reqUrl = "/server/api/v1/staff/holidaysApply/staffLeaves";
       var myData = { staffCode: staffCode,typeId: parseInt(typeId) };
       this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
-            item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.isBalanceTxt = item.isBalance == 1?'是':'否';
+            item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
+            //item.isBalanceTxt = item.isBalance == 1?'是':'否';
             item.isWithpayTxt = item.isWithpay == 1?'是':'否';
             return item;
           });
