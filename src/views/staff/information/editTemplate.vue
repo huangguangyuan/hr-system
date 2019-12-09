@@ -249,8 +249,8 @@
             v-model="ruleForm.annualLeaveWriteOffDate"
             type="date"
             placeholder="选择日期"
-                      format="yyyy-MM-dd"
-          value-format="yyyy-MM-dd">
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
       <el-form-item label="年假结算后可保留天数：" prop="annualLeaveRetain" v-if="ruleForm.annualLeaveWriteOffMethod == 2">

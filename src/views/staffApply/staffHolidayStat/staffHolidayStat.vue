@@ -12,10 +12,31 @@
     </div>
 <br />
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id" show-summary>
-      <el-table-column prop="applyDate" label="日期" width="200"></el-table-column>
+    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id" show-summary sum-text="剩余合计">
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <el-form label-position="left" inline class="table-expand">
+            <el-form-item label="开始日期" v-if="props.row.startTime">
+              <span>{{props.row.startTime}}</span>
+            </el-form-item>
+            <el-form-item label="结束日期"  v-if="props.row.endTime">
+              <span>{{props.row.endTime}}</span>
+            </el-form-item>
+            <el-form-item label="是否带薪"  v-if="props.row.isWithpay && props.row.isWithpay == 1">
+              <span>{{props.row.isWithpayTxt}}</span>
+            </el-form-item>
+            <el-form-item label="扣除金额"  v-if="props.row.totalAmount && props.row.totalAmount!=0">
+              <span>{{props.row.totalAmount}}</span>
+            </el-form-item>
+            <el-form-item label="结算日期"  v-if="props.row.createTime">
+              <span>{{props.row.createTime}}</span>
+            </el-form-item>            
+          </el-form>
+        </template>
+      </el-table-column>
+      <el-table-column prop="applyDate" label="日期"></el-table-column>
       <el-table-column prop="applyDay" label="天数"></el-table-column>
-      <!-- <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column> -->
+      <el-table-column prop="hisTypeIdTxt" label="类型"></el-table-column>
       <el-table-column prop="remarks" label="备注"></el-table-column>
       <!-- <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
@@ -96,6 +117,7 @@ export default {
             item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
             //item.isBalanceTxt = item.isBalance == 1?'是':'否';
             item.isWithpayTxt = item.isWithpay == 1?'是':'否';
+            item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
             return item;
           });
           this.total = this.tableData.length;
@@ -154,6 +176,13 @@ export default {
 }
 .el-radio-button:focus:not(.is-focus):not(:active):not(.is-disabled){
 box-shadow:0 0 0 0 #f28c38;
+}
+.table-expand{
+    display: flex;flex-wrap: wrap;
+    .el-form-item{
+        width: 23%;box-sizing: border-box;border-bottom:1px #99a9bf solid;padding:0 10px;
+        box-shadow: darkgrey 0px 2px 15px 1px;border-radius: 8px;
+    }
 }
 </style>
 
