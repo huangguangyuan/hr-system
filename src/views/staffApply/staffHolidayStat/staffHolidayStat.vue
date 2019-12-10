@@ -12,7 +12,7 @@
     </div>
 <br />
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id" show-summary sum-text="剩余合计">
+    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe show-summary sum-text="剩余合计">
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
@@ -28,7 +28,7 @@
             <el-form-item label="扣除金额"  v-if="props.row.totalAmount && props.row.totalAmount!=0">
               <span>{{props.row.totalAmount}}</span>
             </el-form-item>
-            <el-form-item label="结算日期"  v-if="props.row.createTime">
+            <el-form-item label="申请日期"  v-if="props.row.createTime">
               <span>{{props.row.createTime}}</span>
             </el-form-item>            
           </el-form>
@@ -118,6 +118,7 @@ export default {
             //item.isBalanceTxt = item.isBalance == 1?'是':'否';
             item.isWithpayTxt = item.isWithpay == 1?'是':'否';
             item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
+            item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null
             return item;
           });
           this.total = this.tableData.length;
