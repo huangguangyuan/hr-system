@@ -49,6 +49,10 @@
         <span slot="label"><i class="hr-icon-jinggaolei"></i> 警告信</span>
         <warning :userRight_props="userRight"></warning>
       </el-tab-pane>
+      <el-tab-pane label="年假明细" name="leaves">
+        <span slot="label"><i class="hr-icon-odometer"></i> 年假明细</span>
+        <leaves :userRight_props="userRight"></leaves>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -59,6 +63,7 @@ import promotion from '../promotion/promotion.vue'
 import contract from '../contract/contract.vue'
 import socialMedia from '../socialMedia/socialMedia.vue'
 import warning from '../warning/warning.vue'
+import leaves from '../leaves/leaves.vue'
 export default {
   name: "staffDetails",
   inject: ["reload"],
@@ -93,7 +98,7 @@ export default {
     }
   },
   components: {
-    education,experience,promotion,contract,socialMedia,warning
+    education,experience,promotion,contract,socialMedia,warning,leaves
   }
 };
 </script>

@@ -27,7 +27,7 @@
           <el-radio label="F">女</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="英文名："prop="nameEnglish">
+      <el-form-item label="英文名：" prop="nameEnglish">
         <el-input v-model="ruleForm.nameEnglish"></el-input>
       </el-form-item>
       <el-form-item label="个人头像：" prop="photo">
@@ -235,6 +235,9 @@
       <el-divider>
         <i class="hr-icon-yuangongfulitaizhang"></i> 薪资福利
       </el-divider>
+      <el-form-item label="每年可享有薪年假：" prop="annualLeaveEntitled">
+        <el-input v-model="ruleForm.annualLeaveEntitled"></el-input>
+      </el-form-item>
       <el-form-item label="年假清空方法：" prop="annualLeaveWriteOffMethod" >
         <el-radio-group v-model="ruleForm.annualLeaveWriteOffMethod">
           <el-radio label="1">年结</el-radio>
@@ -245,12 +248,14 @@
           <el-date-picker
             v-model="ruleForm.annualLeaveWriteOffDate"
             type="date"
-            placeholder="选择日期">
+            placeholder="选择日期"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
-      <el-form-item label="每年可享有薪年假：" prop="annualLeaveEntitled">
-        <el-input v-model="ruleForm.annualLeaveEntitled"></el-input>
-      </el-form-item>
+      <el-form-item label="年假结算后可保留天数：" prop="annualLeaveRetain" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
+        <el-input v-model="ruleForm.annualLeaveRetain"></el-input>
+      </el-form-item>        
       <el-form-item label="每年可享有薪病假：" prop="paidSickLeaveEntitled">
         <el-input v-model="ruleForm.paidSickLeaveEntitled"></el-input>
       </el-form-item>
@@ -534,7 +539,7 @@ export default {
         this.isShow = false;
         this.ruleForm = JSON.parse(JSON.stringify(this.curInfo));
         this.ruleForm.hukouType = this.curInfo.hukouType?this.curInfo.hukouType.toString():null;
-        this.ruleForm.martialStatus = this.curInfo.martialStatus?this.curInfo.martialStatus.toString():null;
+        this.ruleForm.martialStatus = this.curInfo.martialStatus!= undefined?this.curInfo.martialStatus.toString():null;
         this.ruleForm.annualLeaveWriteOffMethod = this.curInfo.annualLeaveWriteOffMethod?this.curInfo.annualLeaveWriteOffMethod.toString():null;
         this.ruleForm.payrollType = this.curInfo.payrollType?this.curInfo.payrollType.toString():null;
         this.ruleForm.fileUnitMove = this.curInfo.fileUnitMove?this.curInfo.fileUnitMove.toString():null;
@@ -545,6 +550,7 @@ export default {
         this.IDNegativeSrc = this.ruleForm.IDCopyBack;
         this.getDepartment(this.ruleForm.BUCode);
       }
+      console.log(this.curInfo.martialStatus);
     },
     // 提交表单
     submitForm(formName) {
@@ -626,6 +632,12 @@ export default {
         _this.$message.error("年假结算日期不能为空");
         return false;
       }
+      data.annualLeaveWriteOffDate = _this.ruleForm.annualLeaveWriteOffDate;
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && !_this.ruleForm.annualLeaveRetain){
+        _this.$message.error("请填写年假结算后可保留天数");
+        return false;
+      }
+      data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
@@ -692,10 +704,16 @@ export default {
         departmentCode:_this.ruleForm.departmentCode,
         workStatus: parseInt(_this.ruleForm.workStatus)
       };
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && !_this.ruleForm.annualLeaveWriteOffDate){
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveWriteOffDate == ""){
         _this.$message.error("年假结算日期不能为空");
         return false;
       }
+      data.annualLeaveWriteOffDate = _this.ruleForm.annualLeaveWriteOffDate;
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && !_this.ruleForm.annualLeaveRetain){
+        _this.$message.error("请填写年假结算后可保留天数");
+        return false;
+      }
+      data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();

@@ -174,7 +174,7 @@ export default {
       this.curInfo.type = "modify";
     },
     // 删除
-    handleDelete(index, res) {
+    handleDelete(index, item) {
       var _this = this;
       _this
         .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
@@ -183,7 +183,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http.post("/server/api/v1/insuredScheme/staffByInsuredScheme", { code: res.code }).then(res => {
+          _this.$http.post("/server/api/v1/insuredScheme/staffByInsuredScheme", { code: item.code }).then(res => {
               if (res.data.code == 0){
                   let staffs = res.data.data;
                   if (staffs.length > 0){
@@ -192,7 +192,7 @@ export default {
                       cancelButtonText: "取消",
                       type: "warning"
                     }).then(() => {
-                      _this.$http.post("/server/api/v1/insuredScheme/delete", { id: res.id }).then(res => {
+                      _this.$http.post("/server/api/v1/insuredScheme/delete", { id: item.id }).then(res => {
                         if (res.data.code == 0){
                           _this.reload();
                           _this.$message.success("删除成功！");
@@ -202,7 +202,7 @@ export default {
                       });
                     })
                   }else{
-                    _this.$http.post("/server/api/v1/insuredScheme/delete", { id: res.id }).then(res => {
+                    _this.$http.post("/server/api/v1/insuredScheme/delete", { id: item.id }).then(res => {
                         if (res.data.code == 0){
                           _this.reload();
                           _this.$message.success("删除成功！");

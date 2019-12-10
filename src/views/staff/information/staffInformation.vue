@@ -486,6 +486,9 @@ export default {
               item.dateOfLeaving = _this.$toolFn
                 .timeFormat(item.dateOfLeaving)
                 .slice(0, 10);
+              item.annualLeaveWriteOffDate = _this.$toolFn
+              .timeFormat(item.annualLeaveWriteOffDate)
+              .slice(0, 10);
               return item;
             })
             .sort((a, b) => {
