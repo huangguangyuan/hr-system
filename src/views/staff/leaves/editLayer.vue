@@ -100,6 +100,10 @@ export default {
     addFun() {
       var _this = this;
       var reqUrl = "/server/api/v1/staff/holidaysApply/addLeavesHis";
+      if (_this.ruleForm.applyDay == 0){
+        _this.$message.error("天数不能为0");
+        return;
+      }
       var data = {
         typeId:2,//年假
         hisTypeId:3,//hr管理员录入

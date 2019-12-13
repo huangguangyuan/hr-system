@@ -2,6 +2,7 @@
   <div class="warning">
     <div class="addBtn-wrap" v-if="userRight">
       <el-button type="primary" @click="addFun">添 加</el-button>
+      <el-button type="danger" @click='handleDeleteAll'>删除所有</el-button>
     </div>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id"  show-summary sum-text="剩余合计">
@@ -114,6 +115,30 @@ export default {
         this.curInfo.showText = true;
       }
     },
+    // 删除所有
+    handleDeleteAll() {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+        .then(() => {
+          this.$http.post("/server/api/v1/staff/holidaysApply/staffLeaves/deleteByStaffCode", { staffCode:this.staffInfo.code,typeId:2 }).then(res => {
+              if (res.data.code == 0){
+                this.reload();
+                this.$message.success("删除成功！");
+              }else{
+                this.$message.error("删除失败，请联系管理员。");
+              }
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    }
   },
   computed: {
     queryTableDate() {
