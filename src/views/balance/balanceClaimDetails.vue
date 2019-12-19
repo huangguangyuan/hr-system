@@ -164,7 +164,7 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.approvalClaimDetails {
+.balanceClaimDetails {
   .my-card {
     p {
       margin-top: 10px;
