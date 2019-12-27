@@ -3,12 +3,14 @@ import html2Canvas from 'html2canvas'
 import JsPDF from 'jspdf'
 export default{
   install (Vue, options) {
+    
     Vue.prototype.getPdf = function (data) {
         //var title = this.htmlTitle
         var title = data.title;
         var c = document.createElement("canvas")
         var opts = {
             scale: 2, 
+
             canvas: c, 
             logging: true,
             allowTaint: true,
