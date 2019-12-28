@@ -54,6 +54,9 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
+            <el-form-item :label="props.row.reallyAmount.title+'：'">
+              <span>{{ props.row.reallyAmount.val || '实发工资' }}</span>
+            </el-form-item>
             <el-form-item :label="props.row.name.title+'：'">
               <span>{{ props.row.name.val || '暂无信息' }}</span>
             </el-form-item>
@@ -96,7 +99,11 @@
             <el-form-item :label="props.row.payDay.title+'：'">
               <span>{{ props.row.payDay.val || '暂无信息' }}</span>
             </el-form-item>
-            <el-form-item :label="props.row.staffSalaryItemTaxable1.title+'：'">
+            <el-form-item v-for="(item,index) in props.row.buSalaryItemTaxableCount" :key="index" :label="props.row['staffSalaryItemTaxable' + item].title+'：'">
+              <span>{{ props.row['staffSalaryItemTaxable' + item].val || '暂无信息' }}</span>
+            </el-form-item>
+
+            <!-- <el-form-item :label="props.row.staffSalaryItemTaxable1.title+'：'">
               <span>{{ props.row.staffSalaryItemTaxable1.val || '暂无信息' }}</span>
             </el-form-item>
             <el-form-item :label="props.row.staffSalaryItemTaxable2.title+'：'">
@@ -104,7 +111,8 @@
             </el-form-item>
             <el-form-item :label="props.row.staffSalaryItemTaxable3.title+'：'">
               <span>{{ props.row.staffSalaryItemTaxable3.val || '暂无信息' }}</span>
-            </el-form-item>
+            </el-form-item> -->
+
             <el-form-item :label="props.row.holiday.title+'：'">
               <span>{{ props.row.holiday.val || '暂无信息' }}</span>
             </el-form-item>
@@ -135,6 +143,7 @@
       <el-table-column prop="year.val" label="出粮年份"></el-table-column>
       <el-table-column prop="month.val" label="出粮月份"></el-table-column>
       <el-table-column prop="payrollPeriod.val" label="计粮周期"></el-table-column>
+      <el-table-column prop="reallyAmount.val" label="实发工资"></el-table-column>
     </el-table>
     <!-- 分页编码 -->
     <div class="pageInfo">

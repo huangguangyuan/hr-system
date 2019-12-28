@@ -115,7 +115,7 @@
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
             @click.stop="deleteFun(scope.$index, scope.row)"
-            v-if="fun_right && deletePayrollSlip_right"
+            v-if="fun_right && deletePayrollSlip_right && scope.row.typeId != 1"
           >删 除</el-button>
         </template>
       </el-table-column>
