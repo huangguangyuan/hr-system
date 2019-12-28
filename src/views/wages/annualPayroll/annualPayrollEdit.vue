@@ -49,6 +49,7 @@
       <el-table-column prop="month" label="月份"></el-table-column>
       <el-table-column prop="taxableWages" label="应税工资"></el-table-column>
       <el-table-column prop="taxAmount" label="个人所得税"></el-table-column>
+      <el-table-column prop="nousedTaxThreshold" label="结余起征点"></el-table-column>
       <!-- <el-table-column prop="netAmount" label="税后工资"></el-table-column> -->
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -186,7 +187,6 @@ export default {
       handleSelect(item) {
         this.seachMsg.staffCode = item.code;
         this.seachMsg.staffName = item.nameChinese;
-        console.log(this.seachMsg);
         this.$toolFn.sessionSet("annualPayrollEdit", this.seachMsg);
         this.getData(item.code,this.seachMsg.year);
       },
