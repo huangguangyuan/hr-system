@@ -22,7 +22,7 @@
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
     <!-- 增加年假 -->
-    <el-dialog title="增加年假" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
+    <el-dialog title="编辑年假" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
       <editLayer v-if="isShowAddAccess" :userRight_props="userRight" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
   </div>

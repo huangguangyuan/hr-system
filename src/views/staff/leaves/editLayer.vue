@@ -28,7 +28,7 @@
       v-if="ruleForm.showText"
     >
       <p style="padding:15px;">{{ruleForm.remarks}}</p>
-      <p style="text-align:right;padding:5px;">变动日期：{{ruleForm.applyDay}}</p>
+      <p style="text-align:right;padding:5px;">变动天数：{{ruleForm.applyDay}}</p>
       <p style="text-align:right;padding:5px;">变动日期:{{ruleForm.applyDate}}</p>
       <el-divider></el-divider>
       <el-form-item>
