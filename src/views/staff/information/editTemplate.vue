@@ -238,13 +238,13 @@
       <el-form-item label="每年可享有薪年假：" prop="annualLeaveEntitled">
         <el-input v-model="ruleForm.annualLeaveEntitled"></el-input>
       </el-form-item>
-      <el-form-item label="年假清空方法：" prop="annualLeaveWriteOffMethod" >
+      <el-form-item label="年假结算方法：" prop="annualLeaveWriteOffMethod" >
         <el-radio-group v-model="ruleForm.annualLeaveWriteOffMethod">
           <el-radio label="1">年结</el-radio>
           <el-radio label="2">自定义日期结算</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="年假结算日期：" prop="annualLeaveWriteOffDate" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
+      <el-form-item label="年假清空日期：" prop="annualLeaveWriteOffDate" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
           <el-date-picker
             v-model="ruleForm.annualLeaveWriteOffDate"
             type="date"
@@ -253,7 +253,7 @@
             value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
-      <el-form-item label="年假结算后可保留天数：" prop="annualLeaveRetain" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
+      <el-form-item label="年假清空后可保留天数：" prop="annualLeaveRetain" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
         <el-input v-model="ruleForm.annualLeaveRetain"></el-input>
       </el-form-item>
       <el-form-item label="可保留天数清空日期：" prop="annualLeaveRetainClearDate" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
@@ -640,6 +640,11 @@ export default {
       }
       if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetainClearDate == ""){
         _this.$message.error("请填写年假清空后可保留天数清空日期");
+        return false;
+      }
+            
+      if (_this.ruleForm.annualLeaveWriteOffMethod){
+        _this.$message.error("年假清空日期不能为空");
         return false;
       }
       data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
