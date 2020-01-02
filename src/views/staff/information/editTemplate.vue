@@ -634,6 +634,8 @@ export default {
         hrCode: _this.ruleForm.hrCode,
         staffNo: _this.ruleForm.staffNo,
       };
+      
+
       if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveWriteOffDate == ""){
         _this.$message.error("年假清空日期不能为空");
         return false;
@@ -642,11 +644,18 @@ export default {
         _this.$message.error("请填写年假清空后可保留天数清空日期");
         return false;
       }
-            
-      if (_this.ruleForm.annualLeaveWriteOffMethod){
-        _this.$message.error("年假清空日期不能为空");
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetainClearDate == ""){
+        _this.$message.error("请填写可保留天数清空日期");
         return false;
       }
+      // if (new Date(_this.ruleForm.annualLeaveWriteOffDate) < new Date((new Date().getFullYear() +1) + "-01-01 00:00:00")){
+      //   _this.$message.error("年假清空日不能早于" + (new Date().getFullYear() + 1) + "-01-01");
+      //   return false;
+      // }
+      // if (new Date(_this.ruleForm.annualLeaveWriteOffDate) > new Date(_this.ruleForm.annualLeaveRetainClearDate)){
+      //   _this.$message.error("年假保留天数清空日期不能早于年假清空日期");
+      //   return false;
+      // }
       data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
       data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveRetainClearDate);
       data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
@@ -729,6 +738,15 @@ export default {
         _this.$message.error("请填写可保留天数清空日期");
         return false;
       }
+      // if (new Date(_this.ruleForm.annualLeaveWriteOffDate) < new Date((new Date().getFullYear() +1) + "-01-01 00:00:00")){
+      //   _this.$message.error("年假清空日不能早于" + (new Date().getFullYear() + 1) + "-01-01");
+      //   return false;
+      // }
+
+      // if (new Date(_this.ruleForm.annualLeaveWriteOffDate) > new Date(_this.ruleForm.annualLeaveRetainClearDate)){
+      //   _this.$message.error("年假保留天数清空日期不能早于年假清空日期");
+      //   return false;
+      // }
       data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
       data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveRetainClearDate);
       _this.$http.post(reqUrl, data).then(res => {
