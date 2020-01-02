@@ -12,7 +12,7 @@
     </div>
 <br />
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe show-summary sum-text="剩余合计">
+    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe show-summary sum-text="合计">
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
