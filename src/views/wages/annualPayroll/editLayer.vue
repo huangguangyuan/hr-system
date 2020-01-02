@@ -7,6 +7,9 @@
       <el-form-item label="个人所得税：" prop="taxAmount">
         <el-input v-model="ruleForm.taxAmount" oninput = "value=value.replace(/[^\d.]/g,'')"></el-input>
       </el-form-item>
+      <el-form-item label="结余起征点：" prop="nousedTaxThreshold">
+        <el-input v-model="ruleForm.nousedTaxThreshold" oninput = "value=value.replace(/[^\d.]/g,'')"></el-input>
+      </el-form-item>      
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
         <el-button @click="cancelFn">取 消</el-button>
@@ -27,6 +30,7 @@ export default {
         staffCode:'',
         taxableWages:'',
         taxAmount:'',
+        nousedTaxThreshold:0,
       }, //表单信息
       isShow: true, //是否显示
       fileList: [],
@@ -51,6 +55,7 @@ export default {
         this.ruleForm.staffCode = this.curInfo.code;
         this.ruleForm.taxableWages = this.curInfo.taxableWages;
         this.ruleForm.taxAmount = this.curInfo.taxAmount;
+        this.ruleForm.nousedTaxThreshold = this.curInfo.nousedTaxThreshold;
     },
     // 提交表单
     submitForm(formName) {
@@ -58,7 +63,6 @@ export default {
         if (valid) {
           this.editFun();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -70,7 +74,8 @@ export default {
         month:parseInt(this.ruleForm.month),
         staffCode:this.curInfo.staffCode,
         taxableWages:parseFloat(this.ruleForm.taxableWages),
-        taxAmount:parseFloat(this.ruleForm.taxAmount)
+        taxAmount:parseFloat(this.ruleForm.taxAmount),
+        nousedTaxThreshold:parseFloat(this.ruleForm.nousedTaxThreshold),
       };
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {

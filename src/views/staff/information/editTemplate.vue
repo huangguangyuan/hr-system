@@ -238,13 +238,13 @@
       <el-form-item label="每年可享有薪年假：" prop="annualLeaveEntitled">
         <el-input v-model="ruleForm.annualLeaveEntitled"></el-input>
       </el-form-item>
-      <el-form-item label="年假清空方法：" prop="annualLeaveWriteOffMethod" >
+      <el-form-item label="年假结算方法：" prop="annualLeaveWriteOffMethod" >
         <el-radio-group v-model="ruleForm.annualLeaveWriteOffMethod">
           <el-radio label="1">年结</el-radio>
           <el-radio label="2">自定义日期结算</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="请选择年假结算日期：" prop="annualLeaveWriteOffDate" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
+      <el-form-item label="年假清空日期：" prop="annualLeaveWriteOffDate" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
           <el-date-picker
             v-model="ruleForm.annualLeaveWriteOffDate"
             type="date"
@@ -253,9 +253,18 @@
             value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
-      <el-form-item label="年假结算后可保留天数：" prop="annualLeaveRetain" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
+      <el-form-item label="年假清空后可保留天数：" prop="annualLeaveRetain" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
         <el-input v-model="ruleForm.annualLeaveRetain"></el-input>
-      </el-form-item>        
+      </el-form-item>
+      <el-form-item label="可保留天数清空日期：" prop="annualLeaveRetainClearDate" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
+          <el-date-picker
+            v-model="ruleForm.annualLeaveRetainClearDate"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd">
+          </el-date-picker>
+        </el-form-item>
       <el-form-item label="每年可享有薪病假：" prop="paidSickLeaveEntitled">
         <el-input v-model="ruleForm.paidSickLeaveEntitled"></el-input>
       </el-form-item>
@@ -265,8 +274,8 @@
       <el-form-item label="工资类型：" prop="payrollType">
         <el-radio-group v-model="ruleForm.payrollType">
           <el-radio label="1">月薪</el-radio>
-          <el-radio label="2">周薪</el-radio>
-          <el-radio label="3">时薪</el-radio>
+          <!-- <el-radio label="2">周薪</el-radio>
+          <el-radio label="3">时薪</el-radio> -->
         </el-radio-group>
       </el-form-item>
       <el-form-item label="约满酬金：" prop="gratuity">
@@ -282,11 +291,9 @@
           <el-radio label="S">S</el-radio>
         </el-radio-group>
       </el-form-item>
-
       <el-divider>
         <i class="hr-icon-yinhangqiaxinxi"></i> 银行卡信息
       </el-divider>
-
       <el-form-item label="银行名称：" prop="bankName">
         <el-input v-model="ruleForm.bankName"></el-input>
       </el-form-item>
@@ -540,7 +547,7 @@ export default {
         this.ruleForm = JSON.parse(JSON.stringify(this.curInfo));
         this.ruleForm.hukouType = this.curInfo.hukouType?this.curInfo.hukouType.toString():null;
         this.ruleForm.martialStatus = this.curInfo.martialStatus!= undefined?this.curInfo.martialStatus.toString():null;
-        this.ruleForm.annualLeaveWriteOffMethod = this.curInfo.annualLeaveWriteOffMethod?this.curInfo.annualLeaveWriteOffMethod.toString():null;
+        this.ruleForm.annualLeaveWriteOffMethod = this.curInfo.annualLeaveWriteOffMethod?this.curInfo.annualLeaveWriteOffMethod.toString():"1";
         this.ruleForm.payrollType = this.curInfo.payrollType?this.curInfo.payrollType.toString():null;
         this.ruleForm.fileUnitMove = this.curInfo.fileUnitMove?this.curInfo.fileUnitMove.toString():null;
         //this.ruleForm.workStatus = this.ruleForm.workStatus?this.ruleForm.workStatus.toString():null;
@@ -550,7 +557,6 @@ export default {
         this.IDNegativeSrc = this.ruleForm.IDCopyBack;
         this.getDepartment(this.ruleForm.BUCode);
       }
-      console.log(this.curInfo.martialStatus);
     },
     // 提交表单
     submitForm(formName) {
@@ -629,14 +635,20 @@ export default {
         staffNo: _this.ruleForm.staffNo,
       };
       if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveWriteOffDate == ""){
-        _this.$message.error("年假结算日期不能为空");
+        _this.$message.error("年假清空日期不能为空");
         return false;
       }
-      data.annualLeaveWriteOffDate = _this.ruleForm.annualLeaveWriteOffDate;
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && !_this.ruleForm.annualLeaveRetain){
-        _this.$message.error("请填写年假结算后可保留天数");
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetainClearDate == ""){
+        _this.$message.error("请填写年假清空后可保留天数清空日期");
         return false;
       }
+            
+      if (_this.ruleForm.annualLeaveWriteOffMethod){
+        _this.$message.error("年假清空日期不能为空");
+        return false;
+      }
+      data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
+      data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveRetainClearDate);
       data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
@@ -708,12 +720,17 @@ export default {
         _this.$message.error("年假结算日期不能为空");
         return false;
       }
-      data.annualLeaveWriteOffDate = _this.ruleForm.annualLeaveWriteOffDate;
+      data.annualLeaveWriteOffDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveWriteOffDate);
       if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && !_this.ruleForm.annualLeaveRetain){
-        _this.$message.error("请填写年假结算后可保留天数");
+        _this.$message.error("请填写年假清空后可保留天数");
+        return false;
+      }
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetainClearDate == ""){
+        _this.$message.error("请填写可保留天数清空日期");
         return false;
       }
       data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
+      data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveRetainClearDate);
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();

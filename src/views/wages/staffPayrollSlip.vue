@@ -187,7 +187,6 @@
               <el-table-column prop="val" label="金 额"></el-table-column>
             </el-table>
           </div>
-
         </div>
         <!--endprint-->
         <br />
@@ -311,12 +310,13 @@ export default {
       var prnhtml = bdhtml.substr(bdhtml.indexOf(sprnstr) + 17);
       prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr));
       window.document.body.innerHTML = prnhtml;
+      console.log(prnhtml);
       window.print();
       window.document.body.innerHTML=bdhtml; 
     },
     creatPdf() {
       var data = {
-        title:"测试",
+        title:this.tableData.name.val,
         bdhtml: document.querySelector('#monthPayrollData')
       }
       this.getPdf(data);

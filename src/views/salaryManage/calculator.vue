@@ -175,14 +175,15 @@ export default {
       demo:{
           id: 1,
           Mth: "",
-          income: 0,//收入
+          income: null,//收入
           incomeSum:0,//收入累计
           deduct: 0,//社保
           deductSum:0,//社保累计
           addDeduct: 0,//附加扣除
           addDeductSum:0,//附加扣除累计
           fixedDeduct: 5000,//起征点
-          fixedDeductSum:0,
+          fixedDeductSum:0,//起征点累计
+          //fixedDeductNoUsedSum:0,//已用起征点累计
           taxRate: 0.03,//税点
           quickDeduct:0,//速减扣除
           iit: 0,//个人所得税
@@ -292,7 +293,7 @@ export default {
       _this.dataList[_this.currentInfo.index].addDeduct = _this.totalAddDeduct;
     },
     // 计算当月个税(累计)
-    monthlySumIit(grossAmtSum,taxRateAmtSum) {
+    monthlySumIit(grossAmtSum,taxRateAmtSum,fixedDeductSum) {
       let taxRate = 0.00; //税率
       let quickDeduct = 0.00; //速算扣除数
       let result = {iit:0,taxRate:0,quickDeduct:0};
@@ -340,19 +341,37 @@ export default {
       var _this = this;
       let grossAmtSum = 0;//累计应税收入
       let taxRateAmtSum = 0;//累计纳税金额
+      let fixedDeductNoUsedSum = 0;//累计起征点结余
       _this.netPayAmtSum = 0;//累计税后所得额
       _this.incomeSum = 0;//累计税前收入
       _this.deductSum = 0;//社保累计
       _this.addDeductSum = 0;//附加扣除累计
       _this.fixedDeductSum = 0;//累计起征点
+      
       //_this.grossAmtSum = 0;//累计应税金额
       //let grossAmtSumNotCur = 0;//累计纳税金额不包当前月纳税
       for (var i = 0; i < _this.dataList.length; i++) {
-        if (_this.dataList[i].income && _this.dataList[i].income > 0){
+        // if (_this.dataList[i].income && _this.dataList[i].income > 0){
+        if (_this.dataList[i].income){
           _this.dataList[i].iit = 0;
           let curGrossAmt = parseFloat(_this.dataList[i].income - _this.dataList[i].deduct -  _this.dataList[i].addDeduct - _this.dataList[i].fixedDeduct) > 0 ? parseFloat(_this.dataList[i].income - _this.dataList[i].deduct -  _this.dataList[i].addDeduct - _this.dataList[i].fixedDeduct) : 0; //应税工资
-          grossAmtSum += curGrossAmt > 0?curGrossAmt:0;
           //_this.dataList[i].grossAmtSum = grossAmtSum;
+          let fixedDeductNoUsed = parseFloat(_this.dataList[i].fixedDeduct - (_this.dataList[i].income - _this.dataList[i].deduct -  _this.dataList[i].addDeduct));//当月已用起征点
+          fixedDeductNoUsedSum += fixedDeductNoUsed > 0 ? fixedDeductNoUsed : 0;//累计起征点结余
+          console.log(fixedDeductNoUsed);
+          console.log(fixedDeductNoUsedSum);
+          if(fixedDeductNoUsedSum > 0 && curGrossAmt > 0){//如果累计起征点结余不为 0 且应税金额不为 0
+            let curGrossAmtTmp = curGrossAmt;
+            if (curGrossAmt > fixedDeductNoUsedSum){
+              curGrossAmt =  curGrossAmtTmp - fixedDeductNoUsedSum;
+              fixedDeductNoUsedSum = 0;
+            }else{
+              curGrossAmt = 0;
+              fixedDeductNoUsedSum = fixedDeductNoUsedSum -  curGrossAmtTmp;
+            }
+          }
+          console.log(fixedDeductNoUsedSum);
+          grossAmtSum += curGrossAmt > 0?curGrossAmt:0;
           let monthlyIit = _this.monthlySumIit(grossAmtSum,taxRateAmtSum);
           _this.dataList[i].grossAmt = curGrossAmt;
           _this.dataList[i].iit = curGrossAmt > 0 ? monthlyIit.iit : 0;
@@ -363,11 +382,13 @@ export default {
             _this.dataList[i].income - _this.dataList[i].deduct,
             _this.dataList[i].iit
           );
+
           taxRateAmtSum += parseFloat(_this.dataList[i].iit);
           _this.incomeSum += parseFloat(_this.dataList[i].income);
           _this.deductSum += parseFloat(_this.dataList[i].deduct);
           _this.addDeductSum += parseFloat(_this.dataList[i].addDeduct);
           _this.fixedDeductSum += parseFloat(_this.dataList[i].fixedDeduct);
+         
           _this.dataList[i].incomeSum = _this.incomeSum;
           _this.dataList[i].deductSum = _this.deductSum;
           _this.dataList[i].addDeductSum = _this.addDeductSum;

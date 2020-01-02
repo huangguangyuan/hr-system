@@ -50,7 +50,7 @@
         <warning :userRight_props="userRight"></warning>
       </el-tab-pane>
       <el-tab-pane label="年假明细" name="leaves">
-        <span slot="label"><i class="hr-icon-odometer"></i> 年假明细</span>
+        <span slot="label"><i class="el-icon-odometer"></i> 年假明细</span>
         <leaves :userRight_props="userRight"></leaves>
       </el-tab-pane>
     </el-tabs>
