@@ -640,8 +640,8 @@ export default {
         _this.$message.error("年假清空日期不能为空");
         return false;
       }
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetainClearDate == ""){
-        _this.$message.error("请填写年假清空后可保留天数清空日期");
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && !_this.ruleForm.annualLeaveRetain){
+        _this.$message.error("请填写年假清空后可保留天数");
         return false;
       }
       if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetainClearDate == ""){
@@ -652,13 +652,13 @@ export default {
       //   _this.$message.error("年假清空日不能早于" + (new Date().getFullYear() + 1) + "-01-01");
       //   return false;
       // }
-      // if (new Date(_this.ruleForm.annualLeaveWriteOffDate) > new Date(_this.ruleForm.annualLeaveRetainClearDate)){
-      //   _this.$message.error("年假保留天数清空日期不能早于年假清空日期");
-      //   return false;
-      // }
+      if (new Date(_this.ruleForm.annualLeaveWriteOffDate) > new Date(_this.ruleForm.annualLeaveRetainClearDate)){
+        _this.$message.error("年假保留天数清空日期不能早于年假清空日期");
+        return false;
+      }
+      data.annualLeaveWriteOffDate = _this.ruleForm.annualLeaveWriteOffDate;
       data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
       data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveRetainClearDate);
-      data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
@@ -729,7 +729,7 @@ export default {
         _this.$message.error("年假结算日期不能为空");
         return false;
       }
-      data.annualLeaveWriteOffDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveWriteOffDate);
+      
       if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && !_this.ruleForm.annualLeaveRetain){
         _this.$message.error("请填写年假清空后可保留天数");
         return false;
@@ -742,11 +742,11 @@ export default {
       //   _this.$message.error("年假清空日不能早于" + (new Date().getFullYear() + 1) + "-01-01");
       //   return false;
       // }
-
-      // if (new Date(_this.ruleForm.annualLeaveWriteOffDate) > new Date(_this.ruleForm.annualLeaveRetainClearDate)){
-      //   _this.$message.error("年假保留天数清空日期不能早于年假清空日期");
-      //   return false;
-      // }
+      if (new Date(_this.ruleForm.annualLeaveWriteOffDate) >= new Date(_this.ruleForm.annualLeaveRetainClearDate)){
+        _this.$message.error("年假保留天数清空日期需要大于年假清空日期");
+        return false;
+      }
+      data.annualLeaveWriteOffDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveWriteOffDate);
       data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
       data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveRetainClearDate);
       _this.$http.post(reqUrl, data).then(res => {

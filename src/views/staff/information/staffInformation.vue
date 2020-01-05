@@ -101,10 +101,10 @@
             <el-form-item label="入职日期：">
               <span>{{ props.row.dateOfJoining }}</span>
             </el-form-item>
-            <el-form-item label="离职日期：" v-if="props.row.workStatus == "2"">
+            <el-form-item label="离职日期：" v-if="props.row.workStatus == '2'">
               <span>{{ props.row.dateOfLeaving }}</span>
             </el-form-item>
-            <el-form-item label="离职原因：" v-if="props.row.workStatus == "2"">
+            <el-form-item label="离职原因：" v-if="props.row.workStatus == '2'">
               <span>{{ props.row.reasonOfLeaving }}</span>
             </el-form-item>
             <el-form-item label="工作地点：">
@@ -488,6 +488,9 @@ export default {
                 .slice(0, 10);
               item.annualLeaveWriteOffDate = _this.$toolFn
               .timeFormat(item.annualLeaveWriteOffDate)
+              .slice(0, 10);
+              item.annualLeaveRetainClearDate = _this.$toolFn
+              .timeFormat(item.annualLeaveRetainClearDate)
               .slice(0, 10);
               return item;
             })
