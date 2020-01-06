@@ -5,7 +5,7 @@
       <el-button type="danger" @click='handleDeleteAll'>删除所有</el-button>
     </div>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id"  show-summary sum-text="剩余合计">
+    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id"  show-summary sum-text="合计">
       <el-table-column sortable prop="applyDate" label="变动日期"></el-table-column>
       <el-table-column prop="applyDay" label="变动天数"></el-table-column>
       <el-table-column prop="remarks" label="内容"></el-table-column>
@@ -39,7 +39,7 @@ export default {
     return {
       tableData: [],
       total: 0, //总计
-      pageSize: 6, //页面数据多少
+      pageSize: 1000, //页面数据多少
       curPage: 1, //当前页数
       searchInner: "", //搜索内容
       curInfo: {},
