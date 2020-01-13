@@ -89,10 +89,10 @@
             <el-form-item label="婚姻状况：">
               <span>{{ props.row.martialStatusTxt }}</span>
             </el-form-item>
-            <el-form-item label="伴侣姓名：" v-if="props.row.martialStatus == "1"">
+            <el-form-item label="伴侣姓名：" v-if="props.row.martialStatus == '1'">
               <span>{{ props.row.nameOfSpouse }}</span>
             </el-form-item>
-            <el-form-item label="子女数目：" v-if="props.row.martialStatus == "1"">
+            <el-form-item label="子女数目：" v-if="props.row.martialStatus == '1'">
               <span>{{ props.row.countOfKids }}</span>
             </el-form-item>
             <el-form-item label="紧急联系人：">

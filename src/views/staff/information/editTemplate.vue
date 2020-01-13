@@ -238,12 +238,12 @@
       <el-form-item label="每年可享有薪年假：" prop="annualLeaveEntitled">
         <el-input v-model="ruleForm.annualLeaveEntitled"></el-input>
       </el-form-item>
-      <el-form-item label="年假结算方法：" prop="annualLeaveWriteOffMethod" >
+      <!-- <el-form-item label="年假结算方法：" prop="annualLeaveWriteOffMethod" >
         <el-radio-group v-model="ruleForm.annualLeaveWriteOffMethod">
           <el-radio label="1">年结</el-radio>
           <el-radio label="2">自定义日期结算</el-radio>
         </el-radio-group>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="年假清空日期：" prop="annualLeaveWriteOffDate" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
           <el-date-picker
             v-model="ruleForm.annualLeaveWriteOffDate"
@@ -370,7 +370,7 @@ export default {
         workingLocation: "",
         outsourceLocation: "",
         permanentOrContract: "",
-        annualLeaveWriteOffMethod: "",
+        annualLeaveWriteOffMethod: "2",
         annualLeaveEntitled: "",
         paidSickLeaveEntitled: "",
         payrollType: "",
@@ -547,7 +547,7 @@ export default {
         this.ruleForm = JSON.parse(JSON.stringify(this.curInfo));
         this.ruleForm.hukouType = this.curInfo.hukouType?this.curInfo.hukouType.toString():null;
         this.ruleForm.martialStatus = this.curInfo.martialStatus!= undefined?this.curInfo.martialStatus.toString():null;
-        this.ruleForm.annualLeaveWriteOffMethod = this.curInfo.annualLeaveWriteOffMethod?this.curInfo.annualLeaveWriteOffMethod.toString():"1";
+        this.ruleForm.annualLeaveWriteOffMethod = this.curInfo.annualLeaveWriteOffMethod?this.curInfo.annualLeaveWriteOffMethod.toString():"2";
         this.ruleForm.payrollType = this.curInfo.payrollType?this.curInfo.payrollType.toString():null;
         this.ruleForm.fileUnitMove = this.curInfo.fileUnitMove?this.curInfo.fileUnitMove.toString():null;
         //this.ruleForm.workStatus = this.ruleForm.workStatus?this.ruleForm.workStatus.toString():null;

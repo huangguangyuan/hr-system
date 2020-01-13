@@ -14,6 +14,10 @@
         <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 粮 期</span>
         <payroll-period></payroll-period>
       </el-tab-pane>
+       <el-tab-pane label="年假配置" name="payroll">
+        <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 年假配置</span>
+        <annual-leave></annual-leave>
+      </el-tab-pane>     
       <el-tab-pane label="社保方案" name="insuredScheme">
         <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 社保方案</span>
         <scheme-list></scheme-list>
@@ -36,6 +40,7 @@
 <script>
 import cityTemplate from '../cityTemplate/cityTemplate.vue'
 import payrollPeriod from '../payrollPeriod/payrollPeriod.vue'
+import annualLeave from '../annualLeave/annualLeave.vue'
 import salaryItems from '../salaryItems/salaryItems.vue'
 // import allowances from '../allowances/allowances.vue'
 import claims from '../claim/claims.vue'
