@@ -46,7 +46,7 @@ export default {
         BUCode: "",
         annualLeaveEntitled:"5",
         annualLeaveWriteOffDate:new Date(new Date().getFullYear() + "-01-01"),
-        annualLeaveRetain:"0",
+        annualLeaveRetain:"3",
         annualLeaveRetainClearDate:new Date(new Date().getFullYear() + "-03-01"),
         remarks:""
       }, //表单信息
@@ -71,13 +71,13 @@ export default {
           this.ruleForm.annualLeaveEntitled = this.curInfo.annualLeaveEntitled;
         }
         if (this.curInfo.annualLeaveWriteOffDate){
-          this.ruleForm.annualLeaveWriteOffDate = this.curInfo.annualLeaveWriteOffDate;
+          this.ruleForm.annualLeaveWriteOffDate = new Date(this.$toolFn.timeFormat(this.curInfo.annualLeaveWriteOffDate,"yyyy-MM-dd"));
         }
         if (this.curInfo.annualLeaveRetain){
           this.ruleForm.annualLeaveRetain = this.curInfo.annualLeaveRetain;
         }
         if (this.curInfo.annualLeaveRetainClearDate){
-          this.ruleForm.annualLeaveRetainClearDate = this.curInfo.annualLeaveRetainClearDate;
+          this.ruleForm.annualLeaveRetainClearDate = new Date(this.$toolFn.timeFormat(this.curInfo.annualLeaveRetainClearDate,"yyyy-MM-dd"));
         }
         this.ruleForm.remarks = this.curInfo.remarks;
       }
@@ -85,15 +85,23 @@ export default {
     // 提交表单
     submitForm(formName) {
       var _this = this;
-
+      this.ruleForm.annualLeaveWriteOffDate = new Date(new Date().getFullYear() + "-" + this.$toolFn.timeFormat(this.ruleForm.annualLeaveWriteOffDate,"MM-dd"));
+      this.ruleForm.annualLeaveRetainClearDate = new Date(new Date().getFullYear() + "-" +  this.$toolFn.timeFormat(this.ruleForm.annualLeaveRetainClearDate,"MM-dd"));
       _this.$refs[formName].validate(valid => {
         if (valid) {
-          if (new Date(new Date().getFullYear() + "-" + _this.ruleForm.annualLeaveWriteOffDate) > new Date(new Date().getFullYear() + "-" +  _this.ruleForm.annualLeaveRetainClearDate)){
+          if (this.ruleForm.annualLeaveWriteOffDate > this.ruleForm.annualLeaveRetainClearDate){
             _this.$message.error("年假保留天数清空日期不能早于年假清空日期");
             return false;
           }
+          var postData = {
+            BUCode:this.ruleForm.BUCode,
+            annualLeaveWriteOffDate : this.$toolFn.timeFormat(this.ruleForm.annualLeaveWriteOffDate,"yyyy-MM-dd"),
+            annualLeaveRetainClearDate : this.$toolFn.timeFormat(this.ruleForm.annualLeaveRetainClearDate,"yyyy-MM-dd"),
+            annualLeaveEntitled : this.ruleForm.annualLeaveEntitled,
+            annualLeaveRetain : this.ruleForm.annualLeaveRetain
+          }
           var reqUrl = '/server/api/v1/bu/annualLeaveUpdate';
-          this.$http.post(reqUrl,this.ruleForm).then(res => {
+          this.$http.post(reqUrl,postData).then(res => {
             if(res.data.code == 0){
               this.$message.success('修改成功！');
               this.reload();

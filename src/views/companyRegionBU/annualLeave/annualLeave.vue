@@ -9,7 +9,7 @@
         <!-- 0表示与当前出粮月份一致，其他为对应增减。例如（1：下月社保，-2上上月社保） -->
       </el-col>
       <el-col :span="7">
-        <div class="grid-content">自定义年假清空日期：<span>{{tableData.annualLeaveWriteOffDate}}号</span></div>
+        <div class="grid-content">自定义年假清空日期：<span>{{tableData.annualLeaveWriteOffDate}}</span></div>
       </el-col>
       <el-col :span="7">
         <div class="grid-content">年假清空后可保留天数：<span>{{tableData.annualLeaveRetain}}</span></div>
@@ -53,6 +53,9 @@ export default {
       this.$http.post(reqUrl, {BUCode:this.BUInfo.code}).then(res => {
         if (res.data.code == 0) {
           this.tableData = res.data.data;
+          this.tableData.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.tableData.annualLeaveWriteOffDate).slice(0, 10);
+          this.tableData.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.tableData.annualLeaveRetainClearDate).slice(0, 10);
+          
           this.isContent = true;
         }
       });

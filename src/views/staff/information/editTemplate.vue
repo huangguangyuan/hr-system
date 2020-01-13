@@ -400,6 +400,7 @@ export default {
       IDPositiveSrc: "", //身份证正面
       IDNegativeSrc: "", //身份证反面
       departmentList: [], //部门列表
+      annualLeaveConfig:{},//年假配置
       HRadminList:[],//管理员列表
       props: {
         lazy: true,
@@ -542,14 +543,15 @@ export default {
   methods: {
     // 初始化
     initialize() {
+      this.getAnnualLeave(this.curInfo.BUCode);
       if (this.curInfo.type == "modify") {
         this.isShow = false;
         this.ruleForm = JSON.parse(JSON.stringify(this.curInfo));
         this.ruleForm.hukouType = this.curInfo.hukouType?this.curInfo.hukouType.toString():null;
-        this.ruleForm.martialStatus = this.curInfo.martialStatus!= undefined?this.curInfo.martialStatus.toString():null;
+        this.ruleForm.martialStatus = this.curInfo.martialStatus!= undefined?this.curInfo.martialStatus.toString():"0";
         this.ruleForm.annualLeaveWriteOffMethod = this.curInfo.annualLeaveWriteOffMethod?this.curInfo.annualLeaveWriteOffMethod.toString():"2";
-        this.ruleForm.payrollType = this.curInfo.payrollType?this.curInfo.payrollType.toString():null;
-        this.ruleForm.fileUnitMove = this.curInfo.fileUnitMove?this.curInfo.fileUnitMove.toString():null;
+        this.ruleForm.payrollType = this.curInfo.payrollType?this.curInfo.payrollType.toString():"1";
+        this.ruleForm.fileUnitMove = this.curInfo.fileUnitMove?this.curInfo.fileUnitMove.toString():"1";
         //this.ruleForm.workStatus = this.ruleForm.workStatus?this.ruleForm.workStatus.toString():null;
         //this.ruleForm.workStatus = this.ruleForm.workStatus;
         this.avatarSrc = this.ruleForm.photo;
@@ -730,7 +732,7 @@ export default {
         return false;
       }
       
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && !_this.ruleForm.annualLeaveRetain){
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetain !=undefined){
         _this.$message.error("请填写年假清空后可保留天数");
         return false;
       }
@@ -772,6 +774,29 @@ export default {
       this.$http.post(reqUrl, data).then(res => {
         if (res.data.data) {
           this.departmentList = res.data.data;
+        }
+      });
+    },
+    // 获取年假配置
+    async getAnnualLeave(val) {
+      var reqUrl = "/server/api/v1/bu/annualLeave";
+      this.$http.post(reqUrl, {BUCode:val}).then(res => {
+        if (res.data.code == 0) {
+          this.annualLeaveConfig = res.data.data;
+          this.annualLeaveConfig.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate).slice(0, 10);
+          this.annualLeaveConfig.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveRetainClearDate).slice(0, 10);
+          if (this.annualLeaveConfig.annualLeaveEntitled){
+            this.ruleForm.annualLeaveEntitled = this.annualLeaveConfig.annualLeaveEntitled;
+          }
+          if (this.annualLeaveConfig.annualLeaveWriteOffDate){
+            this.ruleForm.annualLeaveWriteOffDate = new Date(this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate,"yyyy-MM-dd"));
+          }
+          if (this.annualLeaveConfig.annualLeaveRetain){
+            this.ruleForm.annualLeaveRetain = this.annualLeaveConfig.annualLeaveRetain;
+          }
+          if (this.annualLeaveConfig.annualLeaveRetainClearDate){
+            this.ruleForm.annualLeaveRetainClearDate = new Date(this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveRetainClearDate,"yyyy-MM-dd"));
+          }
         }
       });
     },
