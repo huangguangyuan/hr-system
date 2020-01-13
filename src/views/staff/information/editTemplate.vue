@@ -511,7 +511,7 @@ export default {
       loading: false, //公司ID号
       isShow: true, //是否显示
       rules: {
-        selectedOptions: [
+        annualLeaveWriteOffDate: [
           {
             required: true,
             message: "请选择所属公司/区域/单位",

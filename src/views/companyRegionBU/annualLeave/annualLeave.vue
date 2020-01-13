@@ -22,11 +22,11 @@
       </el-col>
     </el-row>
     <div class="noContent" v-else>
-      暂无年假配置
+      暂无年假配置 
       <el-button type="primary" @click="editTemplageFun()">马上增加</el-button>
     </div>
     <!-- 修改 -->
-    <el-dialog title="修改年假配置" :visible.sync="isShowEdit" :close-on-click-modal="false" width="65%">
+    <el-dialog title="年假配置" :visible.sync="isShowEdit" :close-on-click-modal="false" width="65%">
       <edit-annual-leave v-if='isShowEdit' v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo"></edit-annual-leave>
     </el-dialog>
   </div>
@@ -44,11 +44,11 @@ export default {
     };
   },
   mounted() {
-    this.payrollPeriodByBUCode(this.BUInfo.code);
+    this.annualLeaveByBUCode(this.BUInfo.code);
   },
   methods: {
     // 获取出粮周期
-    payrollPeriodByBUCode(BUCode) {
+    annualLeaveByBUCode(BUCode) {
       var reqUrl = "/server/api/v1/bu/annualLeave";
       this.$http.post(reqUrl, {BUCode:this.BUInfo.code}).then(res => {
         if (res.data.code == 0) {

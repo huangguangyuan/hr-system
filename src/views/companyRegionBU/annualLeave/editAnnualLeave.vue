@@ -1,28 +1,28 @@
 <template>
   <div class="editPayrollPeriod">
-    <el-form :model="ruleForm" ref="ruleForm" label-width="160px">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px">
       <el-form-item label="每年可享有薪年假：">
-        <el-input v-model="ruleForm.forMonth" class="setWidth" type="number" min="0" max="100"></el-input>
+        <el-input v-model="ruleForm.annualLeaveEntitled" class="setWidth" type="number" min="0" max="100"></el-input>
       </el-form-item>
       <el-form-item label="自定义年假清空日期：">
         <el-date-picker
             v-model="ruleForm.annualLeaveWriteOffDate"
             type="date"
             placeholder="选择日期"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd">
+            format="MM-dd"
+            value-format="MM-dd">
           </el-date-picker>
       </el-form-item>
       <el-form-item label="年假清空后可保留天数：">
-        <el-input v-model="ruleForm.annualLeaveRetain" class="setWidth" type="number" min="0" max="1000"></el-input>
+        <el-input v-model="ruleForm.annualLeaveRetain" class="setWidth" type="number" min="0" max="100"></el-input>
       </el-form-item>
-      <el-form-item label="年假清空后可保留天数清空日期：">
+      <el-form-item label="可保留天数清空日期：">
           <el-date-picker
             v-model="ruleForm.annualLeaveRetainClearDate"
             type="date"
             placeholder="选择日期"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd">
+            format="MM-dd"
+            value-format="MM-dd">
           </el-date-picker>
       </el-form-item>
       <el-form-item label="备注：">
@@ -44,12 +44,19 @@ export default {
     return {
       ruleForm: {
         BUCode: "",
-        forMonth:"0",
-        startDate:"1",
-        endDate:"31",
-        payDay:"31",
+        annualLeaveEntitled:"5",
+        annualLeaveWriteOffDate:new Date(new Date().getFullYear() + "-01-01"),
+        annualLeaveRetain:"0",
+        annualLeaveRetainClearDate:new Date(new Date().getFullYear() + "-03-01"),
         remarks:""
       }, //表单信息
+      rules: {
+        annualLeaveEntitled: [{required: true,message: "请填写每年可享有薪年假",trigger: "blur"}],
+        annualLeaveWriteOffDate: [{ required: true, message: "请选择自定义年假清空日期", trigger: "change" }],
+        annualLeaveRetain: [{required: true,message: "请填写年假清空后可保留天数",trigger: "blur"}],
+        annualLeaveRetainClearDate: [{ required: true, message: "请选择可保留天数清空日期", trigger: "change" }],
+      }
+      
     };
   },
   mounted() {
@@ -60,18 +67,31 @@ export default {
     initializeFun() {
       if (this.curInfo){
         this.ruleForm.BUCode = this.curInfo.BUCode;
-        this.ruleForm.annualLeaveEntitled = this.curInfo.annualLeaveEntitled;
-        this.ruleForm.annualLeaveWriteOffDate = this.curInfo.annualLeaveWriteOffDate;
-        this.ruleForm.annualLeaveRetain = this.curInfo.annualLeaveRetain;
-        this.ruleForm.annualLeaveRetainClearDate = this.curInfo.annualLeaveRetainClearDate;
+        if (this.curInfo.annualLeaveEntitled){
+          this.ruleForm.annualLeaveEntitled = this.curInfo.annualLeaveEntitled;
+        }
+        if (this.curInfo.annualLeaveWriteOffDate){
+          this.ruleForm.annualLeaveWriteOffDate = this.curInfo.annualLeaveWriteOffDate;
+        }
+        if (this.curInfo.annualLeaveRetain){
+          this.ruleForm.annualLeaveRetain = this.curInfo.annualLeaveRetain;
+        }
+        if (this.curInfo.annualLeaveRetainClearDate){
+          this.ruleForm.annualLeaveRetainClearDate = this.curInfo.annualLeaveRetainClearDate;
+        }
         this.ruleForm.remarks = this.curInfo.remarks;
       }
     },
     // 提交表单
     submitForm(formName) {
       var _this = this;
+
       _this.$refs[formName].validate(valid => {
         if (valid) {
+          if (new Date(new Date().getFullYear() + "-" + _this.ruleForm.annualLeaveWriteOffDate) > new Date(new Date().getFullYear() + "-" +  _this.ruleForm.annualLeaveRetainClearDate)){
+            _this.$message.error("年假保留天数清空日期不能早于年假清空日期");
+            return false;
+          }
           var reqUrl = '/server/api/v1/bu/annualLeaveUpdate';
           this.$http.post(reqUrl,this.ruleForm).then(res => {
             if(res.data.code == 0){
@@ -97,7 +117,7 @@ export default {
 </script>
 <style scoped lang="scss">
 .setWidth{
-  width:80px
+  width:120px
 }
 .setTip{
   color: #ff6600;

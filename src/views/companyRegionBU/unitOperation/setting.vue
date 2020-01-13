@@ -14,7 +14,7 @@
         <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 粮 期</span>
         <payroll-period></payroll-period>
       </el-tab-pane>
-       <el-tab-pane label="年假配置" name="payroll">
+       <el-tab-pane label="年假配置" name="annualLeave">
         <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 年假配置</span>
         <annual-leave></annual-leave>
       </el-tab-pane>     
@@ -75,7 +75,7 @@ export default {
     }
   },
   components: {
-    cityTemplate,payrollPeriod,salaryItems,schemeList,claims
+    cityTemplate,payrollPeriod,annualLeave,salaryItems,schemeList,claims
   }
 };
 </script>
