@@ -35,10 +35,10 @@
             <el-form-item label="员工编号：">
               <span>{{ props.row.staffNo }}</span>
             </el-form-item>
-            <el-form-item label="中文名称：">
+            <el-form-item label="第一姓名称：">
               <span>{{ props.row.nameChinese }}</span>
             </el-form-item>
-            <el-form-item label="英文名称：">
+            <el-form-item label="第二姓名称：">
               <span>{{ props.row.nameEnglish }}</span>
             </el-form-item>
             <el-form-item label="员工别名：">

@@ -44,10 +44,10 @@ export default {
     return {
       ruleForm: {
         BUCode: "",
-        annualLeaveEntitled:"5",
-        annualLeaveWriteOffDate:new Date(new Date().getFullYear() + "-01-01"),
-        annualLeaveRetain:"3",
-        annualLeaveRetainClearDate:new Date(new Date().getFullYear() + "-03-01"),
+        annualLeaveEntitled:"10",
+        annualLeaveWriteOffDate:new Date(new Date().getFullYear()+1 + "-01-01"),
+        annualLeaveRetain:"0",
+        annualLeaveRetainClearDate:new Date(new Date().getFullYear()+1 + "-03-01"),
         remarks:""
       }, //表单信息
       rules: {
@@ -85,8 +85,8 @@ export default {
     // 提交表单
     submitForm(formName) {
       var _this = this;
-      this.ruleForm.annualLeaveWriteOffDate = new Date(new Date().getFullYear() + "-" + this.$toolFn.timeFormat(this.ruleForm.annualLeaveWriteOffDate,"MM-dd"));
-      this.ruleForm.annualLeaveRetainClearDate = new Date(new Date().getFullYear() + "-" +  this.$toolFn.timeFormat(this.ruleForm.annualLeaveRetainClearDate,"MM-dd"));
+      this.ruleForm.annualLeaveWriteOffDate = new Date((new Date().getFullYear()+1) + "-" + this.$toolFn.timeFormat(this.ruleForm.annualLeaveWriteOffDate,"MM-dd"));
+      this.ruleForm.annualLeaveRetainClearDate = new Date((new Date().getFullYear()+1) + "-" +  this.$toolFn.timeFormat(this.ruleForm.annualLeaveRetainClearDate,"MM-dd"));
       _this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.ruleForm.annualLeaveWriteOffDate > this.ruleForm.annualLeaveRetainClearDate){

@@ -24,8 +24,8 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
       <el-table-column prop="staffNo" label="员工编号"></el-table-column>
-      <el-table-column prop="nameChinese" label="中文名"></el-table-column>
-      <el-table-column prop="nameEnglish" label="英文名"></el-table-column>
+      <el-table-column prop="nameChinese" label="第一姓名"></el-table-column>
+      <el-table-column prop="nameEnglish" label="第二姓名"></el-table-column>
       <el-table-column prop="nameChinese" label="名称"></el-table-column>
       <el-table-column label="头像">
         <template slot-scope="scope">

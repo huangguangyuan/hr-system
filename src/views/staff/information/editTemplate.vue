@@ -18,7 +18,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="中文名：" prop="nameChinese">
+      <el-form-item label="第一姓名：" prop="nameChinese">
         <el-input v-model="ruleForm.nameChinese"></el-input>
       </el-form-item>
       <el-form-item label="性 别：" prop="gender">
@@ -27,7 +27,7 @@
           <el-radio label="F">女</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="英文名：" prop="nameEnglish">
+      <el-form-item label="第二姓名：" prop="nameEnglish">
         <el-input v-model="ruleForm.nameEnglish"></el-input>
       </el-form-item>
       <el-form-item label="个人头像：" prop="photo">
@@ -98,6 +98,9 @@
       <el-form-item label="职位：" prop="position">
         <el-input v-model="ruleForm.position"></el-input>
       </el-form-item>
+      <el-form-item label="公司电话：" prop="companyPhone">
+        <el-input v-model="ruleForm.companyPhone"></el-input>
+      </el-form-item>      
       <el-form-item label="国家号码：" prop="mobileCountryCode">
         <el-select v-model="ruleForm.mobileCountryCode" placeholder="请选择国家号码">
           <el-option label="86-中国" value="86"></el-option>
@@ -395,6 +398,9 @@ export default {
         dateOfPlace:"",
         postalAddress:"",
         fringeBeneiftLimit:"",
+        annualLeave:0,
+        annualLeaveRetain:0,
+        companyPhone:""
       }, //表单信息
       avatarSrc: "", //头像路径
       IDPositiveSrc: "", //身份证正面
@@ -512,13 +518,13 @@ export default {
       loading: false, //公司ID号
       isShow: true, //是否显示
       rules: {
-        annualLeaveWriteOffDate: [
-          {
-            required: true,
-            message: "请选择所属公司/区域/单位",
-            trigger: "change"
-          }
-        ],
+        // annualLeaveWriteOffDate: [
+        //   {
+        //     required: true,
+        //     message: "请选择所属公司/区域/单位",
+        //     trigger: "change"
+        //   }
+        // ],
         nameChinese: [
           { required: true, message: "请输入名称", trigger: "blur" },
           { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
@@ -530,9 +536,9 @@ export default {
         account: [{ required: true, message: "请填写账户", trigger: "change" }],
         password: [{ required: true, message: "请填写密码", trigger: "change" }],
         staffNo: [{ required: true, message: "请填写员工编号", trigger: "change" }],
-        hukouType: [{ required: true, message: "请选择户口性质", trigger: "change" }],
-        martialStatus: [{ required: true, message: "请选择婚姻状况", trigger: "change" }],
-        photo:[{ required: true, message: "请上传个人头像", trigger: "change" }]
+        // hukouType: [{ required: true, message: "请选择户口性质", trigger: "change" }],
+        // martialStatus: [{ required: true, message: "请选择婚姻状况", trigger: "change" }],
+        // photo:[{ required: true, message: "请上传个人头像", trigger: "change" }]
       }
     };
   },
@@ -543,7 +549,7 @@ export default {
   methods: {
     // 初始化
     initialize() {
-      this.getAnnualLeave(this.curInfo.BUCode);
+      
       if (this.curInfo.type == "modify") {
         this.isShow = false;
         this.ruleForm = JSON.parse(JSON.stringify(this.curInfo));
@@ -558,6 +564,7 @@ export default {
         this.IDPositiveSrc = this.ruleForm.IDCopy;
         this.IDNegativeSrc = this.ruleForm.IDCopyBack;
         this.getDepartment(this.ruleForm.BUCode);
+        this.getAnnualLeave(this.curInfo.BUCode);
       }
     },
     // 提交表单
@@ -642,7 +649,7 @@ export default {
         _this.$message.error("年假清空日期不能为空");
         return false;
       }
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && !_this.ruleForm.annualLeaveRetain){
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetain == undefined){
         _this.$message.error("请填写年假清空后可保留天数");
         return false;
       }
@@ -658,7 +665,7 @@ export default {
         _this.$message.error("年假保留天数清空日期不能早于年假清空日期");
         return false;
       }
-      data.annualLeaveWriteOffDate = _this.ruleForm.annualLeaveWriteOffDate;
+      data.annualLeaveWriteOffDate =  this.$toolFn.timeFormat(this.curInfo.annualLeaveWriteOffDate,"yyyy-MM-dd");
       data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
       data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveRetainClearDate);
       _this.$http.post(reqUrl, data).then(res => {
@@ -731,8 +738,7 @@ export default {
         _this.$message.error("年假结算日期不能为空");
         return false;
       }
-      
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetain !=undefined){
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetain == undefined){
         _this.$message.error("请填写年假清空后可保留天数");
         return false;
       }
@@ -765,6 +771,7 @@ export default {
     handleChange(val) {
       this.getDepartment(val[2]);
       this.getHRadminList(val[2]);
+      this.getAnnualLeave(val[2]);
     },
     // 获取部门列表
     getDepartment(val) {
@@ -785,13 +792,13 @@ export default {
           this.annualLeaveConfig = res.data.data;
           this.annualLeaveConfig.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate).slice(0, 10);
           this.annualLeaveConfig.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveRetainClearDate).slice(0, 10);
-          if (this.annualLeaveConfig.annualLeaveEntitled){
+          if (this.annualLeaveConfig.annualLeaveEntitled != undefined){
             this.ruleForm.annualLeaveEntitled = this.annualLeaveConfig.annualLeaveEntitled;
           }
           if (this.annualLeaveConfig.annualLeaveWriteOffDate){
             this.ruleForm.annualLeaveWriteOffDate = new Date(this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate,"yyyy-MM-dd"));
           }
-          if (this.annualLeaveConfig.annualLeaveRetain){
+          if (this.annualLeaveConfig.annualLeaveRetain != undefined){
             this.ruleForm.annualLeaveRetain = this.annualLeaveConfig.annualLeaveRetain;
           }
           if (this.annualLeaveConfig.annualLeaveRetainClearDate){
