@@ -5,7 +5,7 @@
     </div>
     <el-row :gutter="20" v-if='isContent'>
       <el-col :span="7">
-        <div class="grid-content">每年可享有薪年假：<span>{{tableData.annualLeaveEntitled}}</span></div>
+        <div class="grid-content">每年可享有薪年假天数：<span>{{tableData.annualLeaveEntitled}}</span></div>
         <!-- 0表示与当前出粮月份一致，其他为对应增减。例如（1：下月社保，-2上上月社保） -->
       </el-col>
       <el-col :span="7">

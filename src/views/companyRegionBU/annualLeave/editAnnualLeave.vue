@@ -1,7 +1,7 @@
 <template>
   <div class="editPayrollPeriod">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px">
-      <el-form-item label="每年可享有薪年假：">
+      <el-form-item label="每年可享有薪年假天数：">
         <el-input v-model="ruleForm.annualLeaveEntitled" class="setWidth" type="number" min="0" max="100"></el-input>
       </el-form-item>
       <el-form-item label="自定义年假清空日期：">
@@ -9,8 +9,8 @@
             v-model="ruleForm.annualLeaveWriteOffDate"
             type="date"
             placeholder="选择日期"
-            format="MM-dd"
-            value-format="MM-dd">
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd">
           </el-date-picker>
       </el-form-item>
       <el-form-item label="年假清空后可保留天数：">
@@ -21,8 +21,8 @@
             v-model="ruleForm.annualLeaveRetainClearDate"
             type="date"
             placeholder="选择日期"
-            format="MM-dd"
-            value-format="MM-dd">
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd">
           </el-date-picker>
       </el-form-item>
       <el-form-item label="备注：">
