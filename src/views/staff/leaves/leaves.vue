@@ -64,7 +64,7 @@ export default {
     //获取数据列表
     getData(staffCode) {
       var _this = this;
-      var reqUrl = "/server/api/v1/staff/holidaysApply/staffLeaves";
+      var reqUrl = "/server/api/v1/staff/holidaysApply/";
       var myData = { staffCode: staffCode,typeId:2 };
       _this.isShowLoading = true;
       _this.$http.post(reqUrl, myData).then(res => {
@@ -77,6 +77,7 @@ export default {
           return item;
           });
         })
+        
         .catch(err => {
           console.log(err);
         });

@@ -137,7 +137,8 @@ export default {
     // 初始化
      initializeFun(){
       this.userInfo = this.$toolFn.localGet("userInfo");
-      if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301){
+      console.log(this.userInfo);
+      if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301 ){
         this.userRight = false;
       }
       this.getBUCodeFun();

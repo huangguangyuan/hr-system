@@ -79,19 +79,51 @@ export default {
     var _this = this;
      _this.getRegionBUList();
     _this.userInfo = _this.$toolFn.localGet("userInfo");
-    if (_this.userInfo.roleTypeId == 2 ){
+    if (_this.userInfo.roleTypeId == 2 ){//hr系统管理员
       _this.hrCode = _this.userInfo.userCode;
+      let rightStatusOne = [501,521],rightStatusTwo = [601];
       if (_this.userInfo.lev == 301){
-        _this.rightStatus = [1,2,3,4];
-      }else if ([501,521].indexOf(_this.userInfo.lev) >= 0){//主管，假期审批主管
-        _this.rightStatus = [1];
-      }else if ([601,611].indexOf(_this.userInfo.lev) >= 0){//人事，人事文员
-        _this.rightStatus = [2];
-      }else if ([401,411].indexOf(_this.userInfo.lev) >= 0){//薪酬主管，薪酬文员
-        _this.rightStatus = [3];
+        _this.rightStatus = [1,2,3];//查看，审批，结算权限
+      }else if (rightStatusOne.indexOf(_this.userInfo.lev) >= 0){//审批主管，部门主管（审批）
+        _this.rightStatus = [1,2];
+      }else if (rightStatusTwo.indexOf(_this.userInfo.lev) >= 0){//人事主管（结算）
+        _this.rightStatus = [1,3];
       }
-    }else if (_this.userInfo.roleTypeId == 3){
-      _this.rightStatus = [1,2,3,4];
+      //增加扩展角色权限
+      if(_this.userInfo.levExtend != ""){
+        let rightStatusOne_chk = rightStatusOne.find(f=>{
+          return _this.userInfo.levExtend.indexOf(f);
+        })
+        let rightStatusTwo_chk = rightStatusTwo.find(f=>{
+          return _this.userInfo.levExtend.indexOf(f);
+        })
+        if (rightStatusOne_chk >= 0){
+            if (_this.rightStatus.indexOf(1)){
+              _this.rightStatus.push(1);
+            }
+            if (_this.rightStatus.indexOf(2)){
+              _this.rightStatus.push(2);
+            }
+        }
+        if (rightStatusTwo_chk >= 0){
+            if (_this.rightStatus.indexOf(1)){
+              _this.rightStatus.push(1);
+            }
+            if (_this.rightStatus.indexOf(3)){
+              _this.rightStatus.push(3);
+            }
+        }
+      }
+      //指定查看，审批，结算权限
+      if(_this.userInfo.claimAccess != ""){
+          for (let index = 0; index < _this.userInfo.claimAccess.length; index++) {
+            if (_this.rightStatus.indexOf(_this.userInfo.claimAccess[index])){
+              _this.rightStatus.push(_this.userInfo.claimAccess[index]);
+            }
+          }
+      }
+    }else if (_this.userInfo.roleTypeId == 3){//平台管理员
+      _this.rightStatus = [1,2,3];
     }
     //_this.getData(_this.hrCode,_this.BUCode);
   },
@@ -117,9 +149,7 @@ export default {
       var reqUrl = "/server/api/v1/staff/claim/hrSysClaimList";
       var myData = { hrCode: hrCode,BUCode:BUCode };
       this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);

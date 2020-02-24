@@ -10,6 +10,33 @@
       <el-form-item label="手机：" prop="mobile"  v-if='modifyInfo.adminType!="customerAdmin"'>
         <el-input v-model="ruleForm.mobile"></el-input>
       </el-form-item>
+      <el-form-item label="角色扩展：" prop="levExtend" v-if='userRight && modifyInfo.adminType=="HRadmin" || ruleForm.lev != 301'>
+        <el-select v-model="ruleForm.levExtend" placeholder="请选择管理员类型" multiple>
+          <el-option
+          v-for="item in hrAdminRoles"
+          :key="item.hrSysLev"
+          :label="item.title"
+          :value="item.hrSysLev.toString()"
+          :disabled="(item.hrSysLev==ruleForm.lev || item.hrSysLev == 301)?true:false">
+          <span style="float: left">{{ item.title }}</span>
+          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.rightTxt }}</span>
+        </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="假期权限：" prop="leavesAccess" v-if='userRight && modifyInfo.adminType=="HRadmin" || ruleForm.lev != 301'>
+        <el-checkbox-group v-model="ruleForm.leavesAccess">
+          <el-checkbox label="1">查看</el-checkbox>
+          <el-checkbox label="2">审批</el-checkbox>
+          <el-checkbox label="3">结算</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="报销权限：" prop="claimAccess" v-if='userRight && modifyInfo.adminType=="HRadmin" || ruleForm.lev != 301'>
+        <el-checkbox-group v-model="ruleForm.claimAccess">
+          <el-checkbox label="1">查看</el-checkbox>
+          <el-checkbox label="2">审批</el-checkbox>
+          <el-checkbox label="3">结算</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
       <el-form-item  label="服务归属：" prop="serveId" v-if='userRight && modifyInfo.adminType=="HRadmin"'>
         <el-radio-group v-model="ruleForm.serveId">
           <el-radio :label="1">单位</el-radio>
@@ -37,9 +64,14 @@ export default {
         name: "",
         email: "",
         mobile: "",
+        lev:"",
         serveId:"",
+        levExtend:[],
+        leavesAccess:[],
+        claimAccess:[],
         userRight:true
       },
+      hrAdminRoles:[],
       rules: {
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
@@ -66,6 +98,7 @@ export default {
   },
   mounted() {
     this.initFn();
+    this.getHrAdminRoleInfo();
     this.userRight = this.userRight;
   },
   methods: {
@@ -75,8 +108,36 @@ export default {
       this.ruleForm.name = this.modifyInfo.name;
       this.ruleForm.email = this.modifyInfo.email;
       this.ruleForm.mobile = this.modifyInfo.mobile;
+      this.ruleForm.lev = this.modifyInfo.lev;
       this.ruleForm.serveId = this.modifyInfo.serveId;
+      if (this.modifyInfo.levExtend){
+        this.ruleForm.levExtend = this.modifyInfo.levExtend.split(",");
+      }
+      if (this.modifyInfo.leavesAccess){
+        this.ruleForm.leavesAccess = this.modifyInfo.leavesAccess.split(",");
+      }
+      if (this.modifyInfo.claimAccess){
+        this.ruleForm.claimAccess = this.modifyInfo.claimAccess.split(",");
+      }      
     },
+    // 所有HR管理员角色属性
+    getHrAdminRoleInfo() {
+      var _this = this;
+      var reqUrl = "/server/api/v1/admin/hrSys/getHrAdminRoleInfo";
+      var data = {
+      };
+      _this.$http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
+            this.hrAdminRoles = res.data.data;
+        } else {
+          _this.$message(res.data.msg);
+          return false;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    },    
     //提交表单
     submitForm(formName) {
       var _this = this;
@@ -95,7 +156,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -130,8 +190,20 @@ export default {
         email: _this.ruleForm.email,
         mobile: _this.ruleForm.mobile,
         name: _this.ruleForm.name,
-        serveId:_this.ruleForm.serveId
+        serveId:_this.ruleForm.serveId,
+        leavesAccess:'',
+        claimAccess:'',
+        levExtend:'',
       };
+      if (_this.ruleForm.leavesAccess.length > 0){
+        data.leavesAccess = _this.ruleForm.leavesAccess.join(",");
+      }
+      if (_this.ruleForm.claimAccess.length > 0){
+        data.claimAccess = _this.ruleForm.claimAccess.join(",");
+      }
+      if (_this.ruleForm.levExtend.length > 0){
+        data.levExtend = _this.ruleForm.levExtend.join(",");
+      }
       _this.$http
         .post(reqUrl, data)
         .then(res => {

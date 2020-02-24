@@ -124,7 +124,6 @@ export default {
         if(res.data.data){
           _this.HRadminList = res.data.data;
           var supervisorCodeArr = [];
-          console.log(_this.ruleForm);
           if (_this.ruleForm.supervisorCode){
             supervisorCodeArr = _this.ruleForm.supervisorCode.split(',')
           }
