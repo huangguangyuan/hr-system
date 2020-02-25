@@ -48,7 +48,7 @@
       <el-table-column sortable prop="roleCode" label="角色代号"></el-table-column>
       <el-table-column sortable prop="isStatus" label="状态"></el-table-column>
       <el-table-column prop="description" label="描述"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="500px">
+      <el-table-column label="操作" fixed="right" width="600px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">编辑</el-button>
           <el-button

@@ -70,7 +70,7 @@ export default {
             navTabs: []
           });
           this.$toolFn.localSet("userInfo", res.data.data.data);
-          var sidebar = res.data.data.data.roles[0].menuList.map(item => {
+          var sidebar = res.data.data.data.menuList.map(item => {
             item.id = item.id.toString();
             return item;
           });

@@ -70,6 +70,7 @@ export default {
       hrCode: "",
       userInfo:{},
       BUCode: "", //单位code
+      claimAccess:[],
       rightStatus:[], //当前管理员可审批的申请类型
       regionBUList:[],//单位列表
       filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip']}
@@ -79,6 +80,7 @@ export default {
     var _this = this;
      _this.getRegionBUList();
     _this.userInfo = _this.$toolFn.localGet("userInfo");
+    this.claimAccess = _this.userInfo.access.claimAccess || [];
     if (_this.userInfo.roleTypeId == 2 ){//hr系统管理员
       _this.hrCode = _this.userInfo.userCode;
       let rightStatusOne = [501,521],rightStatusTwo = [601];
