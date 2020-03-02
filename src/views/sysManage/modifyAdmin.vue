@@ -10,7 +10,7 @@
       <el-form-item label="手机：" prop="mobile"  v-if='modifyInfo.adminType!="customerAdmin"'>
         <el-input v-model="ruleForm.mobile"></el-input>
       </el-form-item>
-      <el-form-item label="角色扩展：" prop="levExtend" v-if='userRight && modifyInfo.adminType=="HRadmin" || ruleForm.lev != 301'>
+      <el-form-item label="角色扩展：" prop="levExtend" v-if='userRight && modifyInfo.adminType=="HRadmin" && ruleForm.lev != 301'>
         <el-select v-model="ruleForm.levExtend" placeholder="请选择管理员类型" multiple>
           <el-option
           v-for="item in hrAdminRoles"
@@ -23,25 +23,25 @@
         </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="假期权限：" prop="leavesAccess" v-if='userRight && modifyInfo.adminType=="HRadmin" || ruleForm.lev != 301'>
+      <el-form-item label="假期权限：" prop="leavesAccess" v-if='userRight && modifyInfo.adminType=="HRadmin" && ruleForm.lev != 301'>
         <el-checkbox-group v-model="ruleForm.leavesAccess">
           <el-checkbox label="1">查看</el-checkbox>
           <el-checkbox label="2">审批</el-checkbox>
           <el-checkbox label="3">结算</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="报销权限：" prop="claimAccess" v-if='userRight && modifyInfo.adminType=="HRadmin" || ruleForm.lev != 301'>
+      <el-form-item label="报销权限：" prop="claimAccess" v-if='userRight && modifyInfo.adminType=="HRadmin" && ruleForm.lev != 301'>
         <el-checkbox-group v-model="ruleForm.claimAccess">
           <el-checkbox label="1">查看</el-checkbox>
           <el-checkbox label="2">审批</el-checkbox>
           <el-checkbox label="3">结算</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item  label="服务归属：" prop="serveId" v-if='userRight && modifyInfo.adminType=="HRadmin"'>
+      <el-form-item  label="服务归属：" prop="serveId" v-if="[3,4].indexOf(userInfo.roleTypeId) >= 0 ">
         <el-radio-group v-model="ruleForm.serveId">
           <el-radio :label="1">单位</el-radio>
-          <el-radio :label="2">区域</el-radio>
-          <el-radio :label="3">公司</el-radio>
+          <el-radio :label="2" v-if="[201,211].indexOf(userInfo.lev)>= 0">区域</el-radio>
+          <el-radio :label="3" v-if="[201].indexOf(userInfo.lev)>= 0">公司</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item>
@@ -56,7 +56,7 @@ import md5 from "js-md5";
 export default {
   name: "modifyAdmin",
   inject: ["reload"],
-  props: ["modifyInfo","userRight"],
+  props: ["modifyInfo","userRight","userInfo_prop"],
   data() {
     return {
       ruleForm: {
@@ -69,7 +69,9 @@ export default {
         levExtend:[],
         leavesAccess:[],
         claimAccess:[],
-        userRight:true
+        userInfo:{},
+        userRight:true,
+
       },
       hrAdminRoles:[],
       rules: {
@@ -96,6 +98,9 @@ export default {
       }
     };
   },
+  beforeMount(){
+    this.userInfo = this.userInfo_prop;
+  },
   mounted() {
     this.initFn();
     this.getHrAdminRoleInfo();
@@ -104,6 +109,7 @@ export default {
   methods: {
     //初始化
     initFn() {
+      
       this.ruleForm.id = this.modifyInfo.id;
       this.ruleForm.name = this.modifyInfo.name;
       this.ruleForm.email = this.modifyInfo.email;

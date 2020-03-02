@@ -68,7 +68,6 @@
       title="编辑信息"
       :visible.sync="isShowModifyAdmin"
       :close-on-click-modal="false"
-      
       width="65%"
     >
       <modify-admin
@@ -76,6 +75,7 @@
         v-on:listenIsShowAddAdmin="IsShowAddAdminFn"
         :modifyInfo="modifyInfo"
         :userRight="userRight"
+        :userInfo_prop="userInfo"
       ></modify-admin>
     </el-dialog>
     <!-- 修改密码 -->
@@ -92,7 +92,7 @@
       ></modify-password>
     </el-dialog>
     <!-- 增加角色 -->
-    <el-dialog title="编辑角色" :visible.sync="isShowAddRole" :close-on-click-modal="false" width="40%">
+    <el-dialog title="增加角色" :visible.sync="isShowAddRole" :close-on-click-modal="false" width="40%">
       <add-role
         v-if="isShowAddRole"
         v-on:listenIsShowAddAdmin="IsShowAddAdminFn"
@@ -137,7 +137,7 @@ export default {
     // 初始化
      initializeFun(){
       this.userInfo = this.$toolFn.localGet("userInfo");
-      console.log(this.userInfo);
+      //console.log(this.userInfo);
       if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301 ){
         this.userRight = false;
       }
