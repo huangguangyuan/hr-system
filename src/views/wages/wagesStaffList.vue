@@ -92,6 +92,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      isShow:false,
       tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
@@ -113,6 +114,9 @@ export default {
   mounted() {
     var _this = this;
     _this.userInfo = _this.$toolFn.localGet("userInfo");
+    if (this.userInfo.access.wagesMain.length > 0){
+      _this.isShow = true;
+    }
     if (_this.userInfo.roleTypeId == 2 ){
       _this.hrCode = _this.userInfo.userCode;
     }
@@ -189,12 +193,15 @@ export default {
             });
             this.$nextTick(function(){
               var selectItems = this.multipleSelection;
-              this.tableData.forEach(row => {
+              if (selectItems){
+                this.tableData.forEach(row => {
                   selectItems.find(s => {if (s.id === row.id){
                     this.$refs.multipleTable.toggleRowSelection(row);
                     }
                   })
-              });
+                });
+              }
+
             })
           this.total = this.tableData.length;
 

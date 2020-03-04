@@ -1,5 +1,5 @@
 <template>
-  <div class="approvalClaim wrap">
+  <div class="approvalClaim wrap" v-if="isShow">
     <h5 class="title-h5">报销列表</h5>
         <!-- 搜索 -->
     <div class="search-wrap">
@@ -60,6 +60,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      isShow:false,
       tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
@@ -80,71 +81,30 @@ export default {
     var _this = this;
      _this.getRegionBUList();
     _this.userInfo = _this.$toolFn.localGet("userInfo");
-    this.claimAccess = _this.userInfo.access.claimAccess || [];
+    _this.hrCode = _this.userInfo.userCode;
+    this.approvalClaim = _this.userInfo.access.approvalClaim || [];
     if (_this.userInfo.roleTypeId == 2 ){//hr系统管理员
-      _this.hrCode = _this.userInfo.userCode;
-      let rightStatusOne = [501,521],rightStatusTwo = [601];
       if (_this.userInfo.lev == 301){
         _this.rightStatus = [1,2,3];//查看，审批，结算权限
-      }else if (rightStatusOne.indexOf(_this.userInfo.lev) >= 0){//审批主管，部门主管（审批）
-        _this.rightStatus = [1,2];
-      }else if (rightStatusTwo.indexOf(_this.userInfo.lev) >= 0){//人事主管（结算）
-        _this.rightStatus = [1,3];
+      }else{
+        _this.rightStatus = this.approvalClaim;
       }
-      //增加扩展角色权限
-      if(_this.userInfo.levExtend != ""){
-        let rightStatusOne_chk = rightStatusOne.find(f=>{
-          return _this.userInfo.levExtend.indexOf(f);
-        })
-        let rightStatusTwo_chk = rightStatusTwo.find(f=>{
-          return _this.userInfo.levExtend.indexOf(f);
-        })
-        if (rightStatusOne_chk >= 0){
-            if (_this.rightStatus.indexOf(1)){
-              _this.rightStatus.push(1);
-            }
-            if (_this.rightStatus.indexOf(2)){
-              _this.rightStatus.push(2);
-            }
-        }
-        if (rightStatusTwo_chk >= 0){
-            if (_this.rightStatus.indexOf(1)){
-              _this.rightStatus.push(1);
-            }
-            if (_this.rightStatus.indexOf(3)){
-              _this.rightStatus.push(3);
-            }
-        }
-      }
-      //指定查看，审批，结算权限
-      if(_this.userInfo.claimAccess != ""){
-          for (let index = 0; index < _this.userInfo.claimAccess.length; index++) {
-            if (_this.rightStatus.indexOf(_this.userInfo.claimAccess[index])){
-              _this.rightStatus.push(_this.userInfo.claimAccess[index]);
-            }
-          }
-      }
-    }else if (_this.userInfo.roleTypeId == 3){//平台管理员
-      _this.rightStatus = [1,2,3];
     }
-    //_this.getData(_this.hrCode,_this.BUCode);
+    if (this.rightStatus.length > 0){
+      this.isShow = true;
+    }
   },
   methods: {
     approveTxt(item){//显示文字并判断是否有权限审批
       item.canApprove = false;
       var str = "";
-      if (this.rightStatus.length == 0){
-        str = "";
+      if (item.status == 1){
+        if (this.rightStatus.indexOf(2) >= 0){
+          str = "并审批";
+          item.canApprove = true;
+        }
       }
-      if (this.rightStatus.indexOf(item.status) >= 0){
-        str = "并审批";
-        item.canApprove = true;
-      }
-      if (item.status >= 4){
-        str = "";
-      }
-      return str
-
+      return str;
     },
     //获取数据列表
     getData(hrCode,BUCode) {
