@@ -4,8 +4,8 @@
     <el-divider></el-divider>
     <!-- 头部内容 -->
     <div class="my-top">
-      <el-button type="primary" @click="addFun">添 加</el-button>
-      <el-button type="danger" @click="deleteAll">删除所有</el-button>
+      <el-button type="primary" @click="addFun" v-if="userRight.indexOf(2) >= 0">添 加</el-button>
+      <el-button type="danger" @click="deleteAll" v-if="userRight.indexOf(2) >= 0">删除所有</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
@@ -18,12 +18,13 @@
       <el-table-column label="操作" width="300px">
         <template slot-scope="scope">
           <!-- 编辑 -->
-          <el-button size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)" v-if="userRight.indexOf(2) >= 0">编辑</el-button>
           <!-- 删除 -->
           <el-button
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
+            v-if="userRight.indexOf(2) >= 0"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -60,8 +61,10 @@ import editLayer from "./editLayer.vue";
 export default {
   name: "salaryItemList",
   inject: ["reload"],
+  props: ["userRight_props"],
   data() {
     return {
+      userRight:[],
       tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
@@ -73,6 +76,7 @@ export default {
     };
   },
   mounted() {
+    this.userRight = this.userRight_props;
     this.getData();
   },
   methods: {

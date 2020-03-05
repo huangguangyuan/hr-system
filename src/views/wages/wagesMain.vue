@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap wagesMain">
+  <div class="wrap wagesMain" v-if="isShow">
     <wages-staff-list v-if='wagesKey == "wagesStaffList"'></wages-staff-list>
     <staff-wages-config v-if='wagesKey == "staffWagesConfig"'></staff-wages-config>
     <salary-date v-if='wagesKey == "salaryDate"'></salary-date>
@@ -14,9 +14,15 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      isShow:false
     };
   },
-  mounted() {},
+  mounted() {
+    this.userInfo = this.$toolFn.localGet("userInfo");
+    if (this.userInfo.access.payrollMain.length > 0){
+      this.isShow = true;
+    }
+  },
   methods: {},
   computed: {
     wagesKey(){

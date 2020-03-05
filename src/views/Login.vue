@@ -8,15 +8,16 @@
         :model="formLabelAlign"
         :rules="rules"
         ref="ruleForm"
+        @submit.native.prevent
       >
         <el-form-item label="账 号：" prop="user">
-          <el-input prefix-icon="el-icon-edit" v-model="formLabelAlign.user"></el-input>
+          <el-input prefix-icon="el-icon-edit" v-model="formLabelAlign.user" @keyup.enter.native="submitForm('ruleForm')"></el-input>
         </el-form-item>
         <el-form-item label="密 码：" prop="pass">
-          <el-input prefix-icon="el-icon-setting" v-model="formLabelAlign.pass" show-password></el-input>
+          <el-input prefix-icon="el-icon-setting" v-model="formLabelAlign.pass" show-password @keyup.enter.native="submitForm('ruleForm')"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">登 录</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')" >登 录</el-button>
           <!-- <el-button type="danger">注 册</el-button> -->
         </el-form-item>
       </el-form>

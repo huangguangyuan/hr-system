@@ -114,13 +114,13 @@ export default {
   mounted() {
     var _this = this;
     _this.userInfo = _this.$toolFn.localGet("userInfo");
-    if (this.userInfo.access.wagesMain.length > 0){
+    if (this.userInfo.access.payrollMain.length > 0){
       _this.isShow = true;
     }
     if (_this.userInfo.roleTypeId == 2 ){
       _this.hrCode = _this.userInfo.userCode;
     }
-    if ([301,401,411].indexOf(_this.userInfo.lev) >= 0){
+    if (this.userInfo.access.payrollMain.indexOf(2) >= 0){
       this.genPayrollSlip_right = true;
     };
     this.multipleSelection = this.$toolFn.sessionGet("wagesStaffList_multipleSelection");

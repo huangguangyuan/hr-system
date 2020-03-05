@@ -110,9 +110,7 @@ export default {
       var reqUrl = "/server/api/v1/info/buInfos";
       var myData = { typeId: typeId };
       this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data
             .map(item => {

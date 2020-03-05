@@ -66,10 +66,10 @@ export default {
   },
   mounted() {
     this.userInfo = this.$toolFn.localGet("userInfo");
-    if (this.userInfo.access.wagesMain.indexOf(2) >= 0){
+    if (this.userInfo.access.payrollMain.indexOf(2) >= 0){
       this.isShowEditBtn = true;
     }
-    if (this.userInfo.access.wagesMain.indexOf(4) >= 0){
+    if (this.userInfo.access.payrollMain.indexOf(4) >= 0){
       this.isShowAddBtn = true;
     }
     this.circleUrl = this.staffInfo.photo

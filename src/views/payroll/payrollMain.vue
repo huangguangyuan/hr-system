@@ -1,12 +1,12 @@
 <template>
-  <div class="wrap payrollMain">
-    <payroll-list v-if="payrollKey == 'payrollList'"></payroll-list>
-    <deduction-list v-if="payrollKey == 'deduction'"></deduction-list>
+  <div class="wrap payrollMain" v-if="isShow">
+    <payroll-list v-if="payrollKey == 'payrollList'" :userRight_props="userRight"></payroll-list>
+    <deduction-list v-if="payrollKey == 'deduction'" :userRight_props="userRight"></deduction-list>
     <!-- <allowance-list v-if="payrollKey == 'allowance'"></allowance-list> -->
-    <salary-item-list v-if="payrollKey == 'salaryItem'"></salary-item-list>
-    <salary-item-list2 v-if="payrollKey == 'salaryItem2'"></salary-item-list2>
-    <insured v-if="payrollKey == 'insured'"></insured>
-    <MPFinfo v-if="payrollKey == 'MPFinfo'"></MPFinfo>
+    <salary-item-list v-if="payrollKey == 'salaryItem'" :userRight_props="userRight"></salary-item-list>
+    <salary-item-list2 v-if="payrollKey == 'salaryItem2'" :userRight_props="userRight"></salary-item-list2>
+    <insured v-if="payrollKey == 'insured'" :userRight_props="userRight"></insured>
+    <MPFinfo v-if="payrollKey == 'MPFinfo'" :userRight_props="userRight"></MPFinfo>
   </div>
 </template>
 <script>
@@ -22,9 +22,27 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      isShow:false,
+      userRight:[]
     };
   },
   mounted() {
+    this.userInfo = this.$toolFn.localGet("userInfo");
+    console.log(this.userInfo.access);
+      if (this.userInfo.roleTypeId == 2){
+        if (this.userInfo.access.payrollMain.length > 0){
+          this.isShow = true;
+        }
+        if (this.userInfo.lev == 301){
+          this.userRight = [1,2,3];
+          this.isShow = true;
+        }else{
+          this.userRight  = this.userInfo.access.payrollMain;
+        }
+      }else if (this.userInfo.roleTypeId == 3 ){
+        this.userRight = true;
+        this.isShow = true;
+      }
   },
   methods: {},
   computed: {

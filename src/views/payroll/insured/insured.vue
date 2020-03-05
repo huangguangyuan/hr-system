@@ -8,9 +8,9 @@
       <!-- 头部内容 -->
       <div class="my-top">
         <el-button-group>
-          <el-button type="primary" icon="el-icon-edit" @click="modifyFun(tableData)">修 改</el-button>
+          <el-button type="primary" icon="el-icon-edit" @click="modifyFun(tableData)" v-if="userRight.indexOf(2) >= 0">修 改</el-button>
           <!-- <el-button type="primary" icon="el-icon-setting" @click="setStatus(tableData.status)">状 态</el-button> -->
-          <el-button type="primary" icon="el-icon-delete" @click="handleDelete">删 除</el-button>
+          <el-button type="primary" icon="el-icon-delete" @click="handleDelete" v-if="userRight.indexOf(2) >= 0">删 除</el-button>
         </el-button-group>
       </div>
       <el-divider>基础信息</el-divider>
@@ -88,7 +88,7 @@
     </div>
     <!-- 无内容 -->
     <div class="noContent" v-else>
-      <el-button type="primary" @click="addFun">添加社保/公积金方案</el-button>
+      <el-button type="primary" @click="addFun" v-if="userRight.indexOf(2) >= 0">添加社保/公积金方案</el-button>
       <p>暂无内容~</p>
     </div>
     <!-- 新增 -->
@@ -110,9 +110,10 @@
 import editLayer from "./editLayer.vue";
 export default {
   name: "insured",
-  inject: ["reload"],
+  props: ["userRight_props"],
   data() {
     return {
+      userRight:[],
       tableData: {},
       schemeSIList: [], //社保方案列表
       schemeHCList: [], //公积金方案列表
@@ -122,6 +123,7 @@ export default {
     };
   },
   mounted() {
+    this.userRight = this.userRight_props;
     this.getData();
   },
   methods: {
