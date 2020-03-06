@@ -94,13 +94,7 @@ export default {
     _this.userInfo = _this.$toolFn.localGet("userInfo");
     _this.hrCode = _this.userInfo.userCode;
     this.approvalHolidays = _this.userInfo.access.approvalHolidays || [];
-    if (_this.userInfo.roleTypeId == 2 ){//hr系统管理员
-      if (_this.userInfo.lev == 301){
-        _this.rightStatus = [1,2,3];//查看，审批，结算权限
-      }else{
-        _this.rightStatus = this.approvalHolidays;
-      }
-    }
+    _this.rightStatus = this.approvalHolidays;
     if (this.rightStatus.length > 0){
       this.isShow = true;
     }

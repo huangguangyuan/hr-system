@@ -28,17 +28,11 @@ export default {
   },
   mounted() {
     this.userInfo = this.$toolFn.localGet("userInfo");
-    console.log(this.userInfo.access);
       if (this.userInfo.roleTypeId == 2){
         if (this.userInfo.access.payrollMain.length > 0){
           this.isShow = true;
         }
-        if (this.userInfo.lev == 301){
-          this.userRight = [1,2,3];
-          this.isShow = true;
-        }else{
-          this.userRight  = this.userInfo.access.payrollMain;
-        }
+        this.userRight  = this.userInfo.access.payrollMain;
       }else if (this.userInfo.roleTypeId == 3 ){
         this.userRight = true;
         this.isShow = true;

@@ -81,15 +81,10 @@ export default {
     var _this = this;
      _this.getRegionBUList();
     _this.userInfo = _this.$toolFn.localGet("userInfo");
+    console.log(_this.userInfo.access);
     _this.hrCode = _this.userInfo.userCode;
     this.approvalClaim = _this.userInfo.access.approvalClaim || [];
-    if (_this.userInfo.roleTypeId == 2 ){//hr系统管理员
-      if (_this.userInfo.lev == 301){
-        _this.rightStatus = [1,2,3];//查看，审批，结算权限
-      }else{
-        _this.rightStatus = this.approvalClaim;
-      }
-    }
+    this.rightStatus = this.approvalClaim;
     if (this.rightStatus.length > 0){
       this.isShow = true;
     }
