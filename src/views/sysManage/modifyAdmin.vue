@@ -23,7 +23,7 @@
         </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="假期权限：" prop="leavesAccess" v-if='userRight && modifyInfo.adminType=="HRadmin" && ruleForm.lev != 301'>
+      <!-- <el-form-item label="假期权限：" prop="leavesAccess" v-if='userRight && modifyInfo.adminType=="HRadmin" && ruleForm.lev != 301'>
         <el-checkbox-group v-model="ruleForm.leavesAccess">
           <el-checkbox label="1">查看</el-checkbox>
           <el-checkbox label="2">审批</el-checkbox>
@@ -36,7 +36,7 @@
           <el-checkbox label="2">审批</el-checkbox>
           <el-checkbox label="3">结算</el-checkbox>
         </el-checkbox-group>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item  label="服务归属：" prop="serveId" v-if="[3,4].indexOf(userInfo.roleTypeId) >= 0 ">
         <el-radio-group v-model="ruleForm.serveId">
           <el-radio :label="1">单位</el-radio>

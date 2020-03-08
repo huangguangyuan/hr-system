@@ -142,13 +142,11 @@ export default {
           txt = '此操作将启用该数据, 是否继续?'
           status = 1;
       }
-      _this
-        .$confirm(txt, "提 示", {
+      _this.$confirm(txt, "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
+        }).then(() => {
           var data = {
                 id:res.id,
                 status:status
@@ -170,13 +168,11 @@ export default {
     // 删除
     handleDelete(index, res) {
       var _this = this;
-      _this
-        .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+      _this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
+        }).then(() => {
           _this.$http
             .post("/server/api/v1/company/companyDelete", { id: res.id })
             .then(res => {

@@ -81,7 +81,6 @@ export default {
     var _this = this;
      _this.getRegionBUList();
     _this.userInfo = _this.$toolFn.localGet("userInfo");
-    console.log(_this.userInfo.access);
     _this.hrCode = _this.userInfo.userCode;
     this.approvalClaim = _this.userInfo.access.approvalClaim || [];
     this.rightStatus = this.approvalClaim;

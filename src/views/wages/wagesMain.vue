@@ -19,6 +19,7 @@ export default {
   },
   mounted() {
     this.userInfo = this.$toolFn.localGet("userInfo");
+    console.log(this.userInfo.access);
     if (this.userInfo.access.payrollMain.length > 0){
       this.isShow = true;
     }

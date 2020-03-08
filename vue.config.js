@@ -49,7 +49,6 @@ module.exports = {
         https: false, // https:{type:Boolean}
         open: false, //配置自动启动浏览器
         //proxy: 'url' // 配置跨域处理,只有一个代理
-     
         // 配置多个代理
         proxy: {
             "/": {
