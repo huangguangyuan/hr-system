@@ -42,6 +42,18 @@ export default {
       temporaryData: sidebarInfo
     };
   },
+  created () {
+    /**
+     * 按回车键执行登录
+     */
+    document.onkeypress = (e) => {
+      var keycode = document.all ? event.keyCode : e.which
+      if (keycode === 13) {
+        this.submitForm('ruleForm') // 登录方法名
+        return false
+      }
+    }
+  },
   methods: {
     // 提交表单
     submitForm(formName) {
