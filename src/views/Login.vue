@@ -1,7 +1,21 @@
 <template>
   <div class="login">
     <div class="container">
-      <h5>HR人事及薪酬登录系统</h5>
+        
+        <div class="title-container">
+          <h5 class="title">{{$t('Login.title')}}</h5>
+          <div class="languageContent">
+              <el-dropdown trigger="click" @command="handleCommand">
+                <span class="el-dropdown-link">
+                  {{$t('common.language')}}<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="zh">中文</el-dropdown-item>
+                  <el-dropdown-item command="en">English</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+          </div>
+    </div>
       <el-form
         label-position="left"
         label-width="100px"
@@ -10,15 +24,14 @@
         ref="ruleForm"
         @submit.native.prevent
       >
-        <el-form-item label="账 号：" prop="user">
-          <el-input prefix-icon="el-icon-edit" v-model="formLabelAlign.user" @keyup.enter.native="submitForm('ruleForm')"></el-input>
+        <el-form-item :label="$t('Login.user')" prop="user">
+          <el-input prefix-icon="el-icon-edit" v-model="formLabelAlign.user" ></el-input>
         </el-form-item>
-        <el-form-item label="密 码：" prop="pass">
-          <el-input prefix-icon="el-icon-setting" v-model="formLabelAlign.pass" show-password @keyup.enter.native="submitForm('ruleForm')"></el-input>
+        <el-form-item :label="$t('Login.pass')" prop="pass">
+          <el-input prefix-icon="el-icon-setting" v-model="formLabelAlign.pass" show-password ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')" >登 录</el-button>
-          <!-- <el-button type="danger">注 册</el-button> -->
+          <el-button type="primary" @click="submitForm('ruleForm')" >{{$t('Login.loginBtn')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -28,6 +41,7 @@
 import md5 from "js-md5";
 import sidebarInfo from "@/lib/sidebarInfo.js";
 import { setTimeout } from "timers";
+import Cookies from 'js-cookie'
 export default {
   name: "login",
   data() {
@@ -37,8 +51,8 @@ export default {
         pass: "000000"
       },
       rules: {
-        user: [{ required: true, message: "请输入用户账号", trigger: "blur" }],
-        pass: [{ required: true, message: "请输入用户密码", trigger: "blur" }]
+        user: [{ required: true, message: this.$t('Login.userTip'), trigger: "blur" }],
+        pass: [{ required: true, message: this.$t('Login.passTip'), trigger: "blur" }]
       },
       temporaryData: sidebarInfo
     };
@@ -56,6 +70,10 @@ export default {
     }
   },
   methods: {
+    handleCommand(command) {
+      this.$i18n.locale = command;
+      Cookies.set("language", command, { expires: 7 });
+    },
     // 提交表单
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -120,6 +138,13 @@ export default {
 </script>
 <style scoped lang="scss">
 .login {
+   .title-container {
+    .languageContent{
+      float: right;
+      margin-top:-25px;
+      padding-right:15px;
+    }
+  }
   width: 100vw;
   height: 100vh;
   position: absolute;

@@ -10,6 +10,9 @@ import myApi from './lib/apis/myApi'
 import '@/assets/scss/element-variables.scss'
 import '@/assets/scss/app.scss';
 import htmlToPdf from '@/lib/htmlToPDF'
+import Cookies from 'js-cookie'
+import VueI18n from 'vue-i18n'
+import messages from './lang/index'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios,axios);
@@ -17,9 +20,19 @@ Vue.use(Element);
 Vue.use(Utile);
 Vue.use(myApi);
 Vue.use(htmlToPdf);
+Vue.use(VueI18n)
+
+// 使用多文件管理不同的语言是一个好习惯：
+const i18n = new VueI18n({
+  locale: 'zh', // 语言标识,
+  locale: Cookies.get('language') || 'en', // 语言标识,
+  messages: messages
+
+})
 
 let myVue = new Vue({
   router,
+  i18n,
   store,
   render: h => h(App)
 }).$mount('#app')

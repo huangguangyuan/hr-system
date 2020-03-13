@@ -43,6 +43,10 @@ module.exports = {
             }
         }
     },
+
+    chainWebpack: config => {
+        config.plugin('webpack-bundle-analyzer').use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+    },
     devServer: {
         host: "localhost",
         port: 8080, // 端口号
