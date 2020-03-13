@@ -70,18 +70,15 @@ export default {
     };
   },
   mounted() {
-    console.log(this.staffCode_props);
     this.getData(this.staffCode);
   },
   methods: {
     //获取数据列表
     getData(staffCode) {
       var reqUrl = "/server/api/v1/staff/claim/staffClaimList";
-      var myData = { staffCode: staffCode };
+      var myData = { staffCode: staffCode,pageNo:this.curPage,pageSize:this.pageSize };
       this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
