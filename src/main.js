@@ -25,7 +25,7 @@ Vue.use(VueI18n)
 // 使用多文件管理不同的语言是一个好习惯：
 const i18n = new VueI18n({
   locale: 'zh', // 语言标识,
-  locale: Cookies.get('language') || 'en', // 语言标识,
+  locale: Cookies.get('language') || 'zh', // 语言标识,
   messages: messages
 
 })

@@ -140,6 +140,7 @@ export default {
 .login {
    .title-container {
     .languageContent{
+      display:none;
       float: right;
       margin-top:-25px;
       padding-right:15px;

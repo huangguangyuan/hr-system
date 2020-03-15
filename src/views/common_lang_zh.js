@@ -11,7 +11,7 @@ module.exports =  {
         passTip:'请输入用户密码',
         loginBtn: '登 录'
       },
-      AdminLogin: {
+    AdminLogin: {
         title: '后台管理系统',
         user: '账 号：',
         userTip:'请输入用户账号',
