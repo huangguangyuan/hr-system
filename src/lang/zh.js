@@ -4,5 +4,4 @@ const modules = {}
 files.keys().forEach(key => {//遍历语言文件
   modules.zh = files(key);
 })
-console.log(modules);
 export default modules.zh

@@ -99,6 +99,7 @@
         v-if="isShowModifyAdmin"
         v-on:listenIsShowAddAdmin="IsShowAddAdminFn"
         :modifyInfo="modifyInfo"
+        :userInfo_prop="userInfo"
       ></modify-admin>
     </el-dialog>
     <!-- 修改密码 -->
@@ -147,11 +148,14 @@ export default {
       modifyInfo: {}, //当前列表信息
       companyCode:"",
       companyList:[],
+      userInfo:{},
+      userRight:true,
       filter:{searchKey:'',searchField:['name','roleTypeTxt','account','mobile','email']}
     };
   },
   mounted() {
     var _this = this;
+    this.userInfo = this.$toolFn.localGet("userInfo");
     _this.getCompanyCodeFun();
     //_this.getData({companyCode:companyCode});
   },
@@ -183,8 +187,7 @@ export default {
       _this.isShowLoading = true;
       _this.$http.post(reqUrl, myData).then(res => {
           _this.isShowLoading = false;
-          _this.tableData = res.data.data
-            .map(item => {
+          _this.tableData = res.data.data.map(item => {
               item.isStatus = item.status == 1 ? "启用" : "禁用";
               item.mobile =  item.companyTel || ""  + item.companyRegionTel || "" + item.BUTel || "";
               item.email = item.companyEmail || "" + item.companyRegionEmail || "" + item.BUEmail || "";

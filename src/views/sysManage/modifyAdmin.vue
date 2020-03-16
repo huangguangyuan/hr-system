@@ -37,7 +37,7 @@
           <el-checkbox label="3">结算</el-checkbox>
         </el-checkbox-group>
       </el-form-item> -->
-      <el-form-item  label="服务归属：" prop="serveId" v-if="[3,4].indexOf(userInfo.roleTypeId) >= 0 ">
+      <el-form-item  label="服务归属：" prop="serveId" v-if="[4].indexOf(userInfo.roleTypeId) >= 0 ">
         <el-radio-group v-model="ruleForm.serveId">
           <el-radio :label="1">单位</el-radio>
           <el-radio :label="2" v-if="[201,211].indexOf(userInfo.lev)>= 0">区域</el-radio>
@@ -100,6 +100,7 @@ export default {
   },
   beforeMount(){
     this.userInfo = this.userInfo_prop;
+    console.log(this.userInfo);
   },
   mounted() {
     this.initFn();
