@@ -79,7 +79,7 @@ export default {
   },
   mounted() {
     var _this = this;
-     _this.getRegionBUList();
+    _this.getRegionBUList();
     _this.userInfo = _this.$toolFn.localGet("userInfo");
     _this.hrCode = _this.userInfo.userCode;
     this.approvalClaim = _this.userInfo.access.approvalClaim || [];

@@ -62,7 +62,7 @@ export default {
       total: 0, //总计
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
-      pageType:2,
+      pageType:2,//分页类型，1为前端分页，2为后端分页
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
       isShowDetails:false,//是否显示表单详情

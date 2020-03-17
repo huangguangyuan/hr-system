@@ -62,6 +62,7 @@ export default {
       total: 0, //总计
       pageSize: 6, //页面数据多少
       curPage: 1, //当前页数
+      pageType:2,//分页类型，1为前端分页，2为后端分页
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
       isShowDetails:false,//是否显示表单详情
@@ -78,18 +79,23 @@ export default {
     getData(staffCode) {
       var reqUrl = "/server/api/v1/staff/holidaysApply/staffHolidaysApplyList";
       var myData = { staffCode: staffCode };
+      if (this.pageType == 2){
+        myData.pageNo = this.curPage;
+        myData.pageSize = this.pageSize;
+      }
       this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
-          this.tableData = res.data.data.map(item => {
+          this.tableData = res.data.data.list.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
             item.isBalanceTxt = item.isBalance == 1?'是':'否';
             item.isWithpayTxt = item.isWithpay == 1?'是':'否';
             return item;
           });
-          this.total = this.tableData.length;
+          this.total =  this.tableData.length;
+          if (this.pageType == 2){
+            this.total =  res.data.data.total;
+          }
         })
         .catch(err => {
           console.log(err);
@@ -98,6 +104,9 @@ export default {
     // 获取当前页数
     curChange(val) {
       this.curPage = val;
+      if (this.pageType == 2){
+        this.getData(this.staffCode);
+      }
     },
     // 接收子组件发送信息
     listenIsShowMask(res) {
@@ -144,9 +153,13 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return this.tableData.slice(begin, end);
+      if (this.pageType == 2){
+        return this.tableData;
+      }else{
+        var begin = (this.curPage - 1) * this.pageSize;
+        var end = this.curPage * this.pageSize;
+        return this.tableData.slice(begin, end);
+      }
     },
     pageTotal() {
       var pageTotal = Math.ceil(this.total / this.pageSize);
