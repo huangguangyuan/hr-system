@@ -814,6 +814,7 @@ export default {
       this.$http.post(reqUrl,data).then(res => {
         if(res.data.data){
           this.HRadminList = res.data.data;
+          console.log(this.HRadminList);
         }
       })
     },

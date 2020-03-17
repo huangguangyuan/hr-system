@@ -352,6 +352,7 @@ export default {
     // 获取HR管理员列表
     getHRadminList(val){
       var reqUrl = '/server/api/v1/admin/hrSys/getAll';
+      
       var data = {BUCode:val}
       this.$http.post(reqUrl,data).then(res => {
         if(res.data.data){

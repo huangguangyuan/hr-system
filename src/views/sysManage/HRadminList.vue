@@ -17,6 +17,7 @@
     <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
       <el-table-column sortable prop="name" label="名称"></el-table-column>
       <el-table-column sortable prop="roleTypeTxt" label="权限"></el-table-column>
+      <el-table-column sortable prop="levExtendTxt" label="扩展权限"></el-table-column>
       <el-table-column sortable prop="account" label="账号"></el-table-column>
       <!-- <el-table-column prop="mobile" label="手机"></el-table-column> -->
       <el-table-column sortable prop="isStatus" label="状态"></el-table-column>
