@@ -114,8 +114,7 @@ export default {
             return item;
           });
           this.total = this.tableData.length;
-        })
-        .catch(err => {
+        }).catch(err => {
           console.log(err);
         });
     },

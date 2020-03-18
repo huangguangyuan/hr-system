@@ -24,17 +24,6 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="假期主管" prop="holidaySupervisorCode" v-if='!curInfo.superCode'>
-        <el-select v-model="ruleForm.holidaySupervisorCode" placeholder="请选择假期主管">
-          <el-option
-            v-for="item in HRadminList2"
-            :key="item.id"
-            :label="item.name"
-            :value="item.code"
-          ></el-option>
-        </el-select>
-      </el-form-item> -->
-
       <el-form-item label="状态：" prop="status">
         <el-radio-group v-model="ruleForm.status">
           <el-radio label="1">启用</el-radio>
@@ -62,7 +51,6 @@ export default {
         BUCode: "",
         supervisorCode:"",
         supervisorCodeArr:[],
-        holidaySupervisorCode:"",
         name: "",
         description: "",
         status: ""
@@ -77,9 +65,6 @@ export default {
         ],
         supervisorCodeArr: [
           { required: true, message: "请选择主管", trigger: "change" }
-        ],
-        holidaySupervisorCode: [
-          { required: true, message: "请选择假期主管", trigger: "change" }
         ],
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
@@ -108,8 +93,6 @@ export default {
         this.ruleForm.description = this.curInfo.description;
         this.ruleForm.status = this.curInfo.status.toString();
         this.getHRadminList(this.curInfo.BUCode);
-        //this.ruleForm.holidaySupervisorCode = this.curInfo.holidaySupervisorCode;
-        
       }
     },
     // 获取单位code
@@ -165,8 +148,7 @@ export default {
           description:_this.ruleForm.description,
           status:parseInt(_this.ruleForm.status),
           BUCode:_this.ruleForm.BUCode,
-          supervisorCode:_this.ruleForm.supervisorCodeArr.join(','),
-          holidaySupervisorCode:_this.ruleForm.holidaySupervisorCode
+          supervisorCode:_this.ruleForm.supervisorCodeArr.join(',')
       }
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
@@ -186,8 +168,7 @@ export default {
         name:_this.ruleForm.name,
         description:_this.ruleForm.description,
         status:parseInt(_this.ruleForm.status),
-        supervisorCode:_this.ruleForm.supervisorCodeArr.join(','),
-        //holidaySupervisorCode:_this.ruleForm.holidaySupervisorCode
+        supervisorCode:_this.ruleForm.supervisorCodeArr.join(',')
       };
       _this.$http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {

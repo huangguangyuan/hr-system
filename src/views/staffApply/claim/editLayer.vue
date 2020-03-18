@@ -37,6 +37,24 @@
         <el-divider></el-divider>
       </div>
       <fileUpload :fileUpload_props="fileUpload_props" @fileUpload_tf="fileUpload_tf"></fileUpload>
+      <el-form-item label="审批人员">
+        <el-checkbox-group v-model="approveOfficer">
+          <el-checkbox v-for="approve in approveOfficerList" :label="approve.name" :key="approve.code">{{approve.name}}</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="结算人员">
+        <el-checkbox-group v-model="balanceOfficer">
+          <el-checkbox v-for="balance in balanceOfficerList" :label="balance.name" :key="balance.code">{{balance.name}}</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="抄送人员">
+        <el-checkbox-group v-model="noticeOfficer">
+          <el-checkbox v-for="notice in noticeOfficerList" :label="notice.name" :key="notice.code">{{notice.name}}</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="发送邮件">
+        <el-input v-model="domain.sendEmail"></el-input>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
         <el-button @click="addDomain">新增报销项目</el-button>
@@ -53,6 +71,12 @@ export default {
   props: ["curInfo"],
   data() {
     return {
+      approveOfficerList:[],
+      approveOfficer:[],
+      balanceOfficerList:[],
+      balanceOfficer:[],
+      noticeOfficerList:[],
+      noticeOfficer:[],
       ruleForm: {
         staffCode: "",
         totalAmount: "",
