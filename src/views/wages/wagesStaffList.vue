@@ -224,21 +224,6 @@ export default {
       this.getData(this.BUCode);
       this.$toolFn.sessionSet("staffBUCode", val);
     },
-    // 根据name字段查找数据
-    searchFun(list,search){
-      let newList = [];
-      for(let i = 0;i < list.length;i++){
-        for(let key in list[i]) {
-          if (search.searchField.indexOf(key) >= 0){
-            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
-              newList.push(list[i]);
-              break;
-            }
-          }
-        };
-      }
-      return newList;
-    },
     // 打开详细页面
     openFun(index, res, key) {
       this.$store.commit({
@@ -265,7 +250,7 @@ export default {
       var _this = this;
       let tableData = _this.tableData;
       if (_this.filter.searchKey != ""){
-        tableData = _this.searchFun(tableData,_this.filter);
+        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
       }
       _this.total = tableData.length;
       var begin = (_this.wagesCurPage - 1) * _this.pageSize;

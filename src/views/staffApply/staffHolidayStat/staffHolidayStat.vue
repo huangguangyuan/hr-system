@@ -12,7 +12,7 @@
     </div>
 <br />
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe show-summary sum-text="合计">
+    <el-table v-loading="isShowLoading" :data="tableData" stripe show-summary sum-text="合计">
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
@@ -48,22 +48,15 @@
         </template>
       </el-table-column> -->
     </el-table>
-    <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+<page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
   </div>
 </template>
 <script>
-let id = 0;
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    pageInfo
+  },
   name: "holidaysApplyList",
   inject: ["reload"],
   props: ["staffCode_props"],
@@ -72,25 +65,30 @@ export default {
       holidayTypeSelected: 1,
       holidaysTypeList: [],
       tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      pageList:[],
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      staffCode: this.staffCode_props,
-      step:1
+      staffCode: this.staffCode_props
     };
+  },
+  computed:{
+    pageInfo(){
+      return {reqParams:{isReq:false,url:"/server/api/v1/staff/holidaysApply/staffLeaves",data:{ staffCode: this.staffCode,typeId: parseInt(this.holidayTypeSelected) }}}
+    },
+    staffInfo() {
+      return this.$store.state.staffModule.staffInfo;
+    }
   },
   mounted() {
     this.getHolidaysApplyTypeFun();
   },
   methods: {
     changeType(typeId){
-      this.curPage = 1;
       this.holidayTypeSelected = typeId;
-      this.getData(this.staffCode,typeId);
+      this.pageInfo.isReq = true;
+      this.$refs.pageInfo.getData(this.pageInfo);
     },
     // 获取请假类型
     getHolidaysApplyTypeFun() {
@@ -99,38 +97,32 @@ export default {
         if (res.data.code == 0) {
           this.holidaysTypeList = res.data.data;
           this.holidayTypeSelected = this.holidaysTypeList[0].typeId;
-          //console.log(this.staffCode,this.holidayTypeSelected);
-          this.getData(this.staffCode,this.holidayTypeSelected);
-
+          this.$refs.pageInfo.getData(this.pageInfo);
         }
       });
     },
-    //获取数据列表
-    getData(staffCode,typeId) {
-      //var reqUrl = "/server/api/v1/staff/holidaysApply/staffCompleteHolidays";
-      var reqUrl = "/server/api/v1/staff/holidaysApply/staffLeaves";
-      var myData = { staffCode: staffCode,typeId: parseInt(typeId) };
-      this.isShowLoading = true;
-      this.$http.post(reqUrl, myData).then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data.map(item => {
-            item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
-            //item.isBalanceTxt = item.isBalance == 1?'是':'否';
-            item.isWithpayTxt = item.isWithpay == 1?'是':'否';
-            item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
-            item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null
-            return item;
-          });
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
-    },
+    // //获取数据列表
+    // getData(staffCode,typeId) {
+    //   //var reqUrl = "/server/api/v1/staff/holidaysApply/staffCompleteHolidays";
+    //   var reqUrl = "/server/api/v1/staff/holidaysApply/staffLeaves";
+    //   var myData = { staffCode: staffCode,typeId: parseInt(typeId) };
+    //   this.isShowLoading = true;
+    //   this.$http.post(reqUrl, myData).then(res => {
+    //       this.isShowLoading = false;
+    //       this.tableData = res.data.data.map(item => {
+    //         item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
+    //         //item.isBalanceTxt = item.isBalance == 1?'是':'否';
+    //         item.isWithpayTxt = item.isWithpay == 1?'是':'否';
+    //         item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
+    //         item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null
+    //         return item;
+    //       });
+    //       this.total = this.tableData.length;
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // },
     // 接收子组件发送信息
     listenIsShowMask(res) {
       this.isShowAddAccess = false;
@@ -147,22 +139,17 @@ export default {
       this.curInfo = res;
     },
   },
-  computed: {
-    queryTableDate() {
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return this.tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    },
-    staffInfo() {
-      return this.$store.state.staffModule.staffInfo;
+  watch: {
+      pageList(val) {//监听分页数据变化
+        this.tableData = val.map(item => {
+            item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
+            item.isWithpayTxt = item.isWithpay == 1?'是':'否';
+            item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
+            item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null
+            return item;
+        });
+      }
     }
-  },
-  components: {
-  }
 };
 </script>
 <style scoped lang="scss">

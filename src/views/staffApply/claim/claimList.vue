@@ -5,8 +5,7 @@
     </el-button-group>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
-      <!-- <el-table-column prop="id" label="ID"></el-table-column> -->
+    <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
       <el-table-column sortable prop="createTime" label="申请时间"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
       <el-table-column sortable prop="totalAmount" label="结算金额"></el-table-column>
@@ -27,17 +26,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading" ></page-info>
     <!-- 报销申请表单 -->
     <el-dialog title="报销申请表单" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
       <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
@@ -46,65 +35,39 @@
     <el-dialog title="报销申请详情" :visible.sync="isShowDetails" :close-on-click-modal="false">
       <claim-details v-if="isShowDetails" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></claim-details>
     </el-dialog>
+
   </div>
 </template>
 <script>
 import editLayer from "./editLayer.vue";
 import claimDetails from "./claimDetails.vue";
-let id = 0;
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    editLayer,claimDetails,pageInfo
+  },
   name: "claimList",
   inject: ["reload"],
   props: ["staffCode_props"],
   data() {
     return {
       tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
-      pageType:2,//分页类型，1为前端分页，2为后端分页
+      pageList:[],
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      staffCode: this.staffCode_props,
+      staffCode: this.staffCode_props
     };
   },
+  computed:{
+    pageInfo(){
+      return {pageType:2,reqParams:{url:"/server/api/v1/staff/claim/staffClaimList",data:{ staffCode: this.staffCode }}}
+    }
+  },
   mounted() {
-    this.getData(this.staffCode);
   },
   methods: {
-    //获取数据列表
-    getData(staffCode) {
-      var reqUrl = "/server/api/v1/staff/claim/staffClaimList";
-      var myData = { staffCode: staffCode };
-      if (this.pageType == 2){
-        myData.pageNo = this.curPage;
-        myData.pageSize = this.pageSize;
-      }
-      this.isShowLoading = true;
-      this.$http.post(reqUrl, myData).then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data.list.map(item => {
-            item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
-            return item;
-          });
-          this.total =  this.tableData.length;
-          if (this.pageType == 2){
-            this.total =  res.data.data.total;
-          }
-        }).catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
-      if (this.pageType == 2){
-        this.getData(this.staffCode);
-      }
-    },
     // 接收子组件发送信息
     listenIsShowMask(res) {
       this.isShowAddAccess = false;
@@ -144,51 +107,20 @@ export default {
             message: "已取消删除"
           });
         });
-    }
+    },
   },
-  computed: {
-    queryTableDate() {
-      if (this.pageType == 2){
-        return this.tableData;
-      }else{
-        var begin = (this.curPage - 1) * this.pageSize;
-        var end = this.curPage * this.pageSize;
-        return this.tableData.slice(begin, end);
+  watch: {
+      pageList(val) {//监听分页数据变化
+        this.tableData = val.map(item => {
+          item.createTime = this.$toolFn.timeFormat(item.createTime);
+          item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
+          return item;
+        });
       }
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    },
-    staffInfo() {
-      return this.$store.state.staffModule.staffInfo;
     }
-  },
-  components: {
-    editLayer,claimDetails
-  }
 };
 </script>
 <style scoped lang="scss">
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  .el-input-group {
-    width: 500px;
-  }
-}
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
 }
