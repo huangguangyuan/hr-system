@@ -94,6 +94,7 @@ export default {
     getClaimTypeId() {
       var reqUrl = "/server/api/v1/staff/claim/getBUClaimType";
       this.$http.post(reqUrl, {}).then(res => {
+        console.log(res);
         if (res.data.code == 0) {
           this.claimTypeList = res.data.data;
         }
