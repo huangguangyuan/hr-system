@@ -1,5 +1,5 @@
 <template>
-  <div class="staffPayrollList wrap">
+  <div class="staffPayrollList wrap" v-if="isShow">
     <!-- 搜索 -->
     <div class="addBtn-wrap" >
       <el-button type="primary" v-if="deletePayrollSlip_right" @click="deleteSelectedFun">删除选中项工资单</el-button>
@@ -190,6 +190,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      isShow:false,
       tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
@@ -215,20 +216,31 @@ export default {
       deletePayrollSlip_right:false, //删除工资单权限
       genPayrollSlip_right:false,//重新生成工资单
       approveBUPayrollS_right:false,//确认单位工资单
-      fun_right:true //功能按钮
+      fun_right:false //功能按钮
     };
   },
   mounted() {
     var _this = this;
+
     _this.userInfo = _this.$toolFn.localGet("userInfo");
-    if (_this.userInfo.roleTypeId == 2 ){
+    let access = _this.userInfo.access;
+    if (access.payrollMain.length > 0 ){
+      this.isShow = true;
+      this.fun_right = true;
+    }
+    if (_this.userInfo.roleTypeId == 2){
       _this.hrCode = _this.userInfo.userCode;
     }
-    if ([301,801].indexOf(_this.userInfo.lev) >= 0){
+    
+    //if ([301,801].indexOf(_this.userInfo.lev) >= 0){
+    if (access.payrollMain.indexOf(4) >=0){
+      this.approveBUPayrollS_right = true;
+    };
+    //if ([301,401,411].indexOf(_this.userInfo.lev) >= 0){
+    if (access.payrollMain.indexOf(2) >=0){
       this.approvePayrollSlip_right = true;
     };
-    if ([301,401,411].indexOf(_this.userInfo.lev) >= 0){
-      this.approveBUPayrollS_right = true;
+    if (access.payrollMain.indexOf(3) >=0){
       this.genPayrollSlip_right = true;
       this.deletePayrollSlip_right = true;
     };
@@ -236,9 +248,9 @@ export default {
     //   this.genPayrollSlip_right = true;
     //   this.deletePayrollSlip_right = true;
     // };
-    if ([701].indexOf(_this.userInfo.lev) >= 0){
-      this.fun_right = false;
-    };
+    // if ([701].indexOf(_this.userInfo.lev) >= 0){
+    //   this.fun_right = false;
+    // };
     this.multipleSelection = this.$toolFn.sessionGet("staffPayrollList_multipleSelection");
     this.InitializationFun();
   },

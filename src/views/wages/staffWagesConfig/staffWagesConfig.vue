@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="container" v-if='isContent'>
-      <el-button type="primary" @click="editFun">修改配置</el-button>
+      <el-button type="primary" @click="editFun" v-if="isShowEditBtn">修改配置</el-button>
       <el-divider></el-divider>
       <el-row :gutter="12">
         <el-col :span="8">
@@ -36,7 +36,7 @@
       </el-row>
     </div>
     <div class="noContent" v-else>
-      <el-button type="primary" @click="addFun">添加配置</el-button>
+      <el-button type="primary" @click="addFun" v-if="isShowAddBtn">添加配置</el-button>
       <p>暂无内容~</p>
     </div>
 
@@ -58,11 +58,20 @@ export default {
       configureMsg:{},
       curInfo: {},
       isContent:false,
+      isShowEditBtn:false,
+      isShowAddBtn:false,
       isShowAddAccess: false, //是否显示新增权限页面
       isShowLoading: false //是否显示loading页
     };
   },
   mounted() {
+    this.userInfo = this.$toolFn.localGet("userInfo");
+    if (this.userInfo.access.payrollMain.indexOf(2) >= 0){
+      this.isShowEditBtn = true;
+    }
+    if (this.userInfo.access.payrollMain.indexOf(4) >= 0){
+      this.isShowAddBtn = true;
+    }
     this.circleUrl = this.staffInfo.photo
       ? this.staffInfo.photo
       : "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";

@@ -5,7 +5,7 @@
     </el-button-group>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
+    <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
       <el-table-column sortable prop="createTime" label="申请时间" width="200"></el-table-column>
       <el-table-column sortable prop="totalDay" label="请假天数"></el-table-column>
       <el-table-column sortable prop="totalAmount" label="扣除金额"></el-table-column>
@@ -28,16 +28,7 @@
       </el-table-column>
     </el-table>
     <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"></page-info>
     <!-- 请假申请表单 -->
     <el-dialog title="请假申请表单" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
       <editLayer v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
@@ -51,54 +42,33 @@
 <script>
 import editLayer from "./editLayer.vue";
 import holidaysApplyDetails from "./holidaysApplyDetails.vue";
-let id = 0;
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    editLayer,holidaysApplyDetails,pageInfo
+  },
   name: "holidaysApplyList",
   inject: ["reload"],
   props: ["staffCode_props"],
   data() {
     return {
       tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      pageList:[],
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      staffCode: this.staffCode_props,
-      step:1
+      staffCode: this.staffCode_props
     };
   },
+  computed:{
+    pageInfo(){
+      return {pageType:2,reqParams:{url:"/server/api/v1/staff/holidaysApply/staffHolidaysApplyList",data:{ staffCode: this.staffCode }}}
+    }
+  },
   mounted() {
-    this.getData(this.staffCode);
   },
   methods: {
-    //获取数据列表
-    getData(staffCode) {
-      var reqUrl = "/server/api/v1/staff/holidaysApply/staffHolidaysApplyList";
-      var myData = { staffCode: staffCode };
-      this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data.map(item => {
-            item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.isBalanceTxt = item.isBalance == 1?'是':'否';
-            item.isWithpayTxt = item.isWithpay == 1?'是':'否';
-            return item;
-          });
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
-    },
     // 接收子组件发送信息
     listenIsShowMask(res) {
       this.isShowAddAccess = false;
@@ -116,8 +86,7 @@ export default {
     },
     // 删除
     handleDelete(index, res) {
-      this
-        .$confirm("是否撤销该请假申请?", "提 示", {
+      this.$confirm("是否撤销该请假申请?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -142,35 +111,19 @@ export default {
         });
     }
   },
-  computed: {
-    queryTableDate() {
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return this.tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    },
-    staffInfo() {
-      return this.$store.state.staffModule.staffInfo;
+  watch: {
+      pageList(val) {//监听分页数据变化
+        this.tableData = val.map(item => {
+          item.createTime = this.$toolFn.timeFormat(item.createTime);
+          item.isBalanceTxt = item.isBalance == 1?'是':'否';
+          item.isWithpayTxt = item.isWithpay == 1?'是':'否';
+          return item;
+        });
+      }
     }
-  },
-  components: {
-    editLayer,holidaysApplyDetails
-  }
 };
 </script>
 <style scoped lang="scss">
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
 
 </style>
 

@@ -33,6 +33,24 @@
         </el-select>
       </el-form-item>
       <fileUpload :fileUpload_props="fileUpload_props" @fileUpload_tf="fileUpload_tf"></fileUpload>
+      <el-form-item label="审批人员：">
+        <el-checkbox-group v-model="approveOfficer">
+          <el-checkbox v-for="approve in approveOfficerList" :label="approve.code" :key="approve.code" >{{approve.name}}</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="结算人员：">
+        <el-checkbox-group v-model="balanceOfficer">
+          <el-checkbox v-for="balance in balanceOfficerList" :label="balance.code" :key="balance.code" >{{balance.name}}</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="抄送人员：">
+        <el-checkbox-group v-model="noticeOfficer">
+          <el-checkbox v-for="notice in noticeOfficerList" :label="notice.code" :key="notice.code">{{notice.name}}</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="发送邮件：">
+        <el-input v-model="ruleForm.sendEmail"></el-input> 多个请用'，'隔开,例：abc@163.com,abc@qq.com
+      </el-form-item>
       <el-form-item label="备 注：">
         <el-input v-model="ruleForm.remarks"></el-input>
       </el-form-item>
@@ -51,6 +69,12 @@ export default {
   props: ["curInfo"],
   data() {
     return {
+      approveOfficerList:[],
+      approveOfficer:[],
+      balanceOfficerList:[],
+      balanceOfficer:[],
+      noticeOfficerList:[],
+      noticeOfficer:[],
       ruleForm: {
         staffCode: "",
         applyTime: [],
@@ -58,7 +82,8 @@ export default {
         typeId: "",
         remarks: "",
         isWithpay:0,
-        fileSrc: ""
+        fileSrc: "",
+        sendEmail:"",
       }, //表单信息
       fileUpload_props:{
         uploadUrl:'',
@@ -92,6 +117,22 @@ export default {
     // 初始化
     initializeFun() {
       this.getHolidaysApplyTypeFun();
+      this.holidayProcessRelate(this.curInfo.staffCode); //获取报假期程相关人员
+    },
+    // 获取假期流程相关人员
+    holidayProcessRelate(staffCode) {
+      var reqUrl = "/server/api/v1/staff/holidaysApply/holidayProcessRelate";
+      this.$http.post(reqUrl, {staffCode:staffCode}).then(res => {
+        if (res.data.code == 0) {
+          //this.claimTypeList = res.data.data;
+          this.approveOfficerList = res.data.data.approveOfficerList;
+          this.approveOfficer = this.approveOfficerList.map(m => m.code);
+          this.balanceOfficerList = res.data.data.balanceOfficerList;
+          this.balanceOfficer = this.balanceOfficerList.map(m => m.code);
+          this.noticeOfficerList = res.data.data.noticeOfficerList;
+          this.noticeOfficer = this.noticeOfficerList.map(m => m.code);
+        }
+      });
     },
     // 提交表单
     submitForm(formName) {
@@ -125,7 +166,7 @@ export default {
           days: parseFloat(this.ruleForm.days),
           isWithpay: parseInt(this.ruleForm.isWithpay),
           typeId: parseInt(this.ruleForm.typeId),
-          remarks: this.ruleForm.remarks
+          remarks: this.ruleForm.remarks,
         }
       ];
       console.log(details);
@@ -134,8 +175,20 @@ export default {
         totalDay: parseFloat(this.ruleForm.days),
         isWithpay: parseInt(this.ruleForm.isWithpay),
         details: details,
-        fileSrc:''
+        fileSrc:'',
+        approveOfficer:this.approveOfficer.join(','),
+        balanceOfficer:this.balanceOfficer.join(','),
+        noticeOfficer:this.noticeOfficer.join(','),
+        sendEmail:this.ruleForm.sendEmail.replace(/，/g,","),
       };
+      if(this.approveOfficer.length == 0){
+        this.$message.error("请至少选中一个审批人员");
+        return;
+      }
+      if(this.balanceOfficer.length == 0){
+        this.$message.error("请至少选中一个结算人员");
+        return;
+      }
       for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
         const element = _this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url

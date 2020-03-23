@@ -142,13 +142,11 @@ export default {
           txt = '此操作将启用该数据, 是否继续?'
           status = 1;
       }
-      _this
-        .$confirm(txt, "提 示", {
+      _this.$confirm(txt, "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
+        }).then(() => {
           var data = {
                 id:res.id,
                 status:status
@@ -170,13 +168,11 @@ export default {
     // 删除
     handleDelete(index, res) {
       var _this = this;
-      _this
-        .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+      _this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
+        }).then(() => {
           _this.$http
             .post("/server/api/v1/company/companyDelete", { id: res.id })
             .then(res => {
@@ -195,27 +191,13 @@ export default {
           });
         });
     },
-    searchFun(list,search){
-      let newList = [];
-      for(let i = 0;i < list.length;i++){
-        for(let key in list[i]) {
-          if (search.searchField.indexOf(key) >= 0){
-            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
-              newList.push(list[i]);
-              break;
-            }
-          }
-        };
-      }
-      return newList;
-    }
   },
   computed: {
     queryTableDate() {
       var _this = this;
       let tableData = _this.tableData;
       if (_this.filter.searchKey != ""){
-        tableData = _this.searchFun(tableData,_this.filter);
+        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
       }
       _this.total = tableData.length;
       var begin = (_this.curPage - 1) * _this.pageSize;

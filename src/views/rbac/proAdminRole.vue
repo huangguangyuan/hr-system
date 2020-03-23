@@ -48,7 +48,7 @@
       <el-table-column sortable prop="roleCode" label="角色代号"></el-table-column>
       <el-table-column sortable prop="isStatus" label="状态"></el-table-column>
       <el-table-column prop="description" label="描述"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="500px">
+      <el-table-column label="操作" fixed="right" width="600px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-edit" @click="editFun(scope.$index, scope.row)">编辑</el-button>
           <el-button
@@ -304,27 +304,13 @@ export default {
           });
         });
     },
-    searchFun(list,search){
-      let newList = [];
-      for(let i = 0;i < list.length;i++){
-        for(let key in list[i]) {
-          if (search.searchField.indexOf(key) >= 0){
-            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
-              newList.push(list[i]);
-              break;
-            }
-          }
-        };
-      }
-      return newList;
-    },
   },
   computed: {
     queryTableDate() {
       var _this = this;
       let tableData = _this.tableData;
       if (_this.filter.searchKey != ""){
-        tableData = _this.searchFun(tableData,_this.filter);
+        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
       }
       _this.total = tableData.length;
       var begin = (_this.curPage - 1) * _this.pageSize;

@@ -24,8 +24,8 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
       <el-table-column prop="staffNo" label="员工编号"></el-table-column>
-      <el-table-column prop="nameChinese" label="中文名"></el-table-column>
-      <el-table-column prop="nameEnglish" label="英文名"></el-table-column>
+      <el-table-column prop="nameChinese" label="第一姓名"></el-table-column>
+      <el-table-column prop="nameEnglish" label="第二姓名"></el-table-column>
       <el-table-column prop="nameChinese" label="名称"></el-table-column>
       <el-table-column label="头像">
         <template slot-scope="scope">
@@ -145,27 +145,13 @@ export default {
         wagesKey: key
       });
     },
-    searchFun(list,search){
-      let newList = [];
-      for(let i = 0;i < list.length;i++){
-        for(let key in list[i]) {
-          if (search.searchField.indexOf(key) >= 0){
-            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
-              newList.push(list[i]);
-              break;
-            }
-          }
-        };
-      }
-      return newList;
-    },
   },
   computed: {
     queryTableDate() {
       var _this = this;
       let tableData = _this.tableData;
       if (_this.filter.searchKey != ""){
-        tableData = _this.searchFun(tableData,_this.filter);
+        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
       }
       _this.total = tableData.length;
       var begin = (this.curPage - 1) * this.pageSize;

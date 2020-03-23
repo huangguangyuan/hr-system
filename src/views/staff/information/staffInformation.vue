@@ -35,10 +35,10 @@
             <el-form-item label="员工编号：">
               <span>{{ props.row.staffNo }}</span>
             </el-form-item>
-            <el-form-item label="中文名称：">
+            <el-form-item label="第一姓名称：">
               <span>{{ props.row.nameChinese }}</span>
             </el-form-item>
-            <el-form-item label="英文名称：">
+            <el-form-item label="第二姓名称：">
               <span>{{ props.row.nameEnglish }}</span>
             </el-form-item>
             <el-form-item label="员工别名：">
@@ -89,10 +89,10 @@
             <el-form-item label="婚姻状况：">
               <span>{{ props.row.martialStatusTxt }}</span>
             </el-form-item>
-            <el-form-item label="伴侣姓名：" v-if="props.row.martialStatus == "1"">
+            <el-form-item label="伴侣姓名：" v-if="props.row.martialStatus == '1'">
               <span>{{ props.row.nameOfSpouse }}</span>
             </el-form-item>
-            <el-form-item label="子女数目：" v-if="props.row.martialStatus == "1"">
+            <el-form-item label="子女数目：" v-if="props.row.martialStatus == '1'">
               <span>{{ props.row.countOfKids }}</span>
             </el-form-item>
             <el-form-item label="紧急联系人：">
@@ -352,6 +352,7 @@ export default {
     // 获取HR管理员列表
     getHRadminList(val){
       var reqUrl = '/server/api/v1/admin/hrSys/getAll';
+      
       var data = {BUCode:val}
       this.$http.post(reqUrl,data).then(res => {
         if(res.data.data){
@@ -526,20 +527,6 @@ export default {
       this.getData(this.BUCode);
       this.$toolFn.sessionSet("staffBUCode", val);
     },
-    searchFun(list,search){
-      let newList = [];
-      for(let i = 0;i < list.length;i++){
-        for(let key in list[i]) {
-          if (search.searchField.indexOf(key) >= 0){
-            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
-              newList.push(list[i]);
-              break;
-            }
-          }
-        };
-      }
-      return newList;
-    },
     // 编辑修改
     modifyFun(index, res) {
       this.curInfo = res;
@@ -635,7 +622,7 @@ export default {
       var _this = this;
       let tableData = _this.tableData;
       if (_this.filter.searchKey != ""){
-        tableData = _this.searchFun(tableData,_this.filter);
+        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
       }
       _this.total = tableData.length;
       var begin = (_this.staffCurPage - 1) * _this.pageSize;

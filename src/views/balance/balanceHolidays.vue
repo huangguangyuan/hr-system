@@ -87,9 +87,7 @@ export default {
       var reqUrl = "/server/api/v1/staff/holidaysApply/holidaysApplyListBalance";
       var myData = { hrCode: hrCode,BUCode:BUCode };
       this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
@@ -99,6 +97,7 @@ export default {
             return item;
           });
           this.total = this.tableData.length;
+          console.log(this.tableData);
         })
         .catch(err => {
           console.log(err);
@@ -133,27 +132,13 @@ export default {
           this.getData(this.hrCode,this.BUCode);
         }
     },
-    searchFun(list,search){
-      let newList = [];
-      for(let i = 0;i < list.length;i++){
-        for(let key in list[i]) {
-          if (search.searchField.indexOf(key) >= 0){
-            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
-              newList.push(list[i]);
-              break;
-            }
-          }
-        };
-      }
-      return newList;
-    },
   },
   computed: {
     queryTableDate() {
       var _this = this;
       let tableData = _this.tableData;
       if (_this.filter.searchKey != ""){
-        tableData = _this.searchFun(tableData,_this.filter);
+        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
       }
       _this.total = tableData.length;
       var begin = (this.curPage - 1) * this.pageSize;

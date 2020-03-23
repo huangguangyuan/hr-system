@@ -43,13 +43,16 @@ module.exports = {
             }
         }
     },
+
+    chainWebpack: config => {
+        config.plugin('webpack-bundle-analyzer').use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+    },
     devServer: {
         host: "localhost",
         port: 8080, // 端口号
         https: false, // https:{type:Boolean}
         open: false, //配置自动启动浏览器
         //proxy: 'url' // 配置跨域处理,只有一个代理
-     
         // 配置多个代理
         proxy: {
             "/": {

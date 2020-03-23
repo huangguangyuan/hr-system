@@ -1,8 +1,10 @@
 <template>
   <div class="approvalHolidaysDetails">
     <el-table :data="tableData" stripe>
-      <el-table-column prop="startDate" label="开始时间" width="200"></el-table-column>
-      <el-table-column prop="endDate" label="结束时间" width="200"></el-table-column>
+      <el-table-column prop="num" label="序号" width="50"></el-table-column>
+      <el-table-column prop="days" label="天数" width="50"></el-table-column>
+      <el-table-column prop="startDate" label="开始时间" width="180"></el-table-column>
+      <el-table-column prop="endDate" label="结束时间" width="180"></el-table-column>
       <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>
       <el-table-column prop="remarks" label="备 注"></el-table-column>
     </el-table>
@@ -83,7 +85,10 @@ export default {
           })[0].val;
           return item;
       })
+      var num = 0;
       this.tableData = this.curInfo.details.map(item => {
+        num++;
+        item.num = num;
         item.startDate = this.$toolFn.timeFormat(item.startDate);
         item.endDate = this.$toolFn.timeFormat(item.endDate);
         return item;

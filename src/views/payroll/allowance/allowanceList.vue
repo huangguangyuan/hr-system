@@ -4,8 +4,8 @@
     <el-divider></el-divider>
     <!-- 头部内容 -->
     <div class="my-top">
-      <el-button type="primary" @click="addFun">添 加</el-button>
-      <el-button type="danger" @click="deleteAll">删除所有</el-button>
+      <el-button type="primary" @click="addFun" v-if="userRight.indexOf(2) >= 0">添 加</el-button>
+      <el-button type="danger" @click="deleteAll" v-if="userRight.indexOf(2) >= 0">删除所有</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
@@ -23,6 +23,7 @@
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
+            v-if="userRight.indexOf(2) >= 0"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -59,8 +60,10 @@ import editLayer from "./editLayer.vue";
 export default {
   name: "allowanceList",
   inject: ["reload"],
+  props: ["userRight_props"],
   data() {
     return {
+      userRight:[],
       tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
@@ -72,6 +75,7 @@ export default {
     };
   },
   mounted() {
+    this.userRight = this.userRight_props;
     this.getData();
   },
   methods: {
@@ -80,9 +84,7 @@ export default {
       var reqUrl = "/server/api/v1/staff/allowance/getAll";
       var myData = { staffCode: this.payrollInfo.code };
       this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data
             .map(item => {

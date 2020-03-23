@@ -18,7 +18,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="中文名：" prop="nameChinese">
+      <el-form-item label="第一姓名：" prop="nameChinese">
         <el-input v-model="ruleForm.nameChinese"></el-input>
       </el-form-item>
       <el-form-item label="性 别：" prop="gender">
@@ -27,7 +27,7 @@
           <el-radio label="F">女</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="英文名：" prop="nameEnglish">
+      <el-form-item label="第二姓名：" prop="nameEnglish">
         <el-input v-model="ruleForm.nameEnglish"></el-input>
       </el-form-item>
       <el-form-item label="个人头像：" prop="photo">
@@ -98,6 +98,9 @@
       <el-form-item label="职位：" prop="position">
         <el-input v-model="ruleForm.position"></el-input>
       </el-form-item>
+      <el-form-item label="公司电话：" prop="companyPhone">
+        <el-input v-model="ruleForm.companyPhone"></el-input>
+      </el-form-item>      
       <el-form-item label="国家号码：" prop="mobileCountryCode">
         <el-select v-model="ruleForm.mobileCountryCode" placeholder="请选择国家号码">
           <el-option label="86-中国" value="86"></el-option>
@@ -238,12 +241,12 @@
       <el-form-item label="每年可享有薪年假：" prop="annualLeaveEntitled">
         <el-input v-model="ruleForm.annualLeaveEntitled"></el-input>
       </el-form-item>
-      <el-form-item label="年假结算方法：" prop="annualLeaveWriteOffMethod" >
+      <!-- <el-form-item label="年假结算方法：" prop="annualLeaveWriteOffMethod" >
         <el-radio-group v-model="ruleForm.annualLeaveWriteOffMethod">
           <el-radio label="1">年结</el-radio>
           <el-radio label="2">自定义日期结算</el-radio>
         </el-radio-group>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="年假清空日期：" prop="annualLeaveWriteOffDate" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
           <el-date-picker
             v-model="ruleForm.annualLeaveWriteOffDate"
@@ -370,7 +373,7 @@ export default {
         workingLocation: "",
         outsourceLocation: "",
         permanentOrContract: "",
-        annualLeaveWriteOffMethod: "",
+        annualLeaveWriteOffMethod: "2",
         annualLeaveEntitled: "",
         paidSickLeaveEntitled: "",
         payrollType: "",
@@ -395,11 +398,15 @@ export default {
         dateOfPlace:"",
         postalAddress:"",
         fringeBeneiftLimit:"",
+        annualLeave:0,
+        annualLeaveRetain:0,
+        companyPhone:""
       }, //表单信息
       avatarSrc: "", //头像路径
       IDPositiveSrc: "", //身份证正面
       IDNegativeSrc: "", //身份证反面
       departmentList: [], //部门列表
+      annualLeaveConfig:{},//年假配置
       HRadminList:[],//管理员列表
       props: {
         lazy: true,
@@ -511,13 +518,13 @@ export default {
       loading: false, //公司ID号
       isShow: true, //是否显示
       rules: {
-        selectedOptions: [
-          {
-            required: true,
-            message: "请选择所属公司/区域/单位",
-            trigger: "change"
-          }
-        ],
+        // annualLeaveWriteOffDate: [
+        //   {
+        //     required: true,
+        //     message: "请选择所属公司/区域/单位",
+        //     trigger: "change"
+        //   }
+        // ],
         nameChinese: [
           { required: true, message: "请输入名称", trigger: "blur" },
           { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
@@ -529,9 +536,9 @@ export default {
         account: [{ required: true, message: "请填写账户", trigger: "change" }],
         password: [{ required: true, message: "请填写密码", trigger: "change" }],
         staffNo: [{ required: true, message: "请填写员工编号", trigger: "change" }],
-        hukouType: [{ required: true, message: "请选择户口性质", trigger: "change" }],
-        martialStatus: [{ required: true, message: "请选择婚姻状况", trigger: "change" }],
-        photo:[{ required: true, message: "请上传个人头像", trigger: "change" }]
+        // hukouType: [{ required: true, message: "请选择户口性质", trigger: "change" }],
+        // martialStatus: [{ required: true, message: "请选择婚姻状况", trigger: "change" }],
+        // photo:[{ required: true, message: "请上传个人头像", trigger: "change" }]
       }
     };
   },
@@ -542,20 +549,22 @@ export default {
   methods: {
     // 初始化
     initialize() {
+      
       if (this.curInfo.type == "modify") {
         this.isShow = false;
         this.ruleForm = JSON.parse(JSON.stringify(this.curInfo));
         this.ruleForm.hukouType = this.curInfo.hukouType?this.curInfo.hukouType.toString():null;
-        this.ruleForm.martialStatus = this.curInfo.martialStatus!= undefined?this.curInfo.martialStatus.toString():null;
-        this.ruleForm.annualLeaveWriteOffMethod = this.curInfo.annualLeaveWriteOffMethod?this.curInfo.annualLeaveWriteOffMethod.toString():"1";
-        this.ruleForm.payrollType = this.curInfo.payrollType?this.curInfo.payrollType.toString():null;
-        this.ruleForm.fileUnitMove = this.curInfo.fileUnitMove?this.curInfo.fileUnitMove.toString():null;
+        this.ruleForm.martialStatus = this.curInfo.martialStatus!= undefined?this.curInfo.martialStatus.toString():"0";
+        this.ruleForm.annualLeaveWriteOffMethod = this.curInfo.annualLeaveWriteOffMethod?this.curInfo.annualLeaveWriteOffMethod.toString():"2";
+        this.ruleForm.payrollType = this.curInfo.payrollType?this.curInfo.payrollType.toString():"1";
+        this.ruleForm.fileUnitMove = this.curInfo.fileUnitMove?this.curInfo.fileUnitMove.toString():"1";
         //this.ruleForm.workStatus = this.ruleForm.workStatus?this.ruleForm.workStatus.toString():null;
         //this.ruleForm.workStatus = this.ruleForm.workStatus;
         this.avatarSrc = this.ruleForm.photo;
         this.IDPositiveSrc = this.ruleForm.IDCopy;
         this.IDNegativeSrc = this.ruleForm.IDCopyBack;
         this.getDepartment(this.ruleForm.BUCode);
+        this.getAnnualLeave(this.curInfo.BUCode);
       }
     },
     // 提交表单
@@ -640,7 +649,7 @@ export default {
         _this.$message.error("年假清空日期不能为空");
         return false;
       }
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && !_this.ruleForm.annualLeaveRetain){
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetain == undefined){
         _this.$message.error("请填写年假清空后可保留天数");
         return false;
       }
@@ -656,7 +665,7 @@ export default {
         _this.$message.error("年假保留天数清空日期不能早于年假清空日期");
         return false;
       }
-      data.annualLeaveWriteOffDate = _this.ruleForm.annualLeaveWriteOffDate;
+      data.annualLeaveWriteOffDate =  this.$toolFn.timeFormat(this.curInfo.annualLeaveWriteOffDate,"yyyy-MM-dd");
       data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
       data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveRetainClearDate);
       _this.$http.post(reqUrl, data).then(res => {
@@ -729,8 +738,7 @@ export default {
         _this.$message.error("年假结算日期不能为空");
         return false;
       }
-      
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && !_this.ruleForm.annualLeaveRetain){
+      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetain == undefined){
         _this.$message.error("请填写年假清空后可保留天数");
         return false;
       }
@@ -763,6 +771,7 @@ export default {
     handleChange(val) {
       this.getDepartment(val[2]);
       this.getHRadminList(val[2]);
+      this.getAnnualLeave(val[2]);
     },
     // 获取部门列表
     getDepartment(val) {
@@ -775,6 +784,29 @@ export default {
         }
       });
     },
+    // 获取年假配置
+    async getAnnualLeave(val) {
+      var reqUrl = "/server/api/v1/bu/annualLeave";
+      this.$http.post(reqUrl, {BUCode:val}).then(res => {
+        if (res.data.code == 0) {
+          this.annualLeaveConfig = res.data.data;
+          this.annualLeaveConfig.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate).slice(0, 10);
+          this.annualLeaveConfig.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveRetainClearDate).slice(0, 10);
+          if (this.annualLeaveConfig.annualLeaveEntitled != undefined){
+            this.ruleForm.annualLeaveEntitled = this.annualLeaveConfig.annualLeaveEntitled;
+          }
+          if (this.annualLeaveConfig.annualLeaveWriteOffDate){
+            this.ruleForm.annualLeaveWriteOffDate = new Date(this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate,"yyyy-MM-dd"));
+          }
+          if (this.annualLeaveConfig.annualLeaveRetain != undefined){
+            this.ruleForm.annualLeaveRetain = this.annualLeaveConfig.annualLeaveRetain;
+          }
+          if (this.annualLeaveConfig.annualLeaveRetainClearDate){
+            this.ruleForm.annualLeaveRetainClearDate = new Date(this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveRetainClearDate,"yyyy-MM-dd"));
+          }
+        }
+      });
+    },
     // 获取HR管理员列表
     getHRadminList(val){
       var reqUrl = '/server/api/v1/admin/hrSys/getAll';
@@ -782,6 +814,7 @@ export default {
       this.$http.post(reqUrl,data).then(res => {
         if(res.data.data){
           this.HRadminList = res.data.data;
+          console.log(this.HRadminList);
         }
       })
     },

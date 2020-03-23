@@ -92,6 +92,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      isShow:false,
       tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
@@ -113,10 +114,13 @@ export default {
   mounted() {
     var _this = this;
     _this.userInfo = _this.$toolFn.localGet("userInfo");
+    if (this.userInfo.access.payrollMain.length > 0){
+      _this.isShow = true;
+    }
     if (_this.userInfo.roleTypeId == 2 ){
       _this.hrCode = _this.userInfo.userCode;
     }
-    if ([301,401,411].indexOf(_this.userInfo.lev) >= 0){
+    if (this.userInfo.access.payrollMain.indexOf(2) >= 0){
       this.genPayrollSlip_right = true;
     };
     this.multipleSelection = this.$toolFn.sessionGet("wagesStaffList_multipleSelection");
@@ -189,12 +193,15 @@ export default {
             });
             this.$nextTick(function(){
               var selectItems = this.multipleSelection;
-              this.tableData.forEach(row => {
+              if (selectItems){
+                this.tableData.forEach(row => {
                   selectItems.find(s => {if (s.id === row.id){
                     this.$refs.multipleTable.toggleRowSelection(row);
                     }
                   })
-              });
+                });
+              }
+
             })
           this.total = this.tableData.length;
 
@@ -216,21 +223,6 @@ export default {
       this.BUCode = val;
       this.getData(this.BUCode);
       this.$toolFn.sessionSet("staffBUCode", val);
-    },
-    // 根据name字段查找数据
-    searchFun(list,search){
-      let newList = [];
-      for(let i = 0;i < list.length;i++){
-        for(let key in list[i]) {
-          if (search.searchField.indexOf(key) >= 0){
-            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
-              newList.push(list[i]);
-              break;
-            }
-          }
-        };
-      }
-      return newList;
     },
     // 打开详细页面
     openFun(index, res, key) {
@@ -258,7 +250,7 @@ export default {
       var _this = this;
       let tableData = _this.tableData;
       if (_this.filter.searchKey != ""){
-        tableData = _this.searchFun(tableData,_this.filter);
+        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
       }
       _this.total = tableData.length;
       var begin = (_this.wagesCurPage - 1) * _this.pageSize;

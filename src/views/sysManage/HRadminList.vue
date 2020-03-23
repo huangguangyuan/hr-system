@@ -17,6 +17,7 @@
     <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
       <el-table-column sortable prop="name" label="名称"></el-table-column>
       <el-table-column sortable prop="roleTypeTxt" label="权限"></el-table-column>
+      <el-table-column sortable prop="levExtendTxt" label="扩展权限"></el-table-column>
       <el-table-column sortable prop="account" label="账号"></el-table-column>
       <!-- <el-table-column prop="mobile" label="手机"></el-table-column> -->
       <el-table-column sortable prop="isStatus" label="状态"></el-table-column>
@@ -68,7 +69,6 @@
       title="编辑信息"
       :visible.sync="isShowModifyAdmin"
       :close-on-click-modal="false"
-      
       width="65%"
     >
       <modify-admin
@@ -76,6 +76,7 @@
         v-on:listenIsShowAddAdmin="IsShowAddAdminFn"
         :modifyInfo="modifyInfo"
         :userRight="userRight"
+        :userInfo_prop="userInfo"
       ></modify-admin>
     </el-dialog>
     <!-- 修改密码 -->
@@ -92,7 +93,7 @@
       ></modify-password>
     </el-dialog>
     <!-- 增加角色 -->
-    <el-dialog title="编辑角色" :visible.sync="isShowAddRole" :close-on-click-modal="false" width="40%">
+    <el-dialog title="增加角色" :visible.sync="isShowAddRole" :close-on-click-modal="false" width="40%">
       <add-role
         v-if="isShowAddRole"
         v-on:listenIsShowAddAdmin="IsShowAddAdminFn"
@@ -137,7 +138,8 @@ export default {
     // 初始化
      initializeFun(){
       this.userInfo = this.$toolFn.localGet("userInfo");
-      if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301){
+      //console.log(this.userInfo);
+      if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301 ){
         this.userRight = false;
       }
       this.getBUCodeFun();
@@ -201,20 +203,6 @@ export default {
       this.isShowModifyAdmin = res;
       this.isShowModifyPassword = res;
       this.isShowAddRole = res;
-    },
-    searchFun(list,search){
-      let newList = [];
-      for(let i = 0;i < list.length;i++){
-        for(let key in list[i]) {
-          if (search.searchField.indexOf(key) >= 0){
-            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
-              newList.push(list[i]);
-              break;
-            }
-          }
-        };
-      }
-      return newList;
     },
     // 编辑
     editFn(index, res) {
@@ -301,7 +289,7 @@ export default {
       var _this = this;
       let tableData = _this.tableData;
       if (_this.filter.searchKey != ""){
-        tableData = _this.searchFun(tableData,_this.filter);
+        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
       }
       _this.total = tableData.length;
       var begin = (_this.curPage - 1) * _this.pageSize;

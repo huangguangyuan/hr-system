@@ -13,18 +13,43 @@
       </el-form-item>
       <el-form-item label="管理员角色：" prop="lev">
         <el-select v-model="ruleForm.lev" placeholder="请选择管理员类型">
-          <el-option label="hr系统管理员" value="301"></el-option>
-          <el-option label="薪酬主管" value="401"></el-option>
-          <el-option label="薪酬工资文员" value="411"></el-option>
-          <el-option label="审批主管" value="501"></el-option>
-          <el-option label="部门主管" value="521"></el-option>
-          <!-- <el-option label="报销审批主管" value="521"></el-option> -->
-          <el-option label="人事主管" value="601"></el-option>
-          <el-option label="人事文员" value="611"></el-option>
-          <el-option label="信息复核" value="701"></el-option>
-          <el-option label="会计主管" value="801"></el-option>
+          <el-option
+          v-for="item in hrAdminRoles"
+          :key="item.hrSysLev"
+          :label="item.title"
+          :value="item.hrSysLev">
+          <span style="float: left">{{ item.title }}</span>
+          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.rightTxt }}</span>
+        </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="角色扩展：" prop="levExtend" v-if="ruleForm.lev != 301">
+        <el-select v-model="ruleForm.levExtend" placeholder="请选择管理员类型" multiple>
+          <el-option
+          v-for="item in hrAdminRoles"
+          :key="item.hrSysLev"
+          :label="item.title"
+          :value="item.hrSysLev"
+          :disabled="(item.hrSysLev==ruleForm.lev|| item.hrSysLev == 301)?true:false">
+          <span style="float: left">{{ item.title }}</span>
+          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.rightTxt }}</span>
+        </el-option>
+        </el-select>
+      </el-form-item>
+      <!-- <el-form-item label="假期权限：" prop="leavesAccess" v-if="ruleForm.lev != 301">
+        <el-checkbox-group v-model="ruleForm.leavesAccess">
+          <el-checkbox label="1">查看</el-checkbox>
+          <el-checkbox label="2">审批</el-checkbox>
+          <el-checkbox label="3">结算</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="报销权限：" prop="claimAccess" v-if="ruleForm.lev != 301">
+        <el-checkbox-group v-model="ruleForm.claimAccess">
+          <el-checkbox label="1">查看</el-checkbox>
+          <el-checkbox label="2">审批</el-checkbox>
+          <el-checkbox label="3">结算</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item> -->
       <el-form-item label="服务归属：" prop="serveId">
         <el-radio-group v-model="ruleForm.serveId">
           <el-radio label="1">单位</el-radio>
@@ -78,9 +103,13 @@ export default {
         email: "",
         mobile: "",
         lev:'',
+        levExtend:[],
+        leavesAccess:[],
+        claimAccess:[],
         serveId:''
       },
       regionBUs: [],
+      hrAdminRoles: [],
       rules: {
         account: [
           { required: true, message: "请输入账号名", trigger: "blur" },
@@ -124,6 +153,7 @@ export default {
   },
   mounted() {
     this.getBUCodeFun();
+    this.getHrAdminRoleInfo();
   },
   methods: {
     // 获取单位列表
@@ -145,6 +175,24 @@ export default {
         }
       });
     },
+    // 所有HR管理员角色属性
+    getHrAdminRoleInfo() {
+      var _this = this;
+      var reqUrl = "/server/api/v1/admin/hrSys/getHrAdminRoleInfo";
+      var data = {
+      };
+      _this.$http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
+          this.hrAdminRoles = res.data.data;
+        } else {
+          _this.$message(res.data.msg);
+          return false;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    },    
     // 新增后台管理员
     addAmdinFn() {
       var _this = this;
@@ -157,6 +205,9 @@ export default {
         mobile: _this.ruleForm.mobile,
         status: parseInt(_this.ruleForm.status),
         lev: parseInt(_this.ruleForm.lev),
+        levExtend: _this.ruleForm.levExtend.join(","),
+        leavesAccess: _this.ruleForm.leavesAccess.join(","),
+        claimAccess: _this.ruleForm.claimAccess.join(","),
         serveId: parseInt(_this.ruleForm.serveId),
         name: _this.ruleForm.name
       };

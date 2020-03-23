@@ -1,5 +1,5 @@
 <template>
-  <div class="approvalHolidays wrap">
+  <div class="approvalHolidays wrap" v-if="isShow">
     <h5 class="title-h5">请假列表</h5>
     <div class="search-wrap">
       <el-input placeholder="请输入关键字" v-model="filter.searchKey" >
@@ -71,6 +71,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      isShow:false,
       tableData: [],
       total: 0, //总计
       pageSize: 6, //页面数据多少
@@ -91,45 +92,31 @@ export default {
     var _this = this;
      _this.getRegionBUList();
     _this.userInfo = _this.$toolFn.localGet("userInfo");
-    if (_this.userInfo.roleTypeId == 2 ){
-      _this.hrCode = _this.userInfo.userCode;
-      if (_this.userInfo.lev == 301){
-        _this.rightStatus = [1,2,3];
-      }else if ([501,521].indexOf(_this.userInfo.lev) >= 0){//主管，假期审批主管
-        _this.rightStatus = [1];
-      }else if ([601,611].indexOf(_this.userInfo.lev) >= 0){//人事，人事文员
-        _this.rightStatus = [2];
-      }
-    }else if (_this.userInfo.roleTypeId == 3){
-      _this.rightStatus = [1,2,3];
+    _this.hrCode = _this.userInfo.userCode;
+    this.approvalHolidays = _this.userInfo.access.approvalHolidays || [];
+    _this.rightStatus = this.approvalHolidays;
+    if (this.rightStatus.length > 0){
+      this.isShow = true;
     }
-    
   },
   methods: {
     approveTxt(item){//显示文字并判断是否有权限审批
       item.canApprove = false;
       var str = "";
-      if (this.rightStatus.length == 0){
-        str = "";
+      if (item.status == 1){
+        if (this.rightStatus.indexOf(2) >= 0){
+          str = "并审批";
+          item.canApprove = true;
+        }
       }
-      if (this.rightStatus.indexOf(item.status) >= 0){
-        str = "并审批";
-        item.canApprove = true;
-      }
-      if (item.status >= 3){
-        str = "";
-      }
-      return str
-
+      return str;
     },
     //获取数据列表
     getData(hrCode,BUCode) {
       var reqUrl = "/server/api/v1/staff/holidaysApply/hrSysHolidaysApplyList";
       var myData = { hrCode: hrCode,BUCode:BUCode  };
       this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);
@@ -176,22 +163,7 @@ export default {
           _this.regionBUList = regionBUs;
           _this.BUCode = this.$toolFn.sessionGet('approveBUCode')?this.$toolFn.sessionGet('approveBUCode'):_this.regionBUList[0].code;
          _this.getData(_this.hrCode,_this.BUCode);
-        
       }
-    },
-    searchFun(list,search){
-      let newList = [];
-      for(let i = 0;i < list.length;i++){
-        for(let key in list[i]) {
-          if (search.searchField.indexOf(key) >= 0){
-            if (list[i][key] != undefined && list[i][key] != '' && list[i][key].toString().includes(search.searchKey)){
-              newList.push(list[i]);
-              break;
-            }
-          }
-        };
-      }
-      return newList;
     },
   },
   computed: {
@@ -199,7 +171,7 @@ export default {
       var _this = this;
       let tableData = _this.tableData;
       if (_this.filter.searchKey != ""){
-        tableData = _this.searchFun(tableData,_this.filter);
+        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
       }
       _this.total = tableData.length;
       var begin = (this.curPage - 1) * this.pageSize;
