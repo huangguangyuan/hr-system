@@ -10,6 +10,18 @@
       <el-form-item label="手机：" prop="mobile"  v-if='modifyInfo.adminType!="customerAdmin"'>
         <el-input v-model="ruleForm.mobile"></el-input>
       </el-form-item>
+      <el-form-item label="管理员角色：" prop="lev" >
+        <el-select v-model="ruleForm.lev" placeholder="请选择管理员类型" :disabled="userInfo.lev != 301?true:false">
+          <el-option
+          v-for="item in hrAdminRoles"
+          :key="item.hrSysLev"
+          :label="item.title"
+          :value="item.hrSysLev">
+          <span style="float: left">{{ item.title }}</span>
+          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.rightTxt }}</span>
+        </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="角色扩展：" prop="levExtend" v-if='userRight && modifyInfo.adminType=="HRadmin" && ruleForm.lev != 301'>
         <el-select v-model="ruleForm.levExtend" placeholder="请选择管理员类型" multiple>
           <el-option
@@ -110,7 +122,6 @@ export default {
   methods: {
     //初始化
     initFn() {
-      
       this.ruleForm.id = this.modifyInfo.id;
       this.ruleForm.name = this.modifyInfo.name;
       this.ruleForm.email = this.modifyInfo.email;
@@ -198,6 +209,7 @@ export default {
         mobile: _this.ruleForm.mobile,
         name: _this.ruleForm.name,
         serveId:_this.ruleForm.serveId,
+        lev:_this.ruleForm.lev,
         leavesAccess:'',
         claimAccess:'',
         levExtend:'',
