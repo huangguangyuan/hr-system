@@ -35,8 +35,8 @@ export default {
     }
   },
   mounted() {
-    this.setParam(this.pageInfo_props);
-    this.getData();
+    //this.setParam(this.pageInfo_props);
+    this.getData(this.pageInfo_props);
   },
   methods:{
     setParam(p){
@@ -47,7 +47,7 @@ export default {
       this.pageType = this.pageInfo.pageType || this.pageType;
       this.reqUrl = this.pageInfo.reqParams.url || this.reqUrl;
       this.reqData = this.pageInfo.reqParams.data || this.reqData;
-      this.isReq = this.pageInfo.reqParams.isReq || this.isReq;
+      this.isReq = this.pageInfo.reqParams.isReq != undefined ? this.pageInfo.reqParams.isReq : this.isReq;
     },
     // 获取当前页数据
     curChange(val) {

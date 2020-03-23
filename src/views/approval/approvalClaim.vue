@@ -17,7 +17,7 @@
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
+    <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
       <el-table-column sortable prop="nameChinese" label="申请人"></el-table-column>
       <el-table-column sortable prop="deptName" label="部门"></el-table-column>
       <el-table-column sortable prop="createTime" label="创建日期"></el-table-column>
@@ -36,7 +36,7 @@
       </el-table-column>
     </el-table>
     <!-- 分页编码 -->
-    <div class="pageInfo">
+    <!-- <div class="pageInfo">
       <el-pagination
         background
         layout="prev, pager, next"
@@ -45,7 +45,8 @@
         @current-change="curChange"
       ></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    </div> -->
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 申请表单详情 -->
     <el-dialog title="报销申请详情" :visible.sync="isShowDetails" :close-on-click-modal="false">
       <approval-claim-details v-if="isShowDetails" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></approval-claim-details>
@@ -54,17 +55,22 @@
 </template>
 <script>
 import approvalClaimDetails from "./approvalClaimDetails.vue";
-let id = 0;
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    approvalClaimDetails,pageInfo
+  },
   name: "approvalClaim",
   inject: ["reload"],
   data() {
     return {
       isShow:false,
       tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      pageList:[],
+      pageInfo:{},
+      // total: 0, //总计
+      // pageSize: 6, //页面数据多少
+      // curPage: 1, //当前页数
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
@@ -77,9 +83,13 @@ export default {
       filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip']}
     };
   },
+  computed:{
+    // pageInfo(){
+    //   return {pageType:1,reqParams:{isReq:false,url:"/server/api/v1/staff/claim/hrSysClaimList",data:{ hrCode: this.hrCode,BUCode:this.BUCode }}}
+    // }
+  },
   mounted() {
     var _this = this;
-    _this.getRegionBUList();
     _this.userInfo = _this.$toolFn.localGet("userInfo");
     _this.hrCode = _this.userInfo.userCode;
     this.approvalClaim = _this.userInfo.access.approvalClaim || [];
@@ -87,6 +97,8 @@ export default {
     if (this.rightStatus.length > 0){
       this.isShow = true;
     }
+    _this.pageInfo = {pageType:1,reqParams:{isReq:false,url:"/server/api/v1/staff/claim/hrSysClaimList",data:{ hrCode: _this.hrCode,BUCode:_this.BUCode }}};
+    _this.getRegionBUList();
   },
   methods: {
     approveTxt(item){//显示文字并判断是否有权限审批
@@ -134,7 +146,8 @@ export default {
     },
     selectFun(val) {
       this.BUCode = val;
-      this.getData(this.hrCode,this.BUCode);
+      //this.getData(this.hrCode,this.BUCode);
+      //this.$refs.pageInfo.getData(this.pageInfo);
       this.$toolFn.sessionSet('approveBUCode',val);
     },
     // 获取单位列表
@@ -144,7 +157,10 @@ export default {
       if (regionBUs && regionBUs.length > 0) {
         _this.regionBUList = regionBUs;
         _this.BUCode = this.$toolFn.sessionGet('approveBUCode')?this.$toolFn.sessionGet('approveBUCode'):_this.regionBUList[0].code;
-        this.getData(this.hrCode,this.BUCode);
+        _this.pageInfo = {pageType:1,reqParams:{isReq:false,url:"/server/api/v1/staff/claim/hrSysClaimList",data:{ hrCode: _this.hrCode,BUCode:_this.BUCode }}};
+        _this.getData(this.hrCode,this.BUCode);
+        _this.pageInfo.isReq = true;
+        //_this.$refs.pageInfo.getData(this.pageInfo);
       }
     },
   },
@@ -168,22 +184,29 @@ export default {
       return this.$store.state.staffModule.staffInfo;
     }
   },
-  components: {
-    approvalClaimDetails
-  }
+  watch: {
+      pageList(val) {//监听分页数据变化
+        this.tableData = val.map(item => {
+            item.createTime = this.$toolFn.timeFormat(item.createTime);
+            item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
+            item.nameChinese = item.staff ? item.staff.nameChinese :"";
+            return item;
+        });
+      }
+    }
 };
 </script>
 <style scoped lang="scss">
 .title-h5{font-size: 22px;font-weight: 500;}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
+// .pageInfo {
+//   margin-top: 20px;
+//   display: flex;
+//   justify-content: space-between;
+//   p {
+//     font-size: 14px;
+//     margin-right: 20px;
+//   }
+// }
 .search-wrap {
   margin: 20px auto;
   width: 100%;
