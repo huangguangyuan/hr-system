@@ -71,6 +71,7 @@
         v-if="isShowModifyAdmin"
         v-on:listenIsShowAddAdmin="IsShowAddAdminFn"
         :modifyInfo="modifyInfo"
+        :userInfo_prop="userInfo"
       ></modify-admin>
     </el-dialog>
     <!-- 修改密码 -->
@@ -121,6 +122,7 @@ export default {
   },
   mounted() {
     var _this = this;
+    this.userInfo = this.$toolFn.localGet("userInfo");
     _this.getData();
   },
   methods: {
@@ -130,9 +132,7 @@ export default {
       var reqUrl = "/server/api/v1/admin/getAll";
       var myData = {};
       _this.isShowLoading =true;
-      _this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      _this.$http.post(reqUrl, myData).then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data
             .map(item => {

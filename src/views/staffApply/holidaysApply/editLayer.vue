@@ -13,7 +13,7 @@
       </el-form-item>
 
       <el-form-item label="请假天数" prop="days">
-        <el-input-number v-model="ruleForm.days" :precision="2" :step="0.5" :max="30" :min="0.5"></el-input-number>
+        <el-input-number v-model="ruleForm.days" :precision="2" :step="0.5" :max="30" :min="0.5"  class="inp01"></el-input-number>
         <span class="inptTip">最少单位为0.5</span>
       </el-form-item>
       <el-form-item label="是否带薪" prop="isWithpay">
@@ -179,6 +179,10 @@ export default {
         noticeOfficer:this.noticeOfficer.join(','),
         sendEmail:this.ruleForm.sendEmail.replace(/，/g,","),
       };
+      if (!Number.isInteger((data.totalDay * 2))){
+        this.$message.error("请确保请假天数是0.5的倍数！");
+        return;
+      }
       if(this.approveOfficer.length == 0){
         this.$message.error("请至少选中一个审批人员");
         return;
@@ -223,7 +227,7 @@ export default {
 
 <style scoped lang="scss">
 .inptTip{padding: 0 10px;color: #ff6600}
-
+.inp01 {readonly:expression(this.readOnly=false);}
 </style>
 
 

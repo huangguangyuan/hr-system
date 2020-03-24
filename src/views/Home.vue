@@ -22,6 +22,7 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="logout(userInfo.roleTypeId)">退出登录</el-dropdown-item>
+              <el-dropdown-item v-if="userInfo.roleTypeId == 1" @click.native="isShowPasswrdBox = true">修改密码</el-dropdown-item>
               <el-dropdown-item v-if="userInfo.relatedUser" divided disabled>切换账户</el-dropdown-item>
               <el-dropdown-item v-if="userInfo.relatedUser" @click.native="switchUser(userInfo.relatedUser)"><i style="font-size:18px;" class="el-icon-refresh"></i>{{userInfo.relatedUser.typeTxt}}</el-dropdown-item>
             </el-dropdown-menu>
@@ -91,12 +92,28 @@
         </el-container>
       </el-container>
     </el-container>
+    <!-- 申请表单详情 -->
+    <el-dialog title="修改密码" :visible.sync="isShowPasswrdBox" :close-on-click-modal="false" label-width="140px">
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" >
+        <el-form-item label="输入密码：" prop="password">
+          <el-input v-model="ruleForm.password" show-password  ></el-input>
+        </el-form-item>
+        <el-form-item label="重复密码：" prop="passwordRepeat" >
+          <el-input v-model="ruleForm.passwordRepeat" show-password ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
+          <el-button @click="isShowPasswrdBox = false">取 消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import sidebarInfo from "@/lib/sidebarInfo.js";
 import navMenus from "@/components/navMenus.vue";
+import md5 from "js-md5";
 export default {
   name: "home",
   inject: ["reload"],
@@ -105,7 +122,20 @@ export default {
       sidebarInfo: [], //左侧导航栏数据
       isCollapse: false, //左侧导航栏是否折叠
       collapseSize: "220px", //左侧导航栏宽度大小
-      userInfo:{}
+      isShowPasswrdBox:false,//是否显示表单详情
+      ruleForm: {
+        password: "",
+        passwordRepeat: ""
+      },
+      userInfo:{},
+      rules: {
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" }
+        ],
+        passwordRepeat: [
+          { required: true, message: "请输入重复密码", trigger: "blur" }
+        ]
+      },
     };
   },
   mounted() {
@@ -147,6 +177,34 @@ export default {
                 this.$router.push({ path: "/home" });
               }
             })
+        }
+      });
+    },
+    // 提交表单
+    submitForm(formName) {
+      var _this = this;
+      _this.$refs[formName].validate(valid => {
+        if (valid) {
+          var _this = this;
+          var reqUrl = '/server/api/v1/staff/account/update';
+          var data = {
+            staffCode:_this.userInfo.userCode
+          }
+          if (_this.ruleForm.password != _this.ruleForm.passwordRepeat){
+            _this.$message.error("两次秘密不一致！");
+          }else{
+            data.password = md5(_this.ruleForm.password);
+          }
+          this.$http.post(reqUrl,data).then(res => {
+            if(res.data.code == 0){
+              this.isShowPasswrdBox = false;
+              this.$message.success('修改成功！');
+            }else{
+              this.$message.error(res.data.msg);
+            }
+          })
+        } else {
+          return false;
         }
       });
     },

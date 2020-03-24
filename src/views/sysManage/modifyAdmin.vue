@@ -10,7 +10,7 @@
       <el-form-item label="手机：" prop="mobile"  v-if='modifyInfo.adminType!="customerAdmin"'>
         <el-input v-model="ruleForm.mobile"></el-input>
       </el-form-item>
-      <el-form-item label="管理员角色：" prop="lev" >
+      <el-form-item label="管理员角色：" prop="lev" v-if="userInfo.roleTypeId == 2" >
         <el-select v-model="ruleForm.lev" placeholder="请选择管理员类型" :disabled="userInfo.lev != 301?true:false">
           <el-option
           v-for="item in hrAdminRoles"
