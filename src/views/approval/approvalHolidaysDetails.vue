@@ -145,9 +145,6 @@ export default {
         return item;
       });
     });
-
-    
-
   },
   methods: {
     openFile(item){

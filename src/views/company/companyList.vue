@@ -95,7 +95,7 @@ export default {
     async getData() {
       var _this = this;
       _this.isShowLoading = true;
-      var companys = await _this.$myApi.companys(_this,{isCache:false});
+      var companys = await _this.$myApi.companys();
       if (companys && companys.length > 0) {
           _this.isShowLoading = false;
           _this.tableData = companys.map(item => {

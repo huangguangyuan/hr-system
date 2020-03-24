@@ -127,7 +127,7 @@ export default {
     // 获取单位列表
     async getRegionBUList(){
       var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+      var regionBUs = await _this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           _this.regionBUList = regionBUs;
           _this.BUCode = this.$toolFn.sessionGet('approveBUCode')?this.$toolFn.sessionGet('approveBUCode'):_this.regionBUList[0].code;

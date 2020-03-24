@@ -67,7 +67,7 @@ export default {
           const element = this.curInfo.createItems[index];
           data.staffCode = element.code;
           await this.$toolFn.sleep(1000);
-          var genStaffPayroll = await this.$myApi.genStaffPayroll(this,data);
+          var genStaffPayroll = await this.$myApi.genStaffPayroll(data);
           //console.log(genStaffPayroll);
           if (genStaffPayroll && genStaffPayroll.code == 0) {
             this.$message.success(element.nameChinese+" 工资单生成成功");
@@ -79,7 +79,7 @@ export default {
         this.reload();
       }else if(this.curInfo.typeId == 1){
           data.staffCode = this.curInfo.code;
-          var genStaffPayroll = await this.$myApi.genStaffPayroll(this,data);
+          var genStaffPayroll = await this.$myApi.genStaffPayroll(data);
           //console.log(genStaffPayroll);
           if (genStaffPayroll && genStaffPayroll.code == 0) {
             this.reload();

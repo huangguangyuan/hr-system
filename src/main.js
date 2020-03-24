@@ -13,8 +13,9 @@ import htmlToPdf from '@/lib/htmlToPDF'
 import Cookies from 'js-cookie'
 import VueI18n from 'vue-i18n'
 import messages from './lang/index'
+import request from '@/lib/request'
 
-Vue.config.productionTip = false
+//Vue.config.productionTip = false
 Vue.use(VueAxios,axios);
 Vue.use(Element);
 Vue.use(Utile);
@@ -27,49 +28,12 @@ const i18n = new VueI18n({
   locale: 'zh', // 语言标识,
   locale: Cookies.get('language') || 'zh', // 语言标识,
   messages: messages
-
 })
-
-let myVue = new Vue({
+new Vue({
   router,
   i18n,
   store,
   render: h => h(App)
 }).$mount('#app')
-
-// 配置全局token，设置axios拦截器
-/* 请求拦截器 */
-axios.interceptors.request.use(function (config) { // 每次请求时会从localStorage中获取token
-  let userInfo = myVue.$toolFn.localGet('userInfo');
-  if (userInfo && userInfo.token != "") {
-    config.headers.common['token'] = userInfo.token;
-  } else {
-    sessionStorage.clear();
-    localStorage.clear();
-    // router.replace({
-    //   path: '/' // 到登录页重新获取token
-    // })
-  }
-  return config
-}, function (error) {
-  return Promise.reject(error)
-});
-
-// /* 响应拦截器 */
-axios.interceptors.response.use(function (response) { // -1 token过期无效
-  if (response.data.code === 109) {
-      let userInfo = myVue.$toolFn.localGet('userInfo');
-      myVue.$toolFn.localRemove('userInfo');
-      let pathUrl = "/";
-      if (userInfo && (userInfo.roleTypeId == 2 || userInfo.roleTypeId == 1)){
-        pathUrl ="/hr";
-      }
-      router.replace({
-        path: pathUrl
-      })
-  }
-  return response;
-}, function (error) {
-  console.log(error);
-  return Promise.reject(error)
-})
+Vue.prototype.$toolFn = Utile;
+Vue.prototype.$myApi = myApi;

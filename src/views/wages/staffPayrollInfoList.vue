@@ -91,7 +91,7 @@ export default {
     // 获取单位列表
     getregionBU() {
       var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+      var regionBUs = await _this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUlist = regionBUs;
           this.BUCode = this.$toolFn.sessionGet("staffBUCode")? this.$toolFn.sessionGet("staffBUCode"): this.regionBUlist[0].code;

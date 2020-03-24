@@ -159,7 +159,7 @@ export default {
     // 获取单位列表
     async getBUCodeFun() {
       var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+      var regionBUs = await _this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUs = regionBUs;
       }

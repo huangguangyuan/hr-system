@@ -13,11 +13,12 @@
         >
           <el-option v-for='(item,index) in regionBUList' :key='index' :label="item.name" :value="item.code"></el-option>
         </el-select>
+
       </el-input>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
+    <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id" >
       <el-table-column sortable prop="nameChinese" label="申请人"></el-table-column>
       <el-table-column sortable prop="deptName" label="部门"></el-table-column>
       <el-table-column sortable prop="createTime" label="创建日期"></el-table-column>
@@ -65,28 +66,42 @@ export default {
   data() {
     return {
       isShow:false,
-      tableData: [],
       pageList:[],
-      pageInfo:{},
-      // total: 0, //总计
-      // pageSize: 6, //页面数据多少
-      // curPage: 1, //当前页数
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
       hrCode: "",
       userInfo:{},
       BUCode: "", //单位code
-      claimAccess:[],
       rightStatus:[], //当前管理员可审批的申请类型
       regionBUList:[],//单位列表
-      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip']}
+      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip','totalAmount','deptName']}
     };
   },
   computed:{
-    // pageInfo(){
-    //   return {pageType:1,reqParams:{isReq:false,url:"/server/api/v1/staff/claim/hrSysClaimList",data:{ hrCode: this.hrCode,BUCode:this.BUCode }}}
-    // }
+    staffInfo() {
+      return this.$store.state.staffModule.staffInfo;
+    },
+    pageInfo(){
+      return {
+        reqParams:{//请求分页参数
+            isReq:false,
+            url:"/server/api/v1/staff/claim/hrSysClaimList",
+            filter:this.filter,
+            data:{ hrCode: this.hrCode,BUCode:this.BUCode }
+          }
+        }
+    },
+    tableData(){
+      if (this.filter.searchKey != ""){
+        this.$refs.pageInfo.searchKey(this.filter);
+      }
+      return this.pageList.map(item => {
+        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
+        return item;
+      });
+    }
   },
   mounted() {
     var _this = this;
@@ -97,7 +112,6 @@ export default {
     if (this.rightStatus.length > 0){
       this.isShow = true;
     }
-    _this.pageInfo = {pageType:1,reqParams:{isReq:false,url:"/server/api/v1/staff/claim/hrSysClaimList",data:{ hrCode: _this.hrCode,BUCode:_this.BUCode }}};
     _this.getRegionBUList();
   },
   methods: {
@@ -111,24 +125,6 @@ export default {
         }
       }
       return str;
-    },
-    //获取数据列表
-    getData(hrCode,BUCode) {
-      var reqUrl = "/server/api/v1/staff/claim/hrSysClaimList";
-      var myData = { hrCode: hrCode,BUCode:BUCode };
-      this.isShowLoading = true;
-      this.$http.post(reqUrl, myData).then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data.map(item => {
-            item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
-            item.nameChinese = item.staff ? item.staff.nameChinese :"";
-            return item;
-          });
-          this.total = this.tableData.length;
-        }).catch(err => {
-          console.log(err);
-        });
     },
     // 获取当前页数
     curChange(val) {
@@ -146,77 +142,32 @@ export default {
     },
     selectFun(val) {
       this.BUCode = val;
-      //this.getData(this.hrCode,this.BUCode);
-      //this.$refs.pageInfo.getData(this.pageInfo);
+      this.$refs.pageInfo.getData(this.pageInfo);
       this.$toolFn.sessionSet('approveBUCode',val);
     },
     // 获取单位列表
     async getRegionBUList(){
       var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+      var regionBUs = await _this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
         _this.regionBUList = regionBUs;
         _this.BUCode = this.$toolFn.sessionGet('approveBUCode')?this.$toolFn.sessionGet('approveBUCode'):_this.regionBUList[0].code;
-        _this.pageInfo = {pageType:1,reqParams:{isReq:false,url:"/server/api/v1/staff/claim/hrSysClaimList",data:{ hrCode: _this.hrCode,BUCode:_this.BUCode }}};
-        _this.getData(this.hrCode,this.BUCode);
-        _this.pageInfo.isReq = true;
-        //_this.$refs.pageInfo.getData(this.pageInfo);
+        _this.pageInfo.reqParams.isReq = true;
+        _this.$refs.pageInfo.getData(this.pageInfo);
       }
     },
   },
-  computed: {
-    queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
-      }
-      _this.total = tableData.length;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
-      return tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    },
-    staffInfo() {
-      return this.$store.state.staffModule.staffInfo;
-    }
-  },
-  watch: {
-      pageList(val) {//监听分页数据变化
-        this.tableData = val.map(item => {
-            item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
-            item.nameChinese = item.staff ? item.staff.nameChinese :"";
-            return item;
-        });
-      }
-    }
 };
 </script>
 <style scoped lang="scss">
 .title-h5{font-size: 22px;font-weight: 500;}
-// .pageInfo {
-//   margin-top: 20px;
-//   display: flex;
-//   justify-content: space-between;
-//   p {
-//     font-size: 14px;
-//     margin-right: 20px;
-//   }
-// }
 .search-wrap {
   margin: 20px auto;
   width: 100%;
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
-  .el-input-group {
-  }
 }
-
 </style>
 
 

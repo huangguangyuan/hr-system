@@ -23,19 +23,20 @@ export default {
       curPage: 1, //当前页数
       pageType:1,//分页类型，1为前端分页，2为后端分页
       pageList:[],
+      list:[],
       reqUrl:'',
       reqData:{},
+      filter:{},
       isReq:true
     };
   },
   computed: {
     pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
+      let pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     }
   },
   mounted() {
-    //this.setParam(this.pageInfo_props);
     this.getData(this.pageInfo_props);
   },
   methods:{
@@ -47,6 +48,7 @@ export default {
       this.pageType = this.pageInfo.pageType || this.pageType;
       this.reqUrl = this.pageInfo.reqParams.url || this.reqUrl;
       this.reqData = this.pageInfo.reqParams.data || this.reqData;
+      this.filter = this.pageInfo.reqParams.filter || this.filter;
       this.isReq = this.pageInfo.reqParams.isReq != undefined ? this.pageInfo.reqParams.isReq : this.isReq;
     },
     // 获取当前页数据
@@ -55,11 +57,25 @@ export default {
       if (this.pageType == 2){
         this.getData();
       }else{
-        var begin = (this.curPage - 1) * this.pageSize;
-        var end = this.curPage * this.pageSize;
-        this.pageList = this.pageList.slice(begin, end);
-        this.$emit('update:pageList',this.pageList);
+        this.$emit('update:pageList',this.pageFun(this.list));
       }
+    },
+    // 搜索关键字
+    searchKey(filter) {
+      if (filter.searchKey != ""){
+        if (this.pageType == 2){
+          this.getData();
+        }else{
+          let pageList = this.$toolFn.searchFun(this.list,filter);
+          this.total = pageList.length;
+          this.$emit('update:pageList',this.pageFun(pageList));
+        }
+      }
+    },
+    pageFun(list){
+      let begin = (this.curPage - 1) * this.pageSize;
+      let end = this.curPage * this.pageSize;
+      return list.slice(begin, end);
     },
     //获取数据列表
     getData(p) {
@@ -68,6 +84,7 @@ export default {
       if (this.pageType == 2){
         this.reqData.pageNo = this.curPage;
         this.reqData.pageSize = this.pageSize;
+        this.reqData.searchKey = this.filter.searchKey;
       }
       this.$emit('update:isShowLoading',true);//显示加载中
       this.$http.post(this.reqUrl,this.reqData).then(res => {
@@ -76,8 +93,10 @@ export default {
             this.pageList = res.data.data.list;
             this.total = res.data.data.total;
           }else{
-            this.pageList = res.data.data;
             this.total = res.data.data.length;
+            this.list = res.data.data;
+            this.pageList = this.pageFun(this.list);
+            this.$emit('update:pageList',this.pageList);
           }
           if (!Array.isArray(this.pageList)){
             console.log(res.data);

@@ -64,7 +64,6 @@ export default {
     return {
       holidayTypeSelected: 1,
       holidaysTypeList: [],
-      tableData: [],
       pageList:[],
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
@@ -77,6 +76,15 @@ export default {
     pageInfo(){
       return {reqParams:{isReq:false,url:"/server/api/v1/staff/holidaysApply/staffLeaves",data:{ staffCode: this.staffCode,typeId: parseInt(this.holidayTypeSelected) }}}
     },
+    tableData(){
+      return this.pageList.map(item => {
+          item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
+          item.isWithpayTxt = item.isWithpay == 1?'是':'否';
+          item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
+          item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null
+          return item;
+      });
+    },
     staffInfo() {
       return this.$store.state.staffModule.staffInfo;
     }
@@ -87,7 +95,7 @@ export default {
   methods: {
     changeType(typeId){
       this.holidayTypeSelected = typeId;
-      this.pageInfo.isReq = true;
+      this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },
     // 获取请假类型
@@ -97,6 +105,7 @@ export default {
         if (res.data.code == 0) {
           this.holidaysTypeList = res.data.data;
           this.holidayTypeSelected = this.holidaysTypeList[0].typeId;
+          this.pageInfo.reqParams.isReq = true;
           this.$refs.pageInfo.getData(this.pageInfo);
         }
       });
@@ -117,17 +126,17 @@ export default {
       this.curInfo = res;
     },
   },
-  watch: {
-    pageList(val) {//监听分页数据变化
-      this.tableData = val.map(item => {
-          item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
-          item.isWithpayTxt = item.isWithpay == 1?'是':'否';
-          item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
-          item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null
-          return item;
-      });
-    }
-  }
+  // watch: {
+  //   pageList(val) {//监听分页数据变化
+  //     this.tableData = val.map(item => {
+  //         item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
+  //         item.isWithpayTxt = item.isWithpay == 1?'是':'否';
+  //         item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
+  //         item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null
+  //         return item;
+  //     });
+  //   }
+  // }
 };
 </script>
 <style scoped lang="scss">

@@ -163,7 +163,7 @@ export default {
     // 获取单位列表
     async getCompanyCodeFun(){
       var _this = this;
-      var companys = await _this.$myApi.companys(_this,{isCache:true});
+      var companys = await _this.$myApi.companys({isCache:true});
       if (companys) {
           _this.companyList = companys;
           _this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):_this.companyList[0].code;

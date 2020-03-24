@@ -144,7 +144,6 @@ export default {
     async getCompanys() {
       var reqUrl = "/server/api/v1/company/companysWithChild";
       return this.$http.post(reqUrl, {});
-      //return await this.$apiUrl.companysWithChild();
     },
     // 选择公司
     selectCompany(val) {

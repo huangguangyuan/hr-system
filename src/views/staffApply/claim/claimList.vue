@@ -51,7 +51,7 @@ export default {
   props: ["staffCode_props"],
   data() {
     return {
-      tableData: [],
+      //tableData: [],
       pageList:[],
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
@@ -63,6 +63,13 @@ export default {
   computed:{
     pageInfo(){
       return {pageType:2,reqParams:{url:"/server/api/v1/staff/claim/staffClaimList",data:{ staffCode: this.staffCode }}}
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
+        return item;
+      });
     }
   },
   mounted() {
@@ -109,15 +116,15 @@ export default {
         });
     },
   },
-  watch: {
-      pageList(val) {//监听分页数据变化
-        this.tableData = val.map(item => {
-          item.createTime = this.$toolFn.timeFormat(item.createTime);
-          item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
-          return item;
-        });
-      }
-    }
+  // watch: {
+  //     pageList(val) {//监听分页数据变化
+  //       this.tableData = val.map(item => {
+  //         item.createTime = this.$toolFn.timeFormat(item.createTime);
+  //         item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
+  //         return item;
+  //       });
+  //     }
+  //   }
 };
 </script>
 <style scoped lang="scss">

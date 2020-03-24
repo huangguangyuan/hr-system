@@ -1,5 +1,5 @@
 <template>
-  <div class="approvalClaimDetails">
+  <div class="approvalClaimDetails" v-loading="isShowLoading">
     <el-divider content-position="left">报销明细</el-divider>
     <div class="view-detail">
       <el-row :gutter="12">
@@ -74,7 +74,9 @@ export default {
   props: ["curInfo"],
   data() {
     return {
+      isShowLoading:true,
       claimItem:{},
+      claimType:[],
       tableData: [], //数据列表
       getClaimList: [], //审批类型
       approveHisList: [], //审批流程
@@ -93,52 +95,52 @@ export default {
     };
   },
   mounted() {
+    this.staffClaim();
     this.canApprove = this.curInfo.canApprove;
-    this.dataConvert().then(res => {
-      this.curInfo.details.map(item => {
-        item.typeIdTxt = res.filter(child => {
-          return child.typeId == item.typeId;
-        })[0].val;
-        return item;
-      });
-      this.claimItem = this.curInfo;
-      if (this.claimItem.fileSrc && this.claimItem.fileSrc != ''){
-        this.fileList = this.claimItem.fileSrc.split(',');
-      }
-      this.tableData = this.curInfo.details;
-      // 审批流程
-      this.approveHisList = this.curInfo.approveHis.map(item => {
-        item.createTime = this.$toolFn.timeFormat(item.createTime);
-        item.finishFlagTxt = item.finishFlag == 0 ? "否" : "是";
-        if (item.finishFlag == 1){
-          this.isFinish = true;
-        }
-        switch (item.typeId) {
-          case 1:
-            item.typeIdTxt = "批准";
-            break;
-          case 2:
-            item.typeIdTxt = "不批准";
-            break;
-          case 3:
-            item.typeIdTxt = "转派";
-            break;
-          case 90:
-            item.typeIdTxt = "撤回";
-            break;
-          case 99:
-            item.typeIdTxt = "新建";
-            break;
-          case 100:
-            item.typeIdTxt = '结算 ( 结算月份 '+ this.claimItem.balanceMon + " 月 " + (this.claimItem.totalAmount != 0?"， 总金额 ： " + this.claimItem.totalAmount + " 元 ":"" ) + " )" ;
-            break;
-          default:
-            item.typeIdTxt = "未知";
-        }
-        return item;
-      });
-    });
-
+    // this.dataConvert().then(res => {
+    //   this.curInfo.details.map(item => {
+    //     item.typeIdTxt = res.filter(child => {
+    //       return child.typeId == item.typeId;
+    //     })[0].val;
+    //     return item;
+    //   });
+    //   this.claimItem = this.curInfo;
+    //   if (this.claimItem.fileSrc && this.claimItem.fileSrc != ''){
+    //     this.fileList = this.claimItem.fileSrc.split(',');
+    //   }
+    //   this.tableData = this.curInfo.details;
+    //   // 审批流程
+    //   this.approveHisList = this.curInfo.approveHis.map(item => {
+    //     item.createTime = this.$toolFn.timeFormat(item.createTime);
+    //     item.finishFlagTxt = item.finishFlag == 0 ? "否" : "是";
+    //     if (item.finishFlag == 1){
+    //       this.isFinish = true;
+    //     }
+    //     switch (item.typeId) {
+    //       case 1:
+    //         item.typeIdTxt = "批准";
+    //         break;
+    //       case 2:
+    //         item.typeIdTxt = "不批准";
+    //         break;
+    //       case 3:
+    //         item.typeIdTxt = "转派";
+    //         break;
+    //       case 90:
+    //         item.typeIdTxt = "撤回";
+    //         break;
+    //       case 99:
+    //         item.typeIdTxt = "新建";
+    //         break;
+    //       case 100:
+    //         item.typeIdTxt = '结算 ( 结算月份 '+ this.claimItem.balanceMon + " 月 " + (this.claimItem.totalAmount != 0?"， 总金额 ： " + this.claimItem.totalAmount + " 元 ":"" ) + " )" ;
+    //         break;
+    //       default:
+    //         item.typeIdTxt = "未知";
+    //     }
+    //     return item;
+    //   });
+    // });
   },
   methods: {
     openFile(item){
@@ -146,6 +148,22 @@ export default {
           a.href = item;
           a.target = '_blank';
           a.click();
+    },
+    async staffClaim(){
+      var reqUrl = "/server/api/v1/staff/claim/staffClaim";
+      this.$myApi.post(reqUrl, {claimCode:this.curInfo.code}).then(res => {
+        if (res.code == 0) {
+          this.claimItem = res.data.data;
+        }
+      });
+    },
+    getClaimTypeId(){
+      var reqUrl = "/server/api/v1/staff/claim/getClaimTypeId";
+      this.$http.post(reqUrl, {}).then(res => {
+        if (res.data.code == 0) {
+          this.claimType = res.data.data;
+        }
+      });
     },
     // 数据转换,用于把类型转换成对应的文字
     dataConvert() {

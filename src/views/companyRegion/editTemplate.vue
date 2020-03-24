@@ -198,7 +198,7 @@ export default {
     // 获取公司列表
     async getCompanyData(){
         var _this = this;
-        var companys = await _this.$myApi.companys(_this,{isCache:true});
+        var companys = await _this.$myApi.companys({isCache:true});
         if (companys) {
             _this.companyList = companys;
         }
