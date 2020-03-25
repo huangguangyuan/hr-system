@@ -1,13 +1,6 @@
 <template>
-    <!-- 分页编码 -->
     <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
+      <el-pagination background layout="prev, pager, next" :total="total" :page-size="pageSize" @current-change="curChange"></el-pagination>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
 </template>
@@ -17,7 +10,6 @@ export default {
   props: ["pageInfo_props"],
   data() {
     return {
-      isShowLoading:false,
       total: 0, //总计
       pageSize: 6, //页面数据条数
       curPage: 1, //当前页数
@@ -27,7 +19,8 @@ export default {
       reqUrl:'',
       reqData:{},
       filter:{},
-      isReq:true
+      isReq:true,
+      refresh:false,
     };
   },
   computed: {
@@ -43,6 +36,7 @@ export default {
     setParam(p){
       this.pageInfo = p;
       this.total = this.pageInfo.total || this.total;
+      this.refresh = this.pageInfo.refresh || this.refresh;
       this.pageSize = this.pageInfo.pageSize || this.pageSize;
       this.curPage = this.pageInfo.curPage || this.curPage;
       this.pageType = this.pageInfo.pageType || this.pageType;
@@ -105,7 +99,7 @@ export default {
         }).catch(err => {
           console.log(err);
         });
-    },
+    }
   }
 };
 </script>
