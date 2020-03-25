@@ -1,7 +1,7 @@
 <template>
   <div class="approvalClaim wrap" v-if="isShow">
     <h5 class="title-h5">报销列表</h5>
-    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCode" ref="busAndSearch" ></bus-and-search>
+    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCode" ref="busAndSearch"></bus-and-search>
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id" >
@@ -37,6 +37,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      isShow1:false,
       isShow:false,
       pageList:[],
       curInfo: {},
@@ -55,7 +56,6 @@ export default {
         reqParams:{//请求分页参数
             isReq:false,
             url:"/server/api/v1/staff/claim/hrSysClaimList",
-            filter:this.filter,
             data:{ hrCode: this.hrCode,BUCode:this.BUCode }
           }
         }
@@ -64,9 +64,6 @@ export default {
       return {filter:this.filter};
     },
     tableData(){
-      if (this.filter.searchKey != ""){
-        this.$refs.pageInfo.searchKey(this.filter);
-      }
       return this.pageList.map(item => {
         item.createTime = this.$toolFn.timeFormat(item.createTime);
         item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
@@ -110,6 +107,11 @@ export default {
       handler: function(newVal) {
             this.pageInfo.reqParams.isReq = true;
             this.$refs.pageInfo.getData(this.pageInfo);
+      }
+    },
+    "filter.searchKey":{
+      handler: function(newVal) {
+        this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
       }
     }
   },

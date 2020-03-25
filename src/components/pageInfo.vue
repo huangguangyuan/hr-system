@@ -64,6 +64,12 @@ export default {
           this.total = pageList.length;
           this.$emit('update:pageList',this.pageFun(pageList));
         }
+      }else{
+        if (this.pageType == 2){
+          this.getData();
+        }else{
+          this.$emit('update:pageList',this.pageFun(this.list));
+        }
       }
     },
     pageFun(list){

@@ -14,7 +14,7 @@ export default {
   props: ["busAndSearch_props"],
   data() {
     return {
-      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip','totalAmount','deptName']},//搜索关键词及搜索字段
+      filter:{searchKey:'',searchField:[]},//搜索关键词及搜索字段
       BUCodeSelected:'',
       buList:[]
     };

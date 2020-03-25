@@ -33,12 +33,12 @@
         </el-select>
       </el-form-item>
       <fileUpload :fileUpload_props="fileUpload_props" @fileUpload_tf="fileUpload_tf"></fileUpload>
-      <el-form-item label="审批人员：">
-        <el-checkbox-group v-model="approveOfficer">
+      <el-form-item label="审批人员：" :rules="{required: true, message: '请最少选择一名审批人员', trigger: 'blur'}">
+        <el-checkbox-group v-model="approveOfficer" >
           <el-checkbox v-for="approve in approveOfficerList" :label="approve.code" :key="approve.code" >{{approve.name}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="结算人员：">
+      <el-form-item label="结算人员："  v-if="false">
         <el-checkbox-group v-model="balanceOfficer">
           <el-checkbox v-for="balance in balanceOfficerList" :label="balance.code" :key="balance.code" >{{balance.name}}</el-checkbox>
         </el-checkbox-group>
@@ -48,8 +48,8 @@
           <el-checkbox v-for="notice in noticeOfficerList" :label="notice.code" :key="notice.code">{{notice.name}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="发送邮件：">
-        <el-input v-model="ruleForm.sendEmail"></el-input> 多个请用'，'隔开,例：abc@163.com,abc@qq.com
+      <el-form-item label="抄送邮件：">
+        <el-input v-model="ruleForm.sendEmail"></el-input> 抄送至其他电子邮件，多个地址请用“,”隔开，例：abc@163.com,abc@qq.com；
       </el-form-item>
       <el-form-item label="备 注：">
         <el-input v-model="ruleForm.remarks"></el-input>
@@ -116,21 +116,44 @@ export default {
   methods: {
     // 初始化
     initializeFun() {
+      this.userInfo = this.$toolFn.localGet("userInfo");
       this.getHolidaysApplyTypeFun();
-      this.holidayProcessRelate(this.curInfo.staffCode); //获取报假期程相关人员
+      this.holidayProcessRelate(this.curInfo.staffCode); //获取报假期相关人员
     },
     // 获取假期流程相关人员
     holidayProcessRelate(staffCode) {
       var reqUrl = "/server/api/v1/staff/holidaysApply/holidayProcessRelate";
       this.$http.post(reqUrl, {staffCode:staffCode}).then(res => {
         if (res.data.code == 0) {
-          //this.claimTypeList = res.data.data;
           this.approveOfficerList = res.data.data.approveOfficerList;
-          this.approveOfficer = this.approveOfficerList.map(m => m.code);
+          //this.approveOfficer = this.approveOfficerList.map(m => m.code);
+          for (let index = 0; index < this.approveOfficerList.length; index++) {
+            const element = this.approveOfficerList[index];
+            if (element.BUCode == this.userInfo.BUCode){
+              this.approveOfficer.push(element.code);
+            }
+          }
+
           this.balanceOfficerList = res.data.data.balanceOfficerList;
           this.balanceOfficer = this.balanceOfficerList.map(m => m.code);
           this.noticeOfficerList = res.data.data.noticeOfficerList;
           this.noticeOfficer = this.noticeOfficerList.map(m => m.code);
+          for (let index = 0; index < this.approveOfficerList.length; index++) {
+            const element = this.approveOfficerList[index];
+            if (this.noticeOfficer.indexOf(element.code) < 0){
+              this.noticeOfficerList.push(element);
+              this.noticeOfficer.push(element.code);
+            }
+          }
+          for (let index = 0; index < this.balanceOfficerList.length; index++) {
+            const element = this.balanceOfficerList[index];
+            if (this.noticeOfficer.indexOf(element.code) < 0){
+              this.noticeOfficerList.push(element);
+              this.noticeOfficer.push(element.code);
+            }
+          }
+          this.noticeOfficer = [];
+
         }
       });
     },
@@ -140,7 +163,6 @@ export default {
         if (valid) {
           this.addFun();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
