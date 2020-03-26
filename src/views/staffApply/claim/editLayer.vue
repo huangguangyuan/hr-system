@@ -115,14 +115,12 @@ export default {
       this.$http.post(reqUrl, {staffCode:staffCode}).then(res => {
         if (res.data.code == 0) {
           this.approveOfficerList = res.data.data.approveOfficerList;
-          //this.approveOfficer = this.approveOfficerList.map(m => m.code);
           for (let index = 0; index < this.approveOfficerList.length; index++) {
             const element = this.approveOfficerList[index];
-            if (element.BUCode == this.userInfo.BUCode){
+            if (element.selected){
               this.approveOfficer.push(element.code);
             }
           }
-
           this.balanceOfficerList = res.data.data.balanceOfficerList;
           this.balanceOfficer = this.balanceOfficerList.map(m => m.code);
           this.noticeOfficerList = res.data.data.noticeOfficerList;
