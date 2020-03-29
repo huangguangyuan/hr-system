@@ -74,7 +74,7 @@ export default {
       var reqUrl = "/server/api/v1/bu/claims";
       var myData = { BUCode: BUCode };
       this.isShowLoading = true;
-      this.$http.post(reqUrl, myData).then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           if (res.data.code == 0) {
             this.total = res.data.data.length;
@@ -92,7 +92,7 @@ export default {
     // 获取薪资应对项目模板
     getclaimTemplate() {
       var reqUrl = "/server/api/v1/claim/getAll";
-      this.$http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           this.claimTemplateList = res.data.data;
         } else {
@@ -117,7 +117,7 @@ export default {
       }
       var reqUrl = '/server/api/v1/bu/selectedClaims';
       var data = {BUCode:this.BUInfo.code,claimIds:this.claimIds}
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
           if(res.data.code == 0){
               this.reload();
               this.$message.success('添加成功！');
@@ -148,7 +148,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/bu/claimDelete", { code: res.code })
             .then(res => {
               _this.reload();

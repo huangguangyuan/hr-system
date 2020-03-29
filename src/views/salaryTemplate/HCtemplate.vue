@@ -86,7 +86,7 @@ export default {
         cityCode: _this.cityCode
       };
       _this.isShowLoading = true;
-      _this.$http.post(reqUrl, myData).then(res => {
+      _this.$myApi.http.post(reqUrl, myData).then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data
             .map(item => {
@@ -127,7 +127,7 @@ export default {
         cityCode: 'b39f8ec0-676f-11e9-93b3-31525099b521'
       };
       _this.isShowLoading = true;
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           _this.isShowLoading = false;
@@ -173,7 +173,7 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/city/getAll";
       var data = {};
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.cityList = res.data.data;
         }
@@ -210,7 +210,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/cityHC/delete", { id: res.id })
             .then(res => {
               _this.reload();

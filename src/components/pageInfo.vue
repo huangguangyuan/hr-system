@@ -1,6 +1,7 @@
 <template>
     <div class="pageInfo">
       <el-pagination background layout="prev, pager, next" :total="total" :page-size="pageSize" @current-change="curChange"></el-pagination>
+      <slot name="pageSolt" :pageSize1="pageList">test</slot>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
 </template>
@@ -11,16 +12,18 @@ export default {
   data() {
     return {
       total: 0, //总计
+      pageSize1:2,
       pageSize: 6, //页面数据条数
       curPage: 1, //当前页数
       pageType:1,//分页类型，1为前端分页，2为后端分页
-      pageList:[],
-      list:[],
-      reqUrl:'',
-      reqData:{},
-      filter:{},
-      isReq:true,
-      refresh:false,
+      pageList:[],//页面显示列表
+      list:[],//请求返回列表
+      reqUrl:'',//请求地址
+      reqData:{},//请求参数
+      filter:{},//请求过滤
+      isReq:true,//是否请求，用于组件加载后不需要请求的情况
+      refresh:false,//刷新组件
+      isLoading:false,//是否请求中
     };
   },
   computed: {
@@ -51,7 +54,7 @@ export default {
       if (this.pageType == 2){
         this.getData();
       }else{
-        this.$emit('update:pageList',this.pageFun(this.list));
+        this.pageList = this.pageFun(this.list);
       }
     },
     // 搜索关键字
@@ -62,13 +65,13 @@ export default {
         }else{
           let pageList = this.$toolFn.searchFun(this.list,filter);
           this.total = pageList.length;
-          this.$emit('update:pageList',this.pageFun(pageList));
+          this.pageList = this.pageFun(pageList);
         }
       }else{
         if (this.pageType == 2){
           this.getData();
         }else{
-          this.$emit('update:pageList',this.pageFun(this.list));
+          this.pageList = this.pageFun(this.list);
         }
       }
     },
@@ -78,7 +81,7 @@ export default {
       return list.slice(begin, end);
     },
     //获取数据列表
-    getData(p) {
+    async getData(p) {
       if (p){this.setParam(p);}
       if (!this.isReq){return}
       if (this.pageType == 2){
@@ -86,26 +89,30 @@ export default {
         this.reqData.pageSize = this.pageSize;
         this.reqData.searchKey = this.filter.searchKey;
       }
-      this.$emit('update:isShowLoading',true);//显示加载中
-      this.$http.post(this.reqUrl,this.reqData).then(res => {
-          this.$emit('update:isShowLoading',false);//隐藏加载中
-          if (this.pageType == 2){
-            this.pageList = res.data.data.list;
-            this.total = res.data.data.total;
-          }else{
-            this.total = res.data.data.length;
-            this.list = res.data.data;
-            this.pageList = this.pageFun(this.list);
-            this.$emit('update:pageList',this.pageList);
-          }
-          if (!Array.isArray(this.pageList)){
-            console.log(res.data);
-          }
-          this.$emit('update:pageList',this.pageList);
-        }).catch(err => {
-          console.log(err);
-        });
+      this.isLoading = true;
+      let res = await this.$myApi.post(this.reqUrl,this.reqData);
+      this.isLoading = false;
+      if (this.pageType == 2){
+        this.pageList = res.list;
+        this.total = res.total;
+      }else{
+        this.total = res.length;
+        this.list = res;
+        this.pageList = this.pageFun(this.list);
+      }
     }
+  },
+  watch: {
+    pageList: {
+      handler: function(newVal) {
+        this.$emit('update:pageList',newVal);
+      }
+    },
+    isLoading: {
+      handler: function(newVal) {
+        this.$emit('update:isShowLoading',newVal);
+      }
+    },
   }
 };
 </script>

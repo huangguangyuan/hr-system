@@ -335,7 +335,7 @@ export default {
                 id:res.id,
                 status:status
             }
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/staff/update", data)
             .then(res => {
               _this.reload();
@@ -352,9 +352,8 @@ export default {
     // 获取HR管理员列表
     getHRadminList(val){
       var reqUrl = '/server/api/v1/admin/hrSys/getAll';
-      
       var data = {BUCode:val}
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.data){
           this.HRadminList = res.data.data;
         }
@@ -377,7 +376,7 @@ export default {
       var reqUrl = "/server/api/v1/staff/getAll";
       var myData = { BUCode: BUCode };
       _this.isShowLoading = true;
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           _this.isShowLoading = false;
@@ -544,7 +543,7 @@ export default {
       if (_this.accountInfo.password && _this.accountInfo.password != ""){
         data.password = md5(_this.accountInfo.password);
       }
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.reload();
           this.$message.success('修改成功！');
@@ -559,7 +558,7 @@ export default {
       var data = {
         staffCode:code
       }
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.isShowAccountState = true;
           this.accountInfo = res.data.data.account;
@@ -577,7 +576,7 @@ export default {
         id:this.staffID,
         workStatus:this.workStatus
       }
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.reload();
           this.$message.success('修改成功！');
@@ -594,7 +593,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/staff/delete", { id: res.id })
             .then(res => {
               _this.reload();

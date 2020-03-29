@@ -97,7 +97,7 @@ export default {
         paymentId: parseInt(this.ruleForm.paymentId)
       };
       console.log(data);
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.$emit("listenIsShowMask", false);
           this.$message.success("新增成功~");
@@ -116,7 +116,7 @@ export default {
         baseLower: parseFloat(this.ruleForm.baseLower),
         paymentRatio:parseFloat(this.ruleForm.paymentRatio)
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.$emit("listenIsShowMask", false);
           this.$message.success("修改成功~");

@@ -140,6 +140,7 @@ export default {
   },
   mounted() {
     this.userInfo = this.$toolFn.localGet('userInfo');
+    console.log(this.userInfo);
     this.initializeFun();
   },
   methods: {
@@ -152,7 +153,7 @@ export default {
           account: switchUser.account,
         	typeId:switchUser.typeId
       }
-      this.$http.post(reqUrl,postJson).then(res => {
+      this.$myApi.http.post(reqUrl,postJson).then(res => {
         if (res.data.code == 0){
           sessionStorage.clear();
           localStorage.clear();
@@ -195,7 +196,7 @@ export default {
           }else{
             data.password = md5(_this.ruleForm.password);
           }
-          this.$http.post(reqUrl,data).then(res => {
+          this.$myApi.http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
               this.isShowPasswrdBox = false;
               this.$message.success('修改成功！');
@@ -215,14 +216,20 @@ export default {
         reqUrl = "/server/api/v1/hrSys/logout";
         returnUrl = "/hr";
       }
-      this.$http.post(reqUrl).then(res => {
+      this.$myApi.http.post(reqUrl).then(res => {
         if (res.data.code == 0){
           this.$toolFn.localRemove('userInfo');
           this.$router.replace({
               path: returnUrl // 到登录页重新获取token
             })
         }
-      });
+      }).catch(error => {
+        sessionStorage.clear();
+        localStorage.clear();
+        this.$router.replace({
+              path: '/' // 到登录页重新获取token
+            })
+      })
     },
     // 初始化
     initializeFun() {

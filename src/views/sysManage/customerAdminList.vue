@@ -185,7 +185,7 @@ export default {
         myData.companyCode = params.companyCode
       }
       _this.isShowLoading = true;
-      _this.$http.post(reqUrl, myData).then(res => {
+      _this.$myApi.http.post(reqUrl, myData).then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data.map(item => {
               item.isStatus = item.status == 1 ? "启用" : "禁用";
@@ -234,7 +234,7 @@ export default {
       } else {
         var reqUrl = "/server/api/v1/admin/getByOptions";
         var data = { name: _this.searchInner };
-        _this.$http.post(reqUrl, data).then(res => {
+        _this.$myApi.http.post(reqUrl, data).then(res => {
           _this.tableData = res.data.data.map(item => {
             item.createTime = _this.$toolFn.timeFormat(item.createTime);
             item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
@@ -294,7 +294,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http.post(reqUrl, data).then(res => {
+          _this.$myApi.http.post(reqUrl, data).then(res => {
             if (res.data.code == 0) {
             _this.reload();
             }
@@ -317,7 +317,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/admin/delete", { id: res.id })
             .then(res => {
               _this.reload();

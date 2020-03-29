@@ -222,7 +222,7 @@ export default {
         month: month
       };
       this.isShowLoading = true;
-      this.$http
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           console.log(res);

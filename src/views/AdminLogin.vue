@@ -91,7 +91,7 @@ export default {
         account: this.formLabelAlign.user,
         password: md5(this.formLabelAlign.pass)
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           //var sidebar = this.temporaryData;
           sessionStorage.clear();

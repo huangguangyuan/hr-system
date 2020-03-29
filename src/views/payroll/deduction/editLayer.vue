@@ -101,7 +101,7 @@ export default {
         typeId: parseInt(this.ruleForm.typeId),
         remarks: this.ruleForm.remarks
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("新增成功~");
@@ -120,7 +120,7 @@ export default {
         status: parseInt(this.ruleForm.status),
         remarks: this.ruleForm.remarks
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("修改成功~");

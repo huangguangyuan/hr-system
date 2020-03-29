@@ -139,7 +139,7 @@ export default {
       var reqUrl = "/server/api/v1/staff/getAll";
       var myData = { BUCode: BUCode };
       _this.isShowLoading = true;
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           _this.isShowLoading = false;

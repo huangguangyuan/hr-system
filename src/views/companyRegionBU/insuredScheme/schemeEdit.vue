@@ -84,7 +84,7 @@ export default {
     // 获取城市模板
     getCityCode() {
       var reqUrl = "/server/api/v1/city/getAll";
-      this.$http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
         this.cityList = res.data.data;
         }
@@ -119,7 +119,7 @@ export default {
         name: this.ruleForm.name,
         copyTemp: parseInt(this.ruleForm.copyTemp)
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("新增成功~");
@@ -135,7 +135,7 @@ export default {
         id: this.ruleForm.id,
         name: this.ruleForm.name
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("修改成功~");

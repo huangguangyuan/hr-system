@@ -151,7 +151,7 @@ export default {
                 id:res.id,
                 status:status
             }
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/company/companyUpdate", data)
             .then(res => {
               _this.reload();
@@ -173,7 +173,7 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/company/companyDelete", { id: res.id })
             .then(res => {
               if(res.data.code == 0){

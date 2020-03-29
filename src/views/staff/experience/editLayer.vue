@@ -149,7 +149,7 @@ export default {
         const element = _this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
           _this.$message.success("新增成功~");
@@ -177,7 +177,7 @@ export default {
         const element = _this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
           _this.$message.success("修改成功~");

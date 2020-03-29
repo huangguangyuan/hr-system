@@ -74,7 +74,7 @@ export default {
         reqUrl = "/server/api/v1/payroll/staff/staffPayrollConfirmMult";
         data.codeArr = this.ruleForm.codeArr;
       }
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           if (res.data.msg != ""){

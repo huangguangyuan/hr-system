@@ -70,7 +70,7 @@ export default {
         cityCode: 'c4900a00-a7a4-11e9-bb56-837dd7ac904b'
       };
       this.isShowLoading = true;
-      this.$http
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
             console.log(res);
@@ -134,7 +134,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          this.$http
+          this.$myApi.http
             .post("/server/api/v1/cityMPF/delete", { id: res.id })
             .then(res => {
               this.reload();

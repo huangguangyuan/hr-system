@@ -70,7 +70,7 @@ export default {
         schemeCode: this.curInfo.code
       };
       this.isShowLoading = true;
-      this.$http
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           console.log(res);
@@ -130,7 +130,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$http
+          this.$myApi.http
             .post("/server/api/v1/bu/insuredScheme/mpf/delete", { id: res.id })
             .then(res => {
               this.getAllData();

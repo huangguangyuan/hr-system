@@ -216,7 +216,7 @@ export default {
         contactLocation:this.ruleForm.contactLocation,
         contactRemarks:this.ruleForm.contactRemarks
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("新增成功~");
@@ -242,7 +242,7 @@ export default {
         contactLocation: _this.ruleForm.contactLocation,
         contactRemarks: _this.ruleForm.contactRemarks
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
           _this.$message("修改成功~");

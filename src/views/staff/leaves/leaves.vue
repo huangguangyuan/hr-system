@@ -67,7 +67,7 @@ export default {
       var reqUrl = "/server/api/v1/staff/holidaysApply/staffLeaves";
       var myData = { staffCode: staffCode,typeId:2 };
       _this.isShowLoading = true;
-      _this.$http.post(reqUrl, myData).then(res => {
+      _this.$myApi.http.post(reqUrl, myData).then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data.map(item => {
           item.applyDate = _this.$toolFn.timeFormat(item.applyDate).slice(0, 10);
@@ -124,7 +124,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          this.$http.post("/server/api/v1/staff/holidaysApply/staffLeaves/deleteByStaffCode", { staffCode:this.staffInfo.code,typeId:2 }).then(res => {
+          this.$myApi.http.post("/server/api/v1/staff/holidaysApply/staffLeaves/deleteByStaffCode", { staffCode:this.staffInfo.code,typeId:2 }).then(res => {
               if (res.data.code == 0){
                 this.reload();
                 this.$message.success("删除成功！");

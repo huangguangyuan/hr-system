@@ -91,7 +91,7 @@ export default {
     getSalaryItemCode(){
       var reqUrl = '/server/api/v1/bu/salaryItems';
       var data = {BUCode: this.curInfo.BUCode}
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.salaryCodeList = res.data.data.filter(item => {
                  if (item.taxable == this.ruleForm.taxable){
@@ -131,7 +131,7 @@ export default {
         status: parseInt(this.ruleForm.status),
         remarks: this.ruleForm.remarks
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("新增成功~");
@@ -150,7 +150,7 @@ export default {
         status: parseInt(this.ruleForm.status),
         remarks: this.ruleForm.remarks
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("修改成功~");

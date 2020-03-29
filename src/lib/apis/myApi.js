@@ -58,6 +58,7 @@
     }
     //定义接口
     let api = {
+        http:request,
         post:(url,params)=>apiMain(url,params),
         requestPost:(url,params)=>requestPost(url,params),
         requestGet:(url,params)=>requestGet(url,params),

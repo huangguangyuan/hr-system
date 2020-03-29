@@ -36,7 +36,7 @@ export default {
       _this.isShowLoading = true;
       var reqUrl = "/server/api/v1/payroll/taxRate";
       var myData = {};
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           if (res.data.code == 0) {

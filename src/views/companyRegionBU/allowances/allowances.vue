@@ -74,7 +74,7 @@ export default {
       var reqUrl = "/server/api/v1/bu/allowances";
       var myData = { BUCode: BUCode };
       this.isShowLoading = true;
-      this.$http.post(reqUrl, myData).then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           if (res.data.code == 0) {
             this.tableData = res.data.data.map(item => {
@@ -91,7 +91,7 @@ export default {
     // 获取薪资应对项目模板
     getAllowanceTemplate() {
       var reqUrl = "/server/api/v1/allowance/getAll";
-      this.$http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           this.allowanceTemplateList = res.data.data;
         } else {
@@ -116,7 +116,7 @@ export default {
       }
       var reqUrl = '/server/api/v1/bu/selectedAllowances';
       var data = {BUCode:this.BUInfo.code,allowanceIds:this.allowanceIds}
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
           if(res.data.code == 0){
               this.reload();
               this.$message.success('添加成功！');
@@ -147,7 +147,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/bu/allowanceDelete", { code: res.code })
             .then(res => {
               _this.reload();

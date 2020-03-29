@@ -149,7 +149,7 @@ export default {
     // 获取项目列表
     getProjectList() {
       var reqUrl = "/server/api/v1/project/getAll";
-      this.$http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.data) {
           this.projectList = res.data.data;
           this.projectCode = res.data.data[0].code;
@@ -172,7 +172,7 @@ export default {
       var reqUrl = "/server/api/v1/projectRole/projectRolesWithAll";
       var myData = { typeId: parseInt(_this.roleTypeValue) };
       _this.isShowLoading = true;
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           _this.isShowLoading = false;
@@ -267,7 +267,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http.post(reqUrl, data).then(res => {
+          _this.$myApi.http.post(reqUrl, data).then(res => {
             if (res.data.code == 0) {
               _this.reload();
             }
@@ -290,7 +290,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/projectRole/delete", { id: res.id })
             .then(res => {
               _this.$message({ message: "删除成功！" });

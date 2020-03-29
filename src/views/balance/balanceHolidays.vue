@@ -87,7 +87,7 @@ export default {
       var reqUrl = "/server/api/v1/staff/holidaysApply/holidaysApplyListBalance";
       var myData = { hrCode: hrCode,BUCode:BUCode };
       this.isShowLoading = true;
-      this.$http.post(reqUrl, myData).then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
             item.createTime = this.$toolFn.timeFormat(item.createTime);

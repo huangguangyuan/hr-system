@@ -55,7 +55,7 @@ export default {
     getData(BUCode) {
       var reqUrl = "/server/api/v1/bu/cityByBUCode";
       var myData = { BUCode: BUCode };
-      this.$http
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           if(res.data.code == 0){
@@ -73,7 +73,7 @@ export default {
     // 获取城市模板
     getCityCode() {
       var reqUrl = "/server/api/v1/city/getAll";
-      this.$http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           this.cityList = res.data.data;
         }
@@ -87,7 +87,7 @@ export default {
       } else {
         var reqUrl = "/server/api/v1/bu/selectedCity";
         var data = { cityCode: this.cityCode, BUCode: this.BUInfo.code };
-        this.$http.post(reqUrl, data).then(res => {
+        this.$myApi.http.post(reqUrl, data).then(res => {
           if (res.data.code == 0) {
             this.$message.success("添加成功！");
             this.reload();
@@ -108,7 +108,7 @@ export default {
         .then(() => {
           var reqUrl = "/server/api/v1/bu/cityDelete";
           var data = { code: this.tableData.code };
-          this.$http.post(reqUrl, data).then(res => {
+          this.$myApi.http.post(reqUrl, data).then(res => {
             if (res.data.code == 0) {
               this.reload();
               this.$message.success("删除成功~");

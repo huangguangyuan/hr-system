@@ -130,7 +130,7 @@ export default {
         year: parseInt(year)
       };
       this.isShowLoading = true;
-      this.$http.post(reqUrl, myData).then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data;
           this.total = this.tableData.length;
@@ -170,7 +170,7 @@ export default {
         var myData = {
           BUCode: BUCode
         };
-        this.$http.post(reqUrl, myData).then(res => {
+        this.$myApi.http.post(reqUrl, myData).then(res => {
           if (res.data.code == 0){
             this.restaurants = res.data.data;
             let staffCode = "",year = 0;

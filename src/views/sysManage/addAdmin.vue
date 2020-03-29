@@ -115,7 +115,7 @@ export default {
         status: parseInt(_this.ruleForm.status),
         name: _this.ruleForm.name
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.$message("新增成功");
           _this.reload();
@@ -140,7 +140,7 @@ export default {
         status: parseInt(_this.ruleForm.status),
         name: _this.ruleForm.name
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.$message("新增成功");
           _this.reload();

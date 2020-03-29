@@ -74,7 +74,7 @@ export default {
       var reqUrl = "/server/api/v1/city/getAll";
       var myData = {};
       _this.isShowLoading = true;
-      _this.$http.post(reqUrl, myData).then(res => {
+      _this.$myApi.http.post(reqUrl, myData).then(res => {
           _this.isShowLoading = false;
           _this.tableData = res.data.data
             .map(item => {
@@ -124,7 +124,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/city/delete", { id: res.id })
             .then(res => {
               _this.reload();

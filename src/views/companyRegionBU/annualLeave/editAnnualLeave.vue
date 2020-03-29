@@ -101,7 +101,7 @@ export default {
             annualLeaveRetain : this.ruleForm.annualLeaveRetain
           }
           var reqUrl = '/server/api/v1/bu/annualLeaveUpdate';
-          this.$http.post(reqUrl,postData).then(res => {
+          this.$myApi.http.post(reqUrl,postData).then(res => {
             if(res.data.code == 0){
               this.$message.success('修改成功！');
               this.reload();

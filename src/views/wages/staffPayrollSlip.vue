@@ -258,7 +258,7 @@ export default {
         year: year,
         month: month
       };
-      this.$http.post(reqUrl, myData).then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           this.tableData = res.data.data[0];
         })
         .catch(err => {

@@ -78,7 +78,6 @@ export default {
       claimItem:{},
       claimTypes:[],
       tableData: [], //数据列表
-      getClaimList: [], //审批类型
       approveHisList: [], //审批流程
       fileList:[],
       ruleForm: {
@@ -188,7 +187,7 @@ export default {
         remarks:this.ruleForm.remarks
       }
       
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.reload();
           this.$message.success('审批成功~');

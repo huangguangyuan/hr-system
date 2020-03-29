@@ -166,7 +166,7 @@ export default {
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollInfoList";
       var myData = { BUCode: BUCode };
       this.isShowLoading = true;
-      this.$http.post(reqUrl, myData).then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
               // 性别

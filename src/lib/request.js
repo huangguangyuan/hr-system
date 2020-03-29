@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Message } from 'element-ui';
-import utils from '@/lib/utils'
+import utils from '@/lib/utils';
+import router from '@/router'
 
 // 默认请求域名
 axios.defaults.baseURL = '';
@@ -30,8 +31,8 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
     response => {
         if (response.data.code === 109) {
-            let userInfo = utilsn.localGet('userInfo');
-            utilsn.localRemove('userInfo');
+            let userInfo = utils.localGet('userInfo');
+            utils.localRemove('userInfo');
             let pathUrl = "/";
             if (userInfo && (userInfo.roleTypeId == 2 || userInfo.roleTypeId == 1)){
               pathUrl ="/hr";
@@ -44,10 +45,10 @@ axios.interceptors.response.use(
       }, 
       error => {
         console.log(error);
-        Message.error({
-            message: `系统异常（${error.response.status}），请重试`,
-            duration: 3000
-        })
+        // Message.error({
+        //     message: `系统异常（${error.response.status}），请重试`,
+        //     duration: 3000
+        // })
         return Promise.reject(error);
       }
 )

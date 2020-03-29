@@ -123,7 +123,7 @@ export default {
     // 获取假期流程相关人员
     holidayProcessRelate(staffCode) {
       var reqUrl = "/server/api/v1/staff/holidaysApply/holidayProcessRelate";
-      this.$http.post(reqUrl, {staffCode:staffCode}).then(res => {
+      this.$myApi.http.post(reqUrl, {staffCode:staffCode}).then(res => {
         if (res.data.code == 0) {
           this.approveOfficerList = res.data.data.approveOfficerList;
           //this.approveOfficer = this.approveOfficerList.map(m => m.code);
@@ -170,7 +170,7 @@ export default {
     // 获取请假类型
     getHolidaysApplyTypeFun() {
       var reqUrl = "/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId";
-      this.$http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           this.holidaysApplyTypeList = res.data.data;
         }
@@ -218,7 +218,7 @@ export default {
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
       
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("新增成功~");

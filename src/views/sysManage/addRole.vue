@@ -35,7 +35,7 @@ export default {
       }else{
         var data = { typeId: 2 };
       }
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, data)
         .then(res => {
           console.log(res);
@@ -55,7 +55,7 @@ export default {
         reqUrl = '/server/api/v1/admin/hrSys/getByCode';
       }
       var data = { code: _this.modifyInfo.code };
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.data.roles != 0) {
           var arr = res.data.data.roles.map(item => {
             return item.code;
@@ -79,7 +79,7 @@ export default {
           roleCode: roleCodeArr[i]
         });
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if(res.data.code == 0){
           _this.$message('操作成功~');
           _this.reload();

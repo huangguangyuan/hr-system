@@ -120,7 +120,7 @@ export default {
       var reqUrl = "/server/api/v1/insuredScheme/getAll";
       var myData = { BUCode: BUCode };
       this.isShowLoading = true;
-      this.$http
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           this.isShowLoading = false;
@@ -183,7 +183,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http.post("/server/api/v1/insuredScheme/staffByInsuredScheme", { code: item.code }).then(res => {
+          _this.$myApi.http.post("/server/api/v1/insuredScheme/staffByInsuredScheme", { code: item.code }).then(res => {
               if (res.data.code == 0){
                   let staffs = res.data.data;
                   if (staffs.length > 0){
@@ -192,7 +192,7 @@ export default {
                       cancelButtonText: "取消",
                       type: "warning"
                     }).then(() => {
-                      _this.$http.post("/server/api/v1/insuredScheme/delete", { id: item.id }).then(res => {
+                      _this.$myApi.http.post("/server/api/v1/insuredScheme/delete", { id: item.id }).then(res => {
                         if (res.data.code == 0){
                           _this.reload();
                           _this.$message.success("删除成功！");
@@ -202,7 +202,7 @@ export default {
                       });
                     })
                   }else{
-                    _this.$http.post("/server/api/v1/insuredScheme/delete", { id: item.id }).then(res => {
+                    _this.$myApi.http.post("/server/api/v1/insuredScheme/delete", { id: item.id }).then(res => {
                         if (res.data.code == 0){
                           _this.reload();
                           _this.$message.success("删除成功！");

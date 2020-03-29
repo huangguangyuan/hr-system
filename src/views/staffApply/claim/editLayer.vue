@@ -112,7 +112,7 @@ export default {
     // 获取报销流程相关人员
     claimProcessRelate(staffCode) {
       var reqUrl = "/server/api/v1/staff/claim/claimProcessRelate";
-      this.$http.post(reqUrl, {staffCode:staffCode}).then(res => {
+      this.$myApi.http.post(reqUrl, {staffCode:staffCode}).then(res => {
         if (res.data.code == 0) {
           this.approveOfficerList = res.data.data.approveOfficerList;
           for (let index = 0; index < this.approveOfficerList.length; index++) {
@@ -147,7 +147,7 @@ export default {
     // 获取报销类型
     getClaimTypeId() {
       var reqUrl = "/server/api/v1/staff/claim/getBUClaimType";
-      this.$http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           this.claimTypeList = res.data.data;
         }
@@ -209,7 +209,7 @@ export default {
         const element = _this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("新增成功~");

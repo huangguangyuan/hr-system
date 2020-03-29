@@ -129,7 +129,7 @@ export default {
       if (params && params.companyCode != ""){
         myData.companyCode = params.companyCode
       }
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           _this.isShowLoading = false;
@@ -193,7 +193,7 @@ export default {
                 id:res.id,
                 status:status
             }
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/company/regionUpdate", data)
             .then(res => {
               _this.reload();
@@ -217,7 +217,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/company/regionDelete", { id: res.id })
             .then(res => {
                 if(res.data.code == 0){

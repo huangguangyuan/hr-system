@@ -152,7 +152,7 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollInfo";
       var data = { staffCode: this.staffInfo.code };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.msg = res.data.data;
           this.msg.expensesClaimList.map(item => {

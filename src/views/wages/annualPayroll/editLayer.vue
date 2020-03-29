@@ -77,7 +77,7 @@ export default {
         taxAmount:parseFloat(this.ruleForm.taxAmount),
         nousedTaxThreshold:parseFloat(this.ruleForm.nousedTaxThreshold),
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("更新成功~");

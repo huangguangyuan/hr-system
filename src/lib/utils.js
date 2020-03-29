@@ -88,8 +88,9 @@ let toolFn = {
     async sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms))
     },
+    curUserFn:()=>{ return toolFn.localGet("userInfo")},
 }
-
+toolFn.curUser = toolFn.curUserFn();
 export default toolFn
 
 

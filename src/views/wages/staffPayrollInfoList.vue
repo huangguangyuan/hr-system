@@ -103,7 +103,7 @@ export default {
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollInfoList";
       var myData = { BUCode: BUCode };
       this.isShowLoading = true;
-      this.$http
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           this.isShowLoading = false;

@@ -76,7 +76,7 @@ export default {
       var reqUrl = "/server/api/v1/bu/salaryItems";
       var myData = { BUCode: BUCode };
       this.isShowLoading = true;
-      this.$http
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           this.isShowLoading = false;
@@ -96,7 +96,7 @@ export default {
     // 获取薪资应对项目模板
     getSalaryItemTemplate() {
       var reqUrl = "/server/api/v1/salaryItem/getAll";
-      this.$http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           this.salaryItemTemplateList = res.data.data;
         } else {
@@ -121,7 +121,7 @@ export default {
       }
       var reqUrl = '/server/api/v1/bu/selectedSalaryItems';
       var data = {BUCode:this.BUInfo.code,salaryItemIds:this.salaryItemIds}
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
           if(res.data.code == 0){
               this.reload();
               this.$message.success('添加成功！');
@@ -152,7 +152,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/bu/salaryItemDelete", { code: res.code })
             .then(res => {
               _this.reload();

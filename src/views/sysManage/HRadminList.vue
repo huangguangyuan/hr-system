@@ -142,7 +142,9 @@ export default {
       if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301 ){
         this.userRight = false;
       }
-      this.getBUCodeFun();
+      this.BUCode = this.userInfo.BUCode;
+      this.getData(this.BUCode);
+      //this.getBUCodeFun();
     },
     //获取项目数据列表
     getData(code) {
@@ -150,7 +152,7 @@ export default {
       var reqUrl = "/server/api/v1/admin/hrSys/getAll";
       var myData = { BUCode: code };
       _this.isShowLoading =true;
-      _this.$http.post(reqUrl, myData)
+      _this.$myApi.http.post(reqUrl, myData)
         .then(res => {
           _this.isShowLoading =false;
           _this.tableData = res.data.data
@@ -176,16 +178,20 @@ export default {
           console.log(err);
         });
     },
-    // 获取单位列表
-    async getBUCodeFun(){
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs({isCache:true});
-        if (regionBUs && regionBUs.length > 0) {
-          this.regionBUList = regionBUs;
-          this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):this.regionBUList[0].code;
-          this.getData(this.BUCode);
-        }
-    },
+    // // 获取单位列表
+    // async getBUCodeFun(){
+    //   var _this = this;
+    //   var regionBUs = await _this.$myApi.regionBUs();
+    //   if (regionBUs && regionBUs.length > 0) {
+    //     this.regionBUList = regionBUs;
+    //     this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):this.regionBUList[0].code;
+    //     //如果选中bu不存在，则获取第一个bu
+    //     if (this.regionBUList.filter(f => {return (this.BUCode == f)}).length == 0){
+    //       this.BUCode = this.regionBUList[0].code;
+    //     }
+    //     this.getData(this.BUCode);
+    //   }
+    // },
     // 选择单位
     changeBUCode(code){
       this.BUCode = code;
@@ -245,7 +251,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http.post(reqUrl, data).then(res => {
+          _this.$myApi.http.post(reqUrl, data).then(res => {
             if (res.data.code == 0) {
             _this.reload();
             }
@@ -268,7 +274,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/admin/hrSys/delete", { id: res.id })
             .then(res => {
               console.log(res);

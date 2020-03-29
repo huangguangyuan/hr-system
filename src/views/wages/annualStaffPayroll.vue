@@ -122,7 +122,7 @@ export default {
         year: year
       };
       this.isShowLoading = true;
-      this.$http
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           console.log(res);

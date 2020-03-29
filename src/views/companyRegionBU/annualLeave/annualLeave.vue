@@ -50,7 +50,7 @@ export default {
     // 获取出粮周期
     annualLeaveByBUCode(BUCode) {
       var reqUrl = "/server/api/v1/bu/annualLeave";
-      this.$http.post(reqUrl, {BUCode:this.BUInfo.code}).then(res => {
+      this.$myApi.http.post(reqUrl, {BUCode:this.BUInfo.code}).then(res => {
         if (res.data.code == 0) {
           this.tableData = res.data.data;
           this.tableData.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.tableData.annualLeaveWriteOffDate).slice(0, 10);

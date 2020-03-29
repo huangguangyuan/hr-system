@@ -181,7 +181,7 @@ export default {
       var reqUrl = "/server/api/v1/admin/hrSys/getHrAdminRoleInfo";
       var data = {
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.hrAdminRoles = res.data.data;
         } else {
@@ -211,7 +211,7 @@ export default {
         serveId: parseInt(_this.ruleForm.serveId),
         name: _this.ruleForm.name
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.$message("新增成功");
           _this.reload();

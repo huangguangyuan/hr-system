@@ -89,7 +89,7 @@ export default {
       var reqUrl = "/server/api/v1/staff/claim/claimListBalance";
       var myData = { hrCode: hrCode,BUCode:BUCode };
       this.isShowLoading = true;
-      this.$http
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           this.isShowLoading = false;

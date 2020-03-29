@@ -85,7 +85,7 @@ export default {
       var reqUrl = "/server/api/v1/staff/salaryItem/getAll";
       var myData = { staffCode: this.payrollInfo.code };
       this.isShowLoading = true;
-      this.$http
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           this.isShowLoading = false;
@@ -146,7 +146,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$http
+          this.$myApi.http
             .post("/server/api/v1/staff/salaryItem/delete", { id: res.id })
             .then(res => {
               this.reload();
@@ -168,7 +168,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$http
+          this.$myApi.http
             .post("/server/api/v1/staff/salaryItem/deleteByStaffCode", { staffCode: this.payrollInfo.code })
             .then(res => {
               this.reload();
@@ -190,7 +190,7 @@ export default {
         staffCode:res.staffCode,
         status:res.status
       }
-      this.$http.post(reqUrl,data).then(res => {})
+      this.$myApi.http.post(reqUrl,data).then(res => {})
     },
     // 监听子组件返回信息
     listenIsShowMask(res) {

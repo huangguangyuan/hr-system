@@ -92,7 +92,7 @@ export default {
     getData() {
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollConfig";
       var data = { staffCode: this.staffInfo.code };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.configureMsg = {
             id:res.data.data.id,

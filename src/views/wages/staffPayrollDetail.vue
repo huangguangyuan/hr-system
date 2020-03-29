@@ -177,7 +177,7 @@ export default {
     getDetails() {
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollDetail";
       var data = { code: this.curInfo.code };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.details = res.data.data;
           if (!this.details){

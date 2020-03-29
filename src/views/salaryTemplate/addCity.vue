@@ -68,7 +68,7 @@ export default {
             name:_this.ruleForm.name,
             remarks:_this.ruleForm.remarks
         }
-        _this.$http.post(reqUrl,data).then(res => {
+        _this.$myApi.http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
                 _this.reload();
                 _this.$message.success('添加成功~');
@@ -84,7 +84,7 @@ export default {
             name:_this.ruleForm.name,
             remarks:_this.ruleForm.remarks
         }
-        _this.$http.post(reqUrl,data).then(res => {
+        _this.$myApi.http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
                 _this.reload();
                 _this.$message.success('修改成功~');

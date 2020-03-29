@@ -310,7 +310,7 @@ export default {
         month: month
       };
       this.isShowLoading = true;
-      this.$http.post(reqUrl, myData).then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data
             .map(item => {
@@ -398,7 +398,7 @@ export default {
           code: res.code,
           hrCode: this.hrCode
         };
-        this.$http
+        this.$myApi.http
           .post("/server/api/v1/payroll/staff/staffPayrollListDelete", data)
           .then(res => {
             if (res.data.code == 0) {
@@ -427,7 +427,7 @@ export default {
             hrCode: this.hrCode
           };
           promiseList.push(Promise.resolve(
-              this.$http.post("/server/api/v1/payroll/staff/staffPayrollListDelete", data).then(res => {
+              this.$myApi.http.post("/server/api/v1/payroll/staff/staffPayrollListDelete", data).then(res => {
                 if (res.data.code == 0) {
                   this.$message.success(element.nameChinese + "工资单删除成功！");
                 } else {
@@ -489,7 +489,7 @@ export default {
             month:res.month
         };
         this.$message('正在生成，请稍候!');
-        this.$http.post("/server/api/v1/payroll/staff/rebuildStaffPayroll", data).then(res => {
+        this.$myApi.http.post("/server/api/v1/payroll/staff/rebuildStaffPayroll", data).then(res => {
             if (res.data.code == 0) {
               this.reload();
               this.$message.success("操作成功~");

@@ -84,7 +84,7 @@ export default {
     getAllowanceList() {
       var reqUrl = "/server/api/v1/bu/allowances";
       var data = { BUCode: this.curInfo.BUCode };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.allowanceList = res.data.data;
         }
@@ -118,7 +118,7 @@ export default {
         includeInpayroll: parseInt(this.ruleForm.includeInpayroll),
         remarks: this.ruleForm.remarks
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("新增成功~");
@@ -138,7 +138,7 @@ export default {
         includeInpayroll: parseInt(this.ruleForm.includeInpayroll),
         remarks: this.ruleForm.remarks
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("修改成功~");

@@ -87,7 +87,7 @@ export default {
     // 获取单位出粮期
     payrollPeriod(BUCode) {
       var reqUrl = "/server/api/v1/payroll/payrollPeriodByBUCode";
-      this.$http.post(reqUrl, {BUCode: BUCode}).then(res => {
+      this.$myApi.http.post(reqUrl, {BUCode: BUCode}).then(res => {
         if (res.data.code == 0) {
           this.ruleForm.payDay = new Date( this.ruleForm.year.toString() + "-" + this.ruleForm.month.toString() + "-" + res.data.data.payDay.toString());
         }
@@ -104,7 +104,7 @@ export default {
         month: parseInt(this.ruleForm.month),
         payDay:this.$toolFn.timeFormat(this.ruleForm.payDay,"yyyy-MM-dd")
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("更新成功~");

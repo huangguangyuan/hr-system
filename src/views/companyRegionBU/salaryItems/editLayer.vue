@@ -85,7 +85,7 @@ export default {
         taxable: this.ruleForm.taxable,
         description: this.ruleForm.description
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("新增成功~");
@@ -103,7 +103,7 @@ export default {
         description: this.ruleForm.description
       };
       console.log(data);
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("修改成功~");

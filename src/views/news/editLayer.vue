@@ -133,7 +133,7 @@ export default {
     //   var _this = this;
     //   var reqUrl = "/server/api/v1/company/companysWithChild";
     //   return new Promise((resolve, reject) => {
-    //     _this.$http.post(reqUrl, {}).then(res => {
+    //     _this.$myApi.http.post(reqUrl, {}).then(res => {
     //       if (res.data.code == 0) {
     //         _this.companyList = res.data.data;
     //         resolve(_this.companyList);
@@ -143,7 +143,7 @@ export default {
     // },
     async getCompanys() {
       var reqUrl = "/server/api/v1/company/companysWithChild";
-      return this.$http.post(reqUrl, {});
+      return this.$myApi.http.post(reqUrl, {});
     },
     // 选择公司
     selectCompany(val) {
@@ -188,7 +188,7 @@ export default {
         regionCode: this.ruleForm.regionCode || "",
         BUCode: this.ruleForm.BUCode || ""
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("新增成功~");
@@ -209,7 +209,7 @@ export default {
         regionCode: this.ruleForm.codeList[1] || "",
         BUCode: this.ruleForm.codeList[2] || ""
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success("修改成功~");

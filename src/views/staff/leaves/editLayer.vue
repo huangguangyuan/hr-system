@@ -112,7 +112,7 @@ export default {
         applyDay: _this.ruleForm.applyDay,
         remarks: _this.ruleForm.remarks
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
           _this.$message.success("新增成功~");

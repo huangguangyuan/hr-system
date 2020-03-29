@@ -75,7 +75,7 @@ export default {
         cityCode: _this.cityCode
       };
       _this.isShowLoading = true;
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           console.log(res);
@@ -139,7 +139,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/salaryItem/delete", { id: res.id })
             .then(res => {
               _this.reload();

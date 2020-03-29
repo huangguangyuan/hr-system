@@ -68,7 +68,7 @@ export default {
       var reqUrl = "/server/api/v1/staff/socialMedia/getAll";
       var myData = { staffCode: staffCode };
       _this.isShowLoading = true;
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           _this.isShowLoading = false;
@@ -111,7 +111,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          _this.$http
+          _this.$myApi.http
             .post("/server/api/v1/staff/socialMedia/delete", { id: res.id })
             .then(res => {
               _this.reload();
@@ -133,7 +133,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          this.$http
+          this.$myApi.http
             .post("/server/api/v1/staff/socialMedia/deleteByStaffCode", { staffCode:this.staffInfo.code })
             .then(res => {
               this.reload();

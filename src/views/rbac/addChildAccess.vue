@@ -107,7 +107,7 @@ export default {
         isMenu:parseInt(_this.ruleForm.isMenu),
         orderNo:parseInt(_this.ruleForm.orderNo),
       };
-      _this.$http.post(reqUrl,data).then(res => {
+      _this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           _this.reload();
         }

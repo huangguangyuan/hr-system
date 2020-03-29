@@ -668,7 +668,7 @@ export default {
       data.annualLeaveWriteOffDate =  this.$toolFn.timeFormat(this.curInfo.annualLeaveWriteOffDate,"yyyy-MM-dd");
       data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
       data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveRetainClearDate);
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
           _this.$message.success("新增成功~");
@@ -757,7 +757,7 @@ export default {
       data.annualLeaveWriteOffDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveWriteOffDate);
       data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
       data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveRetainClearDate);
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
           _this.$message.success("修改成功~");
@@ -778,7 +778,7 @@ export default {
       //this.ruleForm.departmentCode = "";
       var reqUrl = "/server/api/v1/buDepartment/getAll";
       var data = { BUCode: val };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.data) {
           this.departmentList = res.data.data;
         }
@@ -787,7 +787,7 @@ export default {
     // 获取年假配置
     async getAnnualLeave(val) {
       var reqUrl = "/server/api/v1/bu/annualLeave";
-      this.$http.post(reqUrl, {BUCode:val}).then(res => {
+      this.$myApi.http.post(reqUrl, {BUCode:val}).then(res => {
         if (res.data.code == 0) {
           this.annualLeaveConfig = res.data.data;
           this.annualLeaveConfig.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate).slice(0, 10);
@@ -811,7 +811,7 @@ export default {
     getHRadminList(val){
       var reqUrl = '/server/api/v1/admin/hrSys/getAll';
       var data = {BUCode:val}
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.data){
           this.HRadminList = res.data.data;
           console.log(this.HRadminList);

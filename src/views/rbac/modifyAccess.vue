@@ -97,7 +97,7 @@ export default {
         addField1: _this.ruleForm.addField1,
         orderNo:_this.ruleForm.orderNo
       };
-      _this.$http.post(reqUrl,data).then(res => {
+      _this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           _this.reload();
         }

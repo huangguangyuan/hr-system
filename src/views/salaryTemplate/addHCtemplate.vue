@@ -98,7 +98,7 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/city/getAll";
       var data = {};
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.cityList = res.data.data;
         }
@@ -115,7 +115,7 @@ export default {
             paymentRatio:Number(_this.ruleForm.paymentRatio),
             paymentId:Number(_this.ruleForm.paymentId)
         };
-        _this.$http.post(reqUrl,data).then(res => {
+        _this.$myApi.http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
                 _this.reload();
                 _this.$message('添加成功~');
@@ -136,7 +136,7 @@ export default {
             paymentRatio:Number(_this.ruleForm.paymentRatio),
             paymentId:Number(_this.ruleForm.paymentId)
         };
-        _this.$http.post(reqUrl,data).then(res => {
+        _this.$myApi.http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
                 _this.reload();
                 _this.$message('修改成功~');

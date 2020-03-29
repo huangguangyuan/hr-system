@@ -50,7 +50,7 @@ export default {
     // 获取出粮周期
     payrollPeriodByBUCode(BUCode) {
       var reqUrl = "/server/api/v1/payroll/payrollPeriodByBUCode";
-      this.$http.post(reqUrl, {BUCode:this.BUInfo.code}).then(res => {
+      this.$myApi.http.post(reqUrl, {BUCode:this.BUInfo.code}).then(res => {
         if (res.data.code == 0) {
           this.tableData = res.data.data;
           this.isContent = true;

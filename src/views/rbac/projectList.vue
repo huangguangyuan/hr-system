@@ -70,7 +70,7 @@ export default {
       var reqUrl = "/server/api/v1/project/getAll";
       var myData = {};
       _this.isShowLoading = true;
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           _this.isShowLoading = false;
@@ -113,7 +113,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
       }).then(() => {
-        _this.$http.post('/server/api/v1/project/delete', {id:res.id}).then(res => {
+        _this.$myApi.http.post('/server/api/v1/project/delete', {id:res.id}).then(res => {
           if (res.data.code == 0) {
             _this.$message({message: "删除成功！"});
             _this.reload();

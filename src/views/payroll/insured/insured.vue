@@ -131,7 +131,7 @@ export default {
     getData() {
       var reqUrl = "/server/api/v1/payroll/staff/insured/item";
       var myData = { staffCode: this.payrollInfo.code };
-      this.$http.post(reqUrl, myData).then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           if (res.data.code == 0) {
             this.isContent = true;
             this.tableData = res.data.data;
@@ -229,7 +229,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$http
+          this.$myApi.http
             .post("/server/api/v1/payroll/staff/insured/update", {
               staffCode: this.payrollInfo.code,
               status: status
@@ -254,7 +254,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$http
+          this.$myApi.http
             .post("/server/api/v1/payroll/staff/insured/delete", {
               staffCode: this.payrollInfo.code
             })

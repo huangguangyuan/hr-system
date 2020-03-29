@@ -72,7 +72,7 @@ export default {
         description:_this.ruleForm.description,
         status:parseInt(_this.ruleForm.status),
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
           _this.$message("新增成功~");

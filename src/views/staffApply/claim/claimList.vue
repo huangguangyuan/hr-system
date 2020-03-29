@@ -98,7 +98,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          this.$http.post("/server/api/v1/staff/claim/recallApply", { claimCode: res.code,staffCode:res.staffCode }).then(res => {
+          this.$myApi.http.post("/server/api/v1/staff/claim/recallApply", { claimCode: res.code,staffCode:res.staffCode }).then(res => {
               if(res.data.code == 0){
                 this.reload();
                 this.$message.success("撤销成功！");

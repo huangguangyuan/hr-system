@@ -151,7 +151,7 @@ export default {
     },
     getInfo(){
       var _this = this;
-      _this.$http.post("/server/api/v1/baseInfo/hrHome", {}).then(res => {
+      _this.$myApi.http.post("/server/api/v1/baseInfo/hrHome", {}).then(res => {
         if (res.data.code == 0) {
           _this.info = res.data.data;
           _this.info.show = true;

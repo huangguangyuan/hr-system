@@ -103,7 +103,7 @@ export default {
     getHRadminList(BUCode){
       // 部门管理员
       var _this = this;
-      this.$http.post("/server/api/v1/admin/hrSys/getByLev",{BUCode: BUCode,lev:[521]}).then(res => {
+      this.$myApi.http.post("/server/api/v1/admin/hrSys/getByLev",{BUCode: BUCode,lev:[521]}).then(res => {
         if(res.data.data){
           _this.HRadminList = res.data.data;
           var supervisorCodeArr = [];
@@ -114,7 +114,7 @@ export default {
         }
       });
       // // 假期管理员
-      // this.$http.post("/server/api/v1/admin/hrSys/getByLev",{BUCode: BUCode,lev:[511]}).then(res => {
+      // this.$myApi.http.post("/server/api/v1/admin/hrSys/getByLev",{BUCode: BUCode,lev:[511]}).then(res => {
       //   if(res.data.data){
       //     this.HRadminList2 = res.data.data;
       //   }
@@ -150,7 +150,7 @@ export default {
           BUCode:_this.ruleForm.BUCode,
           supervisorCode:_this.ruleForm.supervisorCodeArr.join(',')
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
           _this.$message.success("新增成功~");
@@ -170,7 +170,7 @@ export default {
         status:parseInt(_this.ruleForm.status),
         supervisorCode:_this.ruleForm.supervisorCodeArr.join(',')
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.reload();
           _this.$message.success("修改成功~");
@@ -183,7 +183,7 @@ export default {
     getRegionBUList() {
       var _this = this;
       var reqUrl = "/server/api/v1/company/regionBUs";
-      _this.$http.post(reqUrl, {}).then(res => {
+      _this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           _this.regionBUList = res.data.data;
         } else {

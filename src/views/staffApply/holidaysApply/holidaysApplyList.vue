@@ -100,7 +100,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          this.$http
+          this.$myApi.http
             .post("/server/api/v1/staff/holidaysApply/recallApply", { holidaysApplyCode: res.code,staffCode:res.staffCode })
             .then(res => {
               if(res.data.code == 0){

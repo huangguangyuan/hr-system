@@ -1,7 +1,8 @@
 <template>
   <div class="approvalClaim wrap" v-if="isShow">
     <h5 class="title-h5">报销列表</h5>
-    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCode" ref="busAndSearch"></bus-and-search>
+    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCodeSelected" ref="busAndSearch">
+    </bus-and-search>
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id" >
@@ -37,16 +38,13 @@ export default {
   inject: ["reload"],
   data() {
     return {
-      isShow1:false,
       isShow:false,
       pageList:[],
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
       hrCode: "",
-      userInfo:{},
-      BUCode: "", //单位code
-      regionBUList:[],//单位列表
+      BUCodeSelected: "", //单位code
       filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip','totalAmount','deptName']}
     };
   },
@@ -56,7 +54,7 @@ export default {
         reqParams:{//请求分页参数
             isReq:false,
             url:"/server/api/v1/staff/claim/hrSysClaimList",
-            data:{ hrCode: this.hrCode,BUCode:this.BUCode }
+            data:{ hrCode: this.hrCode,BUCode:this.BUCodeSelected }
           }
         }
     },
@@ -72,9 +70,8 @@ export default {
     }
   },
   mounted() {
-    this.userInfo = this.$toolFn.localGet("userInfo");
-    this.hrCode = this.userInfo.userCode;
-    this.approvalClaim = this.userInfo.access.approvalClaim || [];
+    this.hrCode = this.$toolFn.curUser.userCode;
+    this.approvalClaim = this.$toolFn.curUser.access.approvalClaim || [];
     if (this.approvalClaim.length > 0){
       this.isShow = true;
     }
@@ -103,7 +100,7 @@ export default {
     },
   },
   watch: {
-    BUCode: {
+    BUCodeSelected: {
       handler: function(newVal) {
             this.pageInfo.reqParams.isReq = true;
             this.$refs.pageInfo.getData(this.pageInfo);
@@ -119,7 +116,6 @@ export default {
 </script>
 <style scoped lang="scss">
 .title-h5{font-size: 22px;font-weight: 500;}
-
 </style>
 
 

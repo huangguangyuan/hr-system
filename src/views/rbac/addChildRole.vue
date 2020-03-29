@@ -114,7 +114,7 @@ export default {
         lev: parseInt(_this.ruleForm.lev)
       };
       
-      _this.$http.post(reqUrl,data).then(res => {
+      _this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           _this.reload();
         }
@@ -125,7 +125,7 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/project/getAll";
       var data = { typeId: 1 };
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.ruleForm.projectList = res.data.data;
         } else {

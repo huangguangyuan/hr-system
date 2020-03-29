@@ -144,7 +144,7 @@ export default {
       var reqUrl = "/server/api/v1/admin/hrSys/getHrAdminRoleInfo";
       var data = {
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
             this.hrAdminRoles = res.data.data;
         } else {
@@ -189,7 +189,7 @@ export default {
         name: _this.ruleForm.name,
         serveId : _this.ruleForm.serveId
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
           if (res.data.code == 0) {
             _this.reload();
             this.$message("修改成功");
@@ -223,7 +223,7 @@ export default {
       if (_this.ruleForm.levExtend.length > 0){
         data.levExtend = _this.ruleForm.levExtend.join(",");
       }
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, data)
         .then(res => {
           _this.reload();

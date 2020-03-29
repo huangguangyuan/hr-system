@@ -101,7 +101,7 @@ export default {
     // 获取请假类型
     getHolidaysApplyTypeFun() {
       var reqUrl = "/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId";
-      this.$http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           this.holidaysTypeList = res.data.data;
           this.holidayTypeSelected = this.holidaysTypeList[0].typeId;

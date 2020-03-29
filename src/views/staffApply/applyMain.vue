@@ -68,7 +68,7 @@ export default {
     getStaffInfo(){
         var reqUrl = '/server/api/v1/staff/getByCode';
         var data = {code:this.staffCode}
-        this.$http.post(reqUrl,data).then(res => {
+        this.$myApi.http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
                 this.staffInfo = res.data.data;
             }else{

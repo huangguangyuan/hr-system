@@ -52,7 +52,7 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/projectRole/projectRolesWithAll";
       var myData = {"typeId":2};
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           _this.tableData = res.data.data.map(item => {

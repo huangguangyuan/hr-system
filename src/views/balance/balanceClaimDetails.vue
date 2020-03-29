@@ -121,7 +121,7 @@ export default {
       var _this = this;
       var p = new Promise(function(resolve, reject) {
         var reqUrl = "/server/api/v1/staff/claim/getClaimTypeId";
-        _this.$http.post(reqUrl, {}).then(res => {
+        _this.$myApi.http.post(reqUrl, {}).then(res => {
           if (res.data.code == 0) {
             _this.getClaimList = res.data.data;
             resolve(_this.getClaimList);
@@ -150,7 +150,7 @@ export default {
         balanceMon: parseInt(this.ruleForm.balanceMon),
         remarks: this.ruleForm.remarks
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
           this.$message.success('操作成功！');

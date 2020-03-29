@@ -42,7 +42,7 @@ export default {
         typeId: _this.curInfo.typeId
       };
       
-      _this.$http
+      _this.$myApi.http
         .post(reqUrl, data)
         .then(res => {
           console.log(res);
@@ -60,7 +60,7 @@ export default {
       var _this = this;
       var reqUrl = "/server/api/v1/projectRole/getDetailByCode";
       var data = { code: _this.curInfo.code };
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.data.accessList != 0) {
           var arr = res.data.data.accessList.map(item => {
             return item.accessCode;
@@ -84,7 +84,7 @@ export default {
           accessCode: codeArr[i]
         });
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      _this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           _this.$message("操作成功~");
           _this.reload();
