@@ -1,7 +1,7 @@
 <template>
     <div class="pageInfo">
       <el-pagination background layout="prev, pager, next" :total="total" :page-size="pageSize" @current-change="curChange"></el-pagination>
-      <slot name="pageSolt" :pageSize1="pageList">test</slot>
+      <slot name="pageSolt"></slot>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
     </div>
 </template>

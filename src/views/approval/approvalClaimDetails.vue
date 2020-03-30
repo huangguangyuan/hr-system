@@ -68,6 +68,7 @@
   </div>
 </template>
 <script>
+import {approveHisTypeTxt} from "@/lib/staticData.js";
 export default {
   name: "approvalClaimDetails",
   inject: ["reload"],
@@ -84,19 +85,19 @@ export default {
         approve: "",
         remarks: ""
       },
+      isFinish:false,
+      canApprove:false,
       rules: {
         approve: [
           { required: true, message: "请选择是否批准", trigger: "change" }
         ]
       },
-      isFinish:false,
-      canApprove:false
+
     };
   },
   mounted() {
     this.init();
     this.canApprove = this.curInfo.canApprove;
-
   },
   methods: {
     async init(){
@@ -120,37 +121,13 @@ export default {
         if (item.finishFlag == 1){
           this.isFinish = true;
         }
-        item.typeIdTxt = this.itemTypeIdTxt(item.typeId);
+        item.typeIdTxt = approveHisTypeTxt(item.typeId);
         if (item.typeId == 100){
           item.typeIdTxt +=  '( 结算月份 '+ this.claimItem.balanceMon + " 月 " + (this.claimItem.totalAmount != 0?"， 总金额 ： " + this.claimItem.totalAmount + " 元 ":"" ) + " )"; 
         }
         return item;
       });
       this.isShowLoading = false;
-    },
-    itemTypeIdTxt(typeId){
-      switch (typeId) {
-          case 1:
-            return "批准";
-            break;
-          case 2:
-            return "不批准";
-            break;
-          case 3:
-            return "转派";
-            break;
-          case 90:
-            return "撤回";
-            break;
-          case 99:
-            return "新建";
-            break;
-          case 100:
-            return '结算';
-            break;
-          default:
-            return "未知";
-        }
     },
     openFile(item){
         let a = document.createElement('a')
@@ -172,7 +149,6 @@ export default {
         if (valid) {
           this.approveFun();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

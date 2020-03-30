@@ -1,8 +1,7 @@
 <template>
   <div class="approvalClaim wrap" v-if="isShow">
     <h5 class="title-h5">报销列表</h5>
-    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCodeSelected" ref="busAndSearch">
-    </bus-and-search>
+    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCodeSelected" ref="busAndSearch"></bus-and-search>
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id" >

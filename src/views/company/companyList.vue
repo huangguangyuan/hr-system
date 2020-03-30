@@ -86,19 +86,17 @@ export default {
     };
   },
   mounted() {
-    var _this = this;
-    _this.userInfo = this.$toolFn.localGet("userInfo");
-    _this.getData();
+    this.userInfo = this.$toolFn.curUser;
+    this.getData();
   },
   methods: {
     //获取项目数据列表
     async getData() {
-      var _this = this;
-      _this.isShowLoading = true;
-      var companys = await _this.$myApi.companys();
+      this.isShowLoading = true;
+      var companys = await this.$myApi.companys();
       if (companys && companys.length > 0) {
-          _this.isShowLoading = false;
-          _this.tableData = companys.map(item => {
+          this.isShowLoading = false;
+          this.tableData = companys.map(item => {
               item.statusTxt = item.status == 1 ? "启用" : "禁用";
               return item;
             }).sort((a, b) => {
@@ -110,13 +108,12 @@ export default {
               }
               return 0;
             });
-          _this.total = _this.tableData.length;
+          this.total = this.tableData.length;
         }
     },
     // 获取当前页数
     curChange(val) {
-      var _this = this;
-      _this.curPage = val;
+      this.curPage = val;
     },
     // 监听子组件信息
     listenIsShowMask(res) {
@@ -124,15 +121,13 @@ export default {
     },
     // 编辑信息
     handleEdit(index, res) {
-      var _this = this;
-      _this.curInfo = res;
-      _this.curInfo.type = "modify";
-      _this.isShowAddModule = true;
+      this.curInfo = res;
+      this.curInfo.type = "modify";
+      this.isShowAddModule = true;
     },
 
     // 禁用
     prohibitFun(index, res) {
-      var _this = this;
       var txt = '';
       var status = 1;
       if(res.status == 1){
@@ -142,7 +137,7 @@ export default {
           txt = '此操作将启用该数据, 是否继续?'
           status = 1;
       }
-      _this.$confirm(txt, "提 示", {
+      this.$confirm(txt, "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -151,15 +146,15 @@ export default {
                 id:res.id,
                 status:status
             }
-          _this.$myApi.http
+          this.$myApi.http
             .post("/server/api/v1/company/companyUpdate", data)
             .then(res => {
-              _this.reload();
-              _this.$message.success("操作成功~");
+              this.reload();
+              this.$message.success("操作成功~");
             });
         })
         .catch(() => {
-          _this.$message({
+          this.$message({
             type: "info",
             message: "已取消删除"
           });
@@ -167,25 +162,24 @@ export default {
     },
     // 删除
     handleDelete(index, res) {
-      var _this = this;
-      _this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          _this.$myApi.http
+          this.$myApi.http
             .post("/server/api/v1/company/companyDelete", { id: res.id })
             .then(res => {
               if(res.data.code == 0){
-                  _this.reload();
-                  _this.$message.success("删除成功~");
+                  this.reload();
+                  this.$message.success("删除成功~");
               }else{
-                  _this.$message.error(res.data.msg);
+                  this.$message.error(res.data.msg);
               }
             });
         })
         .catch(() => {
-          _this.$message({
+          this.$message({
             type: "info",
             message: "已取消删除"
           });
@@ -194,19 +188,17 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
+      let tableData = this.tableData;
+      if (this.filter.searchKey != ""){
+        tableData = this.$toolFn.searchFun(tableData,this.filter);
       }
-      _this.total = tableData.length;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
+      this.total = tableData.length;
+      var begin = (this.curPage - 1) * this.pageSize;
+      var end = this.curPage * this.pageSize;
       return tableData.slice(begin, end);
     },
     pageTotal() {
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total / _this.pageSize);
+      var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     }
   },

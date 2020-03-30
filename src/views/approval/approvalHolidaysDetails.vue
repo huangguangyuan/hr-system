@@ -1,5 +1,5 @@
 <template>
-  <div class="approvalHolidaysDetails">
+  <div class="approvalHolidaysDetails" v-loading="isShowLoading">
     <el-divider content-position="left">请假明细</el-divider>
     <div class="view-detail">
       <el-row :gutter="12">
@@ -35,7 +35,7 @@
     <br />
     <el-divider content-position="left">审批流程</el-divider>
     <el-timeline>
-      <el-timeline-item v-for='item in approveHisList' :key='item.id' :timestamp="item.creatorTime" placement="top">
+      <el-timeline-item v-for='(item,key) in approveHisList' :key='key' placement="top">
         <el-card class="my-card">
           <p>操作员：{{item.operatorUser.name}}{{item.operatorUser.roleName?" ( "+item.operatorUser.roleName+" ) ":""}}</p>
           <p>操作行为：{{item.operatorUser.tip}}</p>
@@ -69,13 +69,16 @@
   </div>
 </template>
 <script>
+import {approveHisTypeTxt} from "@/lib/staticData.js";
 export default {
   name: "approvalHolidaysDetails",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
+      isShowLoading:true,
       holidayItem:{},
+      holidayTypes:[],
       tableData: [],
       getClaimList: [],
       approveHisList:[],//审批流程
@@ -94,78 +97,50 @@ export default {
     };
   },
   mounted() {
+    this.init();
     this.canApprove = this.curInfo.canApprove;
-    this.dataConvert().then(res => {
-      this.curInfo.details.map(item => {
-          item.typeIdTxt = res.filter(child => {
-              return child.typeId == item.typeId;
-          })[0].val;
-          return item;
-      })
-      
-      this.holidayItem = this.curInfo;
+  },
+  methods: {
+    async init(){
+      this.holidayItem = await this.staffHolidays();
+      this.holidayTypes = await this.getHolidaysTypeId();
       if (this.holidayItem.fileSrc && this.holidayItem.fileSrc != ''){
         this.fileList = this.holidayItem.fileSrc.split(',');
       }
-      this.tableData = this.curInfo.details.map(item => {
+      this.holidayItem.createTime = this.$toolFn.timeFormat(this.holidayItem.createTime);
+      this.tableData = this.holidayItem.details.map(item => {
         item.startDate = this.$toolFn.timeFormat(item.startDate);
         item.endDate = this.$toolFn.timeFormat(item.endDate);
         return item;
       });
-      
       // 审批流程
-      this.approveHisList = this.curInfo.approveHis.map(item => {
+      this.approveHisList = this.holidayItem.approveHis.map(item => {
         item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
-        item.finishFlagTxt = item.finishFlag == 0?'否':'是';
+        item.finishFlagTxt = item.finishFlag == 0 ? "否" : "是";
         if (item.finishFlag == 1){
           this.isFinish = true;
         }
-        switch(item.typeId){
-          case 1:
-            item.typeIdTxt = '批准';
-            break;
-          case 2:
-            item.typeIdTxt = '不批准';
-            break;
-          case 3:
-            item.typeIdTxt = '转派';
-            break;
-          case 90:
-            item.typeIdTxt = '撤回';
-            break;
-          case 99:
-            item.typeIdTxt = '新建';
-            break;
-          case 100:
-            item.typeIdTxt = '结算 ( 结算月份 '+ this.holidayItem.balanceMon + " 月 " + (this.holidayItem.totalAmount != 0?"， 应扣 ： " + this.holidayItem.totalAmount+ " 元 ":"，带薪" ) + " )" ;
-            break;
-          default:
-            item.typeIdTxt = '未知';
+        item.typeIdTxt = approveHisTypeTxt(item.typeId);
+        if (item.typeId == 100){
+          item.typeIdTxt +=  '( 结算月份 '+ this.holidayItem.balanceMon + " 月 " + (this.holidayItem.totalAmount != 0?"， 总金额 ： " + this.holidayItem.totalAmount + " 元 ":"" ) + " )"; 
         }
         return item;
       });
-    });
-  },
-  methods: {
+      this.isShowLoading = false;
+    },
+    async staffHolidays(){
+      var reqUrl = "/server/api/v1/staff/holidaysApply/staffHolidaysApply";
+      return await this.$myApi.post(reqUrl, {holidaysApplyCode:this.curInfo.code});
+    },
+    async getHolidaysTypeId(){
+      var reqUrl = "/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId";
+      return await this.$myApi.post(reqUrl);
+    },
     openFile(item){
         let a = document.createElement('a')
           a.href = item;
           a.target = '_blank';
           a.click();
-    },
-    // 数据转换
-    dataConvert() {
-      var _this = this;
-      var p = new Promise(function(resolve, reject) {
-        var reqUrl = "/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId";
-        _this.$myApi.http.post(reqUrl, {}).then(res => {
-          if (res.data.code == 0) {
-            _this.getClaimList = res.data.data;
-            resolve(_this.getClaimList);
-          }
-        });
-      });
-      return p;
     },
     // 提交表单
     submitForm(formName) {
@@ -173,7 +148,6 @@ export default {
         if (valid) {
           this.approveFun();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

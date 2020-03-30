@@ -142,8 +142,14 @@ export default {
       if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301 ){
         this.userRight = false;
       }
-      this.BUCode = this.userInfo.BUCode;
-      this.getData(this.BUCode);
+      if ([3,4].indexOf(this.userInfo.roleTypeId) >= 0){//如果是平台管理员
+        this.getBUCodeFun();
+      }else{
+        this.BUCode = this.userInfo.BUCode;
+        this.getData(this.BUCode);
+      }
+      
+      
       //this.getBUCodeFun();
     },
     //获取项目数据列表
@@ -178,20 +184,20 @@ export default {
           console.log(err);
         });
     },
-    // // 获取单位列表
-    // async getBUCodeFun(){
-    //   var _this = this;
-    //   var regionBUs = await _this.$myApi.regionBUs();
-    //   if (regionBUs && regionBUs.length > 0) {
-    //     this.regionBUList = regionBUs;
-    //     this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):this.regionBUList[0].code;
-    //     //如果选中bu不存在，则获取第一个bu
-    //     if (this.regionBUList.filter(f => {return (this.BUCode == f)}).length == 0){
-    //       this.BUCode = this.regionBUList[0].code;
-    //     }
-    //     this.getData(this.BUCode);
-    //   }
-    // },
+    // 获取单位列表
+    async getBUCodeFun(){
+      var _this = this;
+      var regionBUs = await _this.$myApi.regionBUs();
+      if (regionBUs && regionBUs.length > 0) {
+        this.regionBUList = regionBUs;
+        this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):this.regionBUList[0].code;
+        //如果选中bu不存在，则获取第一个bu
+        if (this.regionBUList.filter(f => {return (this.BUCode == f)}).length == 0){
+          this.BUCode = this.regionBUList[0].code;
+        }
+        this.getData(this.BUCode);
+      }
+    },
     // 选择单位
     changeBUCode(code){
       this.BUCode = code;

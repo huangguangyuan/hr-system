@@ -13,7 +13,7 @@
       </el-form-item>
 
       <el-form-item label="请假天数" prop="days">
-        <el-input-number v-model="ruleForm.days" :precision="2" :step="0.5" :max="30" :min="0.5"  class="inp01"></el-input-number>
+        <el-input-number v-model="ruleForm.days" :precision="1" :step="0.5" :max="30" :min="0.5"  class="inp01" @keyup.native="proving(index)"></el-input-number>
         <span class="inptTip">最少单位为0.5</span>
       </el-form-item>
       <el-form-item label="是否带薪" prop="isWithpay">
@@ -114,6 +114,28 @@ export default {
     this.ruleForm.applyTime.push(s,e);
   },
   methods: {
+    // 只能输入数字且只有一位小数
+    proving(e) {
+        // 先把非数字的都替换掉，除了数字和.
+        this.ruleForm.days = this.ruleForm.days.toString().replace(/[^\d.]/g, '');
+        // 必须保证第一个为数字而不是.
+        this.ruleForm.days = this.ruleForm.days.toString().replace(/^\./g, '');
+        // 保证只有出现一个.而没有多个.
+        this.ruleForm.days = this.ruleForm.days.toString().replace(/\.{2,}/g, '');
+        // 保证.只出现一次，而不能出现两次以上
+        this.ruleForm.days = this.ruleForm.days.toString().replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
+        let index = -1;
+        for (let i in this.ruleForm.days) {
+            if (this.ruleForm.days[i] === '.') {
+                index = i
+            }
+            if (index !== -1) {
+                if (i - index > 1) {
+                    this.ruleForm.days = this.ruleForm.days.substring(0, this.ruleForm.days.length - 1)
+                }
+            }
+        }
+    },
     // 初始化
     initializeFun() {
       this.userInfo = this.$toolFn.localGet("userInfo");
@@ -153,7 +175,6 @@ export default {
             }
           }
           this.noticeOfficer = [];
-
         }
       });
     },

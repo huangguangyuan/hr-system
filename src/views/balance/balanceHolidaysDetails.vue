@@ -29,18 +29,7 @@
     >
       <el-form-item label="结算月份：" prop="balanceMon">
         <el-select v-model="ruleForm.balanceMon" placeholder="请选择月份">
-          <el-option label="1月" value="1"></el-option>
-          <el-option label="2月" value="2"></el-option>
-          <el-option label="3月" value="3"></el-option>
-          <el-option label="4月" value="4"></el-option>
-          <el-option label="5月" value="5"></el-option>
-          <el-option label="6月" value="6"></el-option>
-          <el-option label="7月" value="7"></el-option>
-          <el-option label="8月" value="8"></el-option>
-          <el-option label="9月" value="9"></el-option>
-          <el-option label="10月" value="10"></el-option>
-          <el-option label="11月" value="11"></el-option>
-          <el-option label="12月" value="12"></el-option>
+          <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.key"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="扣除金额：" v-if='curInfo.isWithpay == 0'>
@@ -56,6 +45,7 @@
   </div>
 </template>
 <script>
+import {approveHisTypeTxt,monthList} from "@/lib/staticData.js";
 export default {
   name: "approvalHolidaysDetails",
   inject: ["reload"],
@@ -78,6 +68,7 @@ export default {
     };
   },
   mounted() {
+    this.monthList = monthList();
     this.dataConvert().then(res => {
       this.curInfo.details.map(item => {
           item.typeIdTxt = res.filter(child => {
@@ -98,28 +89,7 @@ export default {
     this.approveHisList = this.curInfo.approveHis.map(item => {
       item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
       item.finishFlagTxt = item.finishFlag == 0?'否':'是';
-      switch(item.typeId){
-        case 1:
-          item.typeIdTxt = '批准';
-          break;
-        case 2:
-          item.typeIdTxt = '不批准';
-          break;
-        case 3:
-          item.typeIdTxt = '转派';
-          break;
-        case 90:
-          item.typeIdTxt = '撤回';
-          break;
-        case 99:
-          item.typeIdTxt = '新建';
-          break;
-        case 100:
-          item.typeIdTxt = '结算' ;
-          break;
-        default:
-          item.typeIdTxt = '未知';
-      }
+      item.typeIdTxt = approveHisTypeTxt(item.typeId);
       return item;
     });
   },
@@ -144,7 +114,6 @@ export default {
         if (valid) {
           this.approveFun();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
