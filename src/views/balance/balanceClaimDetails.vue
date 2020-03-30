@@ -1,5 +1,5 @@
 <template>
-  <div class="balanceClaimDetails">
+  <div class="balanceClaimDetails" v-loading="isShowLoading">
     <el-table :data="tableData" stripe>
       <el-table-column prop="title" label="报销项目名称"></el-table-column>
       <el-table-column prop="amount" label="报销金额"></el-table-column>
@@ -52,6 +52,8 @@ export default {
   props: ["curInfo"],
   data() {
     return {
+      isShowLoading:true,
+      claimItem:{},
       tableData: [], //数据列表
       getClaimList: [], //审批类型
       approveHisList: [], //审批流程
@@ -69,37 +71,27 @@ export default {
   },
   mounted() {
     this.monthList = monthList();
-    this.dataConvert().then(res => {
-      this.curInfo.details.map(item => {
-        item.typeIdTxt = res.filter(child => {
+    this.init();
+  },
+  methods: {
+    async init(){
+      this.claimItem = await this.$myApi.staffClaim({claimCode:this.curInfo.code});
+      this.claimTypes = await this.$myApi.getClaimTypeId();
+      this.claimItem.details.map(item => {
+        item.typeIdTxt = this.claimTypes.filter(child => {
           return child.typeId == item.typeId;
         })[0].val;
         return item;
       });
-      this.tableData = this.curInfo.details;
-    });
-    // 审批流程
-    this.approveHisList = this.curInfo.approveHis.map(item => {
-      item.createTime = this.$toolFn.timeFormat(item.createTime);
-      item.finishFlagTxt = item.finishFlag == 0 ? "否" : "是";
-      item.typeIdTxt = approveHisTypeTxt(item.typeId);
-      return item;
-    });
-  },
-  methods: {
-    // 数据转换,用于把类型转换成对应的文字
-    dataConvert() {
-      var _this = this;
-      var p = new Promise(function(resolve, reject) {
-        var reqUrl = "/server/api/v1/staff/claim/getClaimTypeId";
-        _this.$myApi.http.post(reqUrl, {}).then(res => {
-          if (res.data.code == 0) {
-            _this.getClaimList = res.data.data;
-            resolve(_this.getClaimList);
-          }
-        });
+      this.tableData = this.claimItem.details;
+      // 审批流程
+      this.approveHisList = this.claimItem.approveHis.map(item => {
+        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.finishFlagTxt = item.finishFlag == 0 ? "否" : "是";
+        item.typeIdTxt = approveHisTypeTxt(item.typeId);
+        return item;
       });
-      return p;
+      this.isShowLoading = false;
     },
     // 提交表单
     submitForm(formName) {

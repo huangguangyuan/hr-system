@@ -102,8 +102,8 @@ export default {
   },
   methods: {
     async init(){
-      this.holidayItem = await this.staffHolidays();
-      this.holidayTypes = await this.getHolidaysTypeId();
+      this.holidayItem = await this.$myApi.staffHolidays({holidaysApplyCode:this.curInfo.code});
+      this.holidayTypes = await this.$myApi.getHolidaysTypeId();
       if (this.holidayItem.fileSrc && this.holidayItem.fileSrc != ''){
         this.fileList = this.holidayItem.fileSrc.split(',');
       }
@@ -127,14 +127,6 @@ export default {
         return item;
       });
       this.isShowLoading = false;
-    },
-    async staffHolidays(){
-      var reqUrl = "/server/api/v1/staff/holidaysApply/staffHolidaysApply";
-      return await this.$myApi.post(reqUrl, {holidaysApplyCode:this.curInfo.code});
-    },
-    async getHolidaysTypeId(){
-      var reqUrl = "/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId";
-      return await this.$myApi.post(reqUrl);
     },
     openFile(item){
         let a = document.createElement('a')

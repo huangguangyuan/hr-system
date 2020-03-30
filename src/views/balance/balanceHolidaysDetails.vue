@@ -1,5 +1,5 @@
 <template>
-  <div class="approvalHolidaysDetails">
+  <div class="approvalHolidaysDetails" v-loading="isShowLoading">
     <el-table :data="tableData" stripe>
       <el-table-column prop="num" label="序号" width="50"></el-table-column>
       <el-table-column prop="days" label="天数" width="50"></el-table-column>
@@ -52,6 +52,9 @@ export default {
   props: ["curInfo"],
   data() {
     return {
+      isShowLoading:true,
+      monthList:[],
+      holidayItem:{},
       tableData: [],
       getClaimList: [],
       approveHisList:[],//审批流程
@@ -69,44 +72,27 @@ export default {
   },
   mounted() {
     this.monthList = monthList();
-    this.dataConvert().then(res => {
-      this.curInfo.details.map(item => {
-          item.typeIdTxt = res.filter(child => {
-              return child.typeId == item.typeId;
-          })[0].val;
-          return item;
-      })
-      var num = 0;
-      this.tableData = this.curInfo.details.map(item => {
-        num++;
-        item.num = num;
+    this.init();
+  },
+  methods: {
+    async init(){
+      this.holidayItem = await this.$myApi.staffHolidays({holidaysApplyCode:this.curInfo.code});
+      this.holidayTypes = await this.$myApi.getHolidaysTypeId();
+
+      this.holidayItem.createTime = this.$toolFn.timeFormat(this.holidayItem.createTime);
+      this.tableData = this.holidayItem.details.map(item => {
         item.startDate = this.$toolFn.timeFormat(item.startDate);
         item.endDate = this.$toolFn.timeFormat(item.endDate);
         return item;
       });
-    });
-    // 审批流程
-    this.approveHisList = this.curInfo.approveHis.map(item => {
-      item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
-      item.finishFlagTxt = item.finishFlag == 0?'否':'是';
-      item.typeIdTxt = approveHisTypeTxt(item.typeId);
-      return item;
-    });
-  },
-  methods: {
-    // 数据转换
-    dataConvert() {
-      var _this = this;
-      var p = new Promise(function(resolve, reject) {
-        var reqUrl = "/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId";
-        _this.$myApi.http.post(reqUrl, {}).then(res => {
-          if (res.data.code == 0) {
-            _this.getClaimList = res.data.data;
-            resolve(_this.getClaimList);
-          }
-        });
+      // 审批流程
+      this.approveHisList = this.holidayItem.approveHis.map(item => {
+        item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
+        item.finishFlagTxt = item.finishFlag == 0?'否':'是';
+        item.typeIdTxt = approveHisTypeTxt(item.typeId);
+        return item;
       });
-      return p;
+      this.isShowLoading = false;
     },
     // 提交表单
     submitForm(formName) {

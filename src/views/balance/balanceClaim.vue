@@ -6,8 +6,10 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
       <el-table-column sortable prop="nameChinese" label="申请人"></el-table-column>
+      <el-table-column sortable prop="deptName" label="部门"></el-table-column>
       <el-table-column sortable prop="createTime" label="创建日期"></el-table-column>
       <el-table-column sortable prop="isBalanceTxt" label="是否结算"></el-table-column>
+      <el-table-column sortable prop="totalAmount" label="结算金额"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
@@ -69,7 +71,6 @@ export default {
       return this.pageList.map(item => {
         item.createTime = this.$toolFn.timeFormat(item.createTime);
         item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
-        item.nameChinese = item.staff ? item.staff.nameChinese :"";
         return item;
       });
     }

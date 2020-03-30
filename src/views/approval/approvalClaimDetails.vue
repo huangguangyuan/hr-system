@@ -101,8 +101,8 @@ export default {
   },
   methods: {
     async init(){
-      this.claimItem = await this.staffClaim();
-      this.claimTypes = await this.getClaimTypeId();
+      this.claimItem = await this.$myApi.staffClaim({claimCode:this.curInfo.code});
+      this.claimTypes = await this.$myApi.getClaimTypeId();
       this.claimItem.details.map(item => {
         item.typeIdTxt = this.claimTypes.filter(child => {
           return child.typeId == item.typeId;
@@ -134,14 +134,6 @@ export default {
           a.href = item;
           a.target = '_blank';
           a.click();
-    },
-    async staffClaim(){
-      var reqUrl = "/server/api/v1/staff/claim/staffClaim";
-      return await this.$myApi.post(reqUrl, {claimCode:this.curInfo.code});
-    },
-    async getClaimTypeId(){
-      var reqUrl = "/server/api/v1/staff/claim/getClaimTypeId";
-      return await this.$myApi.post(reqUrl, {claimCode:this.curInfo.code,isCache:true});
     },
     // 提交表单
     submitForm(formName) {
