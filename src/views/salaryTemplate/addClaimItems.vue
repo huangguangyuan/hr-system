@@ -35,7 +35,7 @@ export default {
     };
   },
   mounted() {
-    var _this = this;
+    
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
     }
@@ -43,13 +43,13 @@ export default {
   methods: {
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          if (_this.curInfo.type == "add") {
-            _this.addFun();
+          if (this.curInfo.type == "add") {
+            this.addFun();
           } else {
-            _this.modifyFun();
+            this.modifyFun();
           }
         } else {
           console.log("error submit!!");
@@ -59,45 +59,45 @@ export default {
     },
     // 添加
     addFun() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/claim/add";
       var data = {
-        name: _this.ruleForm.name,
-        taxable: Number(_this.ruleForm.taxable),
-        description: _this.ruleForm.description
+        name: this.ruleForm.name,
+        taxable: Number(this.ruleForm.taxable),
+        description: this.ruleForm.description
       };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message("添加成功~");
+          this.reload();
+          this.$message("添加成功~");
         } else {
-          _this.$alert(res.data.msg, "提 示");
+          this.$alert(res.data.msg, "提 示");
         }
       });
     },
     // 修改
     modifyFun() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/claim/update";
       var data = {
-        id: _this.ruleForm.id,
-        name: _this.ruleForm.name,
+        id: this.ruleForm.id,
+        name: this.ruleForm.name,
         taxable: 0,
-        description: _this.ruleForm.description
+        description: this.ruleForm.description
       };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message("修改成功~");
+          this.reload();
+          this.$message("修改成功~");
         } else {
-          _this.$alert(res.data.msg, "提 示");
+          this.$alert(res.data.msg, "提 示");
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

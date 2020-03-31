@@ -112,13 +112,13 @@ export default {
     };
   },
   mounted() {
-    var _this = this;
-    _this.userInfo = _this.$toolFn.localGet("userInfo");
+    
+    this.userInfo = this.$toolFn.localGet("userInfo");
     if (this.userInfo.access.payrollMain.length > 0){
-      _this.isShow = true;
+      this.isShow = true;
     }
-    if (_this.userInfo.roleTypeId == 2 ){
-      _this.hrCode = _this.userInfo.userCode;
+    if (this.userInfo.roleTypeId == 2 ){
+      this.hrCode = this.userInfo.userCode;
     }
     if (this.userInfo.access.payrollMain.indexOf(2) >= 0){
       this.genPayrollSlip_right = true;
@@ -153,8 +153,8 @@ export default {
     },
     // 获取单位列表
     async getregionBU() {
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs({isCache:true});
+      
+      var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUlist = regionBUs;
           this.BUCode = this.$toolFn.sessionGet("staffBUCode")? this.$toolFn.sessionGet("staffBUCode"): this.regionBUlist[0].code;
@@ -247,14 +247,14 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
+      
+      let tableData = this.tableData;
+      if (this.filter.searchKey != ""){
+        tableData = this.$toolFn.searchFun(tableData,this.filter);
       }
-      _this.total = tableData.length;
-      var begin = (_this.wagesCurPage - 1) * _this.pageSize;
-      var end = _this.wagesCurPage * _this.pageSize;
+      this.total = tableData.length;
+      var begin = (this.wagesCurPage - 1) * this.pageSize;
+      var end = this.wagesCurPage * this.pageSize;
       return tableData.slice(begin, end);
     },
     pageTotal() {

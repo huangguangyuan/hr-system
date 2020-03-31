@@ -199,7 +199,7 @@ export default {
     },
     // 新增
     addFun() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/staff/holidaysApply/approveApply";
       var details = [
         {
@@ -234,8 +234,8 @@ export default {
         this.$message.error("请至少选中一个结算人员");
         return;
       }
-      for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
-        const element = _this.fileUpload_props.fileList[index];
+      for (let index = 0; index < this.fileUpload_props.fileList.length; index++) {
+        const element = this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
       

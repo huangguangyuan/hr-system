@@ -84,13 +84,13 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      var _this = this;
+      
       this.ruleForm.annualLeaveWriteOffDate = new Date((new Date().getFullYear()+1) + "-" + this.$toolFn.timeFormat(this.ruleForm.annualLeaveWriteOffDate,"MM-dd"));
       this.ruleForm.annualLeaveRetainClearDate = new Date((new Date().getFullYear()+1) + "-" +  this.$toolFn.timeFormat(this.ruleForm.annualLeaveRetainClearDate,"MM-dd"));
-      _this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.ruleForm.annualLeaveWriteOffDate > this.ruleForm.annualLeaveRetainClearDate){
-            _this.$message.error("年假保留天数清空日期不能早于年假清空日期");
+            this.$message.error("年假保留天数清空日期不能早于年假清空日期");
             return false;
           }
           var postData = {
@@ -117,8 +117,8 @@ export default {
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     }
   }
 };

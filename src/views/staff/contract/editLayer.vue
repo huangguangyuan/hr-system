@@ -111,15 +111,15 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              _this.modifyFun();
+              this.modifyFun();
               break;
           }
         } else {
@@ -129,61 +129,61 @@ export default {
     },
     // 新增
     addFun() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/staff/contract/add";
       var data = {
-        staffCode: _this.curInfo.staffCode,
-        companyName: _this.ruleForm.companyName,
-        contractNumber: _this.ruleForm.contractNumber,
-        startDate: _this.$toolFn.timeFormat(_this.ruleForm.startDate).slice(0, 10),
-        endDate: _this.$toolFn.timeFormat(_this.ruleForm.endDate).slice(0, 10),
-        remarks: _this.ruleForm.remarks,
+        staffCode: this.curInfo.staffCode,
+        companyName: this.ruleForm.companyName,
+        contractNumber: this.ruleForm.contractNumber,
+        startDate: this.$toolFn.timeFormat(this.ruleForm.startDate).slice(0, 10),
+        endDate: this.$toolFn.timeFormat(this.ruleForm.endDate).slice(0, 10),
+        remarks: this.ruleForm.remarks,
         fileSrc:''
       };
-      for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
-        const element = _this.fileUpload_props.fileList[index];
+      for (let index = 0; index < this.fileUpload_props.fileList.length; index++) {
+        const element = this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("新增成功");
+          this.reload();
+          this.$message.success("新增成功");
         } else {
-          _this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg);
         }
       });
     },
     // 修改
     modifyFun() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/staff/contract/update";
       var data = {
-        id: _this.curInfo.id,
-        staffCode: _this.curInfo.staffCode,
-        companyName: _this.ruleForm.companyName,
-        contractNumber: _this.ruleForm.contractNumber,
-        startDate: _this.$toolFn.timeFormat(_this.ruleForm.startDate).slice(0, 10),
-        endDate: _this.$toolFn.timeFormat(_this.ruleForm.endDate).slice(0, 10),
-        remarks: _this.ruleForm.remarks,
+        id: this.curInfo.id,
+        staffCode: this.curInfo.staffCode,
+        companyName: this.ruleForm.companyName,
+        contractNumber: this.ruleForm.contractNumber,
+        startDate: this.$toolFn.timeFormat(this.ruleForm.startDate).slice(0, 10),
+        endDate: this.$toolFn.timeFormat(this.ruleForm.endDate).slice(0, 10),
+        remarks: this.ruleForm.remarks,
         fileSrc:''
       };
-      for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
-        const element = _this.fileUpload_props.fileList[index];
+      for (let index = 0; index < this.fileUpload_props.fileList.length; index++) {
+        const element = this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("修改成功~");
+          this.reload();
+          this.$message.success("修改成功~");
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     },
     //获取子组件数据
     fileUpload_tf(data){

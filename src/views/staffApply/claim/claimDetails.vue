@@ -121,13 +121,13 @@ export default {
     },
     // 数据转换,用于把类型转换成对应的文字
     dataConvert() {
-      var _this = this;
+      
       var p = new Promise(function(resolve, reject) {
         var reqUrl = "/server/api/v1/staff/claim/getClaimTypeId";
-        _this.$myApi.http.post(reqUrl, {}).then(res => {
+        this.$myApi.http.post(reqUrl, {}).then(res => {
           if (res.data.code == 0) {
-            _this.getClaimList = res.data.data;
-            resolve(_this.getClaimList);
+            this.getClaimList = res.data.data;
+            resolve(this.getClaimList);
           }
         });
       });

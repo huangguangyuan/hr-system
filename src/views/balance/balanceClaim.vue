@@ -49,7 +49,6 @@ export default {
       curInfo: {},
       isShowDetails: false, //是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      hrCode: "",
       BUCodeSelected: "", //单位code
       filter:{searchKey:'',searchField:['nameChinese']}
     };
@@ -60,7 +59,7 @@ export default {
         reqParams:{//请求分页参数
             isReq:false,
             url:"/server/api/v1/staff/claim/claimListBalance",
-            data:{ hrCode: this.hrCode,BUCode:this.BUCodeSelected }
+            data:{ hrCode: this.$toolFn.curUser.userCode,BUCode:this.BUCodeSelected }
           }
         }
     },
@@ -76,9 +75,6 @@ export default {
     }
   },
   mounted() {
-    if (this.$toolFn.curUser.roleTypeId == 2 ){
-      this.hrCode = this.$toolFn.curUser.userCode;
-    }
     if (this.$toolFn.curUser.access.approvalClaim.length > 0){
       this.isShow = true;
     }
@@ -88,7 +84,7 @@ export default {
     handleDetails(index, res) {
       this.isShowDetails = true;
       this.curInfo = res;
-      this.curInfo.hrCode = this.hrCode;
+      this.curInfo.hrCode = this.$toolFn.curUser.userCode;
     },
     // 接收子组件发送信息
     listenIsShowMask(res) {

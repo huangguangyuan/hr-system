@@ -59,15 +59,15 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              _this.modifyFun();
+              this.modifyFun();
               break;
           }
         } else {
@@ -78,7 +78,7 @@ export default {
     },
     // 新增
     addFun() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/staff/socialMedia/add";
       var data = {
         staffCode: this.curInfo.staffCode,
@@ -86,39 +86,39 @@ export default {
         account:this.ruleForm.account,
         remarks:this.ruleForm.remarks
       };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("新增成功~");
+          this.reload();
+          this.$message.success("新增成功~");
         } else {
-          _this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg);
         }
       });
     },
     // 修改
     modifyFun() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/staff/socialMedia/update";
       var data = {
-        id: _this.curInfo.id,
+        id: this.curInfo.id,
         staffCode: this.curInfo.staffCode,
         media:this.ruleForm.media,
         account:this.ruleForm.account,
         remarks:this.ruleForm.remarks
       };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("修改成功~");
+          this.reload();
+          this.$message.success("修改成功~");
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     },
     // 限制当前文件个数
     handleExceed(files, fileList) {

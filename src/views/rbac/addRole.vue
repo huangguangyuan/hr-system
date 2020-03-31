@@ -93,10 +93,10 @@ export default {
   methods: {
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.addRoleFn();
+          this.addRoleFn();
         } else {
           console.log("error submit!!");
           return false;
@@ -105,40 +105,40 @@ export default {
     },
     // 新增角色
     addRoleFn() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/projectRole/add";
       var data = {
-        projectCode: _this.ruleForm.projectCode,
-        name: _this.ruleForm.name,
-        roleCode: _this.ruleForm.roleCode,
-        description: _this.ruleForm.description,
-        status: parseInt(_this.ruleForm.status),
-        lev: parseInt(_this.ruleForm.lev),
-        typeId: parseInt(_this.ruleForm.typeId)
+        projectCode: this.ruleForm.projectCode,
+        name: this.ruleForm.name,
+        roleCode: this.ruleForm.roleCode,
+        description: this.ruleForm.description,
+        status: parseInt(this.ruleForm.status),
+        lev: parseInt(this.ruleForm.lev),
+        typeId: parseInt(this.ruleForm.typeId)
       };
-      _this.$myApi.http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
-          _this.reload();
+          this.reload();
         }
       })
     },
     // 获取项目数据
     getProjectData() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/project/getAll";
       var data = { typeId: 1 };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.ruleForm.projectList = res.data.data;
+          this.ruleForm.projectList = res.data.data;
         } else {
-          _this.$message("res.data.code");
+          this.$message("res.data.code");
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

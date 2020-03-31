@@ -300,21 +300,21 @@ export default {
     };
   },
   mounted() {
-    var _this = this;
+    
     this.userInfo = this.$toolFn.localGet("userInfo");
-    _this.userRight = _this.userRight_props;
-    _this.InitializationFun();
+    this.userRight = this.userRight_props;
+    this.InitializationFun();
   },
   methods: {
     // 初始化
     InitializationFun() {
-      var _this = this;
-      _this.getregionBU();
+      
+      this.getregionBU();
       
     },
     // 禁用
     prohibitFun(index, res) {
-      var _this = this;
+      
       var txt = '';
       var status = 1;
       if(res.status == 1){
@@ -324,7 +324,7 @@ export default {
           txt = '此操作将禁用该数据, 是否继续?'
           status = 1;
       }
-      _this
+      this
         .$confirm(txt, "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -335,15 +335,15 @@ export default {
                 id:res.id,
                 status:status
             }
-          _this.$myApi.http
+          this.$myApi.http
             .post("/server/api/v1/staff/update", data)
             .then(res => {
-              _this.reload();
-              _this.$message.success("操作成功~");
+              this.reload();
+              this.$message.success("操作成功~");
             });
         })
         .catch(() => {
-          _this.$message({
+          this.$message({
             type: "info",
             message: "已取消删除"
           });
@@ -361,26 +361,26 @@ export default {
     },
     // 获取单位列表
     async getregionBU() {
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs({isCache:true});
+      
+      var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
-          _this.regionBUlist = regionBUs;
-          _this.BUCode = _this.$toolFn.sessionGet("staffBUCode")? _this.$toolFn.sessionGet("staffBUCode"): _this.regionBUlist[0].code;
-          _this.getData(_this.BUCode);
-          _this.getHRadminList(_this.BUCode);
+          this.regionBUlist = regionBUs;
+          this.BUCode = this.$toolFn.sessionGet("staffBUCode")? this.$toolFn.sessionGet("staffBUCode"): this.regionBUlist[0].code;
+          this.getData(this.BUCode);
+          this.getHRadminList(this.BUCode);
         }
     },
     //获取项目数据列表
     getData(BUCode) {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/staff/getAll";
       var myData = { BUCode: BUCode };
-      _this.isShowLoading = true;
-      _this.$myApi.http
+      this.isShowLoading = true;
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
-          _this.isShowLoading = false;
-          _this.tableData = res.data.data
+          this.isShowLoading = false;
+          this.tableData = res.data.data
             .map(item => {
               // 状态
               switch (item.workStatus) {
@@ -477,19 +477,19 @@ export default {
                   item.fileUnitMoveTxt = "未知";
               }
               // 时间转换
-              item.dateOfBirth = _this.$toolFn
+              item.dateOfBirth = this.$toolFn
                 .timeFormat(item.dateOfBirth)
                 .slice(0, 10);
-              item.dateOfJoining = _this.$toolFn
+              item.dateOfJoining = this.$toolFn
                 .timeFormat(item.dateOfJoining)
                 .slice(0, 10);
-              item.dateOfLeaving = _this.$toolFn
+              item.dateOfLeaving = this.$toolFn
                 .timeFormat(item.dateOfLeaving)
                 .slice(0, 10);
-              item.annualLeaveWriteOffDate = _this.$toolFn
+              item.annualLeaveWriteOffDate = this.$toolFn
               .timeFormat(item.annualLeaveWriteOffDate)
               .slice(0, 10);
-              item.annualLeaveRetainClearDate = _this.$toolFn
+              item.annualLeaveRetainClearDate = this.$toolFn
               .timeFormat(item.annualLeaveRetainClearDate)
               .slice(0, 10);
               return item;
@@ -503,7 +503,7 @@ export default {
               }
               return 0;
             });
-          _this.total = _this.tableData.length;
+          this.total = this.tableData.length;
         })
         .catch(err => {
           console.log(err);
@@ -534,14 +534,14 @@ export default {
     },
     //提交账号修改
     subAccount() {
-      var _this = this;
+      
       var reqUrl = '/server/api/v1/staff/account/update';
       var data = {
-        staffCode:_this.accountInfo.staffCode,
-        hrCode:_this.accountInfo.hrCode
+        staffCode:this.accountInfo.staffCode,
+        hrCode:this.accountInfo.hrCode
       }
-      if (_this.accountInfo.password && _this.accountInfo.password != ""){
-        data.password = md5(_this.accountInfo.password);
+      if (this.accountInfo.password && this.accountInfo.password != ""){
+        data.password = md5(this.accountInfo.password);
       }
       this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
@@ -585,23 +585,23 @@ export default {
     },
     // 删除
     handleDelete(index, res) {
-      var _this = this;
-      _this
+      
+      this
         .$confirm("此操作将永久删除该员工信息, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
         .then(() => {
-          _this.$myApi.http
+          this.$myApi.http
             .post("/server/api/v1/staff/delete", { id: res.id })
             .then(res => {
-              _this.reload();
-              _this.$message.success("操作成功！");
+              this.reload();
+              this.$message.success("操作成功！");
             });
         })
         .catch(() => {
-          _this.$message({
+          this.$message({
             type: "info",
             message: "已取消删除"
           });
@@ -618,19 +618,19 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
+      
+      let tableData = this.tableData;
+      if (this.filter.searchKey != ""){
+        tableData = this.$toolFn.searchFun(tableData,this.filter);
       }
-      _this.total = tableData.length;
-      var begin = (_this.staffCurPage - 1) * _this.pageSize;
-      var end = _this.staffCurPage * _this.pageSize;
+      this.total = tableData.length;
+      var begin = (this.staffCurPage - 1) * this.pageSize;
+      var end = this.staffCurPage * this.pageSize;
       return tableData.slice(begin, end);
     },
     pageTotal() {
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total / _this.pageSize);
+      
+      var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     },
     staffCurPage(){

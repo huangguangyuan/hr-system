@@ -106,7 +106,7 @@ export default {
   methods: {
     //获取项目数据列表
     getData(typeId) {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/info/buInfos";
       var myData = { typeId: typeId };
       this.isShowLoading = true;
@@ -115,8 +115,8 @@ export default {
           this.tableData = res.data.data
             .map(item => {
               item.typeIdTxt = item.typeId == 1?'公开信息':'指定信息';
-              item.createTimeTxt = _this.$toolFn.timeFormat(item.createTime);
-              //item.createTimeTxt = _this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd HH:mm:ss");
+              item.createTimeTxt = this.$toolFn.timeFormat(item.createTime);
+              //item.createTimeTxt = this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd HH:mm:ss");
               return item;
             })
             .sort((a, b) => {
@@ -153,23 +153,22 @@ export default {
     },
     // 删除
     handleDelete(index, res) {
-      var _this = this;
-      _this
-        .$confirm("此操作将永久删除该消息, 是否继续?", "提 示", {
+      
+      this.$confirm("此操作将永久删除该消息, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
         .then(() => {
-          _this.$myApi.http
+          this.$myApi.http
             .post("/server/api/v1/info/buInfoDelete", { id: res.id })
             .then(res => {
-              _this.reload();
-              _this.$message.success("删除成功！");
+              this.reload();
+              this.$message.success("删除成功！");
             });
         })
         .catch(() => {
-          _this.$message({
+          this.$message({
             type: "info",
             message: "已取消删除"
           });
@@ -182,12 +181,12 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
+      
+      let tableData = this.tableData;
+      if (this.filter.searchKey != ""){
+        tableData = this.$toolFn.searchFun(tableData,this.filter);
       }
-      _this.total = tableData.length;
+      this.total = tableData.length;
       var begin = (this.curPage - 1) * this.pageSize;
       var end = this.curPage * this.pageSize;
       return tableData.slice(begin, end);

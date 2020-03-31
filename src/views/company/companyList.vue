@@ -1,16 +1,13 @@
 <template>
-  <div class="wrap company">
+  <div class="wrap company" v-if="isShow">
     <!-- 头部内容 -->
     <div class="my-top">
       <span>公司列表</span>
       <el-button type="warning" v-if="userInfo.roleTypeId == 3" size="small"  @click="isShowAddModule=true;curInfo.type='add'">新增公司</el-button>
     </div>
-    <!-- 搜索 -->
-    <div class="search-wrap">
-      <el-input placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
-    </div>
+    <bus-and-search :busAndSearch_props="busAndSearch" ref="busAndSearch" v-if="userInfo.roleTypeId == 3"></bus-and-search>
     <!-- 列表内容 -->
-    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
+    <el-table v-loading='isShowLoading' :data="tableData" stripe row-key="id" border>
       <el-table-column sortable prop="name" label="名称"></el-table-column>
       <el-table-column sortable prop="account" label="账号"></el-table-column>
       <el-table-column sortable prop="contactName" label="联系人"></el-table-column>
@@ -21,7 +18,7 @@
         <template slot-scope="scope">
           <el-image
             style="width: 50px; height: 50px;border-radius: 100%;"
-            :src="scope.row.logo?scope.row.logo:AvatarDefault"
+            :src="scope.row.logo?scope.row.logo:avatarDefault"
             fit="scale-down"
           ></el-image>
         </template>
@@ -40,17 +37,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 编辑公司信息 -->
     <el-dialog
       title="编辑公司信息"
@@ -68,53 +55,52 @@
 </template>
 <script>
 import editTemplate from "./editTemplate.vue";
+import pageInfo from "@/components/pageInfo.vue";
+import busAndSearch from "@/components/busAndSearch.vue";
 export default {
+  components: {
+    editTemplate,pageInfo,busAndSearch
+  },
   name: "company",
   inject: ["reload"],
   data() {
     return {
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      isShow:false,
+      pageList: [],
       curInfo: {}, //当前信息
       isShowAddModule: false, //是否显示增加模块
       isShowLoading: false, //是否显示loading页
       userInfo:{},
       filter:{searchKey:'',searchField:['name','account','contactName','contactTel','contactEmail','statusTxt','country']}, 
-      AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
+      avatarDefault:require("@/assets/images/avatar.png"), //默认头像
     };
+  },
+  computed: {
+    pageInfo(){
+      return {
+        reqParams:{//请求分页参数
+            url:"/server/api/v1/company/companys",
+            data:{}
+          }
+        }
+    },
+    busAndSearch(){
+      return {filter:this.filter,BUCodeOptionsShow:false};
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.statusTxt = item.status == 1 ? "启用" : "禁用";
+        return item;
+      });
+    }
   },
   mounted() {
     this.userInfo = this.$toolFn.curUser;
-    this.getData();
+    if ([3,4].indexOf(this.userInfo.roleTypeId) >= 0){//如果是平台管理员和用户管理员
+      this.isShow = true;
+    }
   },
   methods: {
-    //获取项目数据列表
-    async getData() {
-      this.isShowLoading = true;
-      var companys = await this.$myApi.companys();
-      if (companys && companys.length > 0) {
-          this.isShowLoading = false;
-          this.tableData = companys.map(item => {
-              item.statusTxt = item.status == 1 ? "启用" : "禁用";
-              return item;
-            }).sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          this.total = this.tableData.length;
-        }
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
-    },
     // 监听子组件信息
     listenIsShowMask(res) {
       this.isShowAddModule = res;
@@ -125,7 +111,6 @@ export default {
       this.curInfo.type = "modify";
       this.isShowAddModule = true;
     },
-
     // 禁用
     prohibitFun(index, res) {
       var txt = '';
@@ -143,22 +128,14 @@ export default {
           type: "warning"
         }).then(() => {
           var data = {
-                id:res.id,
-                status:status
+              id:res.id,
+              status:status
             }
-          this.$myApi.http
-            .post("/server/api/v1/company/companyUpdate", data)
-            .then(res => {
+          this.$myApi.http.post("/server/api/v1/company/companyUpdate", data).then(res => {
               this.reload();
               this.$message.success("操作成功~");
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
     // 删除
     handleDelete(index, res) {
@@ -167,44 +144,24 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          this.$myApi.http
-            .post("/server/api/v1/company/companyDelete", { id: res.id })
-            .then(res => {
-              if(res.data.code == 0){
-                  this.reload();
-                  this.$message.success("删除成功~");
-              }else{
-                  this.$message.error(res.data.msg);
-              }
-            });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
+          this.$myApi.http.post("/server/api/v1/company/companyDelete", { id: res.id }).then(res => {
+            if(res.data.code == 0){
+                this.reload();
+                this.$message.success("删除成功~");
+            }else{
+                this.$message.error(res.data.msg);
+            }
           });
-        });
+        })
     },
   },
-  computed: {
-    queryTableDate() {
-      let tableData = this.tableData;
-      if (this.filter.searchKey != ""){
-        tableData = this.$toolFn.searchFun(tableData,this.filter);
+   watch: {
+    "filter.searchKey":{
+      handler: function(newVal) {
+        this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
       }
-      this.total = tableData.length;
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
     }
-  },
-  components: {
-    editTemplate
-  }
+   }
 };
 </script>
 <style scoped lang="scss">
@@ -214,23 +171,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search {
-  margin: 20px auto;
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
 }
 </style>
 

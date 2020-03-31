@@ -220,23 +220,23 @@ export default {
     };
   },
   mounted() {
-    var _this = this;
+    
 
-    _this.userInfo = _this.$toolFn.localGet("userInfo");
-    let access = _this.userInfo.access;
+    this.userInfo = this.$toolFn.localGet("userInfo");
+    let access = this.userInfo.access;
     if (access.payrollMain.length > 0 ){
       this.isShow = true;
       this.fun_right = true;
     }
-    if (_this.userInfo.roleTypeId == 2){
-      _this.hrCode = _this.userInfo.userCode;
+    if (this.userInfo.roleTypeId == 2){
+      this.hrCode = this.userInfo.userCode;
     }
     
-    //if ([301,801].indexOf(_this.userInfo.lev) >= 0){
+    //if ([301,801].indexOf(this.userInfo.lev) >= 0){
     if (access.payrollMain.indexOf(4) >=0){
       this.approveBUPayrollS_right = true;
     };
-    //if ([301,401,411].indexOf(_this.userInfo.lev) >= 0){
+    //if ([301,401,411].indexOf(this.userInfo.lev) >= 0){
     if (access.payrollMain.indexOf(2) >=0){
       this.approvePayrollSlip_right = true;
     };
@@ -244,11 +244,11 @@ export default {
       this.genPayrollSlip_right = true;
       this.deletePayrollSlip_right = true;
     };
-    // if ([301,601,611].indexOf(_this.userInfo.lev) >= 0){
+    // if ([301,601,611].indexOf(this.userInfo.lev) >= 0){
     //   this.genPayrollSlip_right = true;
     //   this.deletePayrollSlip_right = true;
     // };
-    // if ([701].indexOf(_this.userInfo.lev) >= 0){
+    // if ([701].indexOf(this.userInfo.lev) >= 0){
     //   this.fun_right = false;
     // };
     this.multipleSelection = this.$toolFn.sessionGet("staffPayrollList_multipleSelection");
@@ -279,8 +279,8 @@ export default {
     },
     // 获取单位列表
     async getregionBU() {
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs({isCache:true});
+      
+      var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUlist = regionBUs;
           this.seachMsg.BUCode = this.$toolFn.sessionGet("staffPayrollListSearch")? this.$toolFn.sessionGet("staffPayrollListSearch").BUCode : this.regionBUlist[0].code;
@@ -545,12 +545,12 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != "") {
-        tableData = _this.searchFun(tableData, _this.filter);
+      
+      let tableData = this.tableData;
+      if (this.filter.searchKey != "") {
+        tableData = this.searchFun(tableData, this.filter);
       }
-      _this.total = tableData.length;
+      this.total = tableData.length;
       var begin = (this.curPage - 1) * this.pageSize;
       var end = this.curPage * this.pageSize;
       return tableData.slice(begin, end);

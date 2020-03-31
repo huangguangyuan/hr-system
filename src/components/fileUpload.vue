@@ -68,16 +68,16 @@ export default {
       },
       //删除
       handlBeforeRemove(file, fileList) {
-      return Promise.resolve((this.$confirm("确认删除文件?","提 示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          }).then(() => {
-            return true;
-          }).catch(() => {
-            return reject(false);
-          }))
-      )
+        return Promise.resolve((this.$confirm("确认删除文件?","提 示", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            }).then(() => {
+              return true;
+            }).catch(() => {
+              return reject(false);
+            }))
+        )
       },
       //删除
       handleRemove(file, fileList) {

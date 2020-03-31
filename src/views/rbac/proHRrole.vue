@@ -43,25 +43,25 @@ export default {
     };
   },
   mounted() {
-    var _this = this;
-    _this.getData();
+    
+    this.getData();
   },
   methods: {
     //获取项目数据列表
     getData() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/projectRole/projectRolesWithAll";
       var myData = {"typeId":2};
-      _this.$myApi.http
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
-          _this.tableData = res.data.data.map(item => {
-            item.createTime = _this.$toolFn.timeFormat(item.createTime);
-            item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
+          this.tableData = res.data.data.map(item => {
+            item.createTime = this.$toolFn.timeFormat(item.createTime);
+            item.modifyTime = this.$toolFn.timeFormat(item.modifyTime);
             item.children = item.nodes
             return item;
           });
-          _this.total = _this.tableData.length;
+          this.total = this.tableData.length;
         })
         .catch(err => {
           console.log(err);
@@ -69,8 +69,8 @@ export default {
     },
     // 获取当前页数
     curChange(val) {
-      var _this = this;
-      _this.curPage = val;
+      
+      this.curPage = val;
     },
     // 删除
     handleDelete(index,res){
@@ -79,14 +79,14 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      
+      var begin = (this.curPage - 1) * this.pageSize;
+      var end = this.curPage * this.pageSize;
+      return this.tableData.slice(begin, end);
     },
     pageTotal(){
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total/_this.pageSize);
+      
+      var pageTotal = Math.ceil(this.total/this.pageSize);
       return pageTotal;
     }
   }

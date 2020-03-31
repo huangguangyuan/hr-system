@@ -7,7 +7,6 @@
           <div class="collapse-btn" @click="collapseFun">
             <i class="el-icon-menu"></i>
           </div>
-          <img src="@/assets/images/logo.png" alt>
           <p>后台管理系统</p>
         </div>
         <div class="right">
@@ -86,7 +85,6 @@
           </el-main>
           <!-- 底部 -->
           <el-footer>
-            <img src="@/assets/images/logo.png" alt>
             版权所有 (C) 2019 GRAMMY TECH。保留所有权利。
           </el-footer>
         </el-container>
@@ -183,18 +181,18 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          var _this = this;
+          
           var reqUrl = '/server/api/v1/staff/account/update';
           var data = {
-            staffCode:_this.userInfo.userCode
+            staffCode:this.userInfo.userCode
           }
-          if (_this.ruleForm.password != _this.ruleForm.passwordRepeat){
-            _this.$message.error("两次秘密不一致！");
+          if (this.ruleForm.password != this.ruleForm.passwordRepeat){
+            this.$message.error("两次秘密不一致！");
           }else{
-            data.password = md5(_this.ruleForm.password);
+            data.password = md5(this.ruleForm.password);
           }
           this.$myApi.http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
@@ -238,16 +236,16 @@ export default {
     },
     // 选中当前tab标签
     tabSelection(tab) {
-      var _this = this;
-      _this.$router.push({ path: tab.name });
+      
+      this.$router.push({ path: tab.name });
     },
     // 删除当前tab标签
     removeTab(targetName) {
-      var _this = this;
-      var activeName = _this.TabsValue;
-      var tabs = _this.navTabs;
+      
+      var activeName = this.TabsValue;
+      var tabs = this.navTabs;
       // 判断如果tab标签的数量是最后一个则不执行
-      if (_this.navTabs.length == 1) {
+      if (this.navTabs.length == 1) {
         return false;
       }
       if (targetName === activeName) {
@@ -262,12 +260,12 @@ export default {
         });
       }
       // 更新tab标签的name值
-      _this.$store.commit({
+      this.$store.commit({
         type: "changeTabsVal",
         TabsValue: activeName
       });
       // 更新tab标签数组列表
-      _this.$store.commit({
+      this.$store.commit({
         type: "getNavTabs",
         navTabs: tabs.filter(tab => {
           return tab.name !== targetName;
@@ -275,23 +273,23 @@ export default {
       });
 
       // home页面的router路径
-      _this.$router.push({ path: activeName });
+      this.$router.push({ path: activeName });
     },
     // 关闭标签
     handleCommand(command) {
-      var _this = this;
-      var tabs = _this.navTabs;
-      var activeName = _this.TabsValue;
+      
+      var tabs = this.navTabs;
+      var activeName = this.TabsValue;
       // 关闭其他tab标签
       if (command == "closeOther") {
-        _this.$store.commit({
+        this.$store.commit({
           type: "getNavTabs",
           navTabs: tabs.filter(tab => {
             return tab.name == activeName;
           })
         });
       } else {
-        _this.$store.commit({
+        this.$store.commit({
           type: "getNavTabs",
           navTabs: []
         });
@@ -299,13 +297,13 @@ export default {
     },
     // 初始化默认第一个tab标签
     initializeTab() {
-      var _this = this;
-      var firstTitle = _this.$route.path;
-      if (_this.navTabs.length != 0) {
+      
+      var firstTitle = this.$route.path;
+      if (this.navTabs.length != 0) {
         return false;
       }
-      var isExist = _this.navTabs.some(item => {
-        return (item.name = _this.$route.path);
+      var isExist = this.navTabs.some(item => {
+        return (item.name = this.$route.path);
       });
       // 判断tab标签是否已经存在
       if (isExist) {
@@ -313,22 +311,22 @@ export default {
       }
       for (let i = 0; i < sidebarInfo.length; i++) {
         for (var j = 0; j < sidebarInfo[i].items.length; j++) {
-          if (sidebarInfo[i].items[j].authUrl == _this.$route.path) {
+          if (sidebarInfo[i].items[j].authUrl == this.$route.path) {
             firstTitle = sidebarInfo[i].items[j].name;
           }
         }
       }
-      _this.$store.commit({
+      this.$store.commit({
         type: "changeNavTabs",
         navTabs: {
           title: firstTitle,
-          name: _this.$route.path
+          name: this.$route.path
         }
       });
       // 更新tab标签的name值
-      _this.$store.commit({
+      this.$store.commit({
         type: "changeTabsVal",
-        TabsValue: _this.$route.path
+        TabsValue: this.$route.path
       });
     },
     // 侧边栏折叠
@@ -352,8 +350,8 @@ export default {
         return this.$store.state.navModule.TabsValue;
       },
       set: function(v) {
-        var _this = this;
-        _this.$store.commit({
+        
+        this.$store.commit({
           type: "changeTabsVal",
           TabsValue: v
         });

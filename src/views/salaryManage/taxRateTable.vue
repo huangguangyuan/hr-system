@@ -26,22 +26,22 @@ export default {
     };
   },
   mounted() {
-    var _this = this;
-    _this.getData();
+    
+    this.getData();
   },
   methods: {
     //获取项目数据列表
     getData() {
-      var _this = this;
-      _this.isShowLoading = true;
+      
+      this.isShowLoading = true;
       var reqUrl = "/server/api/v1/payroll/taxRate";
       var myData = {};
-      _this.$myApi.http
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
           if (res.data.code == 0) {
-            _this.isShowLoading = false;
-            _this.dataList = res.data.data.map(item => {
+            this.isShowLoading = false;
+            this.dataList = res.data.data.map(item => {
               switch (item.id) {
                 case 1:
                   item.txt = `不超过${item.upperLimited}元的部分`;
@@ -56,7 +56,7 @@ export default {
               return item;
             });
           } else {
-            _this.$message("无法获取信息");
+            this.$message("无法获取信息");
           }
         })
         .catch(err => {

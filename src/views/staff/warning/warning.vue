@@ -73,16 +73,16 @@ export default {
   methods: {
     //获取数据列表
     getData(staffCode) {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/staff/warning/getAll";
       var myData = { staffCode: staffCode };
-      _this.isShowLoading = true;
-      _this.$myApi.http
+      this.isShowLoading = true;
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
-          _this.isShowLoading = false;
-          _this.tableData = res.data.data.map(item => {
-          item.issueTime = _this.$toolFn.timeFormat(item.issueTime).slice(0, 10);
+          this.isShowLoading = false;
+          this.tableData = res.data.data.map(item => {
+          item.issueTime = this.$toolFn.timeFormat(item.issueTime).slice(0, 10);
               // this.getHRadminName(item.issueBy).then(res => {
               //   item.hrName = res;
               // });
@@ -95,8 +95,8 @@ export default {
     },
     // 获取当前页数
     curChange(val) {
-      var _this = this;
-      _this.curPage = val;
+      
+      this.curPage = val;
     },
     // 接收子组件发送信息
     listenIsShowMask(res) {
@@ -127,23 +127,23 @@ export default {
     },
     // 删除单个
     handleDelete(index, res) {
-      var _this = this;
-      _this
+      
+      this
         .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
         .then(() => {
-          _this.$myApi.http
+          this.$myApi.http
             .post("/server/api/v1/staff/warning/delete", { id: res.id })
             .then(res => {
-              _this.reload();
-              _this.$message.success("删除成功！");
+              this.reload();
+              this.$message.success("删除成功！");
             });
         })
         .catch(() => {
-          _this.$message({
+          this.$message({
             type: "info",
             message: "已取消删除"
           });
@@ -174,14 +174,14 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      
+      var begin = (this.curPage - 1) * this.pageSize;
+      var end = this.curPage * this.pageSize;
+      return this.tableData.slice(begin, end);
     },
     pageTotal() {
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total / _this.pageSize);
+      
+      var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     },
     staffInfo() {

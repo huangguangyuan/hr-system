@@ -569,15 +569,15 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              _this.modifyFun();
+              this.modifyFun();
               break;
           }
         } else {
@@ -587,183 +587,183 @@ export default {
     },
     // 新增单位
     addFun() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/staff/add";
-      var data = _this.ruleForm;
+      var data = this.ruleForm;
       var data = {
-        companyCode: _this.ruleForm.selectedOptions[0],
-        regionCode: _this.ruleForm.selectedOptions[1],
-        BUCode: _this.ruleForm.selectedOptions[2],
-        departmentCode: _this.ruleForm.departmentCode,
-        nameChinese: _this.ruleForm.nameChinese,
-        nameEnglish: _this.ruleForm.nameEnglish,
-        gender: _this.ruleForm.gender,
-        photo: _this.ruleForm.photo,
-        dateOfBirth: _this.ruleForm.dateOfBirth,
-        address: _this.ruleForm.address,
-        mobile: _this.ruleForm.mobile,
-        mobileCountryCode: _this.ruleForm.mobileCountryCode,
-        email: _this.ruleForm.email,
-        nationality: _this.ruleForm.nationality,
-        IDNo: _this.ruleForm.IDNo,
-        IDCopy: _this.ruleForm.IDCopy,
-        IDCopyBack: _this.ruleForm.IDCopyBack,
-        ethnic: _this.ruleForm.ethnic,
-        politicalBackground: _this.ruleForm.politicalBackground,
-        cultureLevel: _this.ruleForm.cultureLevel,
-        hukouType: _this.ruleForm.hukouType,
-        hukouLoction: _this.ruleForm.hukouLoction,
-        martialStatus: _this.ruleForm.martialStatus,
-        nameOfSpouse: _this.ruleForm.nameOfSpouse,
-        countOfKids: _this.ruleForm.countOfKids,
-        emergencyContact: _this.ruleForm.emergencyContact,
-        dateOfJoining: _this.ruleForm.dateOfJoining,
-        dateOfLeaving: _this.ruleForm.dateOfLeaving,
-        reasonOfLeaving: _this.ruleForm.reasonOfLeaving,
-        workingLocation: _this.ruleForm.workingLocation,
-        outsourceLocation: _this.ruleForm.outsourceLocation,
-        permanentOrContract: _this.ruleForm.permanentOrContract,
-        annualLeaveWriteOffMethod: _this.ruleForm.annualLeaveWriteOffMethod,
-        annualLeaveEntitled: _this.ruleForm.annualLeaveEntitled,
-        paidSickLeaveEntitled: _this.ruleForm.paidSickLeaveEntitled,
-        payrollType: _this.ruleForm.payrollType,
-        gratuity: _this.ruleForm.gratuity,
-        medicalScheme: _this.ruleForm.medicalScheme,
-        bankName: _this.ruleForm.bankName,
-        bankAccountName: _this.ruleForm.bankAccountName,
-        bankAccountNo: _this.ruleForm.bankAccountNo,
-        fileUnit: _this.ruleForm.fileUnit,
-        fileUnitMove: _this.ruleForm.fileUnitMove,
-        SIAccount: _this.ruleForm.SIAccount,
-        HCAccount: _this.ruleForm.HCAccount,
-        medicalSchemeAccount: _this.ruleForm.medicalSchemeAccount,
-        workStatus: parseInt(_this.ruleForm.workStatus),
-        account:_this.ruleForm.account,
-        password: md5(_this.ruleForm.password),
-        hrCode: _this.ruleForm.hrCode,
-        staffNo: _this.ruleForm.staffNo,
+        companyCode: this.ruleForm.selectedOptions[0],
+        regionCode: this.ruleForm.selectedOptions[1],
+        BUCode: this.ruleForm.selectedOptions[2],
+        departmentCode: this.ruleForm.departmentCode,
+        nameChinese: this.ruleForm.nameChinese,
+        nameEnglish: this.ruleForm.nameEnglish,
+        gender: this.ruleForm.gender,
+        photo: this.ruleForm.photo,
+        dateOfBirth: this.ruleForm.dateOfBirth,
+        address: this.ruleForm.address,
+        mobile: this.ruleForm.mobile,
+        mobileCountryCode: this.ruleForm.mobileCountryCode,
+        email: this.ruleForm.email,
+        nationality: this.ruleForm.nationality,
+        IDNo: this.ruleForm.IDNo,
+        IDCopy: this.ruleForm.IDCopy,
+        IDCopyBack: this.ruleForm.IDCopyBack,
+        ethnic: this.ruleForm.ethnic,
+        politicalBackground: this.ruleForm.politicalBackground,
+        cultureLevel: this.ruleForm.cultureLevel,
+        hukouType: this.ruleForm.hukouType,
+        hukouLoction: this.ruleForm.hukouLoction,
+        martialStatus: this.ruleForm.martialStatus,
+        nameOfSpouse: this.ruleForm.nameOfSpouse,
+        countOfKids: this.ruleForm.countOfKids,
+        emergencyContact: this.ruleForm.emergencyContact,
+        dateOfJoining: this.ruleForm.dateOfJoining,
+        dateOfLeaving: this.ruleForm.dateOfLeaving,
+        reasonOfLeaving: this.ruleForm.reasonOfLeaving,
+        workingLocation: this.ruleForm.workingLocation,
+        outsourceLocation: this.ruleForm.outsourceLocation,
+        permanentOrContract: this.ruleForm.permanentOrContract,
+        annualLeaveWriteOffMethod: this.ruleForm.annualLeaveWriteOffMethod,
+        annualLeaveEntitled: this.ruleForm.annualLeaveEntitled,
+        paidSickLeaveEntitled: this.ruleForm.paidSickLeaveEntitled,
+        payrollType: this.ruleForm.payrollType,
+        gratuity: this.ruleForm.gratuity,
+        medicalScheme: this.ruleForm.medicalScheme,
+        bankName: this.ruleForm.bankName,
+        bankAccountName: this.ruleForm.bankAccountName,
+        bankAccountNo: this.ruleForm.bankAccountNo,
+        fileUnit: this.ruleForm.fileUnit,
+        fileUnitMove: this.ruleForm.fileUnitMove,
+        SIAccount: this.ruleForm.SIAccount,
+        HCAccount: this.ruleForm.HCAccount,
+        medicalSchemeAccount: this.ruleForm.medicalSchemeAccount,
+        workStatus: parseInt(this.ruleForm.workStatus),
+        account:this.ruleForm.account,
+        password: md5(this.ruleForm.password),
+        hrCode: this.ruleForm.hrCode,
+        staffNo: this.ruleForm.staffNo,
       };
       
 
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveWriteOffDate == ""){
-        _this.$message.error("年假清空日期不能为空");
+      if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveWriteOffDate == ""){
+        this.$message.error("年假清空日期不能为空");
         return false;
       }
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetain == undefined){
-        _this.$message.error("请填写年假清空后可保留天数");
+      if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveRetain == undefined){
+        this.$message.error("请填写年假清空后可保留天数");
         return false;
       }
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetainClearDate == ""){
-        _this.$message.error("请填写可保留天数清空日期");
+      if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveRetainClearDate == ""){
+        this.$message.error("请填写可保留天数清空日期");
         return false;
       }
-      // if (new Date(_this.ruleForm.annualLeaveWriteOffDate) < new Date((new Date().getFullYear() +1) + "-01-01 00:00:00")){
-      //   _this.$message.error("年假清空日不能早于" + (new Date().getFullYear() + 1) + "-01-01");
+      // if (new Date(this.ruleForm.annualLeaveWriteOffDate) < new Date((new Date().getFullYear() +1) + "-01-01 00:00:00")){
+      //   this.$message.error("年假清空日不能早于" + (new Date().getFullYear() + 1) + "-01-01");
       //   return false;
       // }
-      if (new Date(_this.ruleForm.annualLeaveWriteOffDate) > new Date(_this.ruleForm.annualLeaveRetainClearDate)){
-        _this.$message.error("年假保留天数清空日期不能早于年假清空日期");
+      if (new Date(this.ruleForm.annualLeaveWriteOffDate) > new Date(this.ruleForm.annualLeaveRetainClearDate)){
+        this.$message.error("年假保留天数清空日期不能早于年假清空日期");
         return false;
       }
       data.annualLeaveWriteOffDate =  this.$toolFn.timeFormat(this.curInfo.annualLeaveWriteOffDate,"yyyy-MM-dd");
-      data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
-      data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveRetainClearDate);
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      data.annualLeaveRetain = this.ruleForm.annualLeaveRetain;
+      data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.ruleForm.annualLeaveRetainClearDate);
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("新增成功~");
+          this.reload();
+          this.$message.success("新增成功~");
         } else {
-          _this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg);
         }
       });
     },
     // 修改信息
     modifyFun() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/staff/update";
       var data = {
-        id: _this.curInfo.id,
-        nameChinese: _this.ruleForm.nameChinese,
-        nameEnglish: _this.ruleForm.nameEnglish,
-        gender: _this.ruleForm.gender,
-        photo: _this.ruleForm.photo,
-        dateOfBirth: _this.ruleForm.dateOfBirth,
-        address: _this.ruleForm.address,
-        mobile: _this.ruleForm.mobile,
-        mobileCountryCode: _this.ruleForm.mobileCountryCode,
-        email: _this.ruleForm.email,
-        nationality: _this.ruleForm.nationality,
-        IDNo: _this.ruleForm.IDNo,
-        IDCopy: _this.ruleForm.IDCopy,
-        IDCopyBack: _this.ruleForm.IDCopyBack,
-        ethnic: _this.ruleForm.ethnic,
-        politicalBackground: _this.ruleForm.politicalBackground,
-        cultureLevel: _this.ruleForm.cultureLevel,
-        hukouType: _this.ruleForm.hukouType,
-        hukouLoction: _this.ruleForm.hukouLoction,
-        martialStatus: _this.ruleForm.martialStatus,
-        nameOfSpouse: _this.ruleForm.nameOfSpouse,
-        countOfKids: _this.ruleForm.countOfKids,
-        emergencyContact: _this.ruleForm.emergencyContact,
-        dateOfJoining: _this.ruleForm.dateOfJoining,
-        dateOfLeaving: _this.ruleForm.dateOfLeaving,
-        reasonOfLeaving: _this.ruleForm.reasonOfLeaving,
-        workingLocation: _this.ruleForm.workingLocation,
-        outsourceLocation: _this.ruleForm.outsourceLocation,
-        permanentOrContract: _this.ruleForm.permanentOrContract,
-        annualLeaveWriteOffMethod: _this.ruleForm.annualLeaveWriteOffMethod,
-        annualLeaveEntitled: _this.ruleForm.annualLeaveEntitled,
-        paidSickLeaveEntitled: _this.ruleForm.paidSickLeaveEntitled,
-        payrollType: _this.ruleForm.payrollType,
-        gratuity: _this.ruleForm.gratuity,
-        medicalScheme: _this.ruleForm.medicalScheme,
-        bankName: _this.ruleForm.bankName,
-        bankAccountName: _this.ruleForm.bankAccountName,
-        bankAccountNo: _this.ruleForm.bankAccountNo,
-        fileUnit: _this.ruleForm.fileUnit,
-        fileUnitMove: _this.ruleForm.fileUnitMove,
-        SIAccount: _this.ruleForm.SIAccount,
-        HCAccount: _this.ruleForm.HCAccount,
-        medicalSchemeAccount: _this.ruleForm.medicalSchemeAccount,
-        staffNo: _this.ruleForm.staffNo,
-        staffAlias: _this.ruleForm.staffAlias,
-        position: _this.ruleForm.position,
-        dateOfPlace: _this.ruleForm.dateOfPlace,
-        postalAddress: _this.ruleForm.postalAddress,
-        fringeBeneiftLimit: _this.ruleForm.fringeBeneiftLimit,
-        departmentCode:_this.ruleForm.departmentCode,
-        workStatus: parseInt(_this.ruleForm.workStatus)
+        id: this.curInfo.id,
+        nameChinese: this.ruleForm.nameChinese,
+        nameEnglish: this.ruleForm.nameEnglish,
+        gender: this.ruleForm.gender,
+        photo: this.ruleForm.photo,
+        dateOfBirth: this.ruleForm.dateOfBirth,
+        address: this.ruleForm.address,
+        mobile: this.ruleForm.mobile,
+        mobileCountryCode: this.ruleForm.mobileCountryCode,
+        email: this.ruleForm.email,
+        nationality: this.ruleForm.nationality,
+        IDNo: this.ruleForm.IDNo,
+        IDCopy: this.ruleForm.IDCopy,
+        IDCopyBack: this.ruleForm.IDCopyBack,
+        ethnic: this.ruleForm.ethnic,
+        politicalBackground: this.ruleForm.politicalBackground,
+        cultureLevel: this.ruleForm.cultureLevel,
+        hukouType: this.ruleForm.hukouType,
+        hukouLoction: this.ruleForm.hukouLoction,
+        martialStatus: this.ruleForm.martialStatus,
+        nameOfSpouse: this.ruleForm.nameOfSpouse,
+        countOfKids: this.ruleForm.countOfKids,
+        emergencyContact: this.ruleForm.emergencyContact,
+        dateOfJoining: this.ruleForm.dateOfJoining,
+        dateOfLeaving: this.ruleForm.dateOfLeaving,
+        reasonOfLeaving: this.ruleForm.reasonOfLeaving,
+        workingLocation: this.ruleForm.workingLocation,
+        outsourceLocation: this.ruleForm.outsourceLocation,
+        permanentOrContract: this.ruleForm.permanentOrContract,
+        annualLeaveWriteOffMethod: this.ruleForm.annualLeaveWriteOffMethod,
+        annualLeaveEntitled: this.ruleForm.annualLeaveEntitled,
+        paidSickLeaveEntitled: this.ruleForm.paidSickLeaveEntitled,
+        payrollType: this.ruleForm.payrollType,
+        gratuity: this.ruleForm.gratuity,
+        medicalScheme: this.ruleForm.medicalScheme,
+        bankName: this.ruleForm.bankName,
+        bankAccountName: this.ruleForm.bankAccountName,
+        bankAccountNo: this.ruleForm.bankAccountNo,
+        fileUnit: this.ruleForm.fileUnit,
+        fileUnitMove: this.ruleForm.fileUnitMove,
+        SIAccount: this.ruleForm.SIAccount,
+        HCAccount: this.ruleForm.HCAccount,
+        medicalSchemeAccount: this.ruleForm.medicalSchemeAccount,
+        staffNo: this.ruleForm.staffNo,
+        staffAlias: this.ruleForm.staffAlias,
+        position: this.ruleForm.position,
+        dateOfPlace: this.ruleForm.dateOfPlace,
+        postalAddress: this.ruleForm.postalAddress,
+        fringeBeneiftLimit: this.ruleForm.fringeBeneiftLimit,
+        departmentCode:this.ruleForm.departmentCode,
+        workStatus: parseInt(this.ruleForm.workStatus)
       };
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveWriteOffDate == ""){
-        _this.$message.error("年假结算日期不能为空");
+      if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveWriteOffDate == ""){
+        this.$message.error("年假结算日期不能为空");
         return false;
       }
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetain == undefined){
-        _this.$message.error("请填写年假清空后可保留天数");
+      if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveRetain == undefined){
+        this.$message.error("请填写年假清空后可保留天数");
         return false;
       }
-      if (_this.ruleForm.annualLeaveWriteOffMethod == 2 && _this.ruleForm.annualLeaveRetainClearDate == ""){
-        _this.$message.error("请填写可保留天数清空日期");
+      if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveRetainClearDate == ""){
+        this.$message.error("请填写可保留天数清空日期");
         return false;
       }
-      // if (new Date(_this.ruleForm.annualLeaveWriteOffDate) < new Date((new Date().getFullYear() +1) + "-01-01 00:00:00")){
-      //   _this.$message.error("年假清空日不能早于" + (new Date().getFullYear() + 1) + "-01-01");
+      // if (new Date(this.ruleForm.annualLeaveWriteOffDate) < new Date((new Date().getFullYear() +1) + "-01-01 00:00:00")){
+      //   this.$message.error("年假清空日不能早于" + (new Date().getFullYear() + 1) + "-01-01");
       //   return false;
       // }
-      if (new Date(_this.ruleForm.annualLeaveWriteOffDate) >= new Date(_this.ruleForm.annualLeaveRetainClearDate)){
-        _this.$message.error("年假保留天数清空日期需要大于年假清空日期");
+      if (new Date(this.ruleForm.annualLeaveWriteOffDate) >= new Date(this.ruleForm.annualLeaveRetainClearDate)){
+        this.$message.error("年假保留天数清空日期需要大于年假清空日期");
         return false;
       }
-      data.annualLeaveWriteOffDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveWriteOffDate);
-      data.annualLeaveRetain = _this.ruleForm.annualLeaveRetain;
-      data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(_this.ruleForm.annualLeaveRetainClearDate);
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      data.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.ruleForm.annualLeaveWriteOffDate);
+      data.annualLeaveRetain = this.ruleForm.annualLeaveRetain;
+      data.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.ruleForm.annualLeaveRetainClearDate);
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("修改成功~");
+          this.reload();
+          this.$message.success("修改成功~");
         } else {
           
-          _this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg);
         }
       });
     },
@@ -820,8 +820,8 @@ export default {
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     },
     // 获取上传头像
     uploadAvatar(res, file) {

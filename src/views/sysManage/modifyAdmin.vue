@@ -140,15 +140,15 @@ export default {
     },
     // 所有HR管理员角色属性
     getHrAdminRoleInfo() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/admin/hrSys/getHrAdminRoleInfo";
       var data = {
       };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
             this.hrAdminRoles = res.data.data;
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
           return false;
         }
       })
@@ -158,19 +158,19 @@ export default {
     },    
     //提交表单
     submitForm(formName) {
-      var _this = this;
+      
       this.$refs[formName].validate(valid => {
         if (valid) {
           switch(this.modifyInfo.adminType)
           {
             case 'admin':
-              _this.modifyAmdinFn();
+              this.modifyAmdinFn();
               break;
             case 'HRadmin':
-              _this.modifyHRadminFn();
+              this.modifyHRadminFn();
               break;
             case 'customerAdmin':
-              _this.modifyAmdinFn();
+              this.modifyAmdinFn();
               break;
           }
         } else {
@@ -180,18 +180,18 @@ export default {
     },
     // 修改管理员信息
     modifyAmdinFn() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/admin/update";
       var data = {
-        id: _this.ruleForm.id,
-        email: _this.ruleForm.email,
-        mobile: _this.ruleForm.mobile,
-        name: _this.ruleForm.name,
-        serveId : _this.ruleForm.serveId
+        id: this.ruleForm.id,
+        email: this.ruleForm.email,
+        mobile: this.ruleForm.mobile,
+        name: this.ruleForm.name,
+        serveId : this.ruleForm.serveId
       };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
           if (res.data.code == 0) {
-            _this.reload();
+            this.reload();
             this.$message("修改成功");
           }
         })
@@ -201,32 +201,32 @@ export default {
     },
     // 修改HR管理员
     modifyHRadminFn() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/admin/hrSys/update";
       var data = {
-        id:_this.ruleForm.id,
-        email: _this.ruleForm.email,
-        mobile: _this.ruleForm.mobile,
-        name: _this.ruleForm.name,
-        serveId:_this.ruleForm.serveId,
-        lev:_this.ruleForm.lev,
+        id:this.ruleForm.id,
+        email: this.ruleForm.email,
+        mobile: this.ruleForm.mobile,
+        name: this.ruleForm.name,
+        serveId:this.ruleForm.serveId,
+        lev:this.ruleForm.lev,
         leavesAccess:'',
         claimAccess:'',
         levExtend:'',
       };
-      if (_this.ruleForm.leavesAccess.length > 0){
-        data.leavesAccess = _this.ruleForm.leavesAccess.join(",");
+      if (this.ruleForm.leavesAccess.length > 0){
+        data.leavesAccess = this.ruleForm.leavesAccess.join(",");
       }
-      if (_this.ruleForm.claimAccess.length > 0){
-        data.claimAccess = _this.ruleForm.claimAccess.join(",");
+      if (this.ruleForm.claimAccess.length > 0){
+        data.claimAccess = this.ruleForm.claimAccess.join(",");
       }
-      if (_this.ruleForm.levExtend.length > 0){
-        data.levExtend = _this.ruleForm.levExtend.join(",");
+      if (this.ruleForm.levExtend.length > 0){
+        data.levExtend = this.ruleForm.levExtend.join(",");
       }
-      _this.$myApi.http
+      this.$myApi.http
         .post(reqUrl, data)
         .then(res => {
-          _this.reload();
+          this.reload();
         })
         .catch(err => {
           console.log(err);
@@ -234,8 +234,8 @@ export default {
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowAddAdmin", false);
+      
+      this.$emit("listenIsShowAddAdmin", false);
     },
     // 重置
     resetForm(formName) {

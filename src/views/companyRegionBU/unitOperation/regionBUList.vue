@@ -1,9 +1,9 @@
 <template>
-  <div class="regionBUList">
+  <div class="regionBUList" v-if="isShow">
     <!-- 头部内容 -->
     <div class="my-top">
       <span>单位列表</span>
-      <el-button type="warning" v-if="userRight" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增单位</el-button>
+      <el-button type="warning" v-if="userRight.indexOf('add')>=0" size="small" @click="isShowAddModule=true;curInfo.type='add'">新增单位</el-button>
     </div>
     <!-- 搜索 -->
     <div class="search">
@@ -12,7 +12,7 @@
         </el-select>
     </div>
     <!-- 列表内容 -->
-    <el-table v-loading="loading" :data="queryTableDate" stripe row-key="id">
+    <el-table v-loading='isShowLoading' :data="tableData" stripe row-key="id">
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
@@ -64,7 +64,7 @@
         <template slot-scope="scope">
           <el-image
             style="width: 50px; height: 50px;border-radius: 100%;"
-            :src="scope.row.logo?scope.row.logo:AvatarDefault"
+            :src="scope.row.logo?scope.row.logo:avatarDefault"
             fit="scale-down"
           ></el-image>
         </template>
@@ -73,8 +73,8 @@
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="350px">
         <template slot-scope="scope">
-          <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" v-if="userRight">编辑</el-button>
-          <el-button v-if="userRight"
+          <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" v-if="userRight.indexOf('edit')>=0">编辑</el-button>
+          <el-button v-if="userRight.indexOf('del')>=0"
             size="mini"
             icon="el-icon-warning"
             @click="prohibitFun(scope.$index, scope.row)"
@@ -83,8 +83,9 @@
             size="mini"
             icon="el-icon-setting"
             @click="handleSetting(scope.$index, scope.row)"
+            v-if="userRight.indexOf('set')>=0"
           >设置</el-button>
-          <el-button v-if="userRight"
+          <el-button v-if="userRight.indexOf('del')>=0"
             size="mini"
             icon="el-icon-delete"
             type="danger"
@@ -94,23 +95,13 @@
       </el-table-column>
     </el-table>
     <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 编辑单位信息 -->
     <el-dialog
       title="编辑单位信息"
       :visible.sync="isShowAddModule"
       :close-on-click-modal="false"
-      width="65%"
-    >
+      width="65%">
       <edit-template
         v-if="isShowAddModule"
         v-on:listenIsShowMask="listenIsShowMask"
@@ -121,87 +112,81 @@
 </template>
 <script>
 import editTemplate from "./editTemplate.vue";
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    editTemplate,pageInfo
+  },
   name: "regionBUList",
   inject: ["reload"],
   data() {
     return {
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      isShow:false,
+      pageList: [],
       curInfo: {}, //当前信息
       isShowAddModule: false, //是否显示增加模块
-      loading: true,
-      AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
+      isShowLoading: true,
+      avatarDefault:require("@/assets/images/avatar.png"), //默认头像
       companyCode:"",
       companyList:[],
       userInfo:{},
-      userRight:false
+      userRight:[]
     };
   },
-  mounted() {
-    var _this = this;
-    _this.userInfo = _this.$toolFn.localGet("userInfo");
-    _this.getCompanyCodeFun();
-    if (_this.userInfo.roleTypeId == 4 && _this.userInfo.lev >= 201 && _this.userInfo.lev <= 220){
-      this.userRight = true;
+  computed: {
+    pageInfo(){
+      return {
+        reqParams:{//请求分页参数
+            isReq:false,
+            url:"/server/api/v1/company/regionBUs",
+            data:{companyCode:this.companyCode}
+          }
+        }
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.statusTxt = item.status == 1 ? "启用" : "禁用";
+        return item;
+      });
     }
-    if (_this.userInfo.roleTypeId == 3 && _this.userInfo.lev == 301){
-      this.userRight = true;
-    }    
-    //_this.getData();
-    
+  },
+  mounted() {
+    this.userInfo = this.$toolFn.curUser;
+    this.getCompanyCodeFun();
+    if (this.userInfo.roleTypeId == 4){//201公司管理员，211区域管理员，221单位管理员
+      if ([201,211].indexOf(this.userInfo.lev) >= 0){
+        this.userRight = ['add','edit','del'];
+      }else if (this.userInfo.lev == 221){
+        this.userRight = ['edit'];
+      }
+    }
+    if (this.userInfo.roleTypeId == 3){//平台管理员
+      this.userRight = ['add','edit','del'];
+    }
+    if (this.userInfo.roleTypeId == 2 && this.userInfo.lev == 301){//hr系统管理员
+      this.userRight = ['set'];
+    }
+    if ([2,3,4].indexOf(this.userInfo.roleTypeId) >= 0){//如果是平台管理员和用户管理员
+      this.isShow = true;
+    }
   },
   methods: {
     // 获取单位列表
     async getCompanyCodeFun(){
-      var _this = this;
-      var companys = await _this.$myApi.companys({isCache:true});
+      var companys = await this.$myApi.companys({isCache:true});
       if (companys) {
           this.companyList = companys;
           this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):this.companyList[0].code;
-          this.getData({companyCode:this.companyCode});
+          this.pageInfo.reqParams.isReq = true;
+          this.$refs.pageInfo.getData(this.pageInfo);
         }
     },
     // 选择单位
     changeCompanyCode(code){
       this.companyCode = code;
-      this.getData({companyCode:this.companyCode});
+      this.pageInfo.reqParams.isReq = true;
+      this.$refs.pageInfo.getData(this.pageInfo);
       this.$toolFn.sessionSet('hrCompanyCode',code);
-    },
-    //获取项目数据列表
-    getData(params) {
-      var _this = this;
-      _this.loading = true;
-      var reqUrl = "/server/api/v1/company/regionBUs";
-      var myData = {};
-      if (params && params.companyCode != ""){
-        myData.companyCode = params.companyCode
-      }
-      _this.$myApi.http.post(reqUrl, myData).then(res => {
-          _this.loading = false;
-          _this.tableData = res.data.data
-            .map(item => {
-              item.statusTxt = item.status == 1 ? "启用" : "禁用";
-              return item;
-            })
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          _this.total = _this.tableData.length;
-        })
-    },
-    // 获取当前页数
-    curChange(val) {
-      var _this = this;
-      _this.curPage = val;
     },
     // 监听子组件信息
     listenIsShowMask(res) {
@@ -209,14 +194,12 @@ export default {
     },
     // 编辑信息
     handleEdit(index, res) {
-      var _this = this;
-      _this.curInfo = res;
-      _this.curInfo.type = "modify";
-      _this.isShowAddModule = true;
+      this.curInfo = res;
+      this.curInfo.type = "modify";
+      this.isShowAddModule = true;
     },
     // 禁用
     prohibitFun(index, res) {
-      var _this = this;
       var txt = "";
       var status = 1;
       if (res.status == 1) {
@@ -226,30 +209,20 @@ export default {
         txt = "此操作将启用该数据, 是否继续?";
         status = 1;
       }
-      _this
-        .$confirm(txt, "提 示", {
+      this.$confirm(txt, "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
+        }).then(() => {
           var data = {
             id: res.id,
             status: status
           };
-          _this.$myApi.http
-            .post("/server/api/v1/company/regionBUUpdate", data)
-            .then(res => {
-              _this.reload();
-              _this.$message.success("操作成功~");
+          this.$myApi.http.post("/server/api/v1/company/regionBUUpdate", data).then(res => {
+              this.reload();
+              this.$message.success("操作成功~");
             });
         })
-        .catch(() => {
-          _this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
     // 设置
     handleSetting(index, res){
@@ -261,48 +234,21 @@ export default {
     },
     // 删除
     handleDelete(index, res) {
-      var _this = this;
-      _this
-        .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
-          _this.$myApi.http
-            .post("/server/api/v1/company/regionBUDelete", { id: res.id })
-            .then(res => {
+        }).then(() => {
+          this.$myApi.http.post("/server/api/v1/company/regionBUDelete", { id: res.id }).then(res => {
               if (res.data.code == 0) {
-                _this.reload();
-                _this.$message.success("删除成功~");
+                this.reload();
+                this.$message.success("删除成功~");
               } else {
-                _this.$message.error(res.data.msg);
+                this.$message.error(res.data.msg);
               }
             });
         })
-        .catch(() => {
-          _this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     }
-  },
-  computed: {
-    queryTableDate() {
-      var _this = this;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total / _this.pageSize);
-      return pageTotal;
-    }
-  },
-  components: {
-    editTemplate
   }
 };
 </script>
@@ -313,15 +259,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
 }
 .search {
   margin: 20px auto;

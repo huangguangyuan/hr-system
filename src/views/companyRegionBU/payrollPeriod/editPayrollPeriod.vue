@@ -57,8 +57,8 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
           var reqUrl = '/server/api/v1/payroll/payrollPeriodUpdate';
           this.$myApi.http.post(reqUrl,this.ruleForm).then(res => {
@@ -77,8 +77,8 @@ export default {
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     }
   }
 };

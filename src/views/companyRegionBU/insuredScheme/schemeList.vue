@@ -152,8 +152,8 @@ export default {
     },
     // 获取当前页数
     curChange(val) {
-      var _this = this;
-      _this.curPage = val;
+      
+      this.curPage = val;
     },
     // 接收子组件发送信息
     listenIsShowMask(res) {
@@ -175,50 +175,50 @@ export default {
     },
     // 删除
     handleDelete(index, item) {
-      var _this = this;
-      _this
+      
+      this
         .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
         .then(() => {
-          _this.$myApi.http.post("/server/api/v1/insuredScheme/staffByInsuredScheme", { code: item.code }).then(res => {
+          this.$myApi.http.post("/server/api/v1/insuredScheme/staffByInsuredScheme", { code: item.code }).then(res => {
               if (res.data.code == 0){
                   let staffs = res.data.data;
                   if (staffs.length > 0){
-                    _this.$confirm("此方案已有员工正在使用，删除会影响薪资计算，是否继续", "提 示", {
+                    this.$confirm("此方案已有员工正在使用，删除会影响薪资计算，是否继续", "提 示", {
                       confirmButtonText: "确定",
                       cancelButtonText: "取消",
                       type: "warning"
                     }).then(() => {
-                      _this.$myApi.http.post("/server/api/v1/insuredScheme/delete", { id: item.id }).then(res => {
+                      this.$myApi.http.post("/server/api/v1/insuredScheme/delete", { id: item.id }).then(res => {
                         if (res.data.code == 0){
-                          _this.reload();
-                          _this.$message.success("删除成功！");
+                          this.reload();
+                          this.$message.success("删除成功！");
                         }else{
-                          _this.$message.error(res.msg);
+                          this.$message.error(res.msg);
                         }
                       });
                     })
                   }else{
-                    _this.$myApi.http.post("/server/api/v1/insuredScheme/delete", { id: item.id }).then(res => {
+                    this.$myApi.http.post("/server/api/v1/insuredScheme/delete", { id: item.id }).then(res => {
                         if (res.data.code == 0){
-                          _this.reload();
-                          _this.$message.success("删除成功！");
+                          this.reload();
+                          this.$message.success("删除成功！");
                         }else{
-                          _this.$message.error(res.msg);
+                          this.$message.error(res.msg);
                         }
                       });
                   }
 
               }else{
-                _this.$message.error(res.msg);
+                this.$message.error(res.msg);
               }
             });
         })
         .catch(() => {
-          _this.$message({
+          this.$message({
             type: "info",
             message: "已取消删除"
           });
@@ -247,14 +247,14 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      
+      var begin = (this.curPage - 1) * this.pageSize;
+      var end = this.curPage * this.pageSize;
+      return this.tableData.slice(begin, end);
     },
     pageTotal() {
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total / _this.pageSize);
+      
+      var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     },
     BUInfo() {

@@ -149,7 +149,7 @@ export default {
     },
     // 获取数据
     getData() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollInfo";
       var data = { staffCode: this.staffInfo.code };
       this.$myApi.http.post(reqUrl, data).then(res => {
@@ -225,7 +225,7 @@ export default {
           });
           this.staffInsuredInfo = res.data.data.staffInsuredInfo;
           this.staffInsuredInfoMPF = res.data.data.staffInsuredInfoMPF;
-          _this.loading = false;
+          this.loading = false;
         }
         
       });

@@ -114,36 +114,36 @@ export default {
     };
   },
   mounted() {
-    var _this = this;
-    _this.InitializationFun();
+    
+    this.InitializationFun();
   },
   methods: {
     // 初始化
     InitializationFun() {
-      var _this = this;
-      _this.getregionBU();
+      
+      this.getregionBU();
     },
     // 获取单位列表
     async getregionBU() {
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs({isCache:true});
+      
+      var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
-          _this.regionBUlist = regionBUs;
-          _this.BUCode = this.$toolFn.sessionGet("staffBUCode") ? this.$toolFn.sessionGet("staffBUCode"): _this.regionBUlist[0].code;
-          _this.getData(this.BUCode);
+          this.regionBUlist = regionBUs;
+          this.BUCode = this.$toolFn.sessionGet("staffBUCode") ? this.$toolFn.sessionGet("staffBUCode"): this.regionBUlist[0].code;
+          this.getData(this.BUCode);
         }
     },
     //获取项目数据列表
     getData(BUCode) {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/staff/getAll";
       var myData = { BUCode: BUCode };
-      _this.isShowLoading = true;
-      _this.$myApi.http
+      this.isShowLoading = true;
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
-          _this.isShowLoading = false;
-          _this.tableData = res.data.data
+          this.isShowLoading = false;
+          this.tableData = res.data.data
             .map(item => {
               // 性别
               switch (item.gender) {
@@ -167,7 +167,7 @@ export default {
               }
               return 0;
             });
-          _this.total = _this.tableData.length;
+          this.total = this.tableData.length;
         })
         .catch(err => {
           console.log(err);
@@ -197,19 +197,19 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
+      
+      let tableData = this.tableData;
+      if (this.filter.searchKey != ""){
+        tableData = this.$toolFn.searchFun(tableData,this.filter);
       }
-      _this.total = tableData.length;
-      var begin = (_this.payrollCurPage - 1) * _this.pageSize;
-      var end = _this.payrollCurPage * _this.pageSize;
+      this.total = tableData.length;
+      var begin = (this.payrollCurPage - 1) * this.pageSize;
+      var end = this.payrollCurPage * this.pageSize;
       return tableData.slice(begin, end);
     },
     pageTotal() {
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total / _this.pageSize);
+      
+      var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     },
     payrollCurPage(){

@@ -168,15 +168,15 @@ export default {
     },
     //获取数据列表
     getData(proCode) {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/projectRole/projectRolesWithAll";
-      var myData = { typeId: parseInt(_this.roleTypeValue) };
-      _this.isShowLoading = true;
-      _this.$myApi.http
+      var myData = { typeId: parseInt(this.roleTypeValue) };
+      this.isShowLoading = true;
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
-          _this.isShowLoading = false;
-          _this.tableData = _this
+          this.isShowLoading = false;
+          this.tableData = this
             .mapFun(res.data.data, proCode)
             .sort((a, b) => {
               if (a.id < b.id) {
@@ -187,7 +187,7 @@ export default {
               }
               return 0;
             });
-          _this.total = _this.tableData.length;
+          this.total = this.tableData.length;
         })
         .catch(err => {
           console.log(err);
@@ -195,15 +195,15 @@ export default {
     },
     // 循环数据列表获取属性
     mapFun(objArr, proCode) {
-      var _this = this;
+      
       return objArr
         .map(item => {
-          item.createTime = _this.$toolFn.timeFormat(item.createTime);
-          item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
+          item.createTime = this.$toolFn.timeFormat(item.createTime);
+          item.modifyTime = this.$toolFn.timeFormat(item.modifyTime);
           item.isStatus = item.status == 1 ? "启用" : "禁用";
           item.children = item.nodes;
           if (item.children != 0) {
-            _this.mapFun(item.children);
+            this.mapFun(item.children);
           }
           return item;
         })
@@ -213,8 +213,8 @@ export default {
     },
     // 获取当前页数
     curChange(val) {
-      var _this = this;
-      _this.curPage = val;
+      
+      this.curPage = val;
     },
     // 获取角色类型
     getRoleType(val) {
@@ -231,25 +231,25 @@ export default {
     },
     // 编辑信息
     editFun(index, res) {
-      var _this = this;
-      _this.isShowModifyRole = true;
-      _this.curInfo = res;
+      
+      this.isShowModifyRole = true;
+      this.curInfo = res;
     },
     // 添加从属角色
     addChildRoleFun(index, res) {
-      var _this = this;
-      _this.isShowAddChildRole = true;
-      _this.curInfo = res;
+      
+      this.isShowAddChildRole = true;
+      this.curInfo = res;
     },
     // 分配权限
     assignPermissionsFun(index, res) {
-      var _this = this;
-      _this.isShowAssignPermissions = true;
-      _this.curInfo = res;
+      
+      this.isShowAssignPermissions = true;
+      this.curInfo = res;
     },
     // 禁用
     forbidden(index, res) {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/projectRole/update";
       var data = { id: res.id };
       var txt = "";
@@ -260,21 +260,21 @@ export default {
         data.status = 1;
         txt = "此操作将启用, 是否继续?";
       }
-      _this
+      this
         .$confirm(txt, "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
         .then(() => {
-          _this.$myApi.http.post(reqUrl, data).then(res => {
+          this.$myApi.http.post(reqUrl, data).then(res => {
             if (res.data.code == 0) {
-              _this.reload();
+              this.reload();
             }
           });
         })
         .catch(() => {
-          _this.$message({
+          this.$message({
             type: "info",
             message: "已取消操作~"
           });
@@ -282,23 +282,23 @@ export default {
     },
     // 删除
     handleDelete(index, res) {
-      var _this = this;
-      _this
+      
+      this
         .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
         .then(() => {
-          _this.$myApi.http
+          this.$myApi.http
             .post("/server/api/v1/projectRole/delete", { id: res.id })
             .then(res => {
-              _this.$message({ message: "删除成功！" });
-              _this.reload();
+              this.$message({ message: "删除成功！" });
+              this.reload();
             });
         })
         .catch(() => {
-          _this.$message({
+          this.$message({
             type: "info",
             message: "已取消删除"
           });
@@ -307,19 +307,19 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
+      
+      let tableData = this.tableData;
+      if (this.filter.searchKey != ""){
+        tableData = this.$toolFn.searchFun(tableData,this.filter);
       }
-      _this.total = tableData.length;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
+      this.total = tableData.length;
+      var begin = (this.curPage - 1) * this.pageSize;
+      var end = this.curPage * this.pageSize;
       return tableData.slice(begin, end);
     },
     pageTotal() {
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total / _this.pageSize);
+      
+      var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     }
   },

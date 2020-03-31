@@ -13,7 +13,7 @@
       <el-button type="primary" @click="newAddFun">新 增</el-button>
     </div>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
+    <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
       <el-table-column prop="name" label="薪资项目"></el-table-column>
       <el-table-column prop="createTime" label="创建时间"></el-table-column>
       <el-table-column prop="description" label="描述"></el-table-column>
@@ -28,18 +28,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
-    
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 新增报销项目 -->
     <el-dialog title="新增报销项目" :visible.sync="isShowEdit" :close-on-click-modal="false" width="65%">
       <edit-layer v-if='isShowEdit' v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo"></edit-layer>
@@ -48,15 +37,16 @@
 </template>
 <script>
 import editLayer from './editLayer.vue'
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    editLayer,pageInfo
+  },
   name: "claims",
   inject: ["reload"],
   data() {
     return {
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      pageList: [],
       curInfo: {}, //记录当前内容信息
       claimTemplateList: [], //报销项目列表
       claimIds: [], //报销项目ID列表
@@ -64,31 +54,30 @@ export default {
       isShowLoading: false //是否显示loading页
     };
   },
+  computed: {
+    pageInfo(){
+      return {
+        reqParams:{//请求分页参数
+            url:"/server/api/v1/bu/claims",
+            data:{BUCode:this.BUInfo.code}
+          }
+        }
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.createTime = this.$toolFn.timeFormat(item.createTime).slice(0, 10);
+        item.taxableTxt = item.taxable == '1'?'是':'否';
+        return item;
+      });
+    },
+    BUInfo() {
+      return this.$store.state.BUModule.BUInfo;
+    }
+  },
   mounted() {
-    this.getData(this.BUInfo.code);
     this.getclaimTemplate();
   },
   methods: {
-    //获取数据列表
-    getData(BUCode) {
-      var reqUrl = "/server/api/v1/bu/claims";
-      var myData = { BUCode: BUCode };
-      this.isShowLoading = true;
-      this.$myApi.http.post(reqUrl, myData).then(res => {
-          this.isShowLoading = false;
-          if (res.data.code == 0) {
-            this.total = res.data.data.length;
-            this.tableData = res.data.data.map(item => {
-              item.createTime = this.$toolFn.timeFormat(item.createTime).slice(0, 10);
-              item.taxableTxt = item.taxable == '1'?'是':'否';
-              return item;
-            });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
     // 获取薪资应对项目模板
     getclaimTemplate() {
       var reqUrl = "/server/api/v1/claim/getAll";
@@ -99,11 +88,6 @@ export default {
           this.$message.error(res.data.msg || res.data.code);
         }
       });
-    },
-    // 获取当前页数
-    curChange(val) {
-      var _this = this;
-      _this.curPage = val;
     },
     // 接收子组件发送信息
     listenIsShowMask(res) {
@@ -140,47 +124,17 @@ export default {
     },
     // 删除
     handleDelete(index, res) {
-      var _this = this;
-      _this
-        .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
-          _this.$myApi.http
-            .post("/server/api/v1/bu/claimDelete", { code: res.code })
-            .then(res => {
-              _this.reload();
-              _this.$message.success("删除成功！");
+        }).then(() => {
+          this.$myApi.http.post("/server/api/v1/bu/claimDelete", { code: res.code }).then(res => {
+              this.reload();
+              this.$message.success("删除成功！");
             });
         })
-        .catch(() => {
-          _this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     }
-  },
-  computed: {
-    queryTableDate() {
-      var _this = this;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total / _this.pageSize);
-      return pageTotal;
-    },
-    BUInfo() {
-      return this.$store.state.BUModule.BUInfo;
-    }
-  },
-  components: {
-    editLayer
   }
 };
 </script>
@@ -188,25 +142,6 @@ export default {
 .selectCode {
   width: 220px;
   margin-right: 10px;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  .el-input-group {
-    width: 500px;
-  }
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;

@@ -1,5 +1,5 @@
 <template>
-    <div class="pageInfo">
+    <div class="pageInfo" >
       <el-pagination background layout="prev, pager, next" :total="total" :page-size="pageSize" @current-change="curChange"></el-pagination>
       <slot name="pageSolt"></slot>
       <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
@@ -12,7 +12,6 @@ export default {
   data() {
     return {
       total: 0, //总计
-      pageSize1:2,
       pageSize: 6, //页面数据条数
       curPage: 1, //当前页数
       pageType:1,//分页类型，1为前端分页，2为后端分页

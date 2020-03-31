@@ -80,15 +80,15 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              //_this.modifyFun();
+              //this.modifyFun();
               break;
           }
         } else {
@@ -98,33 +98,33 @@ export default {
     },
     // 新增
     addFun() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/staff/holidaysApply/addLeavesHis";
-      if (_this.ruleForm.applyDay == 0){
-        _this.$message.error("天数不能为0");
+      if (this.ruleForm.applyDay == 0){
+        this.$message.error("天数不能为0");
         return;
       }
       var data = {
         typeId:2,//年假
         hisTypeId:3,//hr管理员录入
-        staffCode: _this.curInfo.staffCode,
-        applyDate: _this.ruleForm.applyDate,
-        applyDay: _this.ruleForm.applyDay,
-        remarks: _this.ruleForm.remarks
+        staffCode: this.curInfo.staffCode,
+        applyDate: this.ruleForm.applyDate,
+        applyDay: this.ruleForm.applyDay,
+        remarks: this.ruleForm.remarks
       };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("新增成功~");
+          this.reload();
+          this.$message.success("新增成功~");
         } else {
-          _this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg);
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

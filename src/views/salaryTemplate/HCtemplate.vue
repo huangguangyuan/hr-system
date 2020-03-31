@@ -73,22 +73,22 @@ export default {
     };
   },
   mounted() {
-    var _this = this;
-    _this.getAllData();
-    _this.getCityList();
+    
+    this.getAllData();
+    this.getCityList();
   },
   methods: {
     //获取城市数据列表
     getData() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/cityHC/getAll";
       var myData = {
-        cityCode: _this.cityCode
+        cityCode: this.cityCode
       };
-      _this.isShowLoading = true;
-      _this.$myApi.http.post(reqUrl, myData).then(res => {
-          _this.isShowLoading = false;
-          _this.tableData = res.data.data
+      this.isShowLoading = true;
+      this.$myApi.http.post(reqUrl, myData).then(res => {
+          this.isShowLoading = false;
+          this.tableData = res.data.data
             .map(item => {
               switch (item.paymentId) {
                 case 1:
@@ -100,8 +100,8 @@ export default {
                 default:
                   item.typeIdTxt = "未知";
               }
-              item.createTime = _this.$toolFn.timeFormat(item.createTime);
-              item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
+              item.createTime = this.$toolFn.timeFormat(item.createTime);
+              item.modifyTime = this.$toolFn.timeFormat(item.modifyTime);
               return item;
             })
             .sort((a, b) => {
@@ -113,7 +113,7 @@ export default {
               }
               return 0;
             });
-          _this.total = _this.tableData.length;
+          this.total = this.tableData.length;
         })
         .catch(err => {
           console.log(err);
@@ -121,17 +121,17 @@ export default {
     },
     // 获取所有城市数据列表
     getAllData(){
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/cityHC/getAll";
       var myData = {
         cityCode: 'b39f8ec0-676f-11e9-93b3-31525099b521'
       };
-      _this.isShowLoading = true;
-      _this.$myApi.http
+      this.isShowLoading = true;
+      this.$myApi.http
         .post(reqUrl, myData)
         .then(res => {
-          _this.isShowLoading = false;
-          _this.tableData = res.data.data
+          this.isShowLoading = false;
+          this.tableData = res.data.data
             .map(item => {
               switch (item.paymentId) {
                 case 1:
@@ -143,8 +143,8 @@ export default {
                 default:
                   item.typeIdTxt = "未知";
               }
-              item.createTime = _this.$toolFn.timeFormat(item.createTime);
-              item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
+              item.createTime = this.$toolFn.timeFormat(item.createTime);
+              item.modifyTime = this.$toolFn.timeFormat(item.modifyTime);
               return item;
             })
             .sort((a, b) => {
@@ -156,7 +156,7 @@ export default {
               }
               return 0;
             });
-          _this.total = _this.tableData.length;
+          this.total = this.tableData.length;
         })
         .catch(err => {
           console.log(err);
@@ -165,17 +165,17 @@ export default {
     },
     // 获取当前页数
     curChange(val) {
-      var _this = this;
-      _this.curPage = val;
+      
+      this.curPage = val;
     },
     // 获取城市列表
     getCityList() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/city/getAll";
       var data = {};
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.cityList = res.data.data;
+          this.cityList = res.data.data;
         }
       });
     },
@@ -190,35 +190,35 @@ export default {
     },
     // 检测是否关闭表单
     listenIsShowMask(res) {
-      var _this = this;
-      _this.isShowAdd = res;
+      
+      this.isShowAdd = res;
     },
     // 编辑
     handleEdit(index, res) {
-      var _this = this;
-      _this.curInfo = res;
-      _this.curInfo.type = "modify";
-      _this.isShowAdd = true;
+      
+      this.curInfo = res;
+      this.curInfo.type = "modify";
+      this.isShowAdd = true;
     },
     // 删除
     handleDelete(index, res) {
-      var _this = this;
-      _this
+      
+      this
         .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
         .then(() => {
-          _this.$myApi.http
+          this.$myApi.http
             .post("/server/api/v1/cityHC/delete", { id: res.id })
             .then(res => {
-              _this.reload();
-              _this.$message("取消成功~");
+              this.reload();
+              this.$message("取消成功~");
             });
         })
         .catch(() => {
-          _this.$message({
+          this.$message({
             type: "info",
             message: "已取消删除"
           });
@@ -227,14 +227,14 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      
+      var begin = (this.curPage - 1) * this.pageSize;
+      var end = this.curPage * this.pageSize;
+      return this.tableData.slice(begin, end);
     },
     pageTotal() {
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total / _this.pageSize);
+      
+      var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     }
   },

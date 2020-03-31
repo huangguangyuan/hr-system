@@ -216,9 +216,9 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      _this.total = tableData.length;
+      
+      let tableData = this.tableData;
+      this.total = tableData.length;
       var begin = (this.curPage - 1) * this.pageSize;
       var end = this.curPage * this.pageSize;
       return tableData.slice(begin, end);

@@ -100,10 +100,10 @@ export default {
   methods: {
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.addFn();
+          this.addFn();
         } else {
           console.log("error submit!!");
           return false;
@@ -112,41 +112,41 @@ export default {
     },
     // 新增权限
     addFn() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/projectAccess/add";
       var data = {
-        projectCode: _this.ruleForm.projectCode,
-        name: _this.ruleForm.name,
-        rightCode: _this.ruleForm.rightCode,
-        description: _this.ruleForm.description,
-        menuUrl:_this.ruleForm.menuUrl,
-        status: parseInt(_this.ruleForm.status),
-        typeId: parseInt(_this.ruleForm.typeId),
-        isMenu:parseInt(_this.ruleForm.isMenu)
+        projectCode: this.ruleForm.projectCode,
+        name: this.ruleForm.name,
+        rightCode: this.ruleForm.rightCode,
+        description: this.ruleForm.description,
+        menuUrl:this.ruleForm.menuUrl,
+        status: parseInt(this.ruleForm.status),
+        typeId: parseInt(this.ruleForm.typeId),
+        isMenu:parseInt(this.ruleForm.isMenu)
       };
-      _this.$myApi.http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
-          _this.reload();
+          this.reload();
         }
       })
     },
     // 获取项目数据
     getProjectData() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/project/getAll";
       var data = { typeId: 1 };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.ruleForm.projectList = res.data.data;
+          this.ruleForm.projectList = res.data.data;
         } else {
-          _this.$message("res.data.code");
+          this.$message("res.data.code");
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

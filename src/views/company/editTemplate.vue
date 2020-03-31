@@ -1,34 +1,26 @@
 <template>
-  <div class="editTemplate">
+  <div class="editTemplate" v-if="isShow">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
-      <el-form-item label="名称：" prop="name" v-if="isShow">
+      <el-form-item label="名称：" prop="name" v-if='isShowItem'>
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="账号：" prop="account" v-if="isShow">
+      <el-form-item label="账号：" prop="account" v-if='isShowItem'>
         <el-input v-model="ruleForm.account"></el-input>
       </el-form-item>
-      <el-form-item label="密码：" prop="password" v-if="isShow">
+      <el-form-item label="密码：" prop="password" v-if='isShowItem'>
         <el-input v-model="ruleForm.password" show-password></el-input>
       </el-form-item>
-      <el-form-item label="国家：">
+      <el-form-item label="国家：" v-if='isShowItem'>
         <el-input v-model="ruleForm.country"></el-input>
       </el-form-item>
       <el-form-item label="位置：">
         <el-input v-model="ruleForm.location"></el-input>
       </el-form-item>
-      <el-form-item label="地址：" v-if="isShow">
+      <el-form-item label="地址：">
         <el-input v-model="ruleForm.address"></el-input>
       </el-form-item>
       <el-form-item label="logo图片：">
-        <el-upload
-          class="avatar-uploader"
-          action="/app/api/v1/file/imageUpload"
-          :show-file-list="false"
-          :on-success="uploadLogo"
-        >
-          <el-image v-if="ruleForm.logo" :src="logoSrc" class="avatar" fit="cover"></el-image>
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+        <image-upload :imageUpload_props="imageUpload_props" :imageSrc.sync="ruleForm.logo"></image-upload>
       </el-form-item>
       <el-form-item label="备注：">
         <el-input v-model="ruleForm.remarks"></el-input>
@@ -59,12 +51,18 @@
   </div>
 </template>
 <script>
+import imageUpload from "@/components/imageUpload.vue";
 export default {
+  components: {
+    imageUpload
+  },
   name: "editTemplate",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
+      isShow:false,
+      isShowItem:true,
       ruleForm: {
         name: "",
         account: "",
@@ -81,7 +79,10 @@ export default {
         contactLocation: "",
         contactRemarks: ""
       },
-      logoSrc:'',//图片路径
+      imageUpload_props:{
+        imageSrc:'',
+        uploadFolder:''
+      },
       rules: {
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
@@ -108,85 +109,74 @@ export default {
             trigger: ["blur"]
           }
         ]
-      },
-      isShow: true //是否显示
+      }
     };
   },
   mounted() {
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
-      this.isShow = false;
-      this.logoSrc = this.ruleForm.logo;
+      this.imageUpload_props.imageSrc = this.ruleForm.logo;
+      this.isShowItem = false;
     }
+    this.isShow = true;
   },
   methods: {
-    // 获取上传头像
-    uploadLogo(res, file) {
-      this.ruleForm.logo = res.data.path;
-      this.logoSrc = URL.createObjectURL(file.raw);
-    },
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              _this.modifyFun();
+              this.modifyFun();
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 新增公司
     addFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/company/companyAdd";
-      var data = _this.ruleForm;
-      console.log(data);
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      var data = this.ruleForm;
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message("添加成功~");
+          this.reload();
+          this.$message("添加成功~");
         }
       });
     },
     // 修改信息
     modifyFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/company/companyUpdate";
       var data = {
-        id: _this.ruleForm.id,
-        country: _this.ruleForm.country,
-        location: _this.ruleForm.location,
-        logo: _this.ruleForm.logo,
-        remarks: _this.ruleForm.remarks,
-        contactName: _this.ruleForm.contactName,
-        contactTel: _this.ruleForm.contactTel,
-        contactEmail: _this.ruleForm.contactEmail,
-        contactTitle: _this.ruleForm.contactTitle,
-        contactLocation: _this.ruleForm.contactLocation,
-        contactRemarks: _this.ruleForm.contactRemarks
+        id: this.ruleForm.id,
+        country: this.ruleForm.country,
+        location: this.ruleForm.location,
+        logo: this.ruleForm.logo,
+        remarks: this.ruleForm.remarks,
+        contactName: this.ruleForm.contactName,
+        contactTel: this.ruleForm.contactTel,
+        contactEmail: this.ruleForm.contactEmail,
+        contactTitle: this.ruleForm.contactTitle,
+        contactLocation: this.ruleForm.contactLocation,
+        contactRemarks: this.ruleForm.contactRemarks
       };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message("修改成功~");
+          this.reload();
+          this.$message("修改成功~");
         } else {
-          _this.$alert(res.data.msg, "提 示");
+          this.$alert(res.data.msg, "提 示");
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {
@@ -226,30 +216,6 @@ export default {
       font-size: 16px;
     }
   }
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #ebb563;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 120px;
-  height: 120px;
-  line-height: 120px;
-  text-align: center;
-}
-.avatar {
-  width: 120px;
-  height: 120px;
-  display: block;
 }
 </style>
 

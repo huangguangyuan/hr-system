@@ -82,10 +82,10 @@ export default {
   methods: {
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.addFn();
+          this.addFn();
         } else {
           console.log("error submit!!");
           return false;
@@ -94,29 +94,29 @@ export default {
     },
     // 新增权限
     addFn() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/projectAccess/childrenAdd";
       var data = {
-        superCode:_this.curInfo.code,
-        name: _this.ruleForm.name,
-        description: _this.ruleForm.description,
-        menuUrl:_this.ruleForm.menuUrl,
-        status: parseInt(_this.ruleForm.status),
-        rightCode: _this.ruleForm.rightCode,
-        addField1: _this.ruleForm.addField1,
-        isMenu:parseInt(_this.ruleForm.isMenu),
-        orderNo:parseInt(_this.ruleForm.orderNo),
+        superCode:this.curInfo.code,
+        name: this.ruleForm.name,
+        description: this.ruleForm.description,
+        menuUrl:this.ruleForm.menuUrl,
+        status: parseInt(this.ruleForm.status),
+        rightCode: this.ruleForm.rightCode,
+        addField1: this.ruleForm.addField1,
+        isMenu:parseInt(this.ruleForm.isMenu),
+        orderNo:parseInt(this.ruleForm.orderNo),
       };
-      _this.$myApi.http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
-          _this.reload();
+          this.reload();
         }
       })
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

@@ -59,7 +59,6 @@ export default {
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
       isShowStaffHolidays:false,
-      hrCode: "",
       BUCodeSelected: "", //单位code
       staffCode_props:'',
       filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip']}
@@ -71,7 +70,7 @@ export default {
         reqParams:{//请求分页参数
             isReq:false,
             url:"/server/api/v1/staff/holidaysApply/hrSysHolidaysApplyList",
-            data:{ hrCode: this.hrCode,BUCode:this.BUCodeSelected }
+            data:{ hrCode: this.$toolFn.curUser.userCode,BUCode:this.BUCodeSelected }
           }
         }
     },
@@ -88,8 +87,6 @@ export default {
     }
   },
   mounted() {
-    var _this = this;
-    _this.hrCode = this.$toolFn.curUser.userCode;
     this.approvalHolidays = this.$toolFn.curUser.access.approvalHolidays || [];
     if (this.approvalHolidays.length > 0){
       this.isShow = true;
@@ -115,7 +112,7 @@ export default {
     handleDetails(index, res){
       this.isShowDetails = true;
       this.curInfo = res;
-      this.curInfo.hrCode = this.hrCode;
+      this.curInfo.hrCode = this.$toolFn.curUser.userCode;
     },
     // 员工假期记录
     handleStaffHolidays(index, res){

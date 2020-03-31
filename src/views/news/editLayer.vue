@@ -130,13 +130,13 @@ export default {
       }
     },
     //  getCompanys() {
-    //   var _this = this;
+    //   
     //   var reqUrl = "/server/api/v1/company/companysWithChild";
     //   return new Promise((resolve, reject) => {
-    //     _this.$myApi.http.post(reqUrl, {}).then(res => {
+    //     this.$myApi.http.post(reqUrl, {}).then(res => {
     //       if (res.data.code == 0) {
-    //         _this.companyList = res.data.data;
-    //         resolve(_this.companyList);
+    //         this.companyList = res.data.data;
+    //         resolve(this.companyList);
     //       }
     //     });
     //   });

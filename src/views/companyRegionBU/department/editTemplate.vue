@@ -80,8 +80,8 @@ export default {
   methods: {
     // 初始化
     initializeFun() {
-      var _this = this;
-      _this.getRegionBUList();
+      
+      this.getRegionBUList();
       if (this.curInfo.type == "modify") {
         this.isShow = false;
         //this.ruleForm.status = this.curInfo;
@@ -102,15 +102,15 @@ export default {
     // 获取HR管理员列表
     getHRadminList(BUCode){
       // 部门管理员
-      var _this = this;
+      
       this.$myApi.http.post("/server/api/v1/admin/hrSys/getByLev",{BUCode: BUCode,lev:[521]}).then(res => {
         if(res.data.data){
-          _this.HRadminList = res.data.data;
+          this.HRadminList = res.data.data;
           var supervisorCodeArr = [];
-          if (_this.ruleForm.supervisorCode){
-            supervisorCodeArr = _this.ruleForm.supervisorCode.split(',')
+          if (this.ruleForm.supervisorCode){
+            supervisorCodeArr = this.ruleForm.supervisorCode.split(',')
           }
-          _this.ruleForm.supervisorCodeArr = supervisorCodeArr;
+          this.ruleForm.supervisorCodeArr = supervisorCodeArr;
         }
       });
       // // 假期管理员
@@ -122,15 +122,15 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              _this.modifyFun();
+              this.modifyFun();
               break;
           }
         } else {
@@ -141,60 +141,60 @@ export default {
     },
     // 新增单位
     addFun() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/buDepartment/add";
       var data = {
-          name:_this.ruleForm.name,
-          description:_this.ruleForm.description,
-          status:parseInt(_this.ruleForm.status),
-          BUCode:_this.ruleForm.BUCode,
-          supervisorCode:_this.ruleForm.supervisorCodeArr.join(',')
+          name:this.ruleForm.name,
+          description:this.ruleForm.description,
+          status:parseInt(this.ruleForm.status),
+          BUCode:this.ruleForm.BUCode,
+          supervisorCode:this.ruleForm.supervisorCodeArr.join(',')
       }
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("新增成功~");
+          this.reload();
+          this.$message.success("新增成功~");
         } else {
-          _this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg);
         }
       });
     },
     // 修改信息
     modifyFun() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/buDepartment/update";
       var data = {
-        id:_this.curInfo.id,
-        name:_this.ruleForm.name,
-        description:_this.ruleForm.description,
-        status:parseInt(_this.ruleForm.status),
-        supervisorCode:_this.ruleForm.supervisorCodeArr.join(',')
+        id:this.curInfo.id,
+        name:this.ruleForm.name,
+        description:this.ruleForm.description,
+        status:parseInt(this.ruleForm.status),
+        supervisorCode:this.ruleForm.supervisorCodeArr.join(',')
       };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("修改成功~");
+          this.reload();
+          this.$message.success("修改成功~");
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
         }
       });
     },
     // 获取单位列表
     getRegionBUList() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/company/regionBUs";
-      _this.$myApi.http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
-          _this.regionBUList = res.data.data;
+          this.regionBUList = res.data.data;
         } else {
-          _this.$message({ type: "info", message: `报错：${res.data.code}` });
+          this.$message({ type: "info", message: `报错：${res.data.code}` });
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

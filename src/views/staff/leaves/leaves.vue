@@ -63,14 +63,14 @@ export default {
   methods: {
     //获取数据列表
     getData(staffCode) {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/staff/holidaysApply/staffLeaves";
       var myData = { staffCode: staffCode,typeId:2 };
-      _this.isShowLoading = true;
-      _this.$myApi.http.post(reqUrl, myData).then(res => {
-          _this.isShowLoading = false;
-          _this.tableData = res.data.data.map(item => {
-          item.applyDate = _this.$toolFn.timeFormat(item.applyDate).slice(0, 10);
+      this.isShowLoading = true;
+      this.$myApi.http.post(reqUrl, myData).then(res => {
+          this.isShowLoading = false;
+          this.tableData = res.data.data.map(item => {
+          item.applyDate = this.$toolFn.timeFormat(item.applyDate).slice(0, 10);
               // this.getHRadminName(item.issueBy).then(res => {
               //   item.hrName = res;
               // });
@@ -84,8 +84,8 @@ export default {
     },
     // 获取当前页数
     curChange(val) {
-      var _this = this;
-      _this.curPage = val;
+      
+      this.curPage = val;
     },
     // 接收子组件发送信息
     listenIsShowMask(res) {
@@ -143,14 +143,14 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
-      return _this.tableData.slice(begin, end);
+      
+      var begin = (this.curPage - 1) * this.pageSize;
+      var end = this.curPage * this.pageSize;
+      return this.tableData.slice(begin, end);
     },
     pageTotal() {
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total / _this.pageSize);
+      
+      var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     },
     staffInfo() {

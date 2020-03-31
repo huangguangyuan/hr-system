@@ -111,10 +111,10 @@ export default {
   },
   methods:{
     getInfo(res){
-      var _this = this;
-      _this.$myApi.http.post(reqUrl, {}).then(res => {
+      
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
-          _this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg);
         }
       });
     }

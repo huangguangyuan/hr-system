@@ -71,23 +71,23 @@ export default {
     };
   },
   mounted(){
-    var _this = this;
-    // console.log(_this.editInfo);
-    if(_this.isType == 'modify'){
-      _this.ruleForm = _this.editInfo;
-      _this.ruleForm.status = _this.ruleForm.status.toString();
+    
+    // console.log(this.editInfo);
+    if(this.isType == 'modify'){
+      this.ruleForm = this.editInfo;
+      this.ruleForm.status = this.ruleForm.status.toString();
     }
   },
   methods: {
     // 提交
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          if(_this.isType == 'modify'){
-            _this.modifyFn();
+          if(this.isType == 'modify'){
+            this.modifyFn();
           }else{
-            _this.addFn();
+            this.addFn();
           }
         } else {
           console.log("error submit!!");
@@ -101,16 +101,16 @@ export default {
     },
     // 取消
     cancelFn(){
-      var _this = this;
-      _this.$emit('listenIsShowProject',false);
+      
+      this.$emit('listenIsShowProject',false);
     },
     // 新增
     addFn(){
-      var _this = this;
+      
       var reqUrl = '/server/api/v1/project/add';
-      _this.$myApi.http.post(reqUrl, _this.ruleForm).then(res => {
+      this.$myApi.http.post(reqUrl, this.ruleForm).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
+          this.reload();
         }
       })
       .catch(err => {
@@ -119,17 +119,17 @@ export default {
     },
     // 修改
     modifyFn(){
-      var _this = this;
+      
       var reqUrl = '/server/api/v1/project/update'
       var data = {
-        "id":_this.ruleForm.id,
-        "name":_this.ruleForm.name,
-        "description":_this.ruleForm.description,
-        "status":_this.ruleForm.status
+        "id":this.ruleForm.id,
+        "name":this.ruleForm.name,
+        "description":this.ruleForm.description,
+        "status":this.ruleForm.status
       }
-      _this.$myApi.http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
+          this.reload();
         }
       }).catch(err => {
         console.log(err);

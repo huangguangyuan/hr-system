@@ -47,13 +47,13 @@ export default {
     },
     //提交表单
     submitForm(formName) {
-      var _this = this;
+      
       this.$refs[formName].validate(valid => {
         if (valid) {
-            if(_this.modifyInfo.adminType == 'admin'){
-                _this.modifyAmdinFn();
+            if(this.modifyInfo.adminType == 'admin'){
+                this.modifyAmdinFn();
             }else{
-                _this.modifyHRadminFn();
+                this.modifyHRadminFn();
             }
         } else {
           console.log("error submit!!");
@@ -63,17 +63,17 @@ export default {
     },
     // 修改后台管理员信息
     modifyAmdinFn(){
-        var _this = this;
+        
         var reqUrl = '/server/api/v1/admin/editPwd';
         var data = {
-            "id":_this.ruleForm.id,
-            "password": md5(_this.ruleForm.password),
-            "superCode": _this.ruleForm.superCode
+            "id":this.ruleForm.id,
+            "password": md5(this.ruleForm.password),
+            "superCode": this.ruleForm.superCode
         }
-        _this.$myApi.http.post(reqUrl,data).then(res => {
+        this.$myApi.http.post(reqUrl,data).then(res => {
           if (res.data.code == 0) {
-            _this.reload();
-            _this.$message('修改成功！');
+            this.reload();
+            this.$message('修改成功！');
           }
         }).catch(err => {
             console.log(err);
@@ -81,17 +81,17 @@ export default {
     },
     // 修改HR管理员
     modifyHRadminFn(){
-        var _this = this;
+        
         var reqUrl = '/server/api/v1/admin/hrSys/editPwd';
         var data = {
-            "id":_this.ruleForm.id,
-            "password": md5(_this.ruleForm.password),
-            "superCode": _this.ruleForm.superCode
+            "id":this.ruleForm.id,
+            "password": md5(this.ruleForm.password),
+            "superCode": this.ruleForm.superCode
         }
-        _this.$myApi.http.post(reqUrl,data).then(res => {
+        this.$myApi.http.post(reqUrl,data).then(res => {
           if (res.data.code == 0) {
-            _this.reload();
-            _this.$message('修改成功！');
+            this.reload();
+            this.$message('修改成功！');
           }
         }).catch(err => {
             console.log(err);
@@ -99,8 +99,8 @@ export default {
     },
     // 取消
     cancelFn(){
-      var _this = this;
-      _this.$emit('listenIsShowAddAdmin',false);
+      
+      this.$emit('listenIsShowAddAdmin',false);
     },
     // 重置
     resetForm(formName) {

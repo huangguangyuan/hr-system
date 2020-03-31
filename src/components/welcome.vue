@@ -150,11 +150,11 @@ export default {
       this.$router.replace({ path: path});
     },
     getInfo(){
-      var _this = this;
-      _this.$myApi.http.post("/server/api/v1/baseInfo/hrHome", {}).then(res => {
+      
+      this.$myApi.http.post("/server/api/v1/baseInfo/hrHome", {}).then(res => {
         if (res.data.code == 0) {
-          _this.info = res.data.data;
-          _this.info.show = true;
+          this.info = res.data.data;
+          this.info.show = true;
         }
       });
     }

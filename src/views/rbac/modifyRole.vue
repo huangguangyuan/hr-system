@@ -94,21 +94,21 @@ export default {
   methods: {
     // 初始化
     initializationFun(){
-      var _this = this;
-      _this.ruleForm.name = _this.curInfo.name;
-      _this.ruleForm.projectCode = _this.curInfo.projectCode;
-      _this.ruleForm.roleCode = _this.curInfo.roleCode;
-      _this.ruleForm.description = _this.curInfo.description;
-      _this.ruleForm.lev = _this.curInfo.lev;
-      _this.ruleForm.typeId = _this.curInfo.typeId.toString();
-      _this.ruleForm.status = _this.curInfo.status.toString();
+      
+      this.ruleForm.name = this.curInfo.name;
+      this.ruleForm.projectCode = this.curInfo.projectCode;
+      this.ruleForm.roleCode = this.curInfo.roleCode;
+      this.ruleForm.description = this.curInfo.description;
+      this.ruleForm.lev = this.curInfo.lev;
+      this.ruleForm.typeId = this.curInfo.typeId.toString();
+      this.ruleForm.status = this.curInfo.status.toString();
     },
     // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.modifyFn();
+          this.modifyFn();
         } else {
           console.log("error submit!!");
           return false;
@@ -117,39 +117,39 @@ export default {
     },
     // 修改角色
     modifyFn() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/projectRole/update";
       var data = {
-        id:_this.curInfo.id,
-        name: _this.ruleForm.name,
-        roleCode: _this.ruleForm.roleCode,
-        description: _this.ruleForm.description,
-        lev: parseInt(_this.ruleForm.lev),
+        id:this.curInfo.id,
+        name: this.ruleForm.name,
+        roleCode: this.ruleForm.roleCode,
+        description: this.ruleForm.description,
+        lev: parseInt(this.ruleForm.lev),
       };
-      _this.$myApi.http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
-          _this.reload();
-          _this.$message('修改成功~');
+          this.reload();
+          this.$message('修改成功~');
         }
       })
     },
     // 获取项目数据
     getProjectData() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/project/getAll";
       var data = { typeId: 1 };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.ruleForm.projectList = res.data.data;
+          this.ruleForm.projectList = res.data.data;
         } else {
-          _this.$message("res.data.code");
+          this.$message("res.data.code");
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

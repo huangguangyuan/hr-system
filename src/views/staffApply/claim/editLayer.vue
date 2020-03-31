@@ -177,7 +177,7 @@ export default {
     // 新增
     addFun() {
       var totalAmount = 0;
-      var _this = this;
+      
       for(var i = 0;i<this.ruleForm.details.length;i++){
           totalAmount += parseFloat(this.ruleForm.details[i].amount);
       }
@@ -205,8 +205,8 @@ export default {
         this.$message.error("请至少选中一个结算人员");
         return;
       }
-      for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
-        const element = _this.fileUpload_props.fileList[index];
+      for (let index = 0; index < this.fileUpload_props.fileList.length; index++) {
+        const element = this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
       this.$myApi.http.post(reqUrl, data).then(res => {

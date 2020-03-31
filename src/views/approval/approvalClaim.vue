@@ -42,7 +42,6 @@ export default {
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      hrCode: "",
       BUCodeSelected: "", //单位code
       filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip','totalAmount','deptName']}
     };
@@ -53,7 +52,7 @@ export default {
         reqParams:{//请求分页参数
             isReq:false,
             url:"/server/api/v1/staff/claim/hrSysClaimList",
-            data:{ hrCode: this.hrCode,BUCode:this.BUCodeSelected }
+            data:{ hrCode: this.$toolFn.curUser.userCode,BUCode:this.BUCodeSelected }
           }
         }
     },
@@ -69,7 +68,6 @@ export default {
     }
   },
   mounted() {
-    this.hrCode = this.$toolFn.curUser.userCode;
     this.approvalClaim = this.$toolFn.curUser.access.approvalClaim || [];
     if (this.approvalClaim.length > 0){
       this.isShow = true;
@@ -95,14 +93,14 @@ export default {
     handleDetails(index, res){
       this.isShowDetails = true;
       this.curInfo = res;
-      this.curInfo.hrCode = this.hrCode;
+      this.curInfo.hrCode = this.$toolFn.curUser.userCode;
     },
   },
   watch: {
     BUCodeSelected: {
       handler: function(newVal) {
-            this.pageInfo.reqParams.isReq = true;
-            this.$refs.pageInfo.getData(this.pageInfo);
+        this.pageInfo.reqParams.isReq = true;
+        this.$refs.pageInfo.getData(this.pageInfo);
       }
     },
     "filter.searchKey":{

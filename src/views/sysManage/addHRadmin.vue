@@ -158,18 +158,18 @@ export default {
   methods: {
     // 获取单位列表
     async getBUCodeFun() {
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs({isCache:true});
+      
+      var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUs = regionBUs;
       }
     },
     //提交表单
     submitForm(formName) {
-      var _this = this;
+      
       this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.addAmdinFn();
+          this.addAmdinFn();
         } else {
           return false;
         }
@@ -177,15 +177,15 @@ export default {
     },
     // 所有HR管理员角色属性
     getHrAdminRoleInfo() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/admin/hrSys/getHrAdminRoleInfo";
       var data = {
       };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.hrAdminRoles = res.data.data;
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
           return false;
         }
       })
@@ -195,28 +195,28 @@ export default {
     },    
     // 新增后台管理员
     addAmdinFn() {
-      var _this = this;
+      
       var reqUrl = "/server/api/v1/admin/hrSys/add";
       var data = {
-        BUCode:_this.ruleForm.BUCode,
-        account: _this.ruleForm.account,
-        email: _this.ruleForm.email,
-        password: md5(_this.ruleForm.password),
-        mobile: _this.ruleForm.mobile,
-        status: parseInt(_this.ruleForm.status),
-        lev: parseInt(_this.ruleForm.lev),
-        levExtend: _this.ruleForm.levExtend.join(","),
-        leavesAccess: _this.ruleForm.leavesAccess.join(","),
-        claimAccess: _this.ruleForm.claimAccess.join(","),
-        serveId: parseInt(_this.ruleForm.serveId),
-        name: _this.ruleForm.name
+        BUCode:this.ruleForm.BUCode,
+        account: this.ruleForm.account,
+        email: this.ruleForm.email,
+        password: md5(this.ruleForm.password),
+        mobile: this.ruleForm.mobile,
+        status: parseInt(this.ruleForm.status),
+        lev: parseInt(this.ruleForm.lev),
+        levExtend: this.ruleForm.levExtend.join(","),
+        leavesAccess: this.ruleForm.leavesAccess.join(","),
+        claimAccess: this.ruleForm.claimAccess.join(","),
+        serveId: parseInt(this.ruleForm.serveId),
+        name: this.ruleForm.name
       };
-      _this.$myApi.http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.$message("新增成功");
-          _this.reload();
+          this.$message("新增成功");
+          this.reload();
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
           return false;
         }
       })
@@ -226,8 +226,8 @@ export default {
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowAddAdmin", false);
+      
+      this.$emit("listenIsShowAddAdmin", false);
     },
     // 重置
     resetForm(formName) {
