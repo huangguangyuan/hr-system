@@ -104,7 +104,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -146,7 +145,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     }
   },

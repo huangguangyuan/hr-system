@@ -55,9 +55,7 @@ export default {
     getData(BUCode) {
       var reqUrl = "/server/api/v1/bu/cityByBUCode";
       var myData = { BUCode: BUCode };
-      this.$myApi.http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           if(res.data.code == 0){
             this.tableData = res.data.data;
             this.tableData.createTime = this.$toolFn.timeFormat(this.tableData.createTime).slice(0, 10);
@@ -66,9 +64,6 @@ export default {
             this.isContent = false;
           }
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 获取城市模板
     getCityCode() {
@@ -104,8 +99,7 @@ export default {
     },
     // 删除城市模板
     handleDelete() {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示")
-        .then(() => {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示").then(() => {
           var reqUrl = "/server/api/v1/bu/cityDelete";
           var data = { code: this.tableData.code };
           this.$myApi.http.post(reqUrl, data).then(res => {

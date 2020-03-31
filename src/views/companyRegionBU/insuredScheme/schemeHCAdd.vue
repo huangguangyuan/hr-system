@@ -1,7 +1,7 @@
 <template>
   <div class="schemeHCAdd">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px">
-      <el-form-item label="基数上限：" prop="baseUpper">
+      <el-form-item label="基数上限" prop="baseUpper">
         <el-input v-model="ruleForm.baseUpper"></el-input>
       </el-form-item>
       <el-form-item label="基数下限" prop="baseLower">
@@ -81,7 +81,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -96,7 +95,6 @@ export default {
         paymentRatio: parseFloat(this.ruleForm.paymentRatio),
         paymentId: parseInt(this.ruleForm.paymentId)
       };
-      console.log(data);
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.$emit("listenIsShowMask", false);

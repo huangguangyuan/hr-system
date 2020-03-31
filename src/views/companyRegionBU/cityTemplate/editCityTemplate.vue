@@ -40,7 +40,6 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           var reqUrl = '/server/api/v1/bu/cityUpdate';
@@ -53,14 +52,12 @@ export default {
             }
           });
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     }
   }

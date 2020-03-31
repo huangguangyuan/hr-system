@@ -5,7 +5,7 @@
       <el-button type="primary" size="small" @click="handleAdd(curInfo.code)">添加模板</el-button>
     </div>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe style="width: 100%" border>
+    <el-table v-loading="isShowLoading" :data="tableData" stripe style="width: 100%" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
       <el-table-column prop="baseLower" label="基数下限"></el-table-column>
@@ -23,17 +23,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 添加香港MPF -->
     <el-dialog title="添加香港MPF" append-to-body :visible.sync="isShowAdd" :close-on-click-modal="false">
       <schemeMPFAdd v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfoNode" v-if="isShowAdd"></schemeMPFAdd>
@@ -42,68 +32,50 @@
 </template>
 <script>
 import schemeMPFAdd from './schemeMPFAdd.vue';
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    schemeMPFAdd,pageInfo
+  },
   name: "schemeMPF",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
-      tableData: [], //列表数据
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      pageList: [],
       isShowAdd: false, //是否显示增加项目表单
       isShowLoading: false, //是否显示loading页
       curInfoNode: {}, //传值给子组件
       cityCode: "" //城市代号
     };
   },
+  computed: {
+    pageInfo(){
+      return {
+        reqParams:{//请求分页参数
+            url:"/server/api/v1/bu/insuredScheme/mpf/list",
+            data:{schemeCode: this.curInfo.code}
+          }
+        }
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.paymentIdTxt = item.paymentId == '1'?'公司':'个人';
+        return item;
+      });
+    },
+    BUInfo() {
+      return this.$store.state.BUModule.BUInfo;
+    }
+  },
   mounted() {
-    console.log(this.curInfo);
-    this.getAllData();
+    //this.getAllData();
   },
   methods: {
-    // 获取所有数据列表
-    getAllData() {
-      var reqUrl = "/server/api/v1/bu/insuredScheme/mpf/list";
-      var myData = {
-        schemeCode: this.curInfo.code
-      };
-      this.isShowLoading = true;
-      this.$myApi.http
-        .post(reqUrl, myData)
-        .then(res => {
-          console.log(res);
-          this.isShowLoading = false;
-          this.tableData = res.data.data
-            .map(item => {
-              item.paymentIdTxt = item.paymentId == '1'?'公司':'个人';
-              return item;
-            })
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-            console.log(this.tableData);
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
-    },
     // 监听子组件发过的触发函数
     listenIsShowMask(res) {
       this.isShowAdd = res;
-      this.getAllData();
+      this.$refs.pageInfo.getData(this.pageInfo);
     },
     // 添加模板
     handleAdd(res){
@@ -120,44 +92,19 @@ export default {
       this.curInfoNode.cityCode = this.curInfo.cityCode;
       this.isShowAdd = true;
     },
-    // 查询
-    searchFun() {},
     // 删除
     handleDelete(index, res) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$myApi.http
-            .post("/server/api/v1/bu/insuredScheme/mpf/delete", { id: res.id })
-            .then(res => {
-              this.getAllData();
+      }).then(() => {
+          this.$myApi.http.post("/server/api/v1/bu/insuredScheme/mpf/delete", { id: res.id }).then(res => {
+              this.$refs.pageInfo.getData(this.pageInfo);
               this.$message.success("删除成功~");
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     }
-  },
-  computed: {
-    queryTableDate() {
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return this.tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    }
-  },
-  components: {
-    schemeMPFAdd
   }
 };
 </script>
@@ -168,23 +115,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-}
-.search {
-  margin: 20px auto;
 }
 .el-table {
   margin: 30px auto 0;

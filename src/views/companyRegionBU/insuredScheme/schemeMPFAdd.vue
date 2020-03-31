@@ -69,7 +69,6 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           switch (this.curInfo.type) {
@@ -81,7 +80,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -128,9 +126,6 @@ export default {
     cancelFn() {
       this.$emit("listenIsShowMask", false);
     }
-  },
-  computed: {
-    
   }
 };
 </script>

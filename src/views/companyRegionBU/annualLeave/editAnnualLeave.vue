@@ -56,7 +56,6 @@ export default {
         annualLeaveRetain: [{required: true,message: "请填写年假清空后可保留天数",trigger: "blur"}],
         annualLeaveRetainClearDate: [{ required: true, message: "请选择可保留天数清空日期", trigger: "change" }],
       }
-      
     };
   },
   mounted() {
@@ -84,7 +83,6 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      
       this.ruleForm.annualLeaveWriteOffDate = new Date((new Date().getFullYear()+1) + "-" + this.$toolFn.timeFormat(this.ruleForm.annualLeaveWriteOffDate,"MM-dd"));
       this.ruleForm.annualLeaveRetainClearDate = new Date((new Date().getFullYear()+1) + "-" +  this.$toolFn.timeFormat(this.ruleForm.annualLeaveRetainClearDate,"MM-dd"));
       this.$refs[formName].validate(valid => {
@@ -110,14 +108,12 @@ export default {
             }
           });
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     }
   }

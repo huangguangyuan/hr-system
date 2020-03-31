@@ -103,7 +103,7 @@ export default {
         this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
       }
     }
-  },
+  }
 };
 </script>
 <style scoped lang="scss">

@@ -55,7 +55,6 @@ export default {
           this.tableData = res.data.data;
           this.tableData.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.tableData.annualLeaveWriteOffDate).slice(0, 10);
           this.tableData.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.tableData.annualLeaveRetainClearDate).slice(0, 10);
-          
           this.isContent = true;
         }
       });
@@ -101,25 +100,6 @@ export default {
 }
 .noContent{
   line-height: 200px;text-align: center;color: #d3dce6;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  .el-input-group {
-    width: 500px;
-  }
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
