@@ -158,7 +158,6 @@ export default {
   methods: {
     // 获取单位列表
     async getBUCodeFun() {
-      
       var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUs = regionBUs;
@@ -166,7 +165,6 @@ export default {
     },
     //提交表单
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.addAmdinFn();
@@ -177,7 +175,6 @@ export default {
     },
     // 所有HR管理员角色属性
     getHrAdminRoleInfo() {
-      
       var reqUrl = "/server/api/v1/admin/hrSys/getHrAdminRoleInfo";
       var data = {
       };
@@ -189,13 +186,9 @@ export default {
           return false;
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
     },    
     // 新增后台管理员
     addAmdinFn() {
-      
       var reqUrl = "/server/api/v1/admin/hrSys/add";
       var data = {
         BUCode:this.ruleForm.BUCode,
@@ -220,13 +213,9 @@ export default {
           return false;
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowAddAdmin", false);
     },
     // 重置

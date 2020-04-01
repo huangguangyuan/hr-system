@@ -22,40 +22,6 @@
         </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="角色扩展：" prop="levExtend" v-if='userRight && modifyInfo.adminType=="HRadmin" && ruleForm.lev != 301'>
-        <el-select v-model="ruleForm.levExtend" placeholder="请选择管理员类型" multiple>
-          <el-option
-          v-for="item in hrAdminRoles"
-          :key="item.hrSysLev"
-          :label="item.title"
-          :value="item.hrSysLev.toString()"
-          :disabled="(item.hrSysLev==ruleForm.lev || item.hrSysLev == 301)?true:false">
-          <span style="float: left">{{ item.title }}</span>
-          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.rightTxt }}</span>
-        </el-option>
-        </el-select>
-      </el-form-item>
-      <!-- <el-form-item label="假期权限：" prop="leavesAccess" v-if='userRight && modifyInfo.adminType=="HRadmin" && ruleForm.lev != 301'>
-        <el-checkbox-group v-model="ruleForm.leavesAccess">
-          <el-checkbox label="1">查看</el-checkbox>
-          <el-checkbox label="2">审批</el-checkbox>
-          <el-checkbox label="3">结算</el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="报销权限：" prop="claimAccess" v-if='userRight && modifyInfo.adminType=="HRadmin" && ruleForm.lev != 301'>
-        <el-checkbox-group v-model="ruleForm.claimAccess">
-          <el-checkbox label="1">查看</el-checkbox>
-          <el-checkbox label="2">审批</el-checkbox>
-          <el-checkbox label="3">结算</el-checkbox>
-        </el-checkbox-group>
-      </el-form-item> -->
-      <el-form-item  label="服务归属：" prop="serveId" :disabled="[4].indexOf(userInfo.roleTypeId) >= 0?false:true ">
-        <el-radio-group v-model="ruleForm.serveId">
-          <el-radio :label="1">单位</el-radio>
-          <el-radio :label="2" :disabled="[201,211].indexOf(userInfo.lev)>= 0?false:true ">区域</el-radio>
-          <el-radio :label="3" :disabled="[201].indexOf(userInfo.lev)>= 0?false:true ">公司</el-radio>
-        </el-radio-group>
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确认修改</el-button>
         <el-button @click="cancelFn">取 消</el-button>

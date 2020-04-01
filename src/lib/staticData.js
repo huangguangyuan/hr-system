@@ -23,6 +23,17 @@ export function monthList(){
   {val:10,txt:'10月'},{val:11,txt:'11月'},{val:12,txt:'12月'}]
 }
 //性别
+export function taxableTxt(taxable){
+  switch (taxable) {
+    case 0:
+      return "否";
+    case 1:
+      return "是";
+    default:
+      return "未知";
+  }
+}
+//性别
 export function genderTxt(gender){
   switch (gender) {
     case "M":
@@ -33,6 +44,7 @@ export function genderTxt(gender){
       return "未知";
   }
 }
+
 //专项附加扣除
 export function deductionTypeTxt(typeId){
   switch (typeId) {
@@ -52,6 +64,7 @@ export function deductionTypeTxt(typeId){
       return "未知";
   }
 }
+
 //社保类型
 export function SITxt(typeId){
   switch (typeId) {

@@ -28,26 +28,18 @@ export default {
   methods: {
     //获取后台管理员角色列表
     getRoleList() {
-      
       var reqUrl = "/server/api/v1/projectRole/projectRolesWithAll";
       if(this.modifyInfo.adminType == "admin"){
         var data = { typeId: 1 };
       }else{
         var data = { typeId: 2 };
       }
-      this.$myApi.http
-        .post(reqUrl, data)
-        .then(res => {
-          console.log(res);
+      this.$myApi.http.post(reqUrl, data).then(res => {
           this.data = res.data.data;
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 获取用户当前的角色
     getCurrentRole() {
-      
       var reqUrl = "";
       if(this.modifyInfo.adminType == "admin"){
         reqUrl = '/server/api/v1/admin/getByCode';
@@ -66,7 +58,6 @@ export default {
     },
     // 添加角色
     addRolr() {
-      
       var reqUrl = "/server/api/v1/admin/updateAdminRoleRelation";
       var roleCodeArr = this.$refs.tree.getCheckedKeys();
       var data = {
@@ -88,7 +79,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowAddAdmin", false);
     }
   }

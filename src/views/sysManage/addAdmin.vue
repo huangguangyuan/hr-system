@@ -105,7 +105,6 @@ export default {
     },
     // 新增后台管理员
     addAmdinFn() {
-      
       var reqUrl = '/server/api/v1/admin/add';
       var data = {
         account: this.ruleForm.account,
@@ -123,13 +122,10 @@ export default {
           this.$message(res.data.msg);
           return false;
         }
-      }).catch(err => {
-        console.log(err);
-      });
+      })
     },
     // 新增客户管理员子账号
     addCustomerFn(){
-      
       var reqUrl = '/server/api/v1/admin/client/childrenAdd';
       var data = {
         account: this.ruleForm.account,
@@ -148,13 +144,10 @@ export default {
           this.$message(res.data.msg);
           return false;
         }
-      }).catch(err => {
-        console.log(err);
-      });
+      })
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowAddAdmin", false);
     },
     // 重置

@@ -123,8 +123,8 @@ export default {
   watch: {
     BUCodeSelected: {
       handler: function(newVal) {
-            this.pageInfo.reqParams.isReq = true;
-            this.$refs.pageInfo.getData(this.pageInfo);
+        this.pageInfo.reqParams.isReq = true;
+        this.$refs.pageInfo.getData(this.pageInfo);
       }
     },
     "filter.searchKey":{

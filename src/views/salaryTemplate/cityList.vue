@@ -49,7 +49,6 @@ export default {
       pageList: [],
       isShowAddCity: false, //是否显示增加项目表单
       isShowLoading: false, //是否显示loading页
-      searchInner: "", //搜索关键字
       curInfo: {}, //传值给子组件
       filter:{searchKey:'',searchField:['name','roleCode']}
     };

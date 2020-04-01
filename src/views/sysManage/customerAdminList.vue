@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap customerAdminList">
+  <div class="wrap customerAdminList" v-if="isShow">
     <!-- 头部内容 -->
     <div class="my-top">
       <span>客户管理员列表</span>
@@ -14,20 +14,12 @@
       </el-input>
     </div> -->
     <div class="search" >
-      <el-input placeholder="请输入关键字" v-model="filter.searchKey">
       <el-select v-model="companyCode" slot="prepend" placeholder="请选择公司" @change="changeCompanyCode" style="width:200px;">
           <el-option v-for='(item,index) in companyList' :key='index' :label="item.name" :value="item.code"></el-option>
         </el-select>
-      </el-input>
     </div>
     <!-- 列表内容 -->
-    <el-table
-      v-loading="isShowLoading"
-      :data="queryTableDate"
-      stripe
-      row-key="id"
-      border
-    >
+    <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id" border>
       <el-table-column sortable prop="name" label="名称"></el-table-column>
       <el-table-column prop="account" label="账号"></el-table-column>
       <el-table-column prop="mobile" label="手机"></el-table-column>
@@ -65,16 +57,7 @@
       </el-table-column>
     </el-table>
     <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 新增管理员 -->
     <el-dialog
       title="新增管理员"
@@ -130,15 +113,17 @@ import addAdmin from "./addAdmin.vue";
 import modifyAdmin from "./modifyAdmin.vue";
 import modifyPassword from "./modifyPassword.vue";
 import addRole from "./addRole.vue";
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    addAdmin,modifyAdmin,modifyPassword,addRole,pageInfo
+  },
   name: "customerAdminList",
   inject: ["reload"],
   data() {
     return {
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      isShow:false,
+      pageList:[],
       searchInner: "", //搜索内容
       isShowAddAdmin: false, //是否显示新增后台管理员
       isShowModifyAdmin: false, //是否显示修改后台管理员
@@ -153,71 +138,57 @@ export default {
       filter:{searchKey:'',searchField:['name','roleTypeTxt','account','mobile','email']}
     };
   },
+  computed:{
+    pageInfo(){
+      return {
+        reqParams:{//请求分页参数
+            isReq:false,
+            url:"/server/api/v1/admin/client/getAll",
+            data:{companyCode:this.companyCode}
+          }
+        }
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.isStatus = item.status == 1 ? "启用" : "禁用";
+        item.mobile =  item.companyTel || ""  + item.companyRegionTel || "" + item.BUTel || "";
+        item.email = item.companyEmail || "" + item.companyRegionEmail || "" + item.BUEmail || "";
+        item.mobile = this.$toolFn.isNotOrEmpty(item.mobile)?"":item.mobile;
+        item.email = this.$toolFn.isNotOrEmpty(item.email)?"":item.email;
+        item.children = item.childrenList.map(childItem => {
+          childItem.isStatus = item.status == 1 ? "启用" : "禁用";
+          return childItem;
+        });
+        return item;
+      });
+    }
+  },
   mounted() {
-    
     this.userInfo = this.$toolFn.curUser;
+    if ([3,4].indexOf(this.userInfo.roleTypeId) >= 0){//平台管理员,用户管理员
+      this.isShow = true;
+    }
     this.getCompanyCodeFun();
     //this.getData({companyCode:companyCode});
   },
   methods: {
     // 获取单位列表
     async getCompanyCodeFun(){
-      
       var companys = await this.$myApi.companys({isCache:true});
       if (companys) {
           this.companyList = companys;
           this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):this.companyList[0].code;
-          this.getData({companyCode:this.companyCode});
+          this.pageInfo.reqParams.isReq = true;
+          this.$refs.pageInfo.getData(this.pageInfo);
+          //this.getData({companyCode:this.companyCode});
         }
     },
     // 选择单位
     changeCompanyCode(code){
       this.companyCode = code;
-      this.getData({companyCode:this.companyCode});
+      this.pageInfo.reqParams.isReq = true;
+      this.$refs.pageInfo.getData(this.pageInfo);
       this.$toolFn.sessionSet('hrCompanyCode',code);
-    },
-    //获取项目数据列表
-    getData(params) {
-      
-      var reqUrl = "/server/api/v1/admin/client/getAll";
-      var myData = {};
-      if (params && params.companyCode != ""){
-        myData.companyCode = params.companyCode
-      }
-      this.isShowLoading = true;
-      this.$myApi.http.post(reqUrl, myData).then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data.map(item => {
-              item.isStatus = item.status == 1 ? "启用" : "禁用";
-              item.mobile =  item.companyTel || ""  + item.companyRegionTel || "" + item.BUTel || "";
-              item.email = item.companyEmail || "" + item.companyRegionEmail || "" + item.BUEmail || "";
-              item.mobile = this.$toolFn.isNotOrEmpty(item.mobile)?"":item.mobile;
-              item.email = this.$toolFn.isNotOrEmpty(item.email)?"":item.email;
-              item.children = item.childrenList.map(childItem => {
-                childItem.isStatus = item.status == 1 ? "启用" : "禁用";
-                return childItem;
-              });
-              return item;
-            }) //倒序
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      
-      this.curPage = val;
     },
     // 接受子组件接受的值
     IsShowAddAdminFn(res) {
@@ -226,57 +197,32 @@ export default {
       this.isShowModifyPassword = res;
       this.isShowAddRole = res;
     },
-    // 搜索
-    searchFn() {
-      
-      if (this.searchInner == "") {
-        this.getData();
-      } else {
-        var reqUrl = "/server/api/v1/admin/getByOptions";
-        var data = { name: this.searchInner };
-        this.$myApi.http.post(reqUrl, data).then(res => {
-          this.tableData = res.data.data.map(item => {
-            item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.modifyTime = this.$toolFn.timeFormat(item.modifyTime);
-            item.isStatus = item.status == 1 ? "启用" : "禁用";
-            item.children = item.nodes;
-            return item;
-          });
-          this.total = this.tableData.length;
-        });
-      }
-    },
     // 编辑
     editFn(index, res) {
-      
       this.isShowModifyAdmin = true;
       this.modifyInfo = res;
       this.modifyInfo.adminType = "customerAdmin";
     },
     // 修改密码
     modifyPassWord(index, res) {
-      
       this.isShowModifyPassword = true;
       this.modifyInfo = res;
       this.modifyInfo.adminType = "admin";
     },
     // 添加子权限
     addAccount(index, res) {
-      
       this.isShowAddAdmin = true;
       this.modifyInfo = res;
       this.modifyInfo.adminType = "customerAdmin";
     },
     // 添加角色
     addRole(index, res) {
-      
       this.isShowAddRole = true;
       this.modifyInfo = res;
       this.modifyInfo.adminType = "admin";
     },
     // 禁用
     forbidden(index, res) {
-      
       var reqUrl = "/server/api/v1/admin/update";
       var data = { id: res.id };
       var txt = "";
@@ -287,73 +233,31 @@ export default {
         data.status = 1;
         txt = "此操作将启用, 是否继续?";
       }
-      this
-        .$confirm(txt, "提 示", {
+      this.$confirm(txt, "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
+        }).then(() => {
           this.$myApi.http.post(reqUrl, data).then(res => {
             if (res.data.code == 0) {
             this.reload();
             }
           });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作~"
-          });
-        });
     },
     // 删除
     handleDelete(index, res) {
-      
-      this
-        .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
-          this.$myApi.http
-            .post("/server/api/v1/admin/delete", { id: res.id })
+        }).then(() => {
+          this.$myApi.http.post("/server/api/v1/admin/delete", { id: res.id })
             .then(res => {
               this.reload();
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
-  },
-  computed: {
-    queryTableDate() {
-      
-      let tableData = this.tableData;
-      if (this.filter.searchKey != ""){
-        tableData = this.$toolFn.searchFun(tableData,this.filter);
-      }
-      this.total = tableData.length;
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return tableData.slice(begin, end);
-    },
-    pageTotal() {
-      
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    }
-  },
-  components: {
-    addAdmin,
-    modifyAdmin,
-    modifyPassword,
-    addRole
   }
 };
 </script>

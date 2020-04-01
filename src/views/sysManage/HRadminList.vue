@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap HRadminList">
+  <div class="wrap HRadminList" v-if="isShow">
     <!-- 头部内容 -->
     <div class="my-top">
       <span>HR管理员列表</span>
@@ -47,7 +47,7 @@
       :close-on-click-modal="false"
       width="65%"
     >
-      <add-h-radmin v-if="isShowAddAdmin" v-on:listenIsShowAddAdmin="IsShowAddAdminFn" :modifyInfo="modifyInfo"></add-h-radmin>
+    <add-h-radmin v-if="isShowAddAdmin" v-on:listenIsShowAddAdmin="IsShowAddAdminFn" :modifyInfo="modifyInfo"></add-h-radmin>
     </el-dialog>
     <!-- 修改管理员 -->
     <el-dialog
@@ -89,7 +89,7 @@
 </template>
 <script>
 import addHRadmin from "./addHRadmin.vue";
-import modifyAdmin from "./modifyAdmin.vue";
+import modifyAdmin from "./modifyHRAdmin.vue";
 import modifyPassword from "./modifyPassword.vue";
 import addRole from "./addRole.vue";
 import pageInfo from "@/components/pageInfo.vue";
@@ -141,6 +141,9 @@ export default {
     }
   },
   mounted() {
+    if ([2,3,4].indexOf(this.$toolFn.curUser.roleTypeId) >= 0){//如果是平台管理员和用户管理员,hr管理员
+      this.isShow = true;
+    }
     this.initializeFun();
   },
   methods: {
@@ -283,7 +286,8 @@ export default {
             });
         })
     }
-  },watch: {
+  },
+  watch: {
     BUCodeSelected: {
       handler: function(newVal) {
         this.pageInfo.reqParams.isReq = true;

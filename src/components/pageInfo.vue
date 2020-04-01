@@ -12,7 +12,7 @@ export default {
   data() {
     return {
       total: 0, //总计
-      pageSize: 6, //页面数据条数
+      pageSize: 9, //页面数据条数
       curPage: 1, //当前页数
       pageType:1,//分页类型，1为前端分页，2为后端分页
       pageList:[],//页面显示列表
@@ -32,6 +32,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.pageInfo_props);
     this.getData(this.pageInfo_props);
   },
   methods:{
