@@ -157,13 +157,10 @@ export default {
     },
     //获取项目数据列表
     getData(proCode) {
-      
       var reqUrl = "/server/api/v1/projectAccess/getAllWithNodes";
       var myData = { typeId: parseInt(this.roleTypeValue) };
       this.isShowLoading = true;
-      this.$myApi.http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = this.mapFun(res.data.data, proCode).sort((a, b) => {
             if (a.id < b.id) {
@@ -176,13 +173,9 @@ export default {
           });
           this.total = this.tableData.length;
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 循环数据列表获取属性
     mapFun(objArr,proCode) {
-      
       return objArr
         .map(item => {
           item.createTime = this.$toolFn.timeFormat(item.createTime);
@@ -199,7 +192,6 @@ export default {
     },
     // 获取当前页数
     curChange(val) {
-      
       this.curPage = val;
     },
     // 接收子组件发送信息
@@ -210,26 +202,22 @@ export default {
     },
     // 获取角色类型
     getType(val) {
-      
       this.roleTypeValue = val;
       this.getData(this.projectCode);
       this.$toolFn.sessionSet('proAccessInitialize',{roleTypeValue:this.roleTypeValue,projectCode:this.projectCode});
     },
     // 修改权限
     modifyFun(index, res) {
-      
       this.isShowModifyAccess = true;
       this.curInfo = res;
     },
     // 添加子权限
     addChildAccessFun(index, res) {
-      
       this.isShowAddChildAccess = true;
       this.curInfo = res;
     },
     // 禁用
     forbidden(index, res) {
-      
       var reqUrl = "/server/api/v1/projectAccess/update";
       var data = { id: res.id };
       var txt = "";
@@ -240,13 +228,11 @@ export default {
         data.status = 1;
         txt = "此操作将启用, 是否继续?";
       }
-      this
-        .$confirm(txt, "提 示", {
+      this.$confirm(txt, "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
+        }).then(() => {
           this.$myApi.http.post(reqUrl, data).then(res => {
             if (res.data.code == 0) {
               this.reload();
@@ -254,47 +240,28 @@ export default {
             }
           });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作~"
-          });
-        });
     },
     // 删除
     handleDelete(index, res) {
-      
-      this
-        .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
-          this.$myApi.http
-            .post("/server/api/v1/projectAccess/delete", { id: res.id })
-            .then(res => {
+        }).then(() => {
+          this.$myApi.http.post("/server/api/v1/projectAccess/delete", { id: res.id }).then(res => {
               this.reload();
               this.$message.success('删除成功！');
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     }
   },
   computed: {
     queryTableDate() {
-      
       var begin = (this.curPage - 1) * this.pageSize;
       var end = this.curPage * this.pageSize;
       return this.tableData.slice(begin, end);
     },
     pageTotal() {
-      
       var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     }

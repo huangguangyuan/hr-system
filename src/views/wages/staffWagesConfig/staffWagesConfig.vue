@@ -65,7 +65,7 @@ export default {
     };
   },
   mounted() {
-    this.userInfo = this.$toolFn.localGet("userInfo");
+    this.userInfo = this.$toolFn.curUser;
     if (this.userInfo.access.payrollMain.indexOf(2) >= 0){
       this.isShowEditBtn = true;
     }

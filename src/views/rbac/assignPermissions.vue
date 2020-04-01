@@ -35,29 +35,19 @@ export default {
   methods: {
     //获取当前角色所在项目下所有权限
     getAccessList() {
-      
       var reqUrl = "/server/api/v1/projectAccess/accessbyProjectCode";
       var data = {
         projectCode: this.curInfo.projectCode,
         typeId: this.curInfo.typeId
       };
-      
-      this.$myApi.http
-        .post(reqUrl, data)
-        .then(res => {
-          console.log(res);
+      this.$myApi.http.post(reqUrl, data).then(res => {
           this.data = res.data.data.map(item => {
-            // item.disabled = true;
             return item;
           });
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 获取用户当前的权限
     getCurrentAccess() {
-      
       var reqUrl = "/server/api/v1/projectRole/getDetailByCode";
       var data = { code: this.curInfo.code };
       this.$myApi.http.post(reqUrl, data).then(res => {
@@ -71,7 +61,6 @@ export default {
     },
     // 分配权限
     addAccess() {
-      
       var reqUrl = "/server/api/v1/projectRole/updateProjectRoleAccessRelation";
       var codeArr = this.$refs.tree.getCheckedKeys();
       var data = {
@@ -93,7 +82,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     }
   }

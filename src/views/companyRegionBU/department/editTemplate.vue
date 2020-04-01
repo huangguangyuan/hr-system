@@ -120,7 +120,7 @@ export default {
       //   }
       // });
     },
-    // 提交表单
+    
     submitForm(formName) {
       
       this.$refs[formName].validate(valid => {
@@ -134,7 +134,7 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
+          
           return false;
         }
       });

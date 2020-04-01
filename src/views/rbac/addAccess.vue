@@ -98,21 +98,18 @@ export default {
     this.getProjectData();
   },
   methods: {
-    // 提交表单
+    
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.addFn();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 新增权限
     addFn() {
-      
       var reqUrl = "/server/api/v1/projectAccess/add";
       var data = {
         projectCode: this.ruleForm.projectCode,
@@ -145,7 +142,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     },
     // 重置

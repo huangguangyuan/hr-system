@@ -567,7 +567,7 @@ export default {
         this.getAnnualLeave(this.curInfo.BUCode);
       }
     },
-    // 提交表单
+    
     submitForm(formName) {
       
       this.$refs[formName].validate(valid => {

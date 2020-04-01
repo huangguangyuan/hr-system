@@ -78,7 +78,7 @@ export default {
     // 初始化
     initializeFun() {
     },
-    // 提交表单
+    
     submitForm(formName) {
       
       this.$refs[formName].validate(valid => {

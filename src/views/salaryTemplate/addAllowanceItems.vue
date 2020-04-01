@@ -35,16 +35,13 @@ export default {
     };
   },
   mounted() {
-    
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
       this.ruleForm.taxable = this.ruleForm.taxable.toString();
     }
   },
   methods: {
-    // 提交表单
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.curInfo.type == "add") {
@@ -53,14 +50,12 @@ export default {
             this.modifyFun();
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 添加
     addFun() {
-      
       var reqUrl = "/server/api/v1/claim/add";
       var data = {
         name: this.ruleForm.name,
@@ -78,7 +73,6 @@ export default {
     },
     // 修改
     modifyFun() {
-      
       var reqUrl = "/server/api/v1/claim/update";
       var data = {
         id: this.ruleForm.id,

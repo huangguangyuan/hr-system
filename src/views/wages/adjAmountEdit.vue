@@ -43,13 +43,13 @@ export default {
     this.ruleForm.adjAmountRemarks = this.curInfo.adjAmountRemarks;
   },
   methods: {
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.editFun();
         } else {
-          console.log("error submit!!");
+          
           return false;
         }
       });

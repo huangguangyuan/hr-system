@@ -9,7 +9,7 @@
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
+    <el-table v-loading="isShowLoading" :data="tableData" stripe>
       <el-table-column sortable prop="name" label="非应税项目"></el-table-column>
       <el-table-column sortable prop="amount" label="金额"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="是否生效"></el-table-column>
@@ -29,17 +29,7 @@
       </el-table-column>
     </el-table>
     <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
-
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 新增 -->
     <el-dialog
       title="新增非应税项目"
@@ -57,68 +47,48 @@
 </template>
 <script>
 import editLayer from "./editLayer.vue";
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    editLayer,pageInfo
+  },
   name: "salaryItemList2",
   inject: ["reload"],
   props: ["userRight_props"],
   data() {
     return {
       userRight:[],
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      pageList: [],
       curInfo: {}, //当前内容
       searchInner: "", //搜索内容
       isShowLoading: false, //是否显示loading页
       isShowEditLayer: false, //是否显示新增页面
     };
   },
+  computed: {
+    pageInfo(){
+      return {
+        reqParams:{//请求分页参数
+            url:"/server/api/v1/staff/salaryItem/getAll",
+            data:{staffCode: this.payrollInfo.code,taxable:0}
+          }
+        }
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.statusTxt = item.status == '1'?'是':'否';
+        item.taxableTxt = item.taxable == '1'?'是':'否';
+        return item;
+      });
+    },
+    payrollInfo() {
+      return this.$store.state.payrollModule.payrollInfo;
+    }
+  },
   mounted() {
     this.userRight = this.userRight_props;
-    this.getData();
   },
   methods: {
-    //获取项目数据列表
-    getData() {
-      var reqUrl = "/server/api/v1/staff/salaryItem/getAll";
-      var myData = { staffCode: this.payrollInfo.code };
-      this.isShowLoading = true;
-      this.$myApi.http
-        .post(reqUrl, myData)
-        .then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data
-               .filter(item => {
-                 if (item.taxable == 0){
-                   return item;
-                 }
-               })
-            .map(item => {
-              item.statusTxt = item.status == '1'?'是':'否';
-              item.taxableTxt = item.taxable == '1'?'是':'否';
-              return item;
-            })
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          console.log(this.tableData);
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
-    },
     // 新增专项扣除
     addFun() {
       this.isShowEditLayer = true;
@@ -145,19 +115,11 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$myApi.http
-            .post("/server/api/v1/staff/salaryItem/delete", { id: res.id })
-            .then(res => {
+          this.$myApi.http.post("/server/api/v1/staff/salaryItem/delete", { id: res.id }).then(res => {
               this.reload();
               this.$message.success("删除成功~");
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
     // 删除所有
     deleteAll() {
@@ -165,21 +127,12 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$myApi.http
-            .post("/server/api/v1/staff/salaryItem/deleteByStaffCode", { staffCode: this.payrollInfo.code })
-            .then(res => {
+      }).then(() => {
+          this.$myApi.http.post("/server/api/v1/staff/salaryItem/deleteByStaffCode", { staffCode: this.payrollInfo.code }).then(res => {
               this.reload();
               this.$message.success("删除成功~");
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
     // 改变状态
     changStatus(res){
@@ -202,23 +155,6 @@ export default {
         payrollKey: "payrollList"
       });
     }
-  },
-  computed: {
-    queryTableDate() {
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return this.tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    },
-    payrollInfo() {
-      return this.$store.state.payrollModule.payrollInfo;
-    }
-  },
-  components: {
-    editLayer
   }
 };
 </script>
@@ -229,20 +165,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;

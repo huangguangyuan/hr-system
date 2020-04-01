@@ -57,7 +57,7 @@ export default {
         this.ruleForm.taxAmount = this.curInfo.taxAmount;
         this.ruleForm.nousedTaxThreshold = this.curInfo.nousedTaxThreshold;
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

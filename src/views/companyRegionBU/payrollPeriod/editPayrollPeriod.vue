@@ -55,7 +55,7 @@ export default {
         this.ruleForm.remarks = this.curInfo.remarks;
       }
     },
-    // 提交表单
+    
     submitForm(formName) {
       
       this.$refs[formName].validate(valid => {
@@ -70,7 +70,7 @@ export default {
             }
           });
         } else {
-          console.log("error submit!!");
+          
           return false;
         }
       });

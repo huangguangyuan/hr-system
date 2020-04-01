@@ -57,14 +57,11 @@ export default {
     };
   },
   mounted() {
-    console.log(this.curInfo);
-    
     this.initializationFun();
   },
   methods: {
     // 初始化
     initializationFun(){
-        
         this.ruleForm.name = this.curInfo.name;
         this.ruleForm.rightCode = this.curInfo.rightCode;
         this.ruleForm.description = this.curInfo.description;
@@ -72,21 +69,18 @@ export default {
         this.ruleForm.orderNo = this.curInfo.orderNo;
         this.ruleForm.addField1 = this.curInfo.addField1;
     },
-    // 提交表单
+    
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.modifyFn();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 修改权限
     modifyFn() {
-      
       var reqUrl = "/server/api/v1/projectAccess/update";
       var data = {
         id:this.curInfo.id,
@@ -105,7 +99,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     },
     // 重置

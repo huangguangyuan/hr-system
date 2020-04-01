@@ -113,7 +113,7 @@ export default {
         this.ruleForm.endDate = this.curInfo.endDate;
       }
     },
-    // 提交表单
+    
     submitForm(formName) {
       
       this.$refs[formName].validate(valid => {

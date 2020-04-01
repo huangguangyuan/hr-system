@@ -78,31 +78,26 @@ export default {
     };
   },
   mounted() {
-    console.log(this.curInfo);
     this.getProjectData();
     this.initializationFun();
   },
   methods: {
     // 初始化
     initializationFun(){
-        
         this.ruleForm.projectCode = this.curInfo.projectCode
     },
-    // 提交表单
+    
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.addRoleFn();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 新增角色
     addRoleFn() {
-      
       var reqUrl = "/server/api/v1/projectRole/childrenAdd";
       var data = {
         projectCode: this.ruleForm.projectCode,
@@ -113,7 +108,6 @@ export default {
         status: parseInt(this.ruleForm.status),
         lev: parseInt(this.ruleForm.lev)
       };
-      
       this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.reload();
@@ -122,7 +116,6 @@ export default {
     },
     // 获取项目数据
     getProjectData() {
-      
       var reqUrl = "/server/api/v1/project/getAll";
       var data = { typeId: 1 };
       this.$myApi.http.post(reqUrl, data).then(res => {
@@ -135,7 +128,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     },
     // 重置

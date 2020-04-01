@@ -26,19 +26,15 @@ export default {
     };
   },
   mounted() {
-    
     this.getData();
   },
   methods: {
     //获取项目数据列表
     getData() {
-      
       this.isShowLoading = true;
       var reqUrl = "/server/api/v1/payroll/taxRate";
       var myData = {};
-      this.$myApi.http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           if (res.data.code == 0) {
             this.isShowLoading = false;
             this.dataList = res.data.data.map(item => {
@@ -59,9 +55,6 @@ export default {
             this.$message("无法获取信息");
           }
         })
-        .catch(err => {
-          console.log(err);
-        });
     }
   },
   components: {}

@@ -38,7 +38,7 @@ export default {
       this.ruleForm.name = this.curInfo.name;
       this.ruleForm.remarks = this.curInfo.remarks;
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

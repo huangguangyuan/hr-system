@@ -5,36 +5,16 @@
       <span>员工基本信息</span>
     </div>
     <el-divider></el-divider>
-    <!-- 搜索 -->
-    <div class="search-wrap">
-      <el-input placeholder="请输入关键字" v-model="filter.searchKey">
-        <el-select
-          v-model="BUCode"
-          slot="prepend"
-          placeholder="请选择"
-          style="width:200px;"
-          @change="selectFun"
-        >
-          <el-option
-            v-for="(item,index) in regionBUlist"
-            :key="index"
-            :label="item.name"
-            :value="item.code"
-          ></el-option>
-        </el-select>
-        <el-button slot="append" icon="el-icon-search" @click="searchFun">搜 索</el-button>
-      </el-input>
-    </div>
+    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCodeSelected" ref="busAndSearch"></bus-and-search>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
-      
+    <el-table v-loading="isShowLoading" :data="tableData" stripe>
       <el-table-column sortable prop="staffNo" label="员工编号"></el-table-column>
       <el-table-column sortable prop="nameChinese" label="名称"></el-table-column>
       <el-table-column label="头像">
         <template slot-scope="scope">
           <el-image
             style="width: 50px; height: 50px;border-radius: 100%;"
-            :src="scope.row.photo?scope.row.photo:AvatarDefault"
+            :src="scope.row.photo?scope.row.photo:avatarDefault"
             fit="cover"
           ></el-image>
         </template>
@@ -76,116 +56,64 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        :current-page="payrollCurPage"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{payrollCurPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
   </div>
 </template>
 <script>
-import { deflate } from "zlib";
+import {genderTxt} from "@/lib/staticData.js";
+import pageInfo from "@/components/pageInfo.vue";
+import busAndSearch from "@/components/busAndSearch.vue";
 export default {
+  components: {
+    pageInfo,busAndSearch
+  },
   name: "payrolllist",
   inject: ["reload"],
   data() {
     return {
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curInfo: {}, //当前内容
+      pageList:[],
       searchInner: "", //搜索内容
       regionBUlist: [], //单位列表
-      BUCode: "", //角色类型
+      BUCodeSelected: "", //单位code
       staffState: "", //员工状态
       staffID: "", //员工ID
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
       isShowState: false, //是否显示状态
-      AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
+      avatarDefault:require("@/assets/images/avatar.png"), //默认头像
       filter:{searchKey:'',searchField:['account','staffNo','nameChinese','nameEnglish']}
     };
   },
-  mounted() {
-    
-    this.InitializationFun();
-  },
-  methods: {
-    // 初始化
-    InitializationFun() {
-      
-      this.getregionBU();
-    },
-    // 获取单位列表
-    async getregionBU() {
-      
-      var regionBUs = await this.$myApi.regionBUs({isCache:true});
-      if (regionBUs && regionBUs.length > 0) {
-          this.regionBUlist = regionBUs;
-          this.BUCode = this.$toolFn.sessionGet("staffBUCode") ? this.$toolFn.sessionGet("staffBUCode"): this.regionBUlist[0].code;
-          this.getData(this.BUCode);
+  computed:{
+    pageInfo(){
+      return {
+        reqParams:{//请求分页参数
+            isReq:false,
+            url:"/server/api/v1/staff/getAll",
+            data:{ BUCode:this.BUCodeSelected }
+          }
         }
     },
-    //获取项目数据列表
-    getData(BUCode) {
-      
-      var reqUrl = "/server/api/v1/staff/getAll";
-      var myData = { BUCode: BUCode };
-      this.isShowLoading = true;
-      this.$myApi.http
-        .post(reqUrl, myData)
-        .then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data
-            .map(item => {
-              // 性别
-              switch (item.gender) {
-                case "M":
-                  item.genderTxt = "男";
-                  break;
-                case "F":
-                  item.genderTxt = "女";
-                  break;
-                default:
-                  item.genderTxt = "未知";
-              }
-              return item;
-            })
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+    busAndSearch(){
+      return {filter:this.filter};
     },
-    // 获取当前页数
-    curChange(val) {
-      this.$store.commit({
-        type: "getPayrollCurPage",
-        payrollCurPage: val,
+    tableData(){
+      return this.pageList.map(item => {
+        item.genderTxt = genderTxt(item.gender);
+        return item;
       });
     },
-    // 获取单位BUCode
-    selectFun(val) {
-      this.BUCode = val;
-      this.getData(this.BUCode);
-      this.$toolFn.sessionSet("staffBUCode", val);
-    },
+    payrollCurPage(){
+      return this.$store.state.payrollModule.payrollCurPage;
+    }
+  },
+  mounted() {
+    this.userInfo = this.$toolFn.curUser;
+    if ([2].indexOf(this.userInfo.roleTypeId) >= 0){//hr管理员
+      this.isShow = true;
+    }
+  },
+  methods: {
     // 打开详细页面
     openFun(index, res, key) {
       this.$store.commit({
@@ -195,28 +123,19 @@ export default {
       });
     }
   },
-  computed: {
-    queryTableDate() {
-      
-      let tableData = this.tableData;
-      if (this.filter.searchKey != ""){
-        tableData = this.$toolFn.searchFun(tableData,this.filter);
+  watch: {
+    BUCodeSelected: {
+      handler: function(newVal) {
+        this.pageInfo.reqParams.isReq = true;
+        this.$refs.pageInfo.getData(this.pageInfo);
       }
-      this.total = tableData.length;
-      var begin = (this.payrollCurPage - 1) * this.pageSize;
-      var end = this.payrollCurPage * this.pageSize;
-      return tableData.slice(begin, end);
     },
-    pageTotal() {
-      
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    },
-    payrollCurPage(){
-      return this.$store.state.payrollModule.payrollCurPage;
+    "filter.searchKey":{
+      handler: function(newVal) {
+        this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
+      }
     }
-  },
-  components: {}
+  }
 };
 </script>
 <style scoped lang="scss">
@@ -226,20 +145,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;

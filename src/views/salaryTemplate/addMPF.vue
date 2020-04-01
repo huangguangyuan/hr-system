@@ -62,7 +62,6 @@ export default {
     }
   },
   methods: {
-    // 提交表单
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -72,7 +71,6 @@ export default {
             this.modifyFun();
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

@@ -74,7 +74,7 @@ export default {
       this.$i18n.locale = command;
       Cookies.set("language", command, { expires: 7 });
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

@@ -222,7 +222,7 @@ export default {
   mounted() {
     
 
-    this.userInfo = this.$toolFn.localGet("userInfo");
+    this.userInfo = this.$toolFn.curUser;
     let access = this.userInfo.access;
     if (access.payrollMain.length > 0 ){
       this.isShow = true;

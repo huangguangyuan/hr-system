@@ -21,7 +21,7 @@ export default {
     };
   },
   mounted() {
-    this.userInfo = this.$toolFn.localGet("userInfo");
+    this.userInfo = this.$toolFn.curUser;
       if (this.userInfo.roleTypeId == 2){
         if (this.userInfo.access.staffMain.length > 0){
           this.isShow = true;

@@ -15,20 +15,16 @@
   </div>
 </template>
 <script>
+import {paymentIdTxt} from "@/lib/staticData.js";
 export default {
   name: "MPFtemplate",
   inject: ["reload"],
   data() {
     return {
       tableData: [], //列表数据
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
       isShowAdd: false, //是否显示增加项目表单
       isShowLoading: false, //是否显示loading页
-      searchInner: "", //搜索关键字
       curInfo: {}, //传值给子组件
-      cityList: [], //城市列表
       cityCode: "" //城市代号
     };
   },
@@ -43,48 +39,20 @@ export default {
         cityCode: 'c4900a00-a7a4-11e9-bb56-837dd7ac904b'
       };
       this.isShowLoading = true;
-      this.$myApi.http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data
             .filter(item => {
               if (item.paymentId == 2){
-              item.paymentRatio1 = (item.paymentRatio *100) + "%"
-              switch (item.paymentId) {
-                case 1:
-                  item.paymentIdTxt = "公司";
-                  break;
-                case 2:
-                  item.paymentIdTxt = "个人";
-                  break;
-                default:
-                  item.typeIdTxt = "未知";
-              }
+              item.paymentRatio1 = (item.paymentRatio *100) + "%";
+              item.paymentIdTxt = paymentIdTxt(item.paymentId);
               item.createTime = this.$toolFn.timeFormat(item.createTime);
               item.modifyTime = this.$toolFn.timeFormat(item.modifyTime);
               return item;
               }
             })
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
           this.total = this.tableData.length;
         })
-        .catch(err => {
-          console.log(err);
-        });
-
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
     },
     // 检测是否关闭表单
     listenIsShowMask(res) {
@@ -96,23 +64,13 @@ export default {
       this.curInfo.type = "modify";
       this.isShowAdd = true;
     },
-    // 查询
-    searchFun(){
-
-    },
   },
   computed: {
     queryTableDate() {
       var begin = (this.curPage - 1) * this.pageSize;
       var end = this.curPage * this.pageSize;
       return this.tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
     }
-  },
-  components: {
   }
 };
 </script>
@@ -123,23 +81,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-}
-.search {
-  margin: 20px auto;
 }
 .el-table{
     margin: 30px auto 0;

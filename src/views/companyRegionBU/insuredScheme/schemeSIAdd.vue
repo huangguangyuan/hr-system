@@ -81,7 +81,7 @@ export default {
         this.isShow = false;
       }
     },
-    // 提交表单
+    
     submitForm(formName) {
       
       this.$refs[formName].validate(valid => {

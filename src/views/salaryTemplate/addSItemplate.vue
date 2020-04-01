@@ -82,8 +82,6 @@ export default {
     };
   },
   mounted() {
-    
-    console.log(this.curInfo);
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
       this.ruleForm.typeId = this.ruleForm.typeId.toString();
@@ -92,9 +90,7 @@ export default {
     this.getCityList();
   },
   methods: {
-    // 提交表单
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.curInfo.type == "add") {
@@ -103,14 +99,12 @@ export default {
             this.modifyFun();
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 获取城市列表
     getCityList() {
-      
       var reqUrl = "/server/api/v1/city/getAll";
       var data = {};
       this.$myApi.http.post(reqUrl, data).then(res => {
@@ -142,7 +136,6 @@ export default {
     },
     // 修改
     modifyFun(){
-        
         var reqUrl = '/server/api/v1/citySI/update';
         var data = {
             id:this.ruleForm.id,
@@ -164,7 +157,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     },
     // 重置

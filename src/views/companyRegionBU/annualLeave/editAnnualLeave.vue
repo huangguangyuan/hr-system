@@ -81,7 +81,7 @@ export default {
         this.ruleForm.remarks = this.curInfo.remarks;
       }
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.ruleForm.annualLeaveWriteOffDate = new Date((new Date().getFullYear()+1) + "-" + this.$toolFn.timeFormat(this.ruleForm.annualLeaveWriteOffDate,"MM-dd"));
       this.ruleForm.annualLeaveRetainClearDate = new Date((new Date().getFullYear()+1) + "-" +  this.$toolFn.timeFormat(this.ruleForm.annualLeaveRetainClearDate,"MM-dd"));

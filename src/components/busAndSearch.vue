@@ -23,16 +23,18 @@ export default {
   computed: {
   },
   mounted() {
-    this.filter = this.busAndSearch_props.filter;
-    this.BUCodeOptionsShow = this.busAndSearch_props.BUCodeOptionsShow != undefined ? this.busAndSearch_props.BUCodeOptionsShow : this.BUCodeOptionsShow;
-    this.searchKeyInpShow = this.busAndSearch_props.searchKeyInpShow != undefined ? this.busAndSearch_props.searchKeyInpShow : this.searchKeyInpShow;
-    //获取输入bucode或缓存
-    this.BUCodeSelected = (this.busAndSearch_props.BUCodeSelected && this.busAndSearch_props.BUCodeSelected != '') ?
-    this.busAndSearch_props.BUCodeSelected :this.$toolFn.sessionGet('BUCodeSelected');
-    this.init();
+    this.init(this.busAndSearch_props);
   },
   methods:{
-    async init(){
+    setParam(p){
+      this.filter = this.busAndSearch_props.filter;
+      this.BUCodeOptionsShow = this.busAndSearch_props.BUCodeOptionsShow != undefined ? this.busAndSearch_props.BUCodeOptionsShow : this.BUCodeOptionsShow;
+      this.searchKeyInpShow = this.busAndSearch_props.searchKeyInpShow != undefined ? this.busAndSearch_props.searchKeyInpShow : this.searchKeyInpShow;
+      //获取输入bucode或缓存
+      this.BUCodeSelected = (this.busAndSearch_props.BUCodeSelected && this.busAndSearch_props.BUCodeSelected != '') ? this.busAndSearch_props.BUCodeSelected :this.$toolFn.sessionGet('BUCodeSelected');
+    },
+    async init(p){
+      if (p){this.setParam(p);}
       this.buList = await this.getRegionBUList();
       if (this.buList.length > 0){
         //如果选中bu不存在，则获取列表第一个bu

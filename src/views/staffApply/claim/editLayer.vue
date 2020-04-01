@@ -91,7 +91,7 @@ export default {
   },
   mounted() {
     this.initializeFun();
-    this.userInfo = this.$toolFn.localGet("userInfo");
+    this.userInfo = this.$toolFn.curUser;
   },
   methods: {
     // 初始化
@@ -99,7 +99,7 @@ export default {
       this.getClaimTypeId(); //获取报销类型
       this.claimProcessRelate(this.curInfo.staffCode); //获取报销流程相关人员
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

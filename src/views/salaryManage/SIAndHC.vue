@@ -44,6 +44,7 @@
   </div>
 </template>
 <script>
+import {SITxt,paymentIdTxt,householdIdTxt} from "@/lib/staticData.js";
 export default {
   name: "SItemplate",
   inject: ["reload"],
@@ -51,26 +52,20 @@ export default {
     return {
       tableData: [], //列表数据
       tableDataHC: [], //列表数据
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
       isShowAdd: false, //是否显示增加项目表单
       isShowLoading: false, //是否显示loading页
-      searchInner: "", //搜索关键字
       curInfo: {}, //传值给子组件
       cityList: [], //城市列表
       cityCode: "b39f8ec0-676f-11e9-93b3-31525099b521" //城市代号
     };
   },
   mounted() {
-    
     this.getCityList();
     this.getData();
   },
   methods: {
     //获取城市数据列表
     getData() {
-      
       var reqUrl = "/server/api/v1/citySI/getAll";
       var myData = {
         cityCode: this.cityCode
@@ -80,95 +75,31 @@ export default {
           this.isShowLoading = false;
           this.tableData = res.data.data.filter(item => {
               if (item.paymentId == 2){
-                item.paymentRatio1 = (item.paymentRatio *100) + "%"
-              switch (item.typeId) {
-                case 1:
-                  item.typeIdTxt = "养老";
-                  break;
-                case 2:
-                  item.typeIdTxt = "医疗";
-                  break;
-                case 3:
-                  item.typeIdTxt = "工伤";
-                  break;
-                case 4:
-                  item.typeIdTxt = "生育";
-                  break;
-                case 5:
-                  item.typeIdTxt = "失业";
-                  break;
-                case 6:
-                  item.typeIdTxt = "大病";
-                  break;
-                default:
-                  item.typeIdTxt = "未知";
+                item.paymentRatio1 = (item.paymentRatio *100) + "%";
+                item.typeIdTxt = SITxt(item.typeId);
+                item.paymentIdTxt = paymentIdTxt(item.paymentId);
+                item.createTime = this.$toolFn.timeFormat(item.createTime);
+                item.modifyTime = this.$toolFn.timeFormat(item.modifyTime);
+                return item;
               }
-              switch (item.paymentId) {
-                case 1:
-                  item.paymentIdTxt = "公司";
-                  break;
-                case 2:
-                  item.paymentIdTxt = "个人";
-                  break;
-                default:
-                  item.typeIdTxt = "未知";
-              }
-              
-              item.createTime = this.$toolFn.timeFormat(item.createTime);
-              item.modifyTime = this.$toolFn.timeFormat(item.modifyTime);
-              return item;
-              }
-            }).sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
+            })
         })
-
         reqUrl = "/server/api/v1/cityHC/getAll";
         this.$myApi.http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableDataHC = res.data.data.filter(item => {
               if (item.paymentId == 2){
-                item.paymentRatio1 = (item.paymentRatio *100) + "%"
-              switch (item.paymentId) {
-                case 1:
-                  item.paymentIdTxt = "公司";
-                  break;
-                case 2:
-                  item.paymentIdTxt = "个人";
-                  break;
-                default:
-                  item.typeIdTxt = "未知";
+                item.paymentRatio1 = (item.paymentRatio *100) + "%";
+                item.paymentIdTxt = paymentIdTxt(item.paymentId);
+                item.createTime = this.$toolFn.timeFormat(item.createTime);
+                item.modifyTime = this.$toolFn.timeFormat(item.modifyTime);
+                return item;
               }
-              
-              item.createTime = this.$toolFn.timeFormat(item.createTime);
-              item.modifyTime = this.$toolFn.timeFormat(item.modifyTime);
-              return item;
-              }
-            }).sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
+            })
         })
-    },
-    // 获取当前页数
-    curChange(val) {
-      
-      this.curPage = val;
     },
     // 获取城市列表
     getCityList() {
-      
       var reqUrl = "/server/api/v1/city/getAll";
       var data = {};
       this.$myApi.http.post(reqUrl, data).then(res => {
@@ -184,12 +115,10 @@ export default {
     },
     // 检测是否关闭表单
     listenIsShowMask(res) {
-      
       this.isShowAdd = res;
     },
     // 编辑
     handleEdit(index, res) {
-      
       this.curInfo = res;
       this.curInfo.type = "modify";
       this.isShowAdd = true;
@@ -197,19 +126,16 @@ export default {
   },
   computed: {
     queryTableDate() {
-      
       var begin = (this.curPage - 1) * this.pageSize;
       var end = this.curPage * this.pageSize;
       return this.tableData.slice(begin, end);
     },
     queryTableDateHC() {
-      
       var begin = (this.curPage - 1) * this.pageSize;
       var end = this.curPage * this.pageSize;
       return this.tableDataHC.slice(begin, end);
     },
     pageTotal() {
-      
       var pageTotal = Math.ceil(this.total / this.pageSize);
       return pageTotal;
     }
@@ -225,22 +151,5 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-}
-.search {
-  margin: 20px auto;
 }
 </style>

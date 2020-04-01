@@ -177,7 +177,7 @@ export default {
     this.isShow = true;
   },
   methods: {
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

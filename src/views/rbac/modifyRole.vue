@@ -94,7 +94,6 @@ export default {
   methods: {
     // 初始化
     initializationFun(){
-      
       this.ruleForm.name = this.curInfo.name;
       this.ruleForm.projectCode = this.curInfo.projectCode;
       this.ruleForm.roleCode = this.curInfo.roleCode;
@@ -103,21 +102,18 @@ export default {
       this.ruleForm.typeId = this.curInfo.typeId.toString();
       this.ruleForm.status = this.curInfo.status.toString();
     },
-    // 提交表单
+    
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.modifyFn();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 修改角色
     modifyFn() {
-      
       var reqUrl = "/server/api/v1/projectRole/update";
       var data = {
         id:this.curInfo.id,
@@ -135,7 +131,6 @@ export default {
     },
     // 获取项目数据
     getProjectData() {
-      
       var reqUrl = "/server/api/v1/project/getAll";
       var data = { typeId: 1 };
       this.$myApi.http.post(reqUrl, data).then(res => {
@@ -148,7 +143,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     },
     // 重置

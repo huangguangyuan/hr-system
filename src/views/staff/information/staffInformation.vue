@@ -301,7 +301,7 @@ export default {
   },
   mounted() {
     
-    this.userInfo = this.$toolFn.localGet("userInfo");
+    this.userInfo = this.$toolFn.curUser;
     this.userRight = this.userRight_props;
     this.InitializationFun();
   },

@@ -111,13 +111,13 @@ export default {
         this.ruleForm.insuredTypeId = this.curInfo.insuredTypeId.toString();
       }
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.addFun();
         } else {
-          console.log("error submit!!");
+          
           return false;
         }
       });

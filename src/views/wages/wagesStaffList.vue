@@ -113,7 +113,7 @@ export default {
   },
   mounted() {
     
-    this.userInfo = this.$toolFn.localGet("userInfo");
+    this.userInfo = this.$toolFn.curUser;
     if (this.userInfo.access.payrollMain.length > 0){
       this.isShow = true;
     }

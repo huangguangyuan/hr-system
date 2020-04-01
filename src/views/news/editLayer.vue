@@ -57,7 +57,6 @@
       v-if="!ruleForm.userRight"
     >
       <h1 style="text-align:center">{{ruleForm.title}}</h1>
-
       <p style="padding:15px;">{{ruleForm.content}}</p>
       <el-divider></el-divider>
       <el-form-item>
@@ -68,15 +67,11 @@
 </template>
 <script>
 let id = 0;
-import { setTimeout } from "timers";
-import axios from "axios";
-import { Promise } from "q";
 export default {
   name: "editLayer",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
-    const _that = this;
     return {
       ruleForm: {
         userRight: true,
@@ -129,18 +124,6 @@ export default {
         }
       }
     },
-    //  getCompanys() {
-    //   
-    //   var reqUrl = "/server/api/v1/company/companysWithChild";
-    //   return new Promise((resolve, reject) => {
-    //     this.$myApi.http.post(reqUrl, {}).then(res => {
-    //       if (res.data.code == 0) {
-    //         this.companyList = res.data.data;
-    //         resolve(this.companyList);
-    //       }
-    //     });
-    //   });
-    // },
     async getCompanys() {
       var reqUrl = "/server/api/v1/company/companysWithChild";
       return this.$myApi.http.post(reqUrl, {});
@@ -159,7 +142,7 @@ export default {
       });
       this.BUList = code[0].bus;
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -172,7 +155,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

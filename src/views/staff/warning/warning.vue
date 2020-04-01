@@ -62,7 +62,7 @@ export default {
   },
   mounted() {
     this.userRight = this.userRight_props;
-    this.userInfo = this.$toolFn.localGet("userInfo");
+    this.userInfo = this.$toolFn.curUser;
     if (this.userInfo.roleTypeId != 1){
       this.staffCode = this.staffInfo.code;
     }else{

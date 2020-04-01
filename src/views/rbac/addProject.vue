@@ -71,17 +71,13 @@ export default {
     };
   },
   mounted(){
-    
-    // console.log(this.editInfo);
     if(this.isType == 'modify'){
       this.ruleForm = this.editInfo;
       this.ruleForm.status = this.ruleForm.status.toString();
     }
   },
   methods: {
-    // 提交
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           if(this.isType == 'modify'){
@@ -90,7 +86,6 @@ export default {
             this.addFn();
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -101,25 +96,19 @@ export default {
     },
     // 取消
     cancelFn(){
-      
       this.$emit('listenIsShowProject',false);
     },
     // 新增
     addFn(){
-      
       var reqUrl = '/server/api/v1/project/add';
       this.$myApi.http.post(reqUrl, this.ruleForm).then(res => {
         if (res.data.code == 0) {
           this.reload();
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
     },
     // 修改
     modifyFn(){
-      
       var reqUrl = '/server/api/v1/project/update'
       var data = {
         "id":this.ruleForm.id,
@@ -131,8 +120,6 @@ export default {
         if (res.data.code == 0) {
           this.reload();
         }
-      }).catch(err => {
-        console.log(err);
       })
     }
   },

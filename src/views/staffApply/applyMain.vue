@@ -53,7 +53,7 @@ export default {
     };
   },
   beforeMount(){
-    this.userInfo = this.$toolFn.localGet("userInfo");
+    this.userInfo = this.$toolFn.curUser;
     if (this.userInfo.roleTypeId == 1 ){
       this.staffCode = this.userInfo.staffCode;
     }else if(this.userInfo.roleTypeId == 2 ){

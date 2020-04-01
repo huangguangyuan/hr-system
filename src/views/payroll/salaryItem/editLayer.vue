@@ -94,16 +94,16 @@ export default {
       this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.salaryCodeList = res.data.data.filter(item => {
-                 if (item.taxable == this.ruleForm.taxable){
-                   return item;
-                 }
-               });
+            if (item.taxable == this.ruleForm.taxable){
+              return item;
+            }
+          });
         }else{
           this.$message.error(res.data.msg);
         }
       })
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -116,7 +116,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

@@ -122,7 +122,7 @@ export default {
   },
   mounted() {
     
-    this.userInfo = this.$toolFn.localGet("userInfo");
+    this.userInfo = this.$toolFn.curUser;
     this.getData();
   },
   methods: {

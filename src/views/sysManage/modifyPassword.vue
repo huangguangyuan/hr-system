@@ -56,7 +56,7 @@ export default {
                 this.modifyHRadminFn();
             }
         } else {
-          console.log("error submit!!");
+          
           return false;
         }
       });

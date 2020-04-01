@@ -138,7 +138,7 @@ export default {
     },
     // 初始化
     initializeFun() {
-      this.userInfo = this.$toolFn.localGet("userInfo");
+      this.userInfo = this.$toolFn.curUser;
       this.getHolidaysApplyTypeFun();
       this.holidayProcessRelate(this.curInfo.staffCode); //获取报假期相关人员
     },
@@ -178,7 +178,7 @@ export default {
         }
       });
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
