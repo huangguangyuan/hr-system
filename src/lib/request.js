@@ -6,7 +6,7 @@ import router from '@/router'
 // 默认请求域名
 axios.defaults.baseURL = '';
 // 请求超时时间
-axios.defaults.timeout = 15000;
+axios.defaults.timeout = 60000;
 // 请求头
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 

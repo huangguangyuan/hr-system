@@ -80,7 +80,6 @@ export default {
     },
     
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           switch (this.curInfo.type) {
@@ -98,7 +97,6 @@ export default {
     },
     // 新增
     addFun() {
-      
       var reqUrl = "/server/api/v1/staff/holidaysApply/addLeavesHis";
       if (this.ruleForm.applyDay == 0){
         this.$message.error("天数不能为0");
@@ -123,7 +121,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     },
     // 重置

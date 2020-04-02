@@ -96,8 +96,7 @@ export default {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
+        }).then(() => {
           this.$myApi.http.post("/server/api/v1/staff/claim/recallApply", { claimCode: res.code,staffCode:res.staffCode }).then(res => {
               if(res.data.code == 0){
                 this.reload();
@@ -108,23 +107,8 @@ export default {
               
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
-  },
-  // watch: {
-  //     pageList(val) {//监听分页数据变化
-  //       this.tableData = val.map(item => {
-  //         item.createTime = this.$toolFn.timeFormat(item.createTime);
-  //         item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
-  //         return item;
-  //       });
-  //     }
-  //   }
+  }
 };
 </script>
 <style scoped lang="scss">

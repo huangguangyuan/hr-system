@@ -270,7 +270,6 @@ export default {
 
 <style scoped lang="scss">
 .inptTip{padding: 0 10px;color: #ff6600}
-.inp01 {readonly:expression(this.readOnly=false);}
 </style>
 
 

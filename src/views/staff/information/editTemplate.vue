@@ -31,7 +31,8 @@
         <el-input v-model="ruleForm.nameEnglish"></el-input>
       </el-form-item>
       <el-form-item label="个人头像：" prop="photo">
-        <el-upload
+        <image-upload :imageUpload_props="photo_props" :imageSrc.sync="ruleForm.photo"></image-upload>
+        <!-- <el-upload
           class="avatar-uploader"
           action="/app/api/v1/file/imageUpload"
           :show-file-list="false"
@@ -39,7 +40,7 @@
         >
           <el-image v-if="ruleForm.photo" :src="avatarSrc" class="avatar" fit="cover"></el-image>
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+        </el-upload> -->
       </el-form-item>
       <el-form-item label="出生日期：" prop="dateOfBirth">
         <el-date-picker
@@ -126,26 +127,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="身份证正面图：" prop="IDCopy">
-        <el-upload
-          class="avatar-uploader"
-          action="/app/api/v1/file/imageUpload"
-          :show-file-list="false"
-          :on-success="uploadIDPositive"
-        >
-          <el-image v-if="ruleForm.IDCopy" :src="IDPositiveSrc" class="idCard" fit="scale-down"></el-image>
-          <i v-else class="el-icon-plus idCard-uploader-icon"></i>
-        </el-upload>
+        <image-upload :imageUpload_props="IDCopy_props" :imageSrc.sync="ruleForm.IDCopy"></image-upload>
       </el-form-item>
       <el-form-item label="身份证背面图：" prop="IDCopyBack">
-        <el-upload
-          class="avatar-uploader"
-          action="/app/api/v1/file/imageUpload"
-          :show-file-list="false"
-          :on-success="uploadIDNegative"
-        >
-          <el-image v-if="ruleForm.IDCopyBack" :src="IDNegativeSrc" class="idCard" fit="scale-down"></el-image>
-          <i v-else class="el-icon-plus idCard-uploader-icon"></i>
-        </el-upload>
+        <image-upload :imageUpload_props="IDCopyBack_props" :imageSrc.sync="ruleForm.IDCopyBack"></image-upload>
       </el-form-item>
       <el-form-item label="政治面貌：" prop="politicalBackground">
         <el-select v-model="ruleForm.politicalBackground" placeholder="请选择政治面貌">
@@ -333,9 +318,13 @@
   </div>
 </template>
 <script>
+import imageUpload from "@/components/imageUpload.vue";
 import axios from "axios";
 import md5 from "js-md5";
 export default {
+  components: {
+    imageUpload
+  },
   name: "editTemplate",
   inject: ["reload"],
   props: ["curInfo","userRight_props"],
@@ -539,7 +528,19 @@ export default {
         // hukouType: [{ required: true, message: "请选择户口性质", trigger: "change" }],
         // martialStatus: [{ required: true, message: "请选择婚姻状况", trigger: "change" }],
         // photo:[{ required: true, message: "请上传个人头像", trigger: "change" }]
-      }
+      },
+      photo_props:{
+        imageSrc:'',
+        uploadFolder:''
+      },
+      IDCopy_props:{
+        imageSrc:'',
+        uploadFolder:''
+      },
+      IDCopyBack_props:{
+        imageSrc:'',
+        uploadFolder:''
+      },
     };
   },
   mounted() {
@@ -549,7 +550,6 @@ export default {
   methods: {
     // 初始化
     initialize() {
-      
       if (this.curInfo.type == "modify") {
         this.isShow = false;
         this.ruleForm = JSON.parse(JSON.stringify(this.curInfo));
@@ -563,13 +563,15 @@ export default {
         this.avatarSrc = this.ruleForm.photo;
         this.IDPositiveSrc = this.ruleForm.IDCopy;
         this.IDNegativeSrc = this.ruleForm.IDCopyBack;
+        this.photo_props.imageSrc = this.ruleForm.photo;
+        this.IDCopy_props.imageSrc = this.ruleForm.IDCopy;
+        this.IDCopyBack_props.imageSrc = this.ruleForm.IDCopyBack;
         this.getDepartment(this.ruleForm.BUCode);
         this.getAnnualLeave(this.curInfo.BUCode);
       }
     },
     
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           switch (this.curInfo.type) {
@@ -587,7 +589,6 @@ export default {
     },
     // 新增单位
     addFun() {
-      
       var reqUrl = "/server/api/v1/staff/add";
       var data = this.ruleForm;
       var data = {
@@ -643,8 +644,6 @@ export default {
         hrCode: this.ruleForm.hrCode,
         staffNo: this.ruleForm.staffNo,
       };
-      
-
       if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveWriteOffDate == ""){
         this.$message.error("年假清空日期不能为空");
         return false;
@@ -679,7 +678,6 @@ export default {
     },
     // 修改信息
     modifyFun() {
-      
       var reqUrl = "/server/api/v1/staff/update";
       var data = {
         id: this.curInfo.id,
@@ -814,13 +812,11 @@ export default {
       this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.data){
           this.HRadminList = res.data.data;
-          console.log(this.HRadminList);
         }
       })
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     },
     // 获取上传头像
@@ -876,39 +872,6 @@ export default {
       font-size: 16px;
     }
   }
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #ebb563;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 120px;
-  height: 120px;
-  line-height: 120px;
-  text-align: center;
-}
-.avatar {
-  width: 120px;
-  height: 120px;
-  display: block;
-}
-
-.idCard-uploader-icon {
-  @extend .avatar-uploader-icon;
-  width: 220px;
-}
-.idCard {
-  width: 220px;
-  height: 120px;
 }
 
 .el-scrollbar__wrap {

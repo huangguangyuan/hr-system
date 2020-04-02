@@ -115,16 +115,13 @@ export default {
       if (companys) {
           this.companyList = companys;
           this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):companys[0].code;
-          this.pageInfo.reqParams.isReq = true;
-          this.$refs.pageInfo.getData(this.pageInfo);
+
         }
     },
     // 选择公司
     changeCompanyCode(code){
       this.companyCode = code;
       this.pageInfo.reqParams.isReq = true;
-      this.$refs.pageInfo.getData(this.pageInfo);
-      this.$toolFn.sessionSet('hrCompanyCode',code);
     },
     // 监听子组件信息
     listenIsShowMask(res) {
@@ -179,7 +176,15 @@ export default {
             });
         })
     }
-  }
+  },
+  watch: {
+    companyCode: {
+      handler: function(newVal) {
+          this.pageInfo.reqParams.isReq = true;
+          this.$refs.pageInfo.getData(this.pageInfo);
+      }
+    }
+  },
 };
 </script>
 <style scoped lang="scss">

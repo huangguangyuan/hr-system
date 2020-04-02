@@ -102,25 +102,102 @@ export function paymentIdTxt(typeId){
 export function householdIdTxt(typeId){
   switch (id) {
     case 1:
-      str = "外地农村";
-      break;
+      return "外地农村";
     case 2:
-      str = "外地城镇";
-      break;
+      return "外地城镇";
     case 3:
-      str = "本地农村";
-      break;
+      return "本地农村";
     case 4:
-      str = "本地城镇";
-      break;
+      return "本地城镇";
     case 5:
-      str = "港澳台";
-      break;
+      return "港澳台";
     case 6:
-      str = "外籍";
-      break;
+      return "外籍";
   }
-  return str;
 }
 
+//工作状态
+export function workStatusTxt(workStatus){
+  switch (workStatus) {
+    case 1:
+      return "在职";
+    case 2:
+      return "离职";
+    case 3:
+      return "停薪留职";
+    default:
+      return "未知";
+  }
+}
+ // 户口性质
+export function hukouTypeTxt(hukouType){
+  switch (hukouType) {
+    case 1:
+      return "城镇";
+    case 2:
+      return "农村";
+    default:
+      return "未知";
+  }
+}
 
+//婚姻状况
+export function martialStatusTxt(martialStatus){
+  switch (martialStatus) {
+    case 0:
+      return "未婚";
+    case 1:
+      return "已婚";
+    default:
+      return "未知";
+  }
+}
+ //长工/合约
+export function permanentOrContractTxt(permanentOrContract){
+  switch (permanentOrContract) {
+    case "P":
+      return "长工";
+    case "C":
+      return "合约";
+    default:
+      return "未知";
+  }
+}
+// 年假清空方法
+export function annualLeaveWriteOffMethodTxt(annualLeaveWriteOffMethod){
+  // 年假清空方法
+  switch (annualLeaveWriteOffMethod) {
+    case 1:
+      return "年结";
+    case 2:
+      return "自定义日期结算";
+    default:
+      return "未知";
+  }
+}
+
+// 工资类型
+export function payrollTypeTxt(payrollType){
+  switch (payrollType) {
+    case 1:
+      return "月薪";
+    case 2:
+      return "周薪";
+    case 3:
+      return "时薪";
+    default:
+      return "未知";
+  }
+}
+
+// 档案所在单位可否调动
+export function fileUnitMoveTxt(fileUnitMove){
+  switch (fileUnitMove) {
+    case 1:
+      return "是";
+    case 0:
+      return "否";
+    default:
+      return "未知";
+  }
+}

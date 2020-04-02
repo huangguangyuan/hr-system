@@ -122,13 +122,9 @@ export default {
         year: year
       };
       this.isShowLoading = true;
-      this.$myApi.http
-        .post(reqUrl, myData)
-        .then(res => {
-          console.log(res);
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
-          this.tableData = res.data.data
-            .map(item => {
+          this.tableData = res.data.data.map(item => {
               item.claimList.map(nodes => {
                 nodes.isBalanceTxt = nodes.isBalance == 1 ? "已结算" : "未结算";
                 return nodes;
@@ -136,31 +132,31 @@ export default {
               item.holidayList.map(nodes => {
                 nodes.typeIdTxt =
                   nodes.details[0].typeId == 1 ? "生效" : "未生效";
-                switch (nodes.details[0].typeId) {
-                  case 1:
-                    nodes.typeIdTxt = "事假";
-                    break;
-                  case 2:
-                    nodes.typeIdTxt = "年假";
-                    break;
-                  case 3:
-                    nodes.typeIdTxt = "病假";
-                    break;
-                  case 4:
-                    nodes.typeIdTxt = "婚假";
-                    break;
-                  case 5:
-                    nodes.typeIdTxt = "产假/陪产假";
-                    break;
-                  case 6:
-                    nodes.typeIdTxt = "丧假";
-                    break;
-                  case 50:
-                    nodes.typeIdTxt = "其他";
-                    break;
-                }
-                nodes.isBalanceTxt = nodes.isBalance == 1 ? "已结算" : "未结算";
-                return nodes;
+                  switch (nodes.details[0].typeId) {
+                    case 1:
+                      nodes.typeIdTxt = "事假";
+                      break;
+                    case 2:
+                      nodes.typeIdTxt = "年假";
+                      break;
+                    case 3:
+                      nodes.typeIdTxt = "病假";
+                      break;
+                    case 4:
+                      nodes.typeIdTxt = "婚假";
+                      break;
+                    case 5:
+                      nodes.typeIdTxt = "产假/陪产假";
+                      break;
+                    case 6:
+                      nodes.typeIdTxt = "丧假";
+                      break;
+                    case 50:
+                      nodes.typeIdTxt = "其他";
+                      break;
+                  }
+                  nodes.isBalanceTxt = nodes.isBalance == 1 ? "已结算" : "未结算";
+                  return nodes;
               });
               item.specialDeductionList.map(nodes => {
                 nodes.statusTxt = nodes.status == 1 ? "生效" : "未生效";
@@ -200,9 +196,6 @@ export default {
             });
           this.total = this.tableData.length;
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 获取当前页数
     curChange(val) {

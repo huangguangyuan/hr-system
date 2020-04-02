@@ -111,7 +111,6 @@ export default {
     },
     
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           switch (this.curInfo.type) {
@@ -129,7 +128,6 @@ export default {
     },
     // 新增
     addFun() {
-      
       var reqUrl = "/server/api/v1/staff/contract/add";
       var data = {
         staffCode: this.curInfo.staffCode,
@@ -155,7 +153,6 @@ export default {
     },
     // 修改
     modifyFun() {
-      
       var reqUrl = "/server/api/v1/staff/contract/update";
       var data = {
         id: this.curInfo.id,
@@ -182,7 +179,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     },
     //获取子组件数据

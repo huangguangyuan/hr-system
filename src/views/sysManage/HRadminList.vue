@@ -12,6 +12,7 @@
       <el-table-column sortable prop="name" label="名称"></el-table-column>
       <el-table-column sortable prop="roleTypeTxt" label="权限"></el-table-column>
       <el-table-column sortable prop="levExtendTxt" label="扩展权限"></el-table-column>
+      <el-table-column sortable prop="serveIdTxt" label="服务归属"></el-table-column>
       <el-table-column sortable prop="account" label="账号"></el-table-column>
       <!-- <el-table-column prop="mobile" label="手机"></el-table-column> -->
       <el-table-column sortable prop="isStatus" label="状态"></el-table-column>
@@ -119,7 +120,6 @@ export default {
   computed:{
     pageInfo(){
       return {
-        
         reqParams:{//请求分页参数
             isReq:false,
             url:"/server/api/v1/admin/hrSys/getAll",
@@ -141,84 +141,21 @@ export default {
     }
   },
   mounted() {
-    if ([2,3,4].indexOf(this.$toolFn.curUser.roleTypeId) >= 0){//如果是平台管理员和用户管理员,hr管理员
+    //
+    this.userInfo = this.$toolFn.curUser;
+    if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301 ){
       this.isShow = true;
+      this.userRight = false;
     }
-    this.initializeFun();
+    if ([3,4].indexOf(this.userInfo.roleTypeId) >= 0){//如果是平台管理员,用户管理员
+      this.isShow = true;
+    }else if ([2].indexOf(this.$toolFn.curUser.roleTypeId) >= 0){
+      this.isShow = true;
+      this.busAndSearch.BUCodeOptionsShow = false;
+      this.pageInfo.BUCodeSelected = this.userInfo.BUCode;
+    }
   },
   methods: {
-    // 初始化
-     initializeFun(){
-      this.userInfo = this.$toolFn.curUser;
-      if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301 ){
-        this.userRight = false;
-      }
-      
-      if ([3,4].indexOf(this.userInfo.roleTypeId) >= 0){//如果是平台管理员,用户管理员
-        //this.getBUCodeFun();
-        //this.$refs.pageInfo.getData(this.pageInfo);
-      }else{
-        //this.BUCode = this.userInfo.BUCode;
-        //this.getData(this.BUCode);
-        this.busAndSearch.BUCodeOptionsShow = false;
-        this.pageInfo.BUCodeSelected = this.userInfo.BUCode;
-        this.$refs.busAndSearch.init(this.busAndSearch);
-      }
-    },
-    //获取项目数据列表
-    getData(code) {
-      var reqUrl = "/server/api/v1/admin/hrSys/getAll";
-      var myData = { BUCode: code };
-      this.isShowLoading =true;
-      this.$myApi.http.post(reqUrl, myData)
-        .then(res => {
-          this.isShowLoading =false;
-          this.tableData = res.data.data
-            .map(item => {
-              item.createTime = this.$toolFn.timeFormat(item.createTime);
-              item.modifyTime = this.$toolFn.timeFormat(item.modifyTime);
-              item.isStatus = item.status == 1 ? "启用" : "禁用";
-              item.children = item.nodes;
-              return item;
-            }) //倒序
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取单位列表
-    async getBUCodeFun(){
-      var regionBUs = await this.$myApi.regionBUs();
-      if (regionBUs && regionBUs.length > 0) {
-        this.regionBUList = regionBUs;
-        this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):this.regionBUList[0].code;
-        //如果选中bu不存在，则获取第一个bu
-        if (this.regionBUList.filter(f => {return (this.BUCode == f)}).length == 0){
-          this.BUCode = this.regionBUList[0].code;
-        }
-        this.getData(this.BUCode);
-      }
-    },
-    // 选择单位
-    changeBUCode(code){
-      this.BUCode = code;
-      this.getData(this.BUCode);
-      this.$toolFn.sessionSet('hrBUCode',code);
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
-    },
     // 接受子组件接受的值
     IsShowAddAdminFn(res) {
       this.isShowAddAdmin = res;
@@ -266,12 +203,7 @@ export default {
             this.reload();
             }
           });
-        }).catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作~"
-          });
-        });
+        })
     },
     // 删除
     handleDelete(index, res) {
@@ -291,6 +223,7 @@ export default {
     BUCodeSelected: {
       handler: function(newVal) {
         this.pageInfo.reqParams.isReq = true;
+        this.$refs.busAndSearch.init(this.busAndSearch);
         this.$refs.pageInfo.getData(this.pageInfo);
       }
     },

@@ -49,9 +49,9 @@
           <el-checkbox label="3">结算</el-checkbox>
         </el-checkbox-group>
       </el-form-item> -->
-      <el-form-item  label="服务归属：" prop="serveId" :disabled="[4].indexOf(userInfo.roleTypeId) >= 0?false:true ">
+      <el-form-item  label="服务归属：" prop="serveId" v-if="[4].indexOf(userInfo.roleTypeId) >= 0?false:true ">
         <el-radio-group v-model="ruleForm.serveId">
-          <el-radio :label="1">单位</el-radio>
+          <el-radio :label="1" :disabled="[221,201,211].indexOf(userInfo.lev)>= 0?false:true ">单位</el-radio>
           <el-radio :label="2" :disabled="[201,211].indexOf(userInfo.lev)>= 0?false:true ">区域</el-radio>
           <el-radio :label="3" :disabled="[201].indexOf(userInfo.lev)>= 0?false:true ">公司</el-radio>
         </el-radio-group>

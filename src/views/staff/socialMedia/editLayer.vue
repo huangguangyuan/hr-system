@@ -59,7 +59,6 @@ export default {
     },
     
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           switch (this.curInfo.type) {
@@ -71,14 +70,12 @@ export default {
               break;
           }
         } else {
-          
           return false;
         }
       });
     },
     // 新增
     addFun() {
-      
       var reqUrl = "/server/api/v1/staff/socialMedia/add";
       var data = {
         staffCode: this.curInfo.staffCode,
@@ -97,7 +94,6 @@ export default {
     },
     // 修改
     modifyFun() {
-      
       var reqUrl = "/server/api/v1/staff/socialMedia/update";
       var data = {
         id: this.curInfo.id,
@@ -117,7 +113,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     },
     // 限制当前文件个数
@@ -125,30 +120,6 @@ export default {
       this.$message.warning(
         `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件`
       );
-    },
-    // 限制上传文件格式
-    beforeAvatarUpload(file) {
-      var isOk;
-      var fileType = [
-        ".jpg",
-        ".png",
-        ".gif",
-        ".csv",
-        ".csv",
-        ".xlsx",
-        ".xls",
-        ".docx",
-        ".doc"
-      ];
-      for (var i = 0; i < fileType.length; i++) {
-        if (file.name.indexOf(fileType[i]) != -1) {
-          isOk = true;
-        }
-      }
-      if (!isOk) {
-        this.$message.error("文件格式错误~");
-      }
-      return isOk;
     },
     // 获取上传文件路径
     handleChange(file, fileList) {

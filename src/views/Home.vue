@@ -136,9 +136,11 @@ export default {
       },
     };
   },
+  created(){
+    this.$toolFn.curUserFn();
+  },
   mounted() {
     this.userInfo = this.$toolFn.localGet('userInfo');
-    console.log(this.userInfo);
     this.initializeFun();
   },
   methods: {
@@ -160,6 +162,7 @@ export default {
             navTabs: []
           });
           this.$toolFn.localSet("userInfo", res.data.data.data);
+          this.$toolFn.curUserFn();
           var sidebar = res.data.data.data.roles[0].menuList.map(item => {
             item.id = item.id.toString();
             return item;
@@ -181,7 +184,6 @@ export default {
     },
     
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           

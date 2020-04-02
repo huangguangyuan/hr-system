@@ -10,7 +10,6 @@
       <el-form-item label="工作性质：">
         <el-input v-model="ruleForm.jobNature" maxlength="200"></el-input>
       </el-form-item>
-      
       <el-form-item label="入职日期：" prop="startDate">
         <el-date-picker
           v-model="ruleForm.startDate"
@@ -115,7 +114,6 @@ export default {
     },
     
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           switch (this.curInfo.type) {
@@ -133,7 +131,6 @@ export default {
     },
     // 新增
     addFun() {
-      
       var reqUrl = "/server/api/v1/staff/working/add";
       var data = {
         staffCode:this.curInfo.staffCode,
@@ -160,7 +157,6 @@ export default {
     },
     // 修改
     modifyFun() {
-      
       var reqUrl = "/server/api/v1/staff/working/update";
       var data = {
         id:this.curInfo.id,
@@ -188,7 +184,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     },
     //获取子组件数据

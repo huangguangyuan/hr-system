@@ -74,7 +74,7 @@ export default {
     }
   },
   mounted() {
-    if ([3].indexOf(this.$toolFn.curUser.roleTypeId) >= 0){//如果是平台管理员和用户管理员
+    if ([3,4].indexOf(this.$toolFn.curUser.roleTypeId) >= 0){//如果是平台管理员和用户管理员
       this.isShow = true;
     }
   },

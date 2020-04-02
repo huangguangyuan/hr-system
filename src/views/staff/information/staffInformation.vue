@@ -1,31 +1,14 @@
 <template>
-  <div class="staffInformation">
+  <div class="staffInformation" >
     <!-- 头部内容 -->
     <div class="my-top">
       <span>员工基本信息</span>
       <el-button v-if="userRight" type="warning" size="small" @click="isShowAddAccess = true;curInfo.type='add'" icon="el-icon-plus">添加员工</el-button>
     </div>
     <!-- 搜索 -->
-    <div class="search-wrap">
-      <el-input placeholder="请输入关键字" v-model="filter.searchKey">
-        <el-select
-          v-model="BUCode"
-          slot="prepend"
-          placeholder="请选择"
-          style="width:200px;"
-          @change="selectFun"
-        >
-          <el-option
-            v-for="(item,index) in regionBUlist"
-            :key="index"
-            :label="item.name"
-            :value="item.code"
-          ></el-option>
-        </el-select>
-      </el-input>
-    </div>
+    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCodeSelected" ref="busAndSearch"></bus-and-search>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
+    <el-table v-loading="isShowLoading" :data="tableData" stripe>
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
@@ -171,7 +154,7 @@
         <template slot-scope="scope">
           <el-image
             style="width: 50px; height: 50px;border-radius: 100%;"
-            :src="scope.row.photo?scope.row.photo:AvatarDefault"
+            :src="scope.row.photo?scope.row.photo:avatarDefault"
             fit="cover"
           ></el-image>
         </template>
@@ -207,17 +190,7 @@
       </el-table-column>
     </el-table>
     <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        :current-page="staffCurPage"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{staffCurPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 添加员工 -->
     <el-dialog
       title="编辑员工"
@@ -268,29 +241,29 @@
 </template>
 <script>
 import editTemplate from "./editTemplate.vue";
-import { deflate } from "zlib";
 import md5 from "js-md5";
+import pageInfo from "@/components/pageInfo.vue";
+import busAndSearch from "@/components/busAndSearch.vue";
+import {genderTxt,workStatusTxt,hukouTypeTxt,martialStatusTxt,permanentOrContractTxt,annualLeaveWriteOffMethodTxt,payrollTypeTxt,fileUnitMoveTxt} from "@/lib/staticData.js";
 export default {
+  components: {
+    editTemplate,pageInfo,busAndSearch
+  },
   name: "staffInformation",
   inject: ["reload"],
   props: ["userRight_props"],
   data() {
     return {
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
+      pageList:[],
       curInfo: {}, //当前内容
-      searchInner: "", //搜索内容
-      regionBUlist: [], //单位列表
-      BUCode: "", //角色类型
+      BUCodeSelected: "", //单位code
       workStatus:'',//员工状态
       staffID:'',//员工ID
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
       isShowState: false, //是否显示状态
       isShowAccountState:false,//是否显示账号信息
-      AvatarDefault:
-        "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
+      avatarDefault:require("@/assets/images/avatar.png"), //默认头像
       accountInfo:{},
       HRadminList:[],//管理员列表
       userRight:false,
@@ -299,22 +272,47 @@ export default {
       'dateOfBirth','address','mobile','email','IDNo','ethnic','politicalBackground','hukouTypeTxt','martialStatusTxt','emergencyContact','SIAccount','medicalSchemeAccoun','HCAccount','SIAccount']}
     };
   },
+  computed:{
+    pageInfo(){
+      return {
+        reqParams:{//请求分页参数
+            isReq:false,
+            url:"/server/api/v1/staff/getAll",
+            data:{ hrCode: this.$toolFn.curUser.userCode,BUCode:this.BUCodeSelected }
+          }
+        }
+    },
+    busAndSearch(){
+      return {filter:this.filter};
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.statusTxt = workStatusTxt(item.workStatus);
+        item.genderTxt = genderTxt(item.gender);
+        item.hukouTypeTxt = hukouTypeTxt(item.hukouType);
+        item.martialStatusTxt = martialStatusTxt(item.martialStatus);
+        item.permanentOrContractTxt = permanentOrContractTxt(item.permanentOrContract);
+        item.annualLeaveWriteOffMethodTxt = annualLeaveWriteOffMethodTxt(item.annualLeaveWriteOffMethod);
+        item.payrollTypeTxt = payrollTypeTxt(item.payrollType);
+        item.fileUnitMoveTxt = fileUnitMoveTxt(item.fileUnitMove);
+        item.dateOfBirth = this.$toolFn.timeFormat(item.dateOfBirth).slice(0, 10);
+        item.dateOfJoining = this.$toolFn.timeFormat(item.dateOfJoining).slice(0, 10);
+        item.dateOfLeaving = this.$toolFn.timeFormat(item.dateOfLeaving).slice(0, 10);
+        item.annualLeaveWriteOffDate = this.$toolFn.timeFormat(item.annualLeaveWriteOffDate).slice(0, 10);
+        item.annualLeaveRetainClearDate = this.$toolFn.timeFormat(item.annualLeaveRetainClearDate).slice(0, 10);
+        return item;
+      });
+    }
+  },
   mounted() {
-    
     this.userInfo = this.$toolFn.curUser;
     this.userRight = this.userRight_props;
-    this.InitializationFun();
+    //this.InitializationFun();
+    
   },
   methods: {
-    // 初始化
-    InitializationFun() {
-      
-      this.getregionBU();
-      
-    },
     // 禁用
     prohibitFun(index, res) {
-      
       var txt = '';
       var status = 1;
       if(res.status == 1){
@@ -324,30 +322,20 @@ export default {
           txt = '此操作将禁用该数据, 是否继续?'
           status = 1;
       }
-      this
-        .$confirm(txt, "提 示", {
+      this.$confirm(txt, "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
+        }).then(() => {
           var data = {
                 id:res.id,
                 status:status
             }
-          this.$myApi.http
-            .post("/server/api/v1/staff/update", data)
-            .then(res => {
+          this.$myApi.http.post("/server/api/v1/staff/update", data).then(res => {
               this.reload();
               this.$message.success("操作成功~");
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
     // 获取HR管理员列表
     getHRadminList(val){
@@ -359,172 +347,9 @@ export default {
         }
       })
     },
-    // 获取单位列表
-    async getregionBU() {
-      
-      var regionBUs = await this.$myApi.regionBUs({isCache:true});
-      if (regionBUs && regionBUs.length > 0) {
-          this.regionBUlist = regionBUs;
-          this.BUCode = this.$toolFn.sessionGet("staffBUCode")? this.$toolFn.sessionGet("staffBUCode"): this.regionBUlist[0].code;
-          this.getData(this.BUCode);
-          this.getHRadminList(this.BUCode);
-        }
-    },
-    //获取项目数据列表
-    getData(BUCode) {
-      
-      var reqUrl = "/server/api/v1/staff/getAll";
-      var myData = { BUCode: BUCode };
-      this.isShowLoading = true;
-      this.$myApi.http
-        .post(reqUrl, myData)
-        .then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data
-            .map(item => {
-              // 状态
-              switch (item.workStatus) {
-                case 1:
-                  item.statusTxt = "在职";
-                  break;
-                case 2:
-                  item.statusTxt = "离职";
-                  break;
-                case 3:
-                  item.statusTxt = "停薪留职";
-                  break;
-                default:
-                  item.statusTxt = "未知";
-              }
-              // 性别
-              switch (item.gender) {
-                case "M":
-                  item.genderTxt = "男";
-                  break;
-                case "F":
-                  item.genderTxt = "女";
-                  break;
-                default:
-                  item.genderTxt = "未知";
-              }
-              // 户口性质
-              switch (item.hukouType) {
-                case 1:
-                  item.hukouTypeTxt = "城镇";
-                  break;
-                case 2:
-                  item.hukouTypeTxt = "农村";
-                  break;
-                default:
-                  item.hukouTypeTxt = "未知";
-              }
-              //婚姻状况
-              switch (item.martialStatus) {
-                case 0:
-                  item.martialStatusTxt = "未婚";
-                  break;
-                case 1:
-                  item.martialStatusTxt = "已婚";
-                  break;
-                default:
-                  item.martialStatusTxt = "未知";
-              }
-              //长工/合约
-              switch (item.permanentOrContract) {
-                case "P":
-                  item.permanentOrContractTxt = "长工";
-                  break;
-                case "C":
-                  item.permanentOrContractTxt = "合约";
-                  break;
-                default:
-                  item.permanentOrContractTxt = "未知";
-              }
-              // 年假清空方法
-              switch (item.annualLeaveWriteOffMethod) {
-                case 1:
-                  item.annualLeaveWriteOffMethodTxt = "年结";
-                  break;
-                case 2:
-                  item.annualLeaveWriteOffMethodTxt = "自定义日期结算";
-                  break;
-                default:
-                  item.annualLeaveWriteOffMethodTxt = "未知";
-              }
-              // 工资类型
-              switch (item.payrollType) {
-                case 1:
-                  item.payrollTypeTxt = "月薪";
-                  break;
-                case 2:
-                  item.payrollTypeTxt = "周薪";
-                  break;
-                case 3:
-                  item.payrollTypeTxt = "时薪";
-                  break;
-                default:
-                  item.payrollTypeTxt = "未知";
-              }
-              // 档案所在单位可否调动
-              switch (item.fileUnitMove) {
-                case 1:
-                  item.fileUnitMoveTxt = "是";
-                  break;
-                case 0:
-                  item.fileUnitMoveTxt = "否";
-                  break;
-                default:
-                  item.fileUnitMoveTxt = "未知";
-              }
-              // 时间转换
-              item.dateOfBirth = this.$toolFn
-                .timeFormat(item.dateOfBirth)
-                .slice(0, 10);
-              item.dateOfJoining = this.$toolFn
-                .timeFormat(item.dateOfJoining)
-                .slice(0, 10);
-              item.dateOfLeaving = this.$toolFn
-                .timeFormat(item.dateOfLeaving)
-                .slice(0, 10);
-              item.annualLeaveWriteOffDate = this.$toolFn
-              .timeFormat(item.annualLeaveWriteOffDate)
-              .slice(0, 10);
-              item.annualLeaveRetainClearDate = this.$toolFn
-              .timeFormat(item.annualLeaveRetainClearDate)
-              .slice(0, 10);
-              return item;
-            })
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.$store.commit({
-        type: "getStaffCurPage",
-        staffCurPage: val,
-      });
-    },
     // 接收子组件发送信息
     listenIsShowMask(res) {
       this.isShowAddAccess = false;
-    },
-    // 获取单位BUCode
-    selectFun(val) {
-      this.BUCode = val;
-      this.getData(this.BUCode);
-      this.$toolFn.sessionSet("staffBUCode", val);
     },
     // 编辑修改
     modifyFun(index, res) {
@@ -534,7 +359,6 @@ export default {
     },
     //提交账号修改
     subAccount() {
-      
       var reqUrl = '/server/api/v1/staff/account/update';
       var data = {
         staffCode:this.accountInfo.staffCode,
@@ -585,27 +409,16 @@ export default {
     },
     // 删除
     handleDelete(index, res) {
-      
-      this
-        .$confirm("此操作将永久删除该员工信息, 是否继续?", "提 示", {
+      this.$confirm("此操作将永久删除该员工信息, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
-          this.$myApi.http
-            .post("/server/api/v1/staff/delete", { id: res.id })
-            .then(res => {
+        }).then(() => {
+          this.$myApi.http.post("/server/api/v1/staff/delete", { id: res.id }).then(res => {
               this.reload();
               this.$message.success("操作成功！");
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
     // 获取当前信息
     getCurInfo(index, res) {
@@ -616,30 +429,20 @@ export default {
       });
     }
   },
-  computed: {
-    queryTableDate() {
-      
-      let tableData = this.tableData;
-      if (this.filter.searchKey != ""){
-        tableData = this.$toolFn.searchFun(tableData,this.filter);
+  watch: {
+    BUCodeSelected: {
+      handler: function(newVal) {
+        this.pageInfo.reqParams.isReq = true;
+        this.$refs.pageInfo.getData(this.pageInfo);
+        this.getHRadminList(this.BUCodeSelected);
       }
-      this.total = tableData.length;
-      var begin = (this.staffCurPage - 1) * this.pageSize;
-      var end = this.staffCurPage * this.pageSize;
-      return tableData.slice(begin, end);
     },
-    pageTotal() {
-      
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    },
-    staffCurPage(){
-      return this.$store.state.staffModule.staffCurPage;
+    "filter.searchKey":{
+      handler: function(newVal) {
+        this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
+      }
     }
   },
-  components: {
-    editTemplate
-  }
 };
 </script>
 <style scoped lang="scss">
@@ -649,20 +452,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;

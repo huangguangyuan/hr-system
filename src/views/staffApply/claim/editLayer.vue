@@ -96,10 +96,9 @@ export default {
   methods: {
     // 初始化
     initializeFun() {
-      this.getClaimTypeId(); //获取报销类型
+      this.getBUClaimType(); //获取报销类型
       this.claimProcessRelate(this.curInfo.staffCode); //获取报销流程相关人员
     },
-    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -145,13 +144,8 @@ export default {
       });
     },
     // 获取报销类型
-    getClaimTypeId() {
-      var reqUrl = "/server/api/v1/staff/claim/getBUClaimType";
-      this.$myApi.http.post(reqUrl, {}).then(res => {
-        if (res.data.code == 0) {
-          this.claimTypeList = res.data.data;
-        }
-      });
+    async getBUClaimType() {
+       this.claimTypeList = await this.$myApi.getBUClaimType(reqUrl, {});
     },
     // 添加报销项目
     addDomain() {

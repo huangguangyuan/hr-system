@@ -137,7 +137,6 @@ export default {
     },
     // 新增
     addFun() {
-      
       var reqUrl = "/server/api/v1/staff/promotion/add";
       var data = {
         staffCode: this.curInfo.staffCode,
@@ -165,7 +164,6 @@ export default {
     },
     // 修改
     modifyFun() {
-      
       var reqUrl = "/server/api/v1/staff/promotion/update";
       var data = {
         id: this.curInfo.id,

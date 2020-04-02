@@ -29,7 +29,6 @@
       label-width="160px"
       v-if="ruleForm.showText"
     >
-
       <p style="padding:15px;">{{ruleForm.contents}}</p>
       <p style="text-align:right;padding:5px;">发起人：{{ruleForm.hrName}}</p>
       <p style="text-align:right;padding:5px;">{{ruleForm.issueTime}}</p>
@@ -119,7 +118,6 @@ export default {
     },
     
     submitForm(formName) {
-      
       this.$refs[formName].validate(valid => {
         if (valid) {
           switch (this.curInfo.type) {
@@ -137,7 +135,6 @@ export default {
     },
     // 新增
     addFun() {
-      
       var reqUrl = "/server/api/v1/staff/warning/add";
       var data = {
         staffCode: this.curInfo.staffCode,
@@ -161,7 +158,6 @@ export default {
     },
     // 修改
     modifyFun() {
-      
       var reqUrl = "/server/api/v1/staff/warning/update";
       var data = {
         id: this.curInfo.id,
@@ -186,7 +182,6 @@ export default {
     },
     // 取消
     cancelFn() {
-      
       this.$emit("listenIsShowMask", false);
     },
     // 重置
