@@ -125,18 +125,7 @@ export default {
       this.isShowDetails = true;
       this.curInfo = res;
     },
-  },
-  // watch: {
-  //   pageList(val) {//监听分页数据变化
-  //     this.tableData = val.map(item => {
-  //         item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
-  //         item.isWithpayTxt = item.isWithpay == 1?'是':'否';
-  //         item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
-  //         item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null
-  //         return item;
-  //     });
-  //   }
-  // }
+  }
 };
 </script>
 <style scoped lang="scss">

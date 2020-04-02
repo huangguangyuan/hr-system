@@ -71,36 +71,6 @@ export default {
   },
   mounted() {
     this.init();
-    this.curInfo.details.map(item => {
-        item.typeIdTxt = this.holidayTypes.filter(child => {
-            return child.typeId == item.typeId;
-        })[0].val;
-        return item;
-    })
-    this.holidayItem = this.curInfo;
-    if (this.holidayItem.fileSrc && this.holidayItem.fileSrc != ''){
-      this.fileList = this.holidayItem.fileSrc.split(',');
-    }
-    this.tableData = this.curInfo.details.map(item => {
-      item.startDate = this.$toolFn.timeFormat(item.startDate);
-      item.endDate = this.$toolFn.timeFormat(item.endDate);
-      return item;
-    });
-    this.step = this.curInfo.status > 5?5:this.curInfo.status;
-    if(this.curInfo.status == 999){
-      this.step = 0;
-    }
-    // 审批流程
-    this.approveHisList = this.curInfo.approveHis.map(item => {
-      item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
-      item.finishFlagTxt = item.finishFlag == 0?'否':'是';
-      item.typeIdTxt = approveHisTypeTxt(item.typeId);
-      if (item.typeId == 100){
-        item.typeIdTxt +=  '( 结算月份 '+ this.claimItem.balanceMon + " 月 " + (this.claimItem.totalAmount != 0?"， 总金额 ： " + this.claimItem.totalAmount + " 元 ":"" ) + " )"; 
-      }
-      return item;
-    });
-
   },
   methods: {
     openFile(item){
@@ -111,6 +81,35 @@ export default {
     },
     async init(){
       this.holidayTypes = await this.$myApi.getHolidaysTypeId();
+      this.curInfo.details.map(item => {
+        item.typeIdTxt = this.holidayTypes.filter(child => {
+            return child.typeId == item.typeId;
+        })[0].val;
+        return item;
+      })
+      this.holidayItem = this.curInfo;
+      if (this.holidayItem.fileSrc && this.holidayItem.fileSrc != ''){
+        this.fileList = this.holidayItem.fileSrc.split(',');
+      }
+      this.tableData = this.curInfo.details.map(item => {
+        item.startDate = this.$toolFn.timeFormat(item.startDate);
+        item.endDate = this.$toolFn.timeFormat(item.endDate);
+        return item;
+      });
+      this.step = this.curInfo.status > 5?5:this.curInfo.status;
+      if(this.curInfo.status == 999){
+        this.step = 0;
+      }
+      // 审批流程
+      this.approveHisList = this.curInfo.approveHis.map(item => {
+        item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
+        item.finishFlagTxt = item.finishFlag == 0?'否':'是';
+        item.typeIdTxt = approveHisTypeTxt(item.typeId);
+        if (item.typeId == 100){
+          item.typeIdTxt +=  '( 结算月份 '+ this.holidayItem.balanceMon + " 月 " + (this.holidayItem.totalAmount != 0?"， 总金额 ： " + this.holidayItem.totalAmount + " 元 ":"" ) + " )"; 
+        }
+        return item;
+      });
     },
   }
 };

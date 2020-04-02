@@ -49,6 +49,7 @@
   </div>
 </template>
 <script>
+import {approveHisTypeTxt} from "@/lib/staticData.js";
 export default {
   name: "claimDetails",
   props: ["curInfo"],
@@ -65,32 +66,6 @@ export default {
   },
   mounted() {
     this.init();
-    this.curInfo.details.map(item => {
-      item.typeIdTxt = this.claimTypeList.filter(child => {
-        return child.id == item.typeId;
-      })[0].val;
-      return item;
-    });
-    this.claimItem = this.curInfo;
-    if (this.claimItem.fileSrc && this.claimItem.fileSrc != ''){
-      this.fileList = this.claimItem.fileSrc.split(',');
-    }
-    
-    this.tableData = this.curInfo.details;
-    this.step = this.curInfo.status > 5?5:this.curInfo.status;
-    if(this.curInfo.status == 999){
-      this.step = 0;
-    }
-    // 审批流程
-    this.approveHisList = this.curInfo.approveHis.map(item => {
-      item.createTime = this.$toolFn.timeFormat(item.createTime);
-      item.finishFlagTxt = item.finishFlag == 0?'否':'是';
-      item.typeIdTxt = approveHisTypeTxt(item.typeId);
-      if (item.typeId == 100){
-        item.typeIdTxt +=  '( 结算月份 '+ this.claimItem.balanceMon + " 月 " + (this.claimItem.totalAmount != 0?"， 总金额 ： " + this.claimItem.totalAmount + " 元 ":"" ) + " )"; 
-      }
-      return item;
-    });
   },
   methods: {
     openFile(item){
@@ -101,6 +76,31 @@ export default {
     },
     async init(){
       this.claimTypeList = await this.$myApi.getBUClaimType();
+      this.curInfo.details.map(item => {
+      item.typeIdTxt = this.claimTypeList.filter(child => {
+        return child.id.toString() == item.typeId.toString();
+        })[0].name;
+      });
+      this.claimItem = this.curInfo;
+      if (this.claimItem.fileSrc && this.claimItem.fileSrc != ''){
+        this.fileList = this.claimItem.fileSrc.split(',');
+      }
+      
+      this.tableData = this.curInfo.details;
+      this.step = this.curInfo.status > 5?5:this.curInfo.status;
+      if(this.curInfo.status == 999){
+        this.step = 0;
+      }
+      // 审批流程
+      this.approveHisList = this.curInfo.approveHis.map(item => {
+        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.finishFlagTxt = item.finishFlag == 0?'否':'是';
+        item.typeIdTxt = approveHisTypeTxt(item.typeId);
+        if (item.typeId == 100){
+          item.typeIdTxt +=  '( 结算月份 '+ this.claimItem.balanceMon + " 月 " + (this.claimItem.totalAmount != 0?"， 总金额 ： " + this.claimItem.totalAmount + " 元 ":"" ) + " )"; 
+        }
+        return item;
+      });
     },
   }
 };

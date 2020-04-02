@@ -38,7 +38,7 @@
         <template slot-scope="scope">
           <el-image
             style="width: 50px; height: 50px;border-radius: 100%;"
-            :src="scope.row.photo?scope.row.photo:AvatarDefault"
+            :src="scope.row.photo?scope.row.photo:avatarDefault"
             fit="cover"
           ></el-image>
         </template>
