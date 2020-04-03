@@ -43,13 +43,11 @@ export default {
     this.ruleForm.adjAmountRemarks = this.curInfo.adjAmountRemarks;
   },
   methods: {
-    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.editFun();
         } else {
-          
           return false;
         }
       });

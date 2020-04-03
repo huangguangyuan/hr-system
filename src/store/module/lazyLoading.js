@@ -185,7 +185,7 @@ const dynamicRouter = [
     {
         path: '/annualStaffPayroll',
         name: 'annualStaffPayroll',
-        component: resolve => require(['@/views/wages/annualStaffPayroll.vue'], resolve),
+        component: resolve => require(['@/views/wages/annualStaffPayroll_del.vue'], resolve),
     },
     // 编辑全年工资清单
     {

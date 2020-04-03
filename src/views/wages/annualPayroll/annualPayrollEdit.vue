@@ -83,7 +83,7 @@ export default {
     return {
       seachMsg: {
         BUCode: "", //角色类型
-        year: "2019", //年份
+        year: "2020", //年份
         staffCode: "",
         staffName:''
       },

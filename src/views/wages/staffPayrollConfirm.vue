@@ -18,7 +18,6 @@
   </div>
 </template>
 <script>
-import { setTimeout } from "timers";
 export default {
   name: "editLayer",
   inject: ["reload"],
@@ -32,7 +31,6 @@ export default {
       }, //表单信息
       isShow: true, //是否显示
       fileList: [],
-      holidaysApplyTypeList: [], //请假类型
       rules: {
         typeId: [
           { required: true, message: "请选择是否通过", trigger: "change" }
@@ -46,7 +44,6 @@ export default {
     this.ruleForm.codeArr = this.curInfo.codeArr || [];
   },
   methods: {
-    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -56,7 +53,6 @@ export default {
           }
           this.approveFun();
         } else {
-          
           return false;
         }
       });

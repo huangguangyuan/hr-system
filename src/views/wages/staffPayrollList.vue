@@ -1,25 +1,20 @@
 <template>
   <div class="staffPayrollList wrap" v-if="isShow">
     <!-- 搜索 -->
-    <div class="addBtn-wrap" >
+    <div class="addBtn-wrap">
       <el-button type="primary" v-if="deletePayrollSlip_right" @click="deleteSelectedFun">删除选中项工资单</el-button>
       <el-button type="primary" v-if="approvePayrollSlip_right" @click="approveSelectedFun">审核选中项工资单</el-button>
     </div>
     <div class="search-wrap">
       <el-select
-        v-model="seachMsg.BUCode"
+        v-model="BUCode"
         slot="prepend"
         placeholder="请选择"
         style="width:200px;"
         @change="selectFun"
         class="selectItem"
       >
-        <el-option
-          v-for="(item,index) in regionBUlist"
-          :key="index"
-          :label="item.name"
-          :value="item.code"
-        ></el-option>
+        <el-option v-for="(item,index) in regionBUlist" :key="index" :label="item.name" :value="item.code"></el-option>
       </el-select>
       <el-date-picker
         v-model="seachMsg.year"
@@ -37,18 +32,7 @@
         @change="selectMonth"
         class="selectItem"
       >
-        <el-option label="1月" value="1"></el-option>
-        <el-option label="2月" value="2"></el-option>
-        <el-option label="3月" value="3"></el-option>
-        <el-option label="4月" value="4"></el-option>
-        <el-option label="5月" value="5"></el-option>
-        <el-option label="6月" value="6"></el-option>
-        <el-option label="7月" value="7"></el-option>
-        <el-option label="8月" value="8"></el-option>
-        <el-option label="9月" value="9"></el-option>
-        <el-option label="10月" value="10"></el-option>
-        <el-option label="11月" value="11"></el-option>
-        <el-option label="12月" value="12"></el-option>
+        <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val"></el-option>
       </el-select>
       <el-input class="selectItem" placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
       <el-button
@@ -60,9 +44,9 @@
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
-      <el-table-column type="selection" width="55" :reserve-selection="true" ></el-table-column>
-      <el-table-column sortable prop="staffNo" label="员工编号" width="100" ></el-table-column>
+    <el-table v-loading="isShowLoading" :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
+      <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
+      <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
       <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
       <el-table-column sortable prop="position" label="员工职位" width="100"></el-table-column>
       <el-table-column sortable prop="dateOfJoining" label="入职日期" width="100"></el-table-column>
@@ -98,7 +82,7 @@
             icon="hr-icon-gongjijinjiaoyimingxi"
             @click.stop="adjAmountFun(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
-          >调整金额</el-button>          
+          >调整金额</el-button>
           <el-button
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
@@ -121,16 +105,7 @@
       </el-table-column>
     </el-table>
     <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 工资单明细 -->
     <el-dialog
       title="工资单明细"
@@ -159,7 +134,7 @@
         :curInfo="curInfo"
         v-on:listenIsShowMask="listenIsShowMask"
       ></adj-amount-edit>
-    </el-dialog>    
+    </el-dialog>
     <!-- 单位确认工资 -->
     <el-dialog title="确认单位薪水数据" :visible.sync="isShowbuConfirm" :close-on-click-modal="false">
       <bu-payroll-confirm
@@ -169,7 +144,12 @@
       ></bu-payroll-confirm>
     </el-dialog>
     <!-- 全年工资单 -->
-    <el-dialog title="全年工资单" :visible.sync="isShowPayrollYear" :close-on-click-modal="false" width="80%">
+    <el-dialog
+      title="全年工资单"
+      :visible.sync="isShowPayrollYear"
+      :close-on-click-modal="false"
+      width="80%"
+    >
       <staff-payroll-year
         v-if="isShowPayrollYear"
         :curInfo="curInfo"
@@ -184,17 +164,18 @@ import staffPayrollConfirm from "./staffPayrollConfirm.vue";
 import buPayrollConfirm from "./buPayrollConfirm.vue";
 import staffPayrollYear from "./staffPayrollYear.vue";
 import adjAmountEdit from "./adjAmountEdit.vue";
-import { promises } from 'fs';
+import {monthList} from "@/lib/staticData.js";
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    staffPayrollDetail,staffPayrollConfirm,buPayrollConfirm,staffPayrollYear,adjAmountEdit,pageInfo
+  },
   name: "staffPayrollList",
   inject: ["reload"],
   data() {
     return {
-      isShow:false,
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      isShow: false,
+      pageList:[],
       curInfo: {}, //当前内容
       regionBUlist: [], //单位列表
       isShowLoading: false, //是否显示loading页
@@ -203,47 +184,79 @@ export default {
       isShowbuConfirm: false, //是否显示单位确认工资
       isShowPayrollYear: false, //是否显示全年工资单
       isShowAdjAmountRemarks: false, //是否显示调整金额
+      BUCode:'',
       seachMsg: {
-        BUCode: "", //角色类型
         year: "", //年份
         month: "" //月份
       },
       hrCode: "",
-      userInfo:{},
+      userInfo: {},
       filter: { searchKey: "", searchField: ["nameChinese", "staffNo"] },
       multipleSelection: [],
-      approvePayrollSlip_right:false, //审批工资单权限
-      deletePayrollSlip_right:false, //删除工资单权限
-      genPayrollSlip_right:false,//重新生成工资单
-      approveBUPayrollS_right:false,//确认单位工资单
-      fun_right:false //功能按钮
+      approvePayrollSlip_right: false, //审批工资单权限
+      deletePayrollSlip_right: false, //删除工资单权限
+      genPayrollSlip_right: false, //重新生成工资单
+      approveBUPayrollS_right: false, //确认单位工资单
+      fun_right: false, //功能按钮
+      monthList:[]
     };
   },
+  computed:{
+    pageInfo(){
+      return {
+        reqParams:{//请求分页参数
+            isReq:false,
+            url:"/server/api/v1/payroll/staff/staffPayrollList",
+            data:{BUCode:this.BUCode,year: parseInt(this.seachMsg.year),month: parseInt(this.seachMsg.month) }
+          }
+        }
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.typeIdTxt = this.typeIdTxt(item.typeId);
+              item.dateOfJoining = this.$toolFn.timeFormat(
+                item.dateOfJoining,
+                "yyyy-MM-dd"
+              );
+        this.$nextTick(function() {
+            var selectItems = this.multipleSelection;
+            if (selectItems && selectItems.length > 0) {
+              this.tableData.forEach(row => {
+                selectItems.find(s => {
+                  if (s.id === row.id) {
+                    this.$refs.multipleTable.toggleRowSelection(row);
+                  }
+                });
+              });
+            }
+          });
+        return item;
+      });
+    }
+  },
   mounted() {
-    
-
+    this.monthList = monthList();
     this.userInfo = this.$toolFn.curUser;
     let access = this.userInfo.access;
-    if (access.payrollMain.length > 0 ){
+    if (access.payrollMain.length > 0) {
       this.isShow = true;
       this.fun_right = true;
     }
-    if (this.userInfo.roleTypeId == 2){
+    if (this.userInfo.roleTypeId == 2) {
       this.hrCode = this.userInfo.userCode;
     }
-    
     //if ([301,801].indexOf(this.userInfo.lev) >= 0){
-    if (access.payrollMain.indexOf(4) >=0){
+    if (access.payrollMain.indexOf(4) >= 0) {
       this.approveBUPayrollS_right = true;
-    };
+    }
     //if ([301,401,411].indexOf(this.userInfo.lev) >= 0){
-    if (access.payrollMain.indexOf(2) >=0){
+    if (access.payrollMain.indexOf(2) >= 0) {
       this.approvePayrollSlip_right = true;
-    };
-    if (access.payrollMain.indexOf(3) >=0){
+    }
+    if (access.payrollMain.indexOf(3) >= 0) {
       this.genPayrollSlip_right = true;
       this.deletePayrollSlip_right = true;
-    };
+    }
     // if ([301,601,611].indexOf(this.userInfo.lev) >= 0){
     //   this.genPayrollSlip_right = true;
     //   this.deletePayrollSlip_right = true;
@@ -275,112 +288,51 @@ export default {
       this.$toolFn.sessionSet("staffPayrollList_multipleSelection",this.multipleSelection);
     },
     getRowKeys(row) {
-      return row.id
+      return row.id;
     },
     // 获取单位列表
     async getregionBU() {
-      
-      var regionBUs = await this.$myApi.regionBUs({isCache:true});
+      var regionBUs = await this.$myApi.regionBUs({ isCache: true });
       if (regionBUs && regionBUs.length > 0) {
-          this.regionBUlist = regionBUs;
-          this.seachMsg.BUCode = this.$toolFn.sessionGet("staffPayrollListSearch")? this.$toolFn.sessionGet("staffPayrollListSearch").BUCode : this.regionBUlist[0].code;
-          this.getData(
-            this.seachMsg.BUCode,
-            parseInt(this.seachMsg.year),
-            parseInt(this.seachMsg.month)
-          );
-        }
+        this.regionBUlist = regionBUs;
+        this.BUCode = this.$toolFn.sessionGet("staffPayrollListSearch")? this.$toolFn.sessionGet("staffPayrollListSearch").BUCode: this.regionBUlist[0].code;
+        //this.getData(this.seachMsg.BUCode,parseInt(this.seachMsg.year),parseInt(this.seachMsg.month));
+      }
     },
     //0未审核1通过2有疑问，需重新审查
-    typeIdTxt(typeId){
-      let r = '未审核';
-      if (typeId == 1){
-        r = '已确认';
-      }else if (typeId == 2){
-        r = '退回'
+    typeIdTxt(typeId) {
+      let r = "未审核";
+      if (typeId == 1) {
+        r = "已确认";
+      } else if (typeId == 2) {
+        r = "退回";
       }
       return r;
     },
-    //获取项目数据列表
-    getData(BUCode, year, month) {
-      var reqUrl = "/server/api/v1/payroll/staff/staffPayrollList";
-      var myData = {
-        BUCode: BUCode,
-        year: year,
-        month: month
-      };
-      this.isShowLoading = true;
-      this.$myApi.http.post(reqUrl, myData).then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data
-            .map(item => {
-              item.typeIdTxt = this.typeIdTxt(item.typeId);
-              item.dateOfJoining = this.$toolFn.timeFormat(item.dateOfJoining,'yyyy-MM-dd');
-              return item;
-            })
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          this.$nextTick(function(){
-            var selectItems = this.multipleSelection;
-            if (selectItems && selectItems.length > 0){
-              this.tableData.forEach(row => {
-                selectItems.find(s => {if (s.id === row.id){
-                  this.$refs.multipleTable.toggleRowSelection(row);
-                  }
-                })
-              });
-            }
-
-          })
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
-    },
     // 获取单位BUCode
     selectFun(val) {
+      this.BUCode = val;
       this.seachMsg.BUCode = val;
-      this.getData(
-        this.seachMsg.BUCode,
-        parseInt(this.seachMsg.year),
-        parseInt(this.seachMsg.month)
-      );
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
+      // this.pageInfo.reqParams.isReq = true;
+      // this.$refs.pageInfo.getData(this.pageInfo);
     },
     // 选择年份
     selectYear(val) {
       this.seachMsg.year = val;
-      this.getData(
-        this.seachMsg.BUCode,
-        parseInt(this.seachMsg.year),
-        parseInt(this.seachMsg.month)
-      );
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
+      this.pageInfo.reqParams.isReq = true;
+      this.$refs.pageInfo.getData(this.pageInfo);
     },
     // 选择月份
     selectMonth(val) {
       this.seachMsg.month = val;
-      this.getData(
-        this.seachMsg.BUCode,
-        parseInt(this.seachMsg.year),
-        parseInt(this.seachMsg.month)
-      );
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
+      this.pageInfo.reqParams.isReq = true;
+      this.$refs.pageInfo.getData(this.pageInfo);
     },
-    openRowFun(row,event){
-      this.openFun(0,row)
+    openRowFun(row, event) {
+      this.openFun(0, row);
     },
     // 打开详细页面
     openFun(index, res) {
@@ -398,9 +350,7 @@ export default {
           code: res.code,
           hrCode: this.hrCode
         };
-        this.$myApi.http
-          .post("/server/api/v1/payroll/staff/staffPayrollListDelete", data)
-          .then(res => {
+        this.$myApi.http.post("/server/api/v1/payroll/staff/staffPayrollListDelete", data).then(res => {
             if (res.data.code == 0) {
               this.reload();
               this.$message.success("操作成功~");
@@ -426,36 +376,42 @@ export default {
             code: element.code,
             hrCode: this.hrCode
           };
-          promiseList.push(Promise.resolve(
-              this.$myApi.http.post("/server/api/v1/payroll/staff/staffPayrollListDelete", data).then(res => {
-                if (res.data.code == 0) {
-                  this.$message.success(element.nameChinese + "工资单删除成功！");
-                } else {
-                  this.$message.warning(element.nameChinese + res.data.msg);
-                }
-              })
-          ));
+          promiseList.push(
+            Promise.resolve(
+              this.$myApi.http.post(
+                  "/server/api/v1/payroll/staff/staffPayrollListDelete",
+                  data
+                ).then(res => {
+                  if (res.data.code == 0) {
+                    this.$message.success(
+                      element.nameChinese + "工资单删除成功！"
+                    );
+                  } else {
+                    this.$message.warning(element.nameChinese + res.data.msg);
+                  }
+                })
+            )
+          );
         }
-        Promise.all(
-            promiseList
-          ).then((all) => {
-            this.$message.success("删除成功！");
-            console.log(all);
-            this.reload();
-        })
-        
+        Promise.all(promiseList).then(all => {
+          this.$message.success("删除成功！");
+          console.log(all);
+          this.reload();
+        });
       });
     },
     // 审核选中项工资单
     async approveSelectedFun() {
-      if (this.multipleSelection.length == 0){
+      if (this.multipleSelection.length == 0) {
         this.$message.error("请选择项目");
         return;
       }
       this.curInfo = {
         hrCode: this.hrCode,
-        typeId:1,
-        codeArr:this.multipleSelection.map(m=>{return m.code})
+        typeId: 1,
+        codeArr: this.multipleSelection.map(m => {
+          return m.code;
+        })
       };
       this.isShowConfirm = true;
     },
@@ -474,30 +430,30 @@ export default {
       this.curInfo = {
         code: res.code,
         hrCode: this.hrCode,
-        adjAmount:res.adjAmount,
+        adjAmount: res.adjAmount,
         adjAmountRemarks: res.adjAmountRemarks
       };
       this.isShowAdjAmountRemarks = true;
     },
     // 重新生成工资单
     rebuildStaffPayroll(index, res) {
-        var data = {
-            code:res.code,
-            hrCode:this.hrCode,
-            staffCode:res.staffCode,
-            year: res.year,
-            month:res.month
-        };
-        this.$message('正在生成，请稍候!');
-        this.$myApi.http.post("/server/api/v1/payroll/staff/rebuildStaffPayroll", data).then(res => {
-            if (res.data.code == 0) {
-              this.reload();
-              this.$message.success("操作成功~");
-            } else {
-              this.$message.warning(res.data.msg);
-            }
-          });
-    },    
+      var data = {
+        code: res.code,
+        hrCode: this.hrCode,
+        staffCode: res.staffCode,
+        year: res.year,
+        month: res.month
+      };
+      this.$message("正在生成，请稍候!");
+      this.$myApi.http.post("/server/api/v1/payroll/staff/rebuildStaffPayroll", data).then(res => {
+          if (res.data.code == 0) {
+            this.reload();
+            this.$message.success("操作成功~");
+          } else {
+            this.$message.warning(res.data.msg);
+          }
+        });
+    },
     // 确认单位出粮信息
     buPayrollConfirmFun(res) {
       this.curInfo = {
@@ -510,7 +466,7 @@ export default {
       this.isShowbuConfirm = true;
     },
     // 获取全年工资信息
-    staffPayrollYearFun(index, res){
+    staffPayrollYearFun(index, res) {
       this.curInfo = {
         code: res.staffCode
       };
@@ -543,29 +499,15 @@ export default {
       return newList;
     }
   },
-  computed: {
-    queryTableDate() {
-      
-      let tableData = this.tableData;
-      if (this.filter.searchKey != "") {
-        tableData = this.searchFun(tableData, this.filter);
+  watch: {
+    "BUCode":{
+      handler: function(newVal) {
+        if (newVal && newVal !=""){
+          this.pageInfo.reqParams.isReq = true;
+          this.$refs.pageInfo.getData(this.pageInfo);
+        }
       }
-      this.total = tableData.length;
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
     }
-  },
-  components: {
-    staffPayrollDetail,
-    staffPayrollConfirm,
-    buPayrollConfirm,
-    staffPayrollYear,
-    adjAmountEdit
   }
 };
 </script>
@@ -576,15 +518,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
 }
 .search-wrap {
   margin: 20px auto;
@@ -613,7 +546,6 @@ export default {
     float: right;
   }
 }
-
 .payrolllist {
   .photo {
     width: 35px;
@@ -621,11 +553,4 @@ export default {
     border-radius: 5px;
   }
 }
-
 </style>
-
-
-
-
-
-

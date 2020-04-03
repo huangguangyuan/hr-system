@@ -16,18 +16,7 @@
           v-model="ruleForm.month"
           placeholder="请选择月份"
         >
-          <el-option label="1月" value="1"></el-option>
-          <el-option label="2月" value="2"></el-option>
-          <el-option label="3月" value="3"></el-option>
-          <el-option label="4月" value="4"></el-option>
-          <el-option label="5月" value="5"></el-option>
-          <el-option label="6月" value="6"></el-option>
-          <el-option label="7月" value="7"></el-option>
-          <el-option label="8月" value="8"></el-option>
-          <el-option label="9月" value="9"></el-option>
-          <el-option label="10月" value="10"></el-option>
-          <el-option label="11月" value="11"></el-option>
-          <el-option label="12月" value="12"></el-option>
+        <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="请选择出粮日期：" prop="payDay">
@@ -47,19 +36,20 @@
   </div>
 </template>
 <script>
-import { setTimeout } from "timers";
+import {monthList} from "@/lib/staticData.js";
 export default {
   name: "buPayrollConfirm",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
+      isShow: true, //是否显示
       ruleForm: {
         year: this.curInfo.year,
         month: this.curInfo.month,
         payDay: ""
       }, //表单信息
-      isShow: true, //是否显示
+      monthList:[],
       rules: {
         year: [{ required: true, message: "请选择年份", trigger: "change" }],
         month: [{ required: true, message: "请选择月份", trigger: "change" }],
@@ -70,16 +60,15 @@ export default {
     };
   },
   mounted() {
+    this.monthList = monthList();
     this.payrollPeriod(this.curInfo.BUCode);
   },
   methods: {
-    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.addFun();
         } else {
-          
           return false;
         }
       });
@@ -91,7 +80,6 @@ export default {
         if (res.data.code == 0) {
           this.ruleForm.payDay = new Date( this.ruleForm.year.toString() + "-" + this.ruleForm.month.toString() + "-" + res.data.data.payDay.toString());
         }
-
       });
     },
     // 生成工资单

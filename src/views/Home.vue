@@ -85,7 +85,7 @@
           </el-main>
           <!-- 底部 -->
           <el-footer>
-            版权所有 (C) 2019 GRAMMY TECH。保留所有权利。
+            版权所有 (C) 2020 GRAMMY TECH。保留所有权利。
           </el-footer>
         </el-container>
       </el-container>

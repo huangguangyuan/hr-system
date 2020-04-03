@@ -38,7 +38,7 @@ export default {
       this.buList = await this.getRegionBUList();
       if (this.buList.length > 0){
         //如果选中bu不存在，则获取列表第一个bu
-        if (this.buList.filter(f => {return (this.BUCodeSelected == f)}).length == 0){
+        if (this.buList.filter(f => {return (this.BUCodeSelected == f.code)}).length == 0){
           this.BUCodeSelected = this.buList[0].code;
         }
       }
@@ -54,10 +54,8 @@ export default {
   watch: {
     BUCodeSelected: {
       handler: function(newVal) {
-        if (newVal){
-          this.$toolFn.sessionSet('BUCodeSelected',newVal);
-          this.$emit('update:BUCodeSelected',newVal);
-        }
+        this.$toolFn.sessionSet('BUCodeSelected',newVal);
+        this.$emit('update:BUCodeSelected',newVal);
       }
     },
   }

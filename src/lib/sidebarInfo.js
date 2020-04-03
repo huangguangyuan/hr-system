@@ -287,7 +287,7 @@ let sidebarInfo = [
             },
             {
                 id: '106',
-                authUrl: '/annualStaffPayroll',
+                authUrl: '/annualStaffPayroll_del',
                 iconUrl: 'el-icon-document',
                 isMenu: 1,
                 name: '全年工资清单',

@@ -145,7 +145,7 @@ export default {
     },
     // 获取报销类型
     async getBUClaimType() {
-       this.claimTypeList = await this.$myApi.getBUClaimType(reqUrl, {});
+       this.claimTypeList = await this.$myApi.getBUClaimType();
     },
     // 添加报销项目
     addDomain() {
@@ -195,10 +195,10 @@ export default {
         this.$message.error("请至少选中一个审批人员");
         return;
       }
-      if(this.balanceOfficer.length == 0){
-        this.$message.error("请至少选中一个结算人员");
-        return;
-      }
+      // if(this.balanceOfficer.length == 0){
+      //   this.$message.error("请至少选中一个结算人员");
+      //   return;
+      // }
       for (let index = 0; index < this.fileUpload_props.fileList.length; index++) {
         const element = this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url

@@ -81,7 +81,7 @@ export default {
         days: 1,
         typeId: "",
         remarks: "",
-        isWithpay:0,
+        isWithpay:1,
         fileSrc: "",
         sendEmail:"",
       }, //表单信息
@@ -230,10 +230,10 @@ export default {
         this.$message.error("请至少选中一个审批人员");
         return;
       }
-      if(this.balanceOfficer.length == 0){
-        this.$message.error("请至少选中一个结算人员");
-        return;
-      }
+      // if(this.balanceOfficer.length == 0){
+      //   this.$message.error("请至少选中一个结算人员");
+      //   return;
+      // }
       for (let index = 0; index < this.fileUpload_props.fileList.length; index++) {
         const element = this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url

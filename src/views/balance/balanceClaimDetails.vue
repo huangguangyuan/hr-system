@@ -32,7 +32,7 @@
     >
       <el-form-item label="结算月份：" prop="balanceMon">
         <el-select v-model="ruleForm.balanceMon" placeholder="请选择月份">
-          <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.key"></el-option>
+          <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="备注：">
@@ -117,7 +117,6 @@ export default {
           this.reload();
           this.$message.success('操作成功！');
         } else {
-          this.reload();
           this.$message.error(res.data.msg);
         }
       });

@@ -62,7 +62,7 @@ export default {
     tableData(){
       return this.pageList.map(item => {
         item.paymentIdTxt = item.paymentId == '1'?'公司':'个人';
-        item.typeIdTxt = this.typeIdTxt(tem.typeId);
+        item.typeIdTxt = this.typeIdTxt(item.typeId);
         return item;
       });
     },

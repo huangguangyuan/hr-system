@@ -110,6 +110,7 @@
   </div>
 </template>
 <script>
+import {deductionTypeTxt} from "@/lib/staticData.js";
 export default {
   name: "salaryDate",
   inject: ["reload"],
@@ -123,9 +124,7 @@ export default {
     };
   },
   beforeMount() {
-    this.circleUrl =
-      this.staffInfo.photo ||
-      require("@/assets/images/avatar.png");;
+    this.circleUrl = this.staffInfo.photo || require("@/assets/images/avatar.png");;
     this.getData();
   },
   methods: {
@@ -149,7 +148,6 @@ export default {
     },
     // 获取数据
     getData() {
-      
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollInfo";
       var data = { staffCode: this.staffInfo.code };
       this.$myApi.http.post(reqUrl, data).then(res => {
@@ -164,26 +162,7 @@ export default {
           if(this.msg.payrollSpecialDeductionList){
             this.msg.payrollSpecialDeductionList.map(item => {
               item.statusTxt = item.status == 1 ? "生效" : "未生效";
-              switch (item.typeId) {
-                case 1:
-                  item.typeIdTxt = "赡养老人";
-                  break;
-                case 2:
-                  item.typeIdTxt = "子女教育";
-                  break;
-                case 3:
-                  item.typeIdTxt = "房贷利息";
-                  break;
-                case 4:
-                  item.typeIdTxt = "住房租金";
-                  break;
-                case 5:
-                  item.typeIdTxt = "继续教育";
-                  break;
-                case 6:
-                  item.typeIdTxt = "大病医疗";
-                  break;
-              }
+              item.typeIdTxt = deductionTypeTxt(item.typeId);
             });
           }
 
@@ -197,29 +176,6 @@ export default {
             item.typeIdTxt = item.details[0].typeId == 1 ? "生效" : "未生效";
             item.balanceMonTxt= item.balanceMon + "月";
             item.createTime = this.$toolFn.timeFormat(item.createTime);
-            // switch(item.details[0].typeId){
-            //     case 1:
-            //         item.typeIdTxt = '事假';
-            //         break;
-            //     case 2:
-            //         item.typeIdTxt = '年假';
-            //         break;
-            //     case 3:
-            //         item.typeIdTxt = '病假';
-            //         break;
-            //     case 4:
-            //         item.typeIdTxt = '婚假';
-            //         break;
-            //     case 5:
-            //         item.typeIdTxt = '产假/陪产假';
-            //         break;
-            //     case 6:
-            //         item.typeIdTxt = '丧假';
-            //         break;
-            //     case 50:
-            //         item.typeIdTxt = '其他';
-            //         break;
-            // };
             item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
             
           });
