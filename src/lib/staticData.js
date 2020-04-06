@@ -100,7 +100,7 @@ export function paymentIdTxt(typeId){
 }
 //户籍类型
 export function householdIdTxt(typeId){
-  switch (id) {
+  switch (typeId) {
     case 1:
       return "外地农村";
     case 2:

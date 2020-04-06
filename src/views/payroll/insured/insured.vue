@@ -111,6 +111,7 @@ import {SITxt,paymentIdTxt,householdIdTxt} from "@/lib/staticData.js";
 import editLayer from "./editLayer.vue";
 export default {
   name: "insured",
+  inject: ["reload"],
   props: ["userRight_props"],
   data() {
     return {
