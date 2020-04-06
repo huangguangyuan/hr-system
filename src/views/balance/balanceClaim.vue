@@ -17,7 +17,7 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
-          >查看/结算</el-button>
+          >查看{{approveTxt(scope.row)}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -80,6 +80,15 @@ export default {
     }
   },
   methods: {
+    approveTxt(item){//显示文字并判断是否有权限结算
+      item.canBalance = false;
+      var str = "";
+      if (this.$toolFn.curUser.access.approvalClaim.indexOf(3) >= 0){
+        str = "并审批";
+        item.canBalance = true;
+      }
+      return str;
+    },
     // 查看详情
     handleDetails(index, res) {
       this.isShowDetails = true;

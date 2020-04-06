@@ -32,7 +32,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.pageInfo_props);
     this.getData(this.pageInfo_props);
   },
   methods:{
@@ -59,6 +58,11 @@ export default {
     },
     // 搜索关键字
     searchKey(filter) {
+      if (this.pageType == 2){
+        this.getData();
+      }else{
+        
+      }
       if (filter.searchKey != ""){
         if (this.pageType == 2){
           this.getData();

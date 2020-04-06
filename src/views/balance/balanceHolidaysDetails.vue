@@ -1,7 +1,6 @@
 <template>
   <div class="approvalHolidaysDetails" v-loading="isShowLoading">
     <el-table :data="tableData" stripe>
-      <el-table-column prop="num" label="序号" width="50"></el-table-column>
       <el-table-column prop="days" label="天数" width="50"></el-table-column>
       <el-table-column prop="startDate" label="开始时间" width="180"></el-table-column>
       <el-table-column prop="endDate" label="结束时间" width="180"></el-table-column>
@@ -9,7 +8,7 @@
       <el-table-column prop="remarks" label="备 注"></el-table-column>
     </el-table>
     <el-divider></el-divider>
-    <el-timeline>
+    <el-timeline :reverse="true">
       <el-timeline-item v-for='item in approveHisList' :key='item.id' :timestamp="item.creatorTime" placement="top">
         <el-card class="my-card">
           <p>操作员：{{item.operatorUser.name}}{{item.operatorUser.roleName?" ( "+item.operatorUser.roleName+" ) ":""}}</p>
@@ -67,10 +66,12 @@ export default {
         balanceMon: [
           { required: true, message: "请选择结算月份", trigger: "change" }
         ]
-      }
+      },
+      canBalance:false,
     };
   },
   mounted() {
+    this.canBalance = this.curInfo.canBalance;
     this.monthList = monthList();
     this.init();
   },
@@ -80,11 +81,17 @@ export default {
       this.holidayTypes = await this.$myApi.getHolidaysTypeId();
 
       this.holidayItem.createTime = this.$toolFn.timeFormat(this.holidayItem.createTime);
-      this.tableData = this.holidayItem.details.map(item => {
+      if (this.holidayItem.details){
+        this.tableData = this.holidayItem.details.map(item => {
         item.startDate = this.$toolFn.timeFormat(item.startDate);
         item.endDate = this.$toolFn.timeFormat(item.endDate);
+        item.typeIdTxt = this.holidayTypes.filter(child => {
+              return child.typeId == item.typeId;
+          })[0].val;
         return item;
-      });
+        });
+      }
+      
       // 审批流程
       this.approveHisList = this.holidayItem.approveHis.map(item => {
         item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);

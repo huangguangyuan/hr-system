@@ -10,7 +10,7 @@
           <p>后台管理系统</p>
         </div>
         <div class="right">
-          <el-badge is-dot class="item" >
+          <el-badge is-dot class="item" v-if="false" >
             <i class="el-icon-bell" @click="goLink('/newsList')"></i>
           </el-badge>
           <img src="@/assets/images/face_ico.jpg" alt>

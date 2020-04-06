@@ -6,7 +6,7 @@
       <el-button type="warning" v-if="userRight" size="small" @click="isShowAddAdmin = true;modifyInfo.adminType = 'HRadmin'">添加HR管理员</el-button>
     </div>
     <!-- 搜索 -->
-    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCodeSelected" ref="busAndSearch"></bus-and-search>
+    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCodeSelected" ref="busAndSearch" v-if="userRight"></bus-and-search>
     <!-- 列表内容 -->
     <el-table v-loading='isShowLoading' :data="tableData" stripe row-key="id" border>
       <el-table-column sortable prop="name" label="名称"></el-table-column>
@@ -149,10 +149,11 @@ export default {
     }
     if ([3,4].indexOf(this.userInfo.roleTypeId) >= 0){//如果是平台管理员,用户管理员
       this.isShow = true;
-    }else if ([2].indexOf(this.$toolFn.curUser.roleTypeId) >= 0){
+    }else if ([2].indexOf(this.$toolFn.curUser.roleTypeId) >= 0){//如果是hr管理员
       this.isShow = true;
       this.busAndSearch.BUCodeOptionsShow = false;
-      this.pageInfo.BUCodeSelected = this.userInfo.BUCode;
+      this.busAndSearch.BUCodeSelected = this.userInfo.BUCode;
+      this.BUCodeSelected = this.userInfo.BUCode;
     }
   },
   methods: {

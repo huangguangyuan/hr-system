@@ -147,7 +147,6 @@
           </el-form>
         </template>
       </el-table-column>
-      
       <el-table-column sortable prop="staffNo" label="员工编号"></el-table-column>
       <el-table-column sortable prop="nameChinese" label="名称"></el-table-column>
       <el-table-column label="头像">
@@ -228,8 +227,9 @@
       </el-form-item>
       <el-form-item v-if="userInfo.roleTypeId == 2 && userInfo.lev == 301" label="关联系统管理员账户：" prop="hrCode" >
         <el-select v-model="accountInfo.hrCode" placeholder="请选择关联系统管理员" >
-        <el-option v-for="item in HRadminList" :key="item.id" :label="item.name" :value="item.code"></el-option>
-      </el-select>
+          <el-option key="" label="无关联账户" value=""></el-option>
+          <el-option v-for="item in HRadminList" :key="item.id" :label="item.name" :value="item.code"></el-option>
+        </el-select>
       </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

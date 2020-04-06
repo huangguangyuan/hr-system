@@ -12,6 +12,9 @@
       <el-table-column sortable prop="totalAmount" label="结算金额"></el-table-column>
       <el-table-column prop="nextStepTip" label="下一步提示"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column sortable prop="approveOfficerNameArr" label="审批人员" v-if="userInfo.lev ==301"></el-table-column>
+      <el-table-column sortable prop="balanceOfficerNameArr" label="结算人员" v-if="userInfo.lev ==301"></el-table-column>
+      <el-table-column sortable prop="noticeOfficerNameArr" label="已抄送" v-if="userInfo.lev ==301"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-info" @click="handleDetails(scope.$index, scope.row)" >查看{{approveTxt(scope.row)}}</el-button>
@@ -43,7 +46,8 @@ export default {
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
       BUCodeSelected: "", //单位code
-      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip','totalAmount','deptName']}
+      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip','totalAmount','deptName']},
+      userInfo:{}
     };
   },
   computed:{
@@ -68,6 +72,7 @@ export default {
     }
   },
   mounted() {
+    this.userInfo = this.$toolFn.curUser;
     this.approvalClaim = this.$toolFn.curUser.access.approvalClaim || [];
     if (this.approvalClaim.length > 0){
       this.isShow = true;
@@ -75,12 +80,12 @@ export default {
   },
   methods: {
     approveTxt(item){//显示文字并判断是否有权限审批
-      item.canApprove = false;
+      //item.canApprove = false;
       var str = "";
       if (item.status == 1){
-        if (this.approvalClaim.indexOf(2) >= 0){
+        if (this.approvalClaim.indexOf(2) >= 0 && item.canApprove){//前后端判断是否有权限审批
           str = "并审批";
-          item.canApprove = true;
+          //item.canApprove = true;
         }
       }
       return str;

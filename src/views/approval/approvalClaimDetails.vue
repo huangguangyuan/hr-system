@@ -1,10 +1,10 @@
 <template>
-  <div class="approvalClaimDetails" v-loading="isShowLoading">
+  <div class="approvalClaimDetails" v-if="isShow">
     <el-divider content-position="left">报销明细</el-divider>
-    <div class="view-detail">
+    <div class="view-detail" v-loading="isShowLoading">
       <el-row :gutter="12">
         <el-col :span="8">
-          <el-card shadow="always">申请人：{{claimItem.nameChinese}}</el-card>
+          <el-card shadow="always">申请人：{{claimItem.staff.nameChinese}}</el-card>
         </el-col>
         <el-col :span="8">
           <el-card shadow="always">申请时间：{{claimItem.createTime}}</el-card>
@@ -19,7 +19,7 @@
         </el-col>
       </el-row>
       <br />
-        <el-table :data="tableData" stripe>
+        <el-table :data="tableData" stripe  >
         <el-table-column prop="title" label="项目名称"></el-table-column>
         <el-table-column prop="amount" label="报销金额"></el-table-column>
         <el-table-column prop="typeIdTxt" label="报销类型"></el-table-column>
@@ -27,8 +27,8 @@
       </el-table>
     </div>
     <br />
-<el-divider content-position="left">审批流程</el-divider>
-    <el-timeline>
+    <el-divider content-position="left" >审批流程</el-divider>
+    <el-timeline ::reverse="true">
       <el-timeline-item
         v-for="item in approveHisList"
         :key="item.id"
@@ -75,6 +75,7 @@ export default {
   props: ["curInfo"],
   data() {
     return {
+      isShow:false,
       isShowLoading:true,
       claimItem:{},
       claimTypes:[],
@@ -92,7 +93,6 @@ export default {
           { required: true, message: "请选择是否批准", trigger: "change" }
         ]
       },
-
     };
   },
   mounted() {
@@ -127,6 +127,7 @@ export default {
         }
         return item;
       });
+      this.isShow = true;
       this.isShowLoading = false;
     },
     openFile(item){

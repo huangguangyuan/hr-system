@@ -4,7 +4,7 @@
     <div class="view-detail">
       <el-row :gutter="12">
         <el-col :span="8">
-          <el-card shadow="always">申请人：{{holidayItem.nameChinese}}</el-card>
+          <el-card shadow="always">申请人：{{holidayItem.staff.nameChinese}}</el-card>
         </el-col>
         <el-col :span="8">
           <el-card shadow="always">申请时间：{{holidayItem.createTime}}</el-card>
@@ -34,7 +34,7 @@
     </div>
     <br />
     <el-divider content-position="left">审批流程</el-divider>
-    <el-timeline>
+    <el-timeline :reverse="true">
       <el-timeline-item v-for='(item,key) in approveHisList' :key='key' placement="top">
         <el-card class="my-card">
           <p>操作员：{{item.operatorUser.name}}{{item.operatorUser.roleName?" ( "+item.operatorUser.roleName+" ) ":""}}</p>
@@ -108,9 +108,13 @@ export default {
         this.fileList = this.holidayItem.fileSrc.split(',');
       }
       this.holidayItem.createTime = this.$toolFn.timeFormat(this.holidayItem.createTime);
+      this.holidayItem.isWithpayTxt = this.holidayItem.isWithpay == 1?'是':'否';
       this.tableData = this.holidayItem.details.map(item => {
         item.startDate = this.$toolFn.timeFormat(item.startDate);
         item.endDate = this.$toolFn.timeFormat(item.endDate);
+        item.typeIdTxt = this.holidayTypes.filter(child => {
+              return child.typeId == item.typeId;
+          })[0].val;
         return item;
       });
       // 审批流程

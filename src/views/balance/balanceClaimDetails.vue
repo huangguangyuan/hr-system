@@ -7,7 +7,7 @@
       <el-table-column prop="remarks" label="备 注"></el-table-column>
     </el-table>
     <el-divider></el-divider>
-    <el-timeline>
+    <el-timeline :reverse="true">
       <el-timeline-item
         v-for="item in approveHisList"
         :key="item.id"
@@ -29,6 +29,7 @@
       ref="ruleForm"
       label-width="100px"
       class="demo-ruleForm"
+      v-if="canBalance"
     >
       <el-form-item label="结算月份：" prop="balanceMon">
         <el-select v-model="ruleForm.balanceMon" placeholder="请选择月份">
@@ -66,10 +67,13 @@ export default {
         balanceMon: [
           { required: true, message: "请选择月份", trigger: "blur" }
         ]
-      }
+      },
+      userInfo:{},
+      canBalance:false,
     };
   },
   mounted() {
+    this.canBalance = this.curInfo.canBalance;
     this.monthList = monthList();
     this.init();
   },

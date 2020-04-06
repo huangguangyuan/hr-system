@@ -54,8 +54,11 @@ export default {
   watch: {
     BUCodeSelected: {
       handler: function(newVal) {
-        this.$toolFn.sessionSet('BUCodeSelected',newVal);
-        this.$emit('update:BUCodeSelected',newVal);
+        if (newVal != undefined){
+          this.$toolFn.sessionSet('BUCodeSelected',newVal);
+          this.$emit('update:BUCodeSelected',newVal);
+        }
+
       }
     },
   }

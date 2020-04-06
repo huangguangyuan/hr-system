@@ -14,6 +14,9 @@
       <el-table-column sortable prop="isWithpayTxt" label="是否带薪"></el-table-column>
       <el-table-column prop="nextStepTip" label="下一步提示"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column sortable prop="approveOfficerNameArr" label="审批人员" v-if="userInfo.lev ==301"></el-table-column>
+      <el-table-column sortable prop="balanceOfficerNameArr" label="结算人员" v-if="userInfo.lev ==301"></el-table-column>
+      <el-table-column sortable prop="noticeOfficerNameArr" label="已抄送" v-if="userInfo.lev ==301"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button
@@ -61,7 +64,8 @@ export default {
       isShowStaffHolidays:false,
       BUCodeSelected: "", //单位code
       staffCode_props:'',
-      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip']}
+      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip']},
+      userInfo:{}
     };
   },
   computed: {
@@ -87,6 +91,7 @@ export default {
     }
   },
   mounted() {
+    this.userInfo = this.$toolFn.curUser;
     this.approvalHolidays = this.$toolFn.curUser.access.approvalHolidays || [];
     if (this.approvalHolidays.length > 0){
       this.isShow = true;
@@ -94,12 +99,12 @@ export default {
   },
   methods: {
     approveTxt(item){//显示文字并判断是否有权限审批
-      item.canApprove = false;
+      //item.canApprove = false;
       var str = "";
       if (item.status == 1){
-        if (this.approvalHolidays.indexOf(2) >= 0){
+        if (this.approvalHolidays.indexOf(2) >= 0 && item.canApprove){//前后端判断是否有权限审批
           str = "并审批";
-          item.canApprove = true;
+          //item.canApprove = true;
         }
       }
       return str;

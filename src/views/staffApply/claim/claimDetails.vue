@@ -35,7 +35,7 @@
         </el-steps>
     </div>
 
-    <el-timeline>
+    <el-timeline :reverse="true">
       <el-timeline-item v-for='item in approveHisList' :key='item.id' :timestamp="item.createTime" placement="top">
         <el-card class="my-card">
           <p>操作员：{{item.operatorUser.name}}{{item.operatorUser.roleName?" ( "+item.operatorUser.roleName+" ) ":""}}</p>
