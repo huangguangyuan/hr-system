@@ -41,7 +41,12 @@
           <el-radio label="2">香港（MPF）</el-radio>
         </el-radio-group>
       </el-form-item>
-
+      <el-form-item label="是否允许多次出粮：" prop="payrollTimesType">
+        <el-radio-group v-model="ruleForm.insuredTypeId">
+          <el-radio label="1">否</el-radio>
+          <el-radio label="2">是</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
         <el-button @click="cancelFn">取 消</el-button>
@@ -64,7 +69,8 @@ export default {
         needSD:'',
         needTaxRate:'',
         typeId:'',
-        insuredTypeId:''
+        insuredTypeId:'',
+        insuredTypeId:'2'
       }, //表单信息
       isShow: true, //是否显示
       fileList: [],
@@ -89,7 +95,10 @@ export default {
           { required: true, message: "请选择请假类型", trigger: "change" }
         ],
         insuredTypeId: [
-          { required: true, message: "请选择请强制缴纳类型", trigger: "change" }
+          { required: true, message: "请选择强制缴纳类型", trigger: "change" }
+        ],
+        payrollTimesType: [
+          { required: true, message: "请选择是否允许多次出粮", trigger: "change" }
         ],
       }
     };
@@ -109,6 +118,7 @@ export default {
         this.ruleForm.needTaxRate = this.curInfo.needTaxRate.toString();
         this.ruleForm.typeId = this.curInfo.typeId.toString();
         this.ruleForm.insuredTypeId = this.curInfo.insuredTypeId.toString();
+        this.ruleForm.payrollTimesType = this.curInfo.payrollTimesType.toString();
       }
     },
     
@@ -133,7 +143,8 @@ export default {
         needSD:parseInt(this.ruleForm.needSD),
         needTaxRate:parseInt(this.ruleForm.needTaxRate),
         typeId:parseInt(this.ruleForm.typeId),
-        insuredTypeId:parseInt(this.ruleForm.insuredTypeId)
+        insuredTypeId:parseInt(this.ruleForm.insuredTypeId),
+        payrollTimesType:parseInt(this.ruleForm.payrollTimesType),
       };
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {

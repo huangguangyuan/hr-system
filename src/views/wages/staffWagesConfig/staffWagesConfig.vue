@@ -33,6 +33,9 @@
         <el-col :span="8">
           <el-card shadow="always">强制缴纳类型：{{configureMsg.insuredTypeId}}</el-card>
         </el-col>
+        <el-col :span="8">
+          <el-card shadow="always">是否允许多次出粮：{{configureMsg.payrollTimesType}}</el-card>
+        </el-col>
       </el-row>
     </div>
     <div class="noContent" v-else>
@@ -103,6 +106,7 @@ export default {
             needTaxRate:res.data.data.needTaxRate == 1?'是':'否',
             typeId:res.data.data.typeId == 1?'正常':'停用',
             insuredTypeId:res.data.data.insuredTypeId == 1?'中国（社保，医保，公积金）':'香港（MPF）',
+            payrollTimesType:res.data.data.payrollTimesType == 1?'否':'是',
           }
           this.isContent = true;
           this.curInfo = res.data.data;
