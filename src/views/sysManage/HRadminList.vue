@@ -141,11 +141,10 @@ export default {
     }
   },
   mounted() {
-    //
     this.userInfo = this.$toolFn.curUser;
     if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301 ){
-      this.isShow = true;
       this.userRight = false;
+      this.BUCodeSelected = this.userInfo.BUCode;
     }
     if ([3,4].indexOf(this.userInfo.roleTypeId) >= 0){//如果是平台管理员,用户管理员
       this.isShow = true;
@@ -153,7 +152,6 @@ export default {
       this.isShow = true;
       this.busAndSearch.BUCodeOptionsShow = false;
       this.busAndSearch.BUCodeSelected = this.userInfo.BUCode;
-      this.BUCodeSelected = this.userInfo.BUCode;
     }
   },
   methods: {

@@ -37,14 +37,12 @@
       </el-form-item>
       <el-form-item label="强制缴纳类型：" prop="insuredTypeId">
         <el-radio-group v-model="ruleForm.insuredTypeId">
-          <el-radio label="1">中国（社保，医保，公积金）</el-radio>
-          <el-radio label="2">香港（MPF）</el-radio>
+          <el-radio :label="item.val" :key='item.val' v-for='(item,key) in insuredTypes'>{{item.txt}}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="是否允许多次出粮：" prop="payrollTimesType">
-        <el-radio-group v-model="ruleForm.insuredTypeId">
-          <el-radio label="1">否</el-radio>
-          <el-radio label="2">是</el-radio>
+      <el-form-item label="出粮方式：" prop="payrollTimesType">
+        <el-radio-group v-model="ruleForm.payrollTimesType">
+        <el-radio :label="item.val" :key='item.val' v-for='(item,key) in payrollTimesTypes'>{{item.txt}}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item>
@@ -55,13 +53,15 @@
   </div>
 </template>
 <script>
-import { setTimeout } from "timers";
+import {payrollTimesTypes,insuredTypes} from "@/lib/staticData.js";
 export default {
   name: "editLayer",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
+      payrollTimesTypes:[],
+      insuredTypes:[],
       ruleForm: {
         salary:'',
         needSI:'',
@@ -69,8 +69,8 @@ export default {
         needSD:'',
         needTaxRate:'',
         typeId:'',
-        insuredTypeId:'',
-        insuredTypeId:'2'
+        insuredTypeId:'1',
+        payrollTimesType:'1'
       }, //表单信息
       isShow: true, //是否显示
       fileList: [],
@@ -104,12 +104,13 @@ export default {
     };
   },
   mounted() {
+    this.payrollTimesTypes = payrollTimesTypes();
+    this.insuredTypes = insuredTypes();
     this.initializeFun();
   },
   methods: {
     // 初始化
     initializeFun() {
-      
       if(this.curInfo.type == 'modify'){
         this.ruleForm.salary = this.curInfo.salary;
         this.ruleForm.needSI = this.curInfo.needSI.toString();
@@ -117,8 +118,8 @@ export default {
         this.ruleForm.needSD = this.curInfo.needSD.toString();
         this.ruleForm.needTaxRate = this.curInfo.needTaxRate.toString();
         this.ruleForm.typeId = this.curInfo.typeId.toString();
-        this.ruleForm.insuredTypeId = this.curInfo.insuredTypeId.toString();
-        this.ruleForm.payrollTimesType = this.curInfo.payrollTimesType.toString();
+        this.ruleForm.insuredTypeId = this.curInfo.insuredTypeId;
+        this.ruleForm.payrollTimesType = this.curInfo.payrollTimesType;
       }
     },
     

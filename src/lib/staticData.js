@@ -1,3 +1,19 @@
+
+
+// 出粮次数
+export function payrollTimesTypes(){
+  return [{val:1,txt:'一次出粮'},{val:2,txt:'可多次出粮'}]
+}
+// 缴纳类型
+export function insuredTypes(){
+  return [{val:1,txt:'中国社保'},{val:2,txt:'香港MPF'}]
+}
+//月份
+export function monthList(){
+  return [{val:1,txt:'1月'},{val:2,txt:'2月'},{val:3,txt:'3月'},{val:4,txt:'4月'},{val:5,txt:'5月'},{val:6,txt:'6月'},{val:7,txt:'7月'},{val:8,txt:'8月'},{val:9,txt:'9月'},
+  {val:10,txt:'10月'},{val:11,txt:'11月'},{val:12,txt:'12月'}]
+}
+
 //审批流程类型
 export function approveHisTypeTxt(typeId){
     switch (typeId) {
@@ -17,11 +33,6 @@ export function approveHisTypeTxt(typeId){
           return "未知";
       }
   }
-//月份
-export function monthList(){
-  return [{val:1,txt:'1月'},{val:2,txt:'2月'},{val:3,txt:'3月'},{val:4,txt:'4月'},{val:5,txt:'5月'},{val:6,txt:'6月'},{val:7,txt:'7月'},{val:8,txt:'8月'},{val:9,txt:'9月'},
-  {val:10,txt:'10月'},{val:11,txt:'11月'},{val:12,txt:'12月'}]
-}
 //性别
 export function taxableTxt(taxable){
   switch (taxable) {
@@ -201,3 +212,4 @@ export function fileUnitMoveTxt(fileUnitMove){
       return "未知";
   }
 }
+

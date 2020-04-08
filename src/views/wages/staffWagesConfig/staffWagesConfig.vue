@@ -34,7 +34,7 @@
           <el-card shadow="always">强制缴纳类型：{{configureMsg.insuredTypeId}}</el-card>
         </el-col>
         <el-col :span="8">
-          <el-card shadow="always">是否允许多次出粮：{{configureMsg.payrollTimesType}}</el-card>
+          <el-card shadow="always">出粮方式：{{configureMsg.payrollTimesType}}</el-card>
         </el-col>
       </el-row>
     </div>
@@ -50,12 +50,15 @@
   </div>
 </template>
 <script>
+import {payrollTimesTypes,insuredTypes} from "@/lib/staticData.js";
 import editLayer from "./editLayer.vue";
 export default {
   name: "staffWagesConfig",
   inject: ["reload"],
   data() {
     return {
+      payrollTimesTypes:[],
+      insuredTypes:[],
       circleUrl: "",
       activeName: "education",
       configureMsg:{},
@@ -68,6 +71,8 @@ export default {
     };
   },
   mounted() {
+    this.payrollTimesTypes = payrollTimesTypes();
+    this.insuredTypes = insuredTypes();
     this.userInfo = this.$toolFn.curUser;
     if (this.userInfo.access.payrollMain.indexOf(2) >= 0){
       this.isShowEditBtn = true;
@@ -97,17 +102,20 @@ export default {
       var data = { staffCode: this.staffInfo.code };
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
+          let resData = res.data.data;
           this.configureMsg = {
-            id:res.data.data.id,
-            salary:res.data.data.salary,
-            needSI:res.data.data.needSI == 1?'是':'否',
-            needHC:res.data.data.needHC == 1?'是':'否',
-            needSD:res.data.data.needSD == 1?'是':'否',
-            needTaxRate:res.data.data.needTaxRate == 1?'是':'否',
-            typeId:res.data.data.typeId == 1?'正常':'停用',
-            insuredTypeId:res.data.data.insuredTypeId == 1?'中国（社保，医保，公积金）':'香港（MPF）',
-            payrollTimesType:res.data.data.payrollTimesType == 1?'否':'是',
+            id:resData.id,
+            salary:resData.salary,
+            needSI:resData.needSI == 1?'是':'否',
+            needHC:resData.needHC == 1?'是':'否',
+            needSD:resData.needSD == 1?'是':'否',
+            needTaxRate:resData.needTaxRate == 1?'是':'否',
+            typeId:resData.typeId == 1?'正常':'停用',
+            insuredTypeId:this.payrollTimesTypes.filter(f=>{return f.val == resData.insuredTypeId})[0].txt,
+            payrollTimesType:this.insuredTypes.filter(f=>{return f.val == resData.payrollTimesType})[0].txt,
+            // payrollTimesType:res.data.data.payrollTimesType == 1?'否':'是',
           }
+
           this.isContent = true;
           this.curInfo = res.data.data;
           this.curInfo.type = 'modify';

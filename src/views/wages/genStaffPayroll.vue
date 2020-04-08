@@ -80,7 +80,7 @@ export default {
       }else if(this.curInfo.typeId == 1){
           data.staffCode = this.curInfo.code;
           var genStaffPayroll = await this.$myApi.genStaffPayroll(data);
-          //console.log(genStaffPayroll);
+          console.log(genStaffPayroll);
           if (genStaffPayroll && genStaffPayroll.code == 0) {
             this.reload();
             this.$message.success("生成成功~");

@@ -23,7 +23,7 @@
         return Promise.resolve(
             request.post(url, pararm||{}).then(res => {
                 if (res.data.code == 0) {
-                    return res.data.data;
+                    return res.data.data || res.data;
                 }else{
                     return res.data;
                 }
@@ -69,7 +69,7 @@
         staffHolidays:(params)=>apiMain('/server/api/v1/staff/holidaysApply/staffHolidaysApply',params),//获取假期审批详情
         companys:(params)=>apiMain('/server/api/v1/company/companys',params),//公司接口
         regionBUs:(params)=>apiMain('/server/api/v1/company/regionBUs',params),//单位接口
-        genStaffPayroll:(params)=>apiPost('/server/api/v1/payroll/staff/genStaffPayroll',params),//生成工资单
+        genStaffPayroll:(params)=>apiMain('/server/api/v1/payroll/staff/genStaffPayroll',params),//生成工资单
     };
 
     export default api
