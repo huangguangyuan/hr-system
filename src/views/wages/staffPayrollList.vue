@@ -7,7 +7,7 @@
     </div>
     <div class="search-wrap">
       <!-- 选择单位 -->
-      <el-select v-model="BUCode" slot="prepend"placeholder="请选择" style="width:200px;" @change="selectFun" class="selectItem">
+      <el-select v-model="BUCode" slot="prepend" placeholder="请选择" style="width:200px;" @change="selectFun" class="selectItem">
         <el-option v-for="(item,index) in regionBUlist" :key="index" :label="item.name" :value="item.code"></el-option>
       </el-select>
       <!-- 选择年份 -->
@@ -326,7 +326,7 @@ export default {
           this.seachMsg.insuredType = this.$toolFn.sessionGet("staffPayrollListSearch").insuredType || this.seachMsg.insuredType;
           this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
       }
-      this.getregionBU();
+      this.getRegionBU();
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -336,11 +336,11 @@ export default {
       return row.id;
     },
     // 获取单位列表
-    async getregionBU() {
+    async getRegionBU() {
       var regionBUs = await this.$myApi.regionBUs({ isCache: true });
       if (regionBUs && regionBUs.length > 0) {
         this.regionBUlist = regionBUs;
-        this.BUCode = this.$toolFn.sessionGet("staffPayrollListSearch")? this.$toolFn.sessionGet("staffPayrollListSearch").BUCode: this.regionBUlist[0].code;
+        this.BUCode = this.BUCode != '' ? this.BUCode : this.regionBUlist[0].code;
         //this.getData(this.seachMsg.BUCode,parseInt(this.seachMsg.year),parseInt(this.seachMsg.month));
       }
     },
@@ -359,8 +359,8 @@ export default {
       this.BUCode = val;
       this.seachMsg.BUCode = val;
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
-      // this.pageInfo.reqParams.isReq = true;
-      // this.$refs.pageInfo.getData(this.pageInfo);
+      this.pageInfo.reqParams.isReq = true;
+      this.$refs.pageInfo.getData(this.pageInfo);
     },
     // 选择年份
     selectYear(val) {

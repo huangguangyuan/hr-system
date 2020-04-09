@@ -68,7 +68,6 @@ export default {
           data.staffCode = element.code;
           await this.$toolFn.sleep(1000);
           var genStaffPayroll = await this.$myApi.genStaffPayroll(data);
-          //console.log(genStaffPayroll);
           if (genStaffPayroll && genStaffPayroll.code == 0) {
             this.$message.success(element.nameChinese+" 工资单生成成功");
           } else {

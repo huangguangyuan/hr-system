@@ -184,7 +184,7 @@ export default {
   methods: {
     // 初始化
     InitializationFun() {
-      this.getregionBU();
+      this.getRegionBU();
       var date = new Date();
       this.seachMsg = {
         year: date.getFullYear().toString(),
@@ -198,7 +198,7 @@ export default {
       }
     },
     // 获取单位列表
-    async getregionBU() {
+    async getRegionBU() {
       var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUlist = regionBUs;

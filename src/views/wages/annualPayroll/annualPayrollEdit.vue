@@ -112,11 +112,11 @@ export default {
     }
   },
   mounted() {
-    this.getregionBU();
+    this.getRegionBU();
   },
   methods: {
     // 获取单位列表
-    async getregionBU() {
+    async getRegionBU() {
       var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUlist = regionBUs;

@@ -222,8 +222,12 @@ export default {
     BUCodeSelected: {
       handler: function(newVal) {
         this.pageInfo.reqParams.isReq = true;
-        this.$refs.busAndSearch.init(this.busAndSearch);
-        this.$refs.pageInfo.getData(this.pageInfo);
+        if (this.$refs.busAndSearch){
+          this.$refs.busAndSearch.init(this.busAndSearch);
+        }
+        if (this.$refs.pageInfo){
+          this.$refs.pageInfo.getData(this.pageInfo);
+        }
       }
     },
     "filter.searchKey":{

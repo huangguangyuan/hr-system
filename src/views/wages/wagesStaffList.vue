@@ -129,7 +129,7 @@ export default {
   methods: {
     // 初始化
     InitializationFun() {
-      this.getregionBU();
+      this.getRegionBU();
     },
     handleSelectionChange(val) {
         this.multipleSelection = val;
@@ -152,7 +152,7 @@ export default {
       return row.id
     },
     // 获取单位列表
-    async getregionBU() {
+    async getRegionBU() {
       
       var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
@@ -207,9 +207,6 @@ export default {
 
 
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 获取当前页数
     curChange(val) {
