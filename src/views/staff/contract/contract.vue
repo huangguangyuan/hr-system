@@ -57,7 +57,7 @@ export default {
     },
     pageInfo(){
       return {
-        reqParams:{//请求分页参数
+        reqParams:{
             url:"/server/api/v1/staff/contract/getAll",
             data:{staffCode: this.staffInfo.code }
           }

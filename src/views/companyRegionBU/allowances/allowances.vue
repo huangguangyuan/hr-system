@@ -59,7 +59,7 @@ export default {
   computed: {
     pageInfo(){
       return {
-        reqParams:{//请求分页参数
+        reqParams:{
             url:"/server/api/v1/bu/allowances",
             data:{BUCode:this.BUInfo.code}
           }

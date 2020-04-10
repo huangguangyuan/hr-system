@@ -54,7 +54,6 @@ export default {
     },
     // 生成工资单
     async addFun() {
-      //var reqUrl = "/server/api/v1/payroll/staff/genStaffPayroll";
       var data = {
           hrCode:this.curInfo.hrCode,
           //staffCode:this.curInfo.code,
@@ -87,7 +86,6 @@ export default {
             this.$message.error(genStaffPayroll.msg);
           }
       }
-
     },
     // 取消
     cancelFn() {

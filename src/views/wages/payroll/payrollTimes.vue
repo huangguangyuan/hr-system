@@ -1,29 +1,29 @@
 <template>
-  <div class="salaryItemList">
-    <el-page-header @back="goBack" content="非应税项目"></el-page-header>
+  <div class="deductionList">
+    <el-page-header @back="goBack" :content="payrollInfo.nameChinese+'-多次出粮列表'"></el-page-header>
     <el-divider></el-divider>
     <!-- 头部内容 -->
     <div class="my-top">
-      <el-button type="primary" @click="addFun" v-if="userRight.indexOf(2) >= 0">添 加</el-button>
-      <el-button type="danger" @click="deleteAll" v-if="userRight.indexOf(2) >= 0">删除所有</el-button>
+      <el-button type="primary" @click="addFun">添 加</el-button>
+      <el-button type="danger" @click="deleteAll">删除所有</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe>
-      <el-table-column sortable prop="name" label="非应税项目"></el-table-column>
-      <el-table-column sortable prop="amount" label="金额"></el-table-column>
-      <el-table-column sortable prop="statusTxt" label="是否生效"></el-table-column>
+      <el-table-column prop="amount" label="扣除金额"></el-table-column>
+      <el-table-column prop="status" label="是否生效">
+      </el-table-column>
+      <el-table-column prop="typeIdTxt" label="类 型"></el-table-column>
       <el-table-column prop="remarks" label="备 注"></el-table-column>
       <el-table-column label="操作" width="300px">
         <template slot-scope="scope">
           <!-- 编辑 -->
-          <el-button size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)" v-if="userRight.indexOf(2) >= 0">编辑</el-button>
+          <el-button size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">编辑</el-button>
           <!-- 删除 -->
           <el-button
             size="mini"
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
-            v-if="userRight.indexOf(2) >= 0"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -32,7 +32,7 @@
     <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 新增 -->
     <el-dialog
-      title="新增非应税项目"
+      title="新增出粮项目"
       :visible.sync="isShowEditLayer"
       :close-on-click-modal="false"
       width="55%"
@@ -46,13 +46,14 @@
   </div>
 </template>
 <script>
-import editLayer from "./editLayer.vue";
+import {deductionTypeTxt} from "@/lib/staticData.js";
+import editLayer from "./payrollTimesEditLayer.vue";
 import pageInfo from "@/components/pageInfo.vue";
 export default {
   components: {
     editLayer,pageInfo
   },
-  name: "salaryItemList2",
+  name: "deductionList",
   inject: ["reload"],
   props: ["userRight_props"],
   data() {
@@ -60,24 +61,23 @@ export default {
       userRight:[],
       pageList: [],
       curInfo: {}, //当前内容
-      searchInner: "", //搜索内容
       isShowLoading: false, //是否显示loading页
-      isShowEditLayer: false, //是否显示新增页面
+      isShowEditLayer: false //是否显示新增页面
     };
   },
   computed: {
     pageInfo(){
       return {
         reqParams:{
-            url:"/server/api/v1/staff/salaryItem/getAll",
-            data:{staffCode: this.payrollInfo.code,taxable:0}
+            url:"/server/api/v1/staff/deduction/getAll",
+            data:{staffCode: this.payrollInfo.code}
           }
         }
     },
     tableData(){
       return this.pageList.map(item => {
-        item.statusTxt = item.status == '1'?'是':'否';
-        item.taxableTxt = item.taxable == '1'?'是':'否';
+        item.typeIdTxt = deductionTypeTxt(item.typeId);
+        item.status = item.status.toString();
         return item;
       });
     },
@@ -94,8 +94,6 @@ export default {
       this.isShowEditLayer = true;
       this.curInfo = {
         staffCode: this.payrollInfo.code,
-        BUCode: this.payrollInfo.BUCode,
-        taxable:0,
         type: "add"
       };
     },
@@ -104,8 +102,6 @@ export default {
       this.isShowEditLayer = true;
       this.curInfo = res;
       this.curInfo.type = "modify";
-      this.curInfo.taxable = 0;
-      this.curInfo.BUCode = this.payrollInfo.BUCode;
     },
     // 删除
     handleDelete(index, res) {
@@ -113,9 +109,8 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$myApi.http.post("/server/api/v1/staff/salaryItem/delete", { id: res.id }).then(res => {
+      }).then(() => {
+          this.$myApi.http.post("/server/api/v1/staff/deduction/delete", { id: res.id }).then(res => {
               this.reload();
               this.$message.success("删除成功~");
             });
@@ -128,21 +123,23 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-          this.$myApi.http.post("/server/api/v1/staff/salaryItem/deleteByStaffCode", { staffCode: this.payrollInfo.code }).then(res => {
+          this.$myApi.http.post("/server/api/v1/staff/deduction/deleteByStaffCode", {
+              staffCode: this.payrollInfo.code
+            }).then(res => {
               this.reload();
               this.$message.success("删除成功~");
             });
         })
     },
     // 改变状态
-    changStatus(res){
-      var reqUrl = '/server/api/v1/staff/deduction/update';
+    changStatus(res) {
+      var reqUrl = "/server/api/v1/staff/deduction/update";
       var data = {
-        id:res.id,
-        staffCode:res.staffCode,
-        status:res.status
-      }
-      this.$myApi.http.post(reqUrl,data).then(res => {})
+        id: res.id,
+        staffCode: res.staffCode,
+        status: res.status
+      };
+      this.$myApi.http.post(reqUrl, data).then(res => {});
     },
     // 监听子组件返回信息
     listenIsShowMask(res) {
@@ -151,8 +148,8 @@ export default {
     // 返回
     goBack() {
       this.$store.commit({
-        type: "getPayrollInfo",
-        payrollKey: "payrollList"
+        type: "setPayrollMainKey",
+        payrollMainKey: "staffPayrollList"
       });
     }
   }
@@ -169,7 +166,6 @@ export default {
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
 }
-
 .deductionList {
   .photo {
     width: 35px;

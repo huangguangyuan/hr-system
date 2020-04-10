@@ -42,7 +42,7 @@ export default {
   computed:{
     pageInfo(){
       return {
-        reqParams:{//请求分页参数
+        reqParams:{
             url:"/server/api/v1/staff/holidaysApply/staffLeaves",
             data:{ typeId:2}
           }

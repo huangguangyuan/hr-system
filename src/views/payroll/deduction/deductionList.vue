@@ -73,7 +73,7 @@ export default {
   computed: {
     pageInfo(){
       return {
-        reqParams:{//请求分页参数
+        reqParams:{
             url:"/server/api/v1/staff/deduction/getAll",
             data:{staffCode: this.payrollInfo.code}
           }
@@ -114,8 +114,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
+      }).then(() => {
           this.$myApi.http.post("/server/api/v1/staff/deduction/delete", { id: res.id }).then(res => {
               this.reload();
               this.$message.success("删除成功~");
@@ -128,8 +127,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
+      }).then(() => {
           this.$myApi.http.post("/server/api/v1/staff/deduction/deleteByStaffCode", {
               staffCode: this.payrollInfo.code
             }).then(res => {

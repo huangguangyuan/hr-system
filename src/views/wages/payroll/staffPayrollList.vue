@@ -113,40 +113,40 @@
         <template slot-scope="scope">
         <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-more-outline"
+            @click.stop="openPayrollTimes(scope.$index, scope.row)"
+          >多次出粮</el-button>
+          <el-button
+            size="mini"
+            icon="el-icon-view"
             @click.stop="openFun(scope.$index, scope.row)"
           >详 细</el-button>
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
-            @click.stop="openFun(scope.$index, scope.row)"
-          >详 细</el-button>
-          <el-button
-            size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-tickets"
             @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
           >全年工资单</el-button>
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-document-add"
             @click.stop="adjAmountFun(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >调整金额</el-button>
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-edit"
             @click.stop="confirmFun(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >审核工资单</el-button>
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-brush"
             @click.stop="rebuildStaffPayroll(scope.$index, scope.row)"
             v-if="fun_right && genPayrollSlip_right && scope.row.typeId == 2"
           >重新生成工资单</el-button>
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-delete"
             @click.stop="deleteFun(scope.$index, scope.row)"
             v-if="fun_right && deletePayrollSlip_right && scope.row.typeId != 1"
           >删 除</el-button>
@@ -257,7 +257,7 @@ export default {
   computed:{
     pageInfo(){
       return {
-        reqParams:{//请求分页参数
+        reqParams:{
             isReq:false,
             url:"/server/api/v1/payroll/staff/staffPayrollList",
             data:{BUCode:this.BUCode,year: parseInt(this.seachMsg.year),month: parseInt(this.seachMsg.month),insuredType: this.seachMsg.insuredType,payrollTimesType:this.seachMsg.payrollTimesType }
@@ -392,6 +392,14 @@ export default {
     },
     openRowFun(row, event) {
       this.openFun(0, row);
+    },
+    // 打开多次出粮页面
+    openPayrollTimes(index, res) {
+      this.$store.commit({
+        type: "setPayrollMainKey",
+        payrollMainKey: "payrollTimes",
+        payrollMainInfo: res
+      });
     },
     // 打开详细页面
     openFun(index, res) {

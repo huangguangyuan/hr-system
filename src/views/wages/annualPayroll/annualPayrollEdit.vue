@@ -98,7 +98,7 @@ export default {
   computed:{
     pageInfo(){
       return {
-        reqParams:{//请求分页参数
+        reqParams:{
             isReq:false,
             url:"/server/api/v1/payroll/staff/staffPayrollMonth",
             data:{staffCode: this.seachMsg.staffCode,year: parseInt(this.seachMsg.year)}
