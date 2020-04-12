@@ -1,23 +1,25 @@
 <template>
   <div class="deductionList">
-    <el-page-header @back="goBack" :content="payrollInfo.nameChinese+'-多次出粮列表'"></el-page-header>
+    <el-page-header @back="goBack" :content="payrollMainInfo.nameChinese+'-多次出粮列表'"></el-page-header>
     <el-divider></el-divider>
     <!-- 头部内容 -->
     <div class="my-top">
       <el-button type="primary" @click="addFun">添 加</el-button>
-      <el-button type="danger" @click="deleteAll">删除所有</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe>
-      <el-table-column prop="amount" label="扣除金额"></el-table-column>
-      <el-table-column prop="status" label="是否生效">
-      </el-table-column>
-      <el-table-column prop="typeIdTxt" label="类 型"></el-table-column>
-      <el-table-column prop="remarks" label="备 注"></el-table-column>
+      <el-table-column prop="id" label="序号"></el-table-column>
+      <el-table-column prop="totalAmount" label="出粮金额"></el-table-column>
+      <el-table-column prop="isInsured" label="是否包含缴纳"></el-table-column>
+      <el-table-column prop="payDay" label="出粮日期"></el-table-column>
+      <el-table-column prop="status" label="是否生效"></el-table-column>
+      <el-table-column prop="adjAmount" label="调整金额"></el-table-column>
+      <el-table-column prop="typeTxt" label="状态"></el-table-column>
       <el-table-column label="操作" width="300px">
         <template slot-scope="scope">
           <!-- 编辑 -->
+          <el-button size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">确认粮单</el-button>
           <el-button size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">编辑</el-button>
           <!-- 删除 -->
           <el-button
@@ -46,7 +48,6 @@
   </div>
 </template>
 <script>
-import {deductionTypeTxt} from "@/lib/staticData.js";
 import editLayer from "./payrollTimesEditLayer.vue";
 import pageInfo from "@/components/pageInfo.vue";
 export default {
@@ -55,10 +56,8 @@ export default {
   },
   name: "deductionList",
   inject: ["reload"],
-  props: ["userRight_props"],
   data() {
     return {
-      userRight:[],
       pageList: [],
       curInfo: {}, //当前内容
       isShowLoading: false, //是否显示loading页
@@ -69,33 +68,30 @@ export default {
     pageInfo(){
       return {
         reqParams:{
-            url:"/server/api/v1/staff/deduction/getAll",
-            data:{staffCode: this.payrollInfo.code}
+            url:"/server/api/v1/payroll/staff/payrollTimesList",
+            data:{payrollCode: this.payrollMainInfo.code}
           }
         }
     },
     tableData(){
+      let id = 1;
       return this.pageList.map(item => {
-        item.typeIdTxt = deductionTypeTxt(item.typeId);
-        item.status = item.status.toString();
+        item.id = id;
+        id++;
         return item;
       });
     },
-    payrollInfo() {
-      return this.$store.state.payrollModule.payrollInfo;
+    payrollMainInfo() {
+      return this.$store.state.payrollModule.payrollMainInfo;
     }
   },
   mounted() {
-    this.userRight = this.userRight_props;
   },
   methods: {
     // 新增专项扣除
     addFun() {
       this.isShowEditLayer = true;
-      this.curInfo = {
-        staffCode: this.payrollInfo.code,
-        type: "add"
-      };
+      this.curInfo = this.payrollMainInfo;
     },
     // 编辑
     modifyFun(index, res) {
@@ -110,22 +106,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-          this.$myApi.http.post("/server/api/v1/staff/deduction/delete", { id: res.id }).then(res => {
-              this.reload();
-              this.$message.success("删除成功~");
-            });
-        })
-    },
-    // 删除所有
-    deleteAll() {
-      this.$confirm("是否确认删除所有数据？", "提 示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-          this.$myApi.http.post("/server/api/v1/staff/deduction/deleteByStaffCode", {
-              staffCode: this.payrollInfo.code
-            }).then(res => {
+          this.$myApi.http.post("/server/api/v1/payroll/staff/payrollTimesDelete", { id: res.id }).then(res => {
               this.reload();
               this.$message.success("删除成功~");
             });
@@ -162,16 +143,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-}
-.input-with-select .el-input-group__prepend {
-  background-color: #fff;
-}
-.deductionList {
-  .photo {
-    width: 35px;
-    height: 35px;
-    border-radius: 5px;
-  }
 }
 </style>
 

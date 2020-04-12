@@ -10,9 +10,9 @@
 let payrollModule = {
     state: {
         payrollKey:'payrollList',
+        payrollInfo:{},
         payrollMainKey:'staffPayrollList',
         payrollMainInfo:{},
-        payrollInfo:{},
         payrollCurPage:1
     },
     mutations: {

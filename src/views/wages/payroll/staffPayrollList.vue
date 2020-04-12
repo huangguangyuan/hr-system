@@ -58,35 +58,35 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-view"
             @click.stop="openFun(scope.$index, scope.row)"
           >详 细</el-button>
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-tickets"
             @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
           >全年工资单</el-button>
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-document-add"
             @click.stop="adjAmountFun(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >调整金额</el-button>
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-edit"
             @click.stop="confirmFun(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >审核工资单</el-button>
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-brush"
             @click.stop="rebuildStaffPayroll(scope.$index, scope.row)"
             v-if="fun_right && genPayrollSlip_right && scope.row.typeId == 2"
           >重新生成工资单</el-button>
           <el-button
             size="mini"
-            icon="hr-icon-gongjijinjiaoyimingxi"
+            icon="el-icon-delete"
             @click.stop="deleteFun(scope.$index, scope.row)"
             v-if="fun_right && deletePayrollSlip_right && scope.row.typeId != 1"
           >删 除</el-button>
@@ -109,7 +109,7 @@
       <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column>
       <el-table-column sortable prop="adjAmount" label="调整金额" width="100"></el-table-column>
       <el-table-column sortable prop="typeIdTxt" label="工资单状态" width="130"></el-table-column>
-      <el-table-column label="操作" width="560">
+      <el-table-column label="操作" width="650">
         <template slot-scope="scope">
         <el-button
             size="mini"
@@ -326,6 +326,7 @@ export default {
           this.seachMsg.insuredType = this.$toolFn.sessionGet("staffPayrollListSearch").insuredType || this.seachMsg.insuredType;
           this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
       }
+      console.log(this.seachMsg);
       this.getRegionBU();
     },
     handleSelectionChange(val) {
@@ -395,6 +396,7 @@ export default {
     },
     // 打开多次出粮页面
     openPayrollTimes(index, res) {
+      console.log(res);
       this.$store.commit({
         type: "setPayrollMainKey",
         payrollMainKey: "payrollTimes",
