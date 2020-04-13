@@ -97,7 +97,7 @@ export default {
         }).then(() => {
           this.$myApi.http.post("/server/api/v1/cityMPF/delete", { id: res.id }).then(res => {
               this.reload();
-              this.$message.success("删除成功~");
+              this.$message.success("删除成功");
             });
         })
     },

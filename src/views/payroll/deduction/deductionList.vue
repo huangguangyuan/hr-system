@@ -117,7 +117,7 @@ export default {
       }).then(() => {
           this.$myApi.http.post("/server/api/v1/staff/deduction/delete", { id: res.id }).then(res => {
               this.reload();
-              this.$message.success("删除成功~");
+              this.$message.success("删除成功");
             });
         })
     },
@@ -132,7 +132,7 @@ export default {
               staffCode: this.payrollInfo.code
             }).then(res => {
               this.reload();
-              this.$message.success("删除成功~");
+              this.$message.success("删除成功");
             });
         })
     },

@@ -39,7 +39,6 @@ export default {
         remarks: ""
       }, //表单信息
       isShow: true, //是否显示
-      fileList: [],
       rules: {
         totalAmount: [
           { required: true, message: "请输入金额", trigger: "blur" }
@@ -98,7 +97,7 @@ export default {
       var reqUrl = "/server/api/v1/payroll/staff/payrollTimesAdd";
       var data = {
         payrollCode: this.ruleForm.payrollCode,
-        totalAmount: this.ruleForm.totalAmount,
+        totalAmount: Number.parseFloat(this.ruleForm.totalAmount),
         payDay: this.ruleForm.payDay,
         remarks: this.ruleForm.remarks
       };

@@ -150,7 +150,7 @@ export default {
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("更新成功~");
+          this.$message.success("更新成功");
         } else {
           this.$message.error(res.data.msg);
         }

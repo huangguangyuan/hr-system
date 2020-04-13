@@ -155,7 +155,7 @@ export default {
             }
           this.$myApi.http.post("/server/api/v1/company/regionUpdate", data).then(res => {
               this.reload();
-              this.$message.success("操作成功~");
+              this.$message.success("操作成功");
             });
         })
     },
@@ -169,7 +169,7 @@ export default {
           this.$myApi.http.post("/server/api/v1/company/regionDelete", { id: res.id }).then(res => {
                 if(res.data.code == 0){
                     this.reload();
-                    this.$message.success("删除成功~");
+                    this.$message.success("删除成功");
                 }else{
                     this.$message.error(res.data.msg);
                 }

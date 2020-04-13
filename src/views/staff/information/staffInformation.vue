@@ -333,7 +333,7 @@ export default {
             }
           this.$myApi.http.post("/server/api/v1/staff/update", data).then(res => {
               this.reload();
-              this.$message.success("操作成功~");
+              this.$message.success("操作成功");
             });
         })
     },

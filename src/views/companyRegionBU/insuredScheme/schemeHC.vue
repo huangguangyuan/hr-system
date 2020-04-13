@@ -104,7 +104,7 @@ export default {
           this.$myApi.http.post("/server/api/v1/bu/insuredScheme/hc/delete", { id: res.id }).then(res => {
               //this.getAllData();
               this.$refs.pageInfo.getData(this.pageInfo);
-              this.$message.success("删除成功~");
+              this.$message.success("删除成功");
             });
         })
     }

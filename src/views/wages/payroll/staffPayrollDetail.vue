@@ -117,10 +117,17 @@
           <el-card class="showWarning" shadow="always">备注：{{details.adjAmountRemarks}}</el-card>
         </el-col>
     </el-row>
+    <el-divider v-if="payrollTimes && payrollTimes.length != 0">多次出粮列表</el-divider>
+    <el-table v-if="payrollTimes && payrollTimes.length > 0" :data="payrollTimes" stripe border show-summary>
+      <el-table-column prop="isInsuredTxt" label="包含缴纳"></el-table-column>
+      <el-table-column prop="reallyAmount" label="出粮金额"></el-table-column>
+      <el-table-column prop="payDay" label="出粮日期"></el-table-column>
+      <el-table-column prop="typeTxt" label="状态"></el-table-column>
+    </el-table>
   </div>
 </template>
 <script>
-import {deductionTypeTxt} from "@/lib/staticData.js";
+import {deductionTypeTxt,payrollListTypeTxt} from "@/lib/staticData.js";
 export default {
   name: "staffPayrollDetail",
   inject: ["reload"],
@@ -137,6 +144,7 @@ export default {
       taxableItemsList: [],
       notTaxableItemsList: [],
       MPFList:[],
+      payrollTimes:[],
       netAmount:0,
       reallyAmount:0,
       holidayTypes:[],
@@ -206,6 +214,15 @@ export default {
           this.taxableItemsList = this.details.detail.taxableItemsList;
           this.notTaxableItemsList = this.details.detail.notTaxableItemsList;
           this.MPFList = this.details.detail.MPFList || [];
+          let payrollTimes = this.details.detail.payrollTimes || [];
+          for (let index = 0; index < payrollTimes.length; index++) {
+            payrollTimes[index].reallyAmount = parseFloat(payrollTimes[index].totalAmount) + parseFloat(payrollTimes[index].adjAmount);
+            payrollTimes[index].isInsuredTxt = payrollTimes[index].isInsured == 1?'是':'否';
+            payrollTimes[index].payDay = this.$toolFn.timeFormat(payrollTimes[index].payDay,"yyyy-MM-dd");
+            payrollTimes[index].typeTxt = payrollListTypeTxt(payrollTimes[index].typeId);
+          }
+          this.payrollTimes = payrollTimes;
+
           this.netAmount = parseFloat(this.details.grossPay - this.details.taxAmount).toFixed(2);
           this.reallyAmount = parseFloat(parseFloat(this.netAmount) + parseFloat(this.details.notTaxableAmount) + parseFloat(this.arrSum(this.claimList,'totalAmount')) + this.details.adjAmount).toFixed(2);
         }

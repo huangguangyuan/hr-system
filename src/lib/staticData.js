@@ -14,6 +14,25 @@ export function monthList(){
   {val:10,txt:'10月'},{val:11,txt:'11月'},{val:12,txt:'12月'}]
 }
 
+/**
+ * @description: 工资单审批状态
+ * @param {typeId} 工资单状态id
+ */
+export function payrollListTypeTxt(typeId){
+    switch (typeId) {
+        case 0:
+          return "未审核";
+        case 1:
+          return "通过";
+        case 2:
+          return "退回";
+        case 3:
+          return "已出粮";
+        default:
+          return "未知";
+      }
+  }
+
 //审批流程类型
 export function approveHisTypeTxt(typeId){
     switch (typeId) {
@@ -33,6 +52,7 @@ export function approveHisTypeTxt(typeId){
           return "未知";
       }
   }
+  
 //性别
 export function taxableTxt(taxable){
   switch (taxable) {

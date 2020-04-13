@@ -326,7 +326,6 @@ export default {
           this.seachMsg.insuredType = this.$toolFn.sessionGet("staffPayrollListSearch").insuredType || this.seachMsg.insuredType;
           this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
       }
-      console.log(this.seachMsg);
       this.getRegionBU();
     },
     handleSelectionChange(val) {
@@ -396,7 +395,6 @@ export default {
     },
     // 打开多次出粮页面
     openPayrollTimes(index, res) {
-      console.log(res);
       this.$store.commit({
         type: "setPayrollMainKey",
         payrollMainKey: "payrollTimes",
@@ -422,7 +420,7 @@ export default {
         this.$myApi.http.post("/server/api/v1/payroll/staff/staffPayrollListDelete", data).then(res => {
             if (res.data.code == 0) {
               this.reload();
-              this.$message.success("操作成功~");
+              this.$message.success("操作成功");
             } else {
               this.$message.warning(res.data.msg);
             }
@@ -517,7 +515,7 @@ export default {
       this.$myApi.http.post("/server/api/v1/payroll/staff/rebuildStaffPayroll", data).then(res => {
           if (res.data.code == 0) {
             this.reload();
-            this.$message.success("操作成功~");
+            this.$message.success("操作成功");
           } else {
             this.$message.warning(res.data.msg);
           }

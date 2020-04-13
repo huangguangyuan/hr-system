@@ -75,7 +75,7 @@ export default {
       }
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          this.$message("操作成功~");
+          this.$message("操作成功");
           this.reload();
         }
       });

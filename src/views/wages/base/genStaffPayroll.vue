@@ -81,7 +81,7 @@ export default {
           console.log(genStaffPayroll);
           if (genStaffPayroll && genStaffPayroll.code == 0) {
             this.reload();
-            this.$message.success("生成成功~");
+            this.$message.success("生成成功");
           } else {
             this.$message.error(genStaffPayroll.msg);
           }

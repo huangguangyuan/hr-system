@@ -121,7 +121,7 @@ export default {
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("新增成功~");
+          this.$message.success("新增成功");
         } else {
           this.$message.error(res.data.msg);
         }
@@ -137,7 +137,7 @@ export default {
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("修改成功~");
+          this.$message.success("修改成功");
         } else {
           this.$message(res.data.msg);
         }

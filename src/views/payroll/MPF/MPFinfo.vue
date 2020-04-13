@@ -150,7 +150,7 @@ export default {
               status: status
             }).then(res => {
               this.reload();
-              this.$message.success("修改成功~");
+              this.$message.success("修改成功");
             });
         })
     },
@@ -166,7 +166,7 @@ export default {
             }).then(res => {
               if(res.data.code == 0){
                 this.reload();
-                this.$message.success("删除成功~");
+                this.$message.success("删除成功");
               }else{
                 this.$message.error(res.data.code);
               }

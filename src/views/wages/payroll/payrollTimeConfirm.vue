@@ -1,10 +1,15 @@
+
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="220px">
+      <el-form-item label="出粮日期：" prop="payDay">
+        <el-date-picker v-model="ruleForm.payDay" type="date" placeholder="出粮日期" format="yyyy-MM-dd"></el-date-picker>
+      </el-form-item>
       <el-form-item label="工资单状态：" prop="typeId">
         <el-radio-group v-model="ruleForm.typeId">
           <el-radio label="1">通过</el-radio>
-          <el-radio label="2">退回（有疑问，需重新计算）</el-radio>
+          <el-radio label="3">已出粮</el-radio>
+          <el-radio label="2">退回</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="备注：">
@@ -25,25 +30,41 @@ export default {
   data() {
     return {
       ruleForm: {
+        id:0,
         typeId:'',
-        remarks:'',
-        codeArr:[]
-      }, //表单信息
-      isShow: true, //是否显示
-      fileList: [],
+        payDay:'',
+        remarks:''
+      },
       rules: {
         typeId: [
-          { required: true, message: "请选择是否通过", trigger: "change" }
+          { required: true, message: "请选择工资单状态", trigger: "blur" }
         ]
-      }
+      },
+      isShow: true, //是否显示
     };
   },
   mounted() {
-    this.ruleForm.typeId = this.curInfo.typeId.toString();
-    this.ruleForm.remarks = this.curInfo.remarks;
-    this.ruleForm.codeArr = this.curInfo.codeArr || [];
+    this.ruleForm.id = this.curInfo.id;
+    this.getItem();
   },
   methods: {
+    /**
+     * @description: 获取详细信息
+     */
+    getItem() {
+      var reqUrl = "/server/api/v1/payroll/staff/payrollTimesItem";
+      var data = {
+        id: this.curInfo.id
+      };
+      this.$myApi.http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
+          this.ruleForm.id = res.data.data.id;
+          this.ruleForm.typeId = res.data.data.typeId;
+          this.ruleForm.payDay = res.data.data.payDay;
+          this.ruleForm.remarks = res.data.data.remarks;
+        }
+      });
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -59,17 +80,13 @@ export default {
     },
     // 审批
     approveFun() {
-      var reqUrl = "/server/api/v1/payroll/staff/staffPayrollConfirm";
+      var reqUrl = "/server/api/v1/payroll/staff/payrollTimesUpdate";
       var data = {
-        hrCode:this.curInfo.hrCode,
-        code:this.curInfo.code,
+        id:this.ruleForm.id,
         typeId:parseInt(this.ruleForm.typeId),
+        payDay:this.ruleForm.payDay,
         remarks:this.ruleForm.remarks
       };
-      if (this.ruleForm.codeArr.length > 0){
-        reqUrl = "/server/api/v1/payroll/staff/staffPayrollConfirmMult";
-        data.codeArr = this.ruleForm.codeArr;
-      }
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
@@ -78,7 +95,6 @@ export default {
           }else{
             this.$message.success("操作成功" + res.data.msg);
           }
-          
         } else {
           this.$message.error(res.data.msg);
         }

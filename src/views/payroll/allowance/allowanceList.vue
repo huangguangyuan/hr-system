@@ -137,7 +137,7 @@ export default {
             .post("/server/api/v1/staff/allowance/delete", { id: res.id })
             .then(res => {
               this.reload();
-              this.$message.success("删除成功~");
+              this.$message.success("删除成功");
             });
         })
         .catch(() => {
@@ -159,7 +159,7 @@ export default {
             .post("/server/api/v1/staff/allowance/deleteByStaffCode", { staffCode: this.payrollInfo.code })
             .then(res => {
               this.reload();
-              this.$message.success("删除成功~");
+              this.$message.success("删除成功");
             });
         })
         .catch(() => {

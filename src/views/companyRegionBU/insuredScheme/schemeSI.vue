@@ -125,7 +125,7 @@ export default {
       }).then(() => {
           this.$myApi.http.post("/server/api/v1/bu/insuredScheme/si/delete", { id: res.id }).then(res => {
               this.$refs.pageInfo.getData(this.pageInfo);
-              this.$message.success("删除成功~");
+              this.$message.success("删除成功");
             });
         })
     }
