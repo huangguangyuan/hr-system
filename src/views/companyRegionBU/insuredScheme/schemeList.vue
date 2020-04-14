@@ -123,7 +123,7 @@ export default {
             item.typeIdTxt = "香港MPF";
             break;
         }
-        item.createTime = this.$toolFn.timeFormat(item.createTime).slice(0, 10);
+        item.createTime = this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd")
         return item;
       });
     },

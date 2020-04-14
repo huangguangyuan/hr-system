@@ -59,7 +59,7 @@ export default {
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.ruleForm.id = res.data.data.id;
-          this.ruleForm.typeId = res.data.data.typeId;
+          this.ruleForm.typeId = res.data.data.typeId.toString();
           this.ruleForm.payDay = res.data.data.payDay;
           this.ruleForm.remarks = res.data.data.remarks;
         }

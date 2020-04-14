@@ -53,8 +53,8 @@ export default {
       this.$myApi.http.post(reqUrl, {BUCode:this.BUInfo.code}).then(res => {
         if (res.data.code == 0) {
           this.tableData = res.data.data;
-          this.tableData.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.tableData.annualLeaveWriteOffDate).slice(0, 10);
-          this.tableData.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.tableData.annualLeaveRetainClearDate).slice(0, 10);
+          this.tableData.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.tableData.annualLeaveWriteOffDate,"yyyy-MM-dd")
+          this.tableData.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.tableData.annualLeaveRetainClearDate,"yyyy-MM-dd")
           this.isContent = true;
         }
       });

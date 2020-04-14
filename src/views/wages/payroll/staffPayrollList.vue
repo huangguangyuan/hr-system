@@ -111,11 +111,6 @@
       <el-table-column sortable prop="typeIdTxt" label="工资单状态" width="130"></el-table-column>
       <el-table-column label="操作" width="650">
         <template slot-scope="scope">
-        <el-button
-            size="mini"
-            icon="el-icon-more-outline"
-            @click.stop="openPayrollTimes(scope.$index, scope.row)"
-          >多次出粮</el-button>
           <el-button
             size="mini"
             icon="el-icon-view"
@@ -123,9 +118,9 @@
           >详 细</el-button>
           <el-button
             size="mini"
-            icon="el-icon-tickets"
-            @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
-          >全年工资单</el-button>
+            icon="el-icon-more-outline"
+            @click.stop="openPayrollTimes(scope.$index, scope.row)"
+          >多次出粮</el-button>
           <el-button
             size="mini"
             icon="el-icon-document-add"
@@ -150,6 +145,11 @@
             @click.stop="deleteFun(scope.$index, scope.row)"
             v-if="fun_right && deletePayrollSlip_right && scope.row.typeId != 1"
           >删 除</el-button>
+          <el-button
+            size="mini"
+            icon="el-icon-tickets"
+            @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
+          >全年工资单</el-button>
         </template>
       </el-table-column>
     </el-table>

@@ -58,7 +58,7 @@ export default {
       this.$myApi.http.post(reqUrl, myData).then(res => {
           if(res.data.code == 0){
             this.tableData = res.data.data;
-            this.tableData.createTime = this.$toolFn.timeFormat(this.tableData.createTime).slice(0, 10);
+            this.tableData.createTime = this.$toolFn.timeFormat(this.tableData.createTime,"yyyy-MM-dd")
             this.isContent = true;
           }else{
             this.isContent = false;

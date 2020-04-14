@@ -61,7 +61,7 @@ export default {
     },
     tableData(){
       return this.pageList.map(item => {
-        item.issueTime = this.$toolFn.timeFormat(item.issueTime).slice(0, 10);
+        item.issueTime = this.$toolFn.timeFormat(item.issueTime,"yyyy-MM-dd")
         return item;
       });
     },

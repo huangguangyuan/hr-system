@@ -50,7 +50,7 @@ export default {
     },
     tableData(){
       return this.pageList.map(item => {
-        item.applyDate = this.$toolFn.timeFormat(item.applyDate).slice(0, 10);
+        item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd")
         return item;
       });
     },

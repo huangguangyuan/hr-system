@@ -62,8 +62,8 @@ export default {
     },
     tableData(){
       return this.pageList.map(item => {
-        item.startDate = this.$toolFn.timeFormat(item.startDate).slice(0, 10);
-        item.endDateTxt = item.endDate = this.$toolFn.timeFormat(item.endDate).slice(0, 10);
+        item.startDate = this.$toolFn.timeFormat(item.startDate,"yyyy-MM-dd")
+        item.endDateTxt = item.endDate = this.$toolFn.timeFormat(item.endDate,"yyyy-MM-dd")
         if (item.endDate == "2100-01-01"){
           item.endDateTxt = "至今";
         }

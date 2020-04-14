@@ -295,11 +295,11 @@ export default {
         item.annualLeaveWriteOffMethodTxt = annualLeaveWriteOffMethodTxt(item.annualLeaveWriteOffMethod);
         item.payrollTypeTxt = payrollTypeTxt(item.payrollType);
         item.fileUnitMoveTxt = fileUnitMoveTxt(item.fileUnitMove);
-        item.dateOfBirth = this.$toolFn.timeFormat(item.dateOfBirth).slice(0, 10);
-        item.dateOfJoining = this.$toolFn.timeFormat(item.dateOfJoining).slice(0, 10);
-        item.dateOfLeaving = this.$toolFn.timeFormat(item.dateOfLeaving).slice(0, 10);
-        item.annualLeaveWriteOffDate = this.$toolFn.timeFormat(item.annualLeaveWriteOffDate).slice(0, 10);
-        item.annualLeaveRetainClearDate = this.$toolFn.timeFormat(item.annualLeaveRetainClearDate).slice(0, 10);
+        item.dateOfBirth = this.$toolFn.timeFormat(item.dateOfBirth,"yyyy-MM-dd")
+        item.dateOfJoining = this.$toolFn.timeFormat(item.dateOfJoining,"yyyy-MM-dd")
+        item.dateOfLeaving = this.$toolFn.timeFormat(item.dateOfLeaving,"yyyy-MM-dd")
+        item.annualLeaveWriteOffDate = this.$toolFn.timeFormat(item.annualLeaveWriteOffDate,"yyyy-MM-dd")
+        item.annualLeaveRetainClearDate = this.$toolFn.timeFormat(item.annualLeaveRetainClearDate,"yyyy-MM-dd")
         return item;
       });
     }

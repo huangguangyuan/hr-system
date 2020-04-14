@@ -102,11 +102,12 @@ export default {
   methods: {
     async init(){
       this.claimItem = await this.$myApi.staffClaim({claimCode:this.curInfo.code});
-      this.claimTypes = await this.$myApi.getClaimTypeId();
+      this.claimTypes = await this.$myApi.getBUClaimType();
       this.claimItem.details.map(item => {
-        item.typeIdTxt = this.claimTypes.filter(child => {
-          return child.typeId == item.typeId;
-        })[0].val;
+        let filterResult = this.claimTypes.filter(child => {
+          return child.id == item.typeId;
+        });
+        item.typeIdTxt = filterResult.length>0?filterResult[0].val:'';
         return item;
       });
       if (this.claimItem.fileSrc && this.claimItem.fileSrc != ''){

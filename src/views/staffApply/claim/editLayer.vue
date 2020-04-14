@@ -24,7 +24,6 @@
         <el-form-item label="报销金额" :prop="'details.'+index+'.amount'" :rules="{required: true, message: '报销金额不能为空', trigger: 'blur'}">
           <el-input v-model="domain.amount"></el-input>
         </el-form-item>
-
         <el-form-item label="备注" :prop="'details.'+index+'.remarks'">
           <el-input v-model="domain.remarks"></el-input>
         </el-form-item>
@@ -36,7 +35,7 @@
           <el-checkbox v-for="approve in approveOfficerList" :label="approve.code" :key="approve.code" >{{approve.name}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="结算人员：" v-if="false">
+      <el-form-item label="结算人员：">
         <el-checkbox-group v-model="balanceOfficer">
           <el-checkbox v-for="balance in balanceOfficerList" :label="balance.code" :key="balance.code" >{{balance.name}}</el-checkbox>
         </el-checkbox-group>

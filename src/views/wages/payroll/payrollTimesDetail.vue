@@ -1,3 +1,4 @@
+
 <template>
   <div class="staffPayrollDetail">
     <el-divider>详细信息</el-divider>
@@ -14,23 +15,23 @@
       <el-col :span="8" v-show="item.reallyAmount > 0">
         <el-card shadow="always">实际金额：{{item.reallyAmount}}</el-card>
       </el-col>      
-      <el-col :span="8" v-show="item.adjAmountTime">
+      <el-col :span="8" v-show="item.adjAmountTime && item.adjAmountTime != ''">
         <el-card shadow="always">调整时间：{{item.adjAmountTime}}</el-card>
       </el-col>
       <el-col :span="8" v-show="item.adjAmountHrCode">
-        <el-card shadow="always">调整人：{{item.adjAmountHr}}</el-card>
+        <el-card shadow="always">调整人：{{item.adjAmountHrName}}</el-card>
       </el-col>
       <el-col :span="8" >
         <el-card shadow="always">包含缴纳：{{item.isInsuredTxt}}</el-card>
       </el-col>
-      <el-col :span="8" v-show="item.payDay">
+      <el-col :span="8" v-show="item.payDay && item.payDay != ''">
         <el-card shadow="always">出粮日期：{{item.payDay}}</el-card>
       </el-col>      
-      <el-col :span="8" v-show="item.confirmTime">
+      <el-col :span="8" v-show="item.confirmTime && item.confirmTime != ''">
         <el-card shadow="always">确认日期：{{item.confirmTime}}</el-card>
       </el-col>
       <el-col :span="8" v-show="item.confirmHrCode">
-        <el-card shadow="always">确认人：{{item.confirmHr}}</el-card>
+        <el-card shadow="always">确认人：{{item.confirmHrName}}</el-card>
       </el-col>
       <el-col :span="24" v-show="item.remarks">
         <el-card shadow="always" class="showWarning">备注：{{item.remarks}}</el-card>

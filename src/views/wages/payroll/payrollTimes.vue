@@ -8,19 +8,20 @@
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="tableData" stripe>
+    <el-table v-loading="isShowLoading" :data="tableData" stripe show-summary>
       <el-table-column prop="tbId" label="序号" width="60px"></el-table-column>
+      <el-table-column prop="reallyAmount" label="实际金额"></el-table-column>
       <el-table-column prop="totalAmount" label="出粮金额"></el-table-column>
+      <el-table-column prop="adjAmount" label="调整金额"></el-table-column>
       <el-table-column prop="isInsuredTxt" label="包含缴纳"></el-table-column>
       <el-table-column prop="payDay" label="出粮日期"></el-table-column>
-      <el-table-column prop="adjAmount" label="调整金额"></el-table-column>
       <el-table-column prop="typeTxt" label="状态"></el-table-column>
       <el-table-column label="操作" width="450px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-view" @click="openDetailFun(scope.$index, scope.row)">查看详细</el-button>
-          <el-button size="mini" icon="el-icon-document-add" @click="adjAmountFun(scope.$index, scope.row)">调整金额</el-button>
-          <el-button size="mini" icon="el-icon-edit" @click="confirmFun(scope.$index, scope.row)">确认粮单</el-button>
-          <el-button size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button v-show="[1,3].indexOf(scope.row.typeId)<0" size="mini" icon="el-icon-document-add" @click="adjAmountFun(scope.$index, scope.row)">调整金额</el-button>
+          <el-button v-show="scope.row.typeId != 3" size="mini" icon="el-icon-edit" @click="confirmFun(scope.$index, scope.row)">粮单确认</el-button>
+          <el-button v-show="[1,3].indexOf(scope.row.typeId)<0" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -70,6 +71,7 @@ export default {
   computed: {
     pageInfo(){
       return {
+        pageSize:1000,
         reqParams:{
             url:"/server/api/v1/payroll/staff/payrollTimesList",
             data:{payrollCode: this.payrollMainInfo.code}
@@ -80,6 +82,7 @@ export default {
       let tbId = 1;
       return this.pageList.map(item => {
         item.tbId = tbId;
+        item.reallyAmount = parseFloat(item.totalAmount) + parseFloat(item.adjAmount);
         item.isInsuredTxt = item.isInsured == 1?'是':'否';
         item.payDay = this.$toolFn.timeFormat(item.payDay,"yyyy-MM-dd");
         item.typeTxt = payrollListTypeTxt(item.typeId);

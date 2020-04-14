@@ -788,8 +788,8 @@ export default {
       this.$myApi.http.post(reqUrl, {BUCode:val}).then(res => {
         if (res.data.code == 0) {
           this.annualLeaveConfig = res.data.data;
-          this.annualLeaveConfig.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate).slice(0, 10);
-          this.annualLeaveConfig.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveRetainClearDate).slice(0, 10);
+          this.annualLeaveConfig.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate,"yyyy-MM-dd")
+          this.annualLeaveConfig.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveRetainClearDate,"yyyy-MM-dd")
           if (this.annualLeaveConfig.annualLeaveEntitled != undefined){
             this.ruleForm.annualLeaveEntitled = this.annualLeaveConfig.annualLeaveEntitled;
           }
