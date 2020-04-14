@@ -107,7 +107,7 @@ export default {
         let filterResult = this.claimTypes.filter(child => {
           return child.id == item.typeId;
         });
-        item.typeIdTxt = filterResult.length>0?filterResult[0].val:'';
+        item.typeIdTxt = filterResult.length>0?filterResult[0].name:'';
         return item;
       });
       if (this.claimItem.fileSrc && this.claimItem.fileSrc != ''){
