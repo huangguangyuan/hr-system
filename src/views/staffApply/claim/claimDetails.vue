@@ -28,7 +28,7 @@
     <div class="stepSet">
         <el-steps :active="step" align-center >
           <el-step title="申请"></el-step>
-          <el-step title="主管审批"></el-step>
+          <el-step title="审批"></el-step>
           <!-- <el-step title="人事审批"></el-step>
           <el-step title="财务审批"></el-step> -->
           <el-step title="结算（完成）"></el-step>
@@ -36,12 +36,12 @@
     </div>
 
     <el-timeline :reverse="true">
-      <el-timeline-item v-for='item in approveHisList' :key='item.id' :timestamp="item.createTime" placement="top">
+      <el-timeline-item v-for='item in approveHisList' :key='item.id' :color="item.color" :timestamp="item.createTime" placement="top">
         <el-card class="my-card">
           <p>操作员：{{item.operatorUser.name}}{{item.operatorUser.roleName?" ( "+item.operatorUser.roleName+" ) ":""}}</p>
           <p>操作行为：{{item.operatorUser.tip}}</p>
           <p>状态：{{item.typeIdTxt}}</p>
-          <p>是否完结：{{item.finishFlagTxt}}</p>
+          <!-- <p>是否完结：{{item.finishFlagTxt}}</p> -->
           <p v-if="item.remarks != ''">备注：{{item.remarks}}</p>
         </el-card>
       </el-timeline-item>
@@ -125,7 +125,12 @@ export default {
       font-size: 14px;
       font-weight: normal;
   }
-
+  .el-timeline-item:last-child .el-timeline-item__node{
+        background: #E4E7ED !important;
+  }
+  .el-timeline-item:first-child .el-timeline-item__node{
+        background: #ff6600 !important;
+  }
 }
 </style>
 
