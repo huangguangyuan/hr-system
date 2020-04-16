@@ -1,5 +1,7 @@
 <template>
   <div class="editLayer" v-if="isLoding">
+    <payroll-times-month-info :curInfo="curInfo"></payroll-times-month-info>
+    <el-divider>本次出粮信息</el-divider>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
       <el-form-item label="金额：" prop="totalAmount">
         <el-input v-model="ruleForm.totalAmount" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
@@ -23,14 +25,19 @@
   </div>
 </template>
 <script>
-import { setTimeout } from "timers";
+import {payrollListTypeTxt} from "@/lib/staticData.js";
+import payrollTimesMonthInfo from "./payrollTimesMonthInfo.vue";
 export default {
+  components: {
+    payrollTimesMonthInfo
+  },
   name: "editLayer",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
       isLoding:true,
+      details:{},
       ruleForm: {
         id:"",
         payrollCode: "",
@@ -55,6 +62,8 @@ export default {
   methods: {
     // 初始化
     initializeFun() {
+      this.details = this.curInfo;
+      this.details.reallyAmountSum = 0;
       this.ruleForm.payrollCode = this.curInfo.payrollCode;
       if (this.curInfo.type == "modify") {
         this.ruleForm.id = this.curInfo.id;
@@ -88,6 +97,7 @@ export default {
           this.ruleForm.totalAmount = res.data.totalAmount;
           this.ruleForm.payDay = res.data.payDay.toString();
           this.ruleForm.remarks = res.data.remarks;
+          this.details.reallyAmountSum = res.data.summary.reallyAmountSum;
           this.isLoding = false;
         }
       });
@@ -136,6 +146,12 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+.editLayer{
+  .el-card {
+    margin-bottom: 12px;
+  }
+}
+
 </style>
 
 

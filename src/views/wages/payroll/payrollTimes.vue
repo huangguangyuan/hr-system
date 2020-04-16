@@ -86,6 +86,7 @@ export default {
         item.isInsuredTxt = item.isInsured == 1?'是':'否';
         item.payDay = this.$toolFn.timeFormat(item.payDay,"yyyy-MM-dd");
         item.typeTxt = payrollListTypeTxt(item.typeId);
+        item.payrollTimesAmt = 0;
         tbId++;
         return item;
       });
@@ -125,9 +126,8 @@ export default {
      * @description: 调整金额
      */
     adjAmountFun(index, res) {
-      this.curInfo = {
-        id: res.id
-      };
+      this.curInfo = this.payrollMainInfo;
+      this.curInfo.timesId = res.id;
       this.isShowAdjAmount = true;
     },
     // 编辑

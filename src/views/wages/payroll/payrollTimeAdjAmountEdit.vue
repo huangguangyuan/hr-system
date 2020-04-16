@@ -1,6 +1,8 @@
 <template>
   <div class="editLayer">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="220px">
+    <payroll-times-month-info :curInfo="curInfo"></payroll-times-month-info>
+    <el-divider>本次出粮调整金额</el-divider>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
       <el-form-item label="调整金额：" prop="adjAmount">
         <el-input v-model="ruleForm.adjAmount"></el-input>
       </el-form-item>
@@ -15,7 +17,11 @@
   </div>
 </template>
 <script>
+import payrollTimesMonthInfo from "./payrollTimesMonthInfo.vue";
 export default {
+  components: {
+    payrollTimesMonthInfo
+  },
   name: "editLayer",
   inject: ["reload"],
   props: ["curInfo"],
@@ -47,7 +53,7 @@ export default {
     getItem() {
       var reqUrl = "/server/api/v1/payroll/staff/payrollTimesItem";
       var data = {
-        id: this.curInfo.id
+        id: this.curInfo.timesId
       };
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {

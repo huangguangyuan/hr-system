@@ -3,7 +3,7 @@
     <el-divider>工资表信息</el-divider>
     <el-row :gutter="12">
       <el-col :span="8" >
-        <el-card class="showWarning" shadow="always">状态：{{typeIdTxt(details.typeId)}}</el-card>
+        <el-card class="showWarning" shadow="always">状态：{{details.typeTxt}}</el-card>
       </el-col>
       <el-col :span="16" v-if="details.remarks != '' && details.typeId == 2" >
         <el-card class="showWarning" shadow="always">备注：{{details.remarks}}</el-card>
@@ -44,8 +44,8 @@
       <el-col :span="8" v-if="details.taxAmount && details.taxAmount != 0">
         <el-card shadow="always">个人所得税：{{details.taxAmount}}</el-card>
       </el-col>
-      <el-col :span="8">
-        <el-card shadow="always">税后收入：{{netAmount}}</el-card>
+      <el-col :span="8" v-if="details.taxAmount && details.taxAmount != 0">
+        <el-card shadow="always">税后收入：{{details.netAmount}}</el-card>
       </el-col>
       <el-col :span="8">
         <el-card shadow="always"  v-if="notTaxableItemsList && notTaxableItemsList.length > 0">非应税金额：{{details.detail.notTaxableItemsAmount}}</el-card>
@@ -57,7 +57,7 @@
         <el-card shadow="always">调整金额：{{details.adjAmount}}</el-card>
       </el-col>
       <el-col :span="8">
-        <el-card shadow="always">实发工资：{{ reallyAmount}}</el-card>
+        <el-card shadow="always" v-if="details.reallyAmount && details.reallyAmount != 0">实发工资：{{ details.reallyAmount}}</el-card>
       </el-col>
     </el-row>
     <el-divider v-if="taxableItemsList && taxableItemsList.length > 0">应税项目清单</el-divider>
@@ -154,16 +154,6 @@ export default {
     this.getDetails();
   },
   methods: {
-    //0未审核1通过2有疑问，需重新审查
-    typeIdTxt(typeId){
-      let r = '未审核';
-      if (typeId == 1){
-        r = '已确认';
-      }else if (typeId == 2){
-        r = '退回'
-      }
-      return r;
-    },
     arrSum(list,val){
       var n = 0;
       if (!list || list.length <= 0 || val == ""){
@@ -222,9 +212,9 @@ export default {
             payrollTimes[index].typeTxt = payrollListTypeTxt(payrollTimes[index].typeId);
           }
           this.payrollTimes = payrollTimes;
-
-          this.netAmount = parseFloat(this.details.grossPay - this.details.taxAmount).toFixed(2);
-          this.reallyAmount = parseFloat(parseFloat(this.netAmount) + parseFloat(this.details.notTaxableAmount) + parseFloat(this.arrSum(this.claimList,'totalAmount')) + this.details.adjAmount).toFixed(2);
+          this.details.typeTxt = payrollListTypeTxt(this.details.typeId);
+          this.details.netAmount = parseFloat(this.details.grossPay - this.details.taxAmount).toFixed(2);
+          this.details.reallyAmount = parseFloat(parseFloat(this.netAmount) + parseFloat(this.details.notTaxableAmount) + parseFloat(this.arrSum(this.claimList,'totalAmount')) + this.details.adjAmount).toFixed(2);
         }
       });
     }

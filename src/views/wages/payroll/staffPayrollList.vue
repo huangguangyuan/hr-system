@@ -53,7 +53,8 @@
       <el-table-column sortable prop="taxAmount" label="个人所得税" width="130"></el-table-column>
       <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column>
       <el-table-column sortable prop="adjAmount" label="调整金额" width="100"></el-table-column>
-      <el-table-column sortable prop="typeIdTxt" label="工资单状态" width="130"></el-table-column>
+      <el-table-column sortable prop="reallyAmount" label="实发金额" width="100"></el-table-column>
+      <el-table-column sortable prop="typeTxt" label="工资单状态" width="130"></el-table-column>
       <el-table-column label="操作" width="560">
         <template slot-scope="scope">
           <el-button
@@ -108,7 +109,8 @@
       <el-table-column sortable prop="grossPay" label="税前金额" width="100"></el-table-column>
       <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column>
       <el-table-column sortable prop="adjAmount" label="调整金额" width="100"></el-table-column>
-      <el-table-column sortable prop="typeIdTxt" label="工资单状态" width="130"></el-table-column>
+      <el-table-column sortable prop="reallyAmount" label="实发金额" width="100"></el-table-column>
+      <el-table-column sortable prop="typeTxt" label="工资单状态" width="130"></el-table-column>
       <el-table-column label="操作" width="650">
         <template slot-scope="scope">
           <el-button
@@ -213,7 +215,7 @@ import staffPayrollConfirm from "./staffPayrollConfirm.vue";
 import buPayrollConfirm from "./buPayrollConfirm.vue";
 import staffPayrollYear from "./staffPayrollYear.vue";
 import adjAmountEdit from "./adjAmountEdit.vue";
-import {monthList,payrollTimesTypes,insuredTypes} from "@/lib/staticData.js";
+import {monthList,payrollTimesTypes,insuredTypes,payrollListTypeTxt} from "@/lib/staticData.js";
 import pageInfo from "@/components/pageInfo.vue";
 export default {
   components: {
@@ -266,11 +268,10 @@ export default {
     },
     tableData(){
       return this.pageList.map(item => {
-        item.typeIdTxt = this.typeIdTxt(item.typeId);
-              item.dateOfJoining = this.$toolFn.timeFormat(
-                item.dateOfJoining,
-                "yyyy-MM-dd"
-              );
+        item.typeTxt = payrollListTypeTxt(item.typeId);
+        item.dateOfJoining = this.$toolFn.timeFormat(item.dateOfJoining,"yyyy-MM-dd");
+        item.netAmount = parseFloat(item.grossPay - item.taxAmount).toFixed(2);
+        item.reallyAmount = parseFloat(item.grossPay - item.taxAmount + item.notTaxableItemsAmount + item.claimAmount + item.adjAmount).toFixed(2);
         this.$nextTick(function() {
             var selectItems = this.multipleSelection;
             if (selectItems && selectItems.length > 0) {
