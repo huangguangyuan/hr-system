@@ -13,7 +13,7 @@
       </el-form-item>
 
       <el-form-item label="请假天数" prop="days">
-        <el-input-number v-model="ruleForm.days" :precision="1" :step="0.5" :max="30" :min="0.5"  class="inp01" @keyup.native="proving(index)"></el-input-number>
+        <el-input-number v-model="ruleForm.days" :precision="1" :step="0.5" :max="30" :min="0"  class="inp01" @keyup.native="proving(index)"></el-input-number>
         <span class="inptTip">最少单位为0.5</span>
       </el-form-item>
       <el-form-item label="是否带薪" prop="isWithpay">
@@ -78,7 +78,7 @@ export default {
       ruleForm: {
         staffCode: "",
         applyTime: [],
-        days: 1,
+        days: 0,
         typeId: "",
         remarks: "",
         isWithpay:1,
@@ -86,6 +86,7 @@ export default {
         sendEmail:"",
       }, //表单信息
       fileUpload_props:{
+        isUploading:false,
         uploadUrl:'',
         uploadFolder:'',
         fileList:[]
@@ -178,7 +179,6 @@ export default {
         }
       });
     },
-    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -199,8 +199,11 @@ export default {
     },
     // 新增
     addFun() {
-      
       var reqUrl = "/server/api/v1/staff/holidaysApply/approveApply";
+      if (this.fileUpload_props.isUploading){
+        this.$message.error("正在上传文件，请稍后");
+        return;
+      }
       var details = [
         {
           startDate: this.ruleForm.applyTime[0],
@@ -222,8 +225,12 @@ export default {
         noticeOfficer:this.noticeOfficer.join(','),
         sendEmail:this.ruleForm.sendEmail.replace(/，/g,","),
       };
+      if (data.totalDay <= 0){
+        this.$message.error("请选择请假天数");
+        return;
+      }
       if (!Number.isInteger((data.totalDay * 2))){
-        this.$message.error("请确保请假天数是0.5的倍数！");
+        this.$message.error("请确保请假天数是0.5的倍数");
         return;
       }
       if(this.approveOfficer.length == 0){
@@ -258,7 +265,8 @@ export default {
     },
     //获取子组件数据
     fileUpload_tf(data){
-      this.fileUpload_props.fileList = data;
+      this.fileUpload_props.fileList = data.fileList;
+      this.fileUpload_props.isUploading = data.isUploading;
     }
   },
   components: {

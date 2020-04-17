@@ -94,6 +94,16 @@ let toolFn = {
         toolFn.curUser = toolFn.localGet("userInfo");
         return toolFn.curUser;
     },
+    /**
+     * @description: 新开窗口
+     * @param {url} 地址
+     */
+    openWindown(url){
+        let a = document.createElement('a')
+        a.href = url;   
+        a.target = '_blank';
+        a.click();
+    },
 }
 toolFn.curUser = {};
 export default toolFn

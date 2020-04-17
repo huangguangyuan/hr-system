@@ -79,7 +79,6 @@ export default {
     async init(){
       this.holidayItem = await this.$myApi.staffHolidays({holidaysApplyCode:this.curInfo.code});
       this.holidayTypes = await this.$myApi.getHolidaysTypeId();
-
       this.holidayItem.createTime = this.$toolFn.timeFormat(this.holidayItem.createTime);
       if (this.holidayItem.details){
         this.tableData = this.holidayItem.details.map(item => {
@@ -90,6 +89,7 @@ export default {
           })[0].val;
         return item;
         });
+      this.ruleForm.balanceMon =  new Date(this.holidayItem.details[0].startDate).getMonth()+1;
       }
       
       // 审批流程
@@ -139,6 +139,12 @@ export default {
     p{
       margin-top: 10px;
     }
+  }
+  .el-timeline-item:last-child .el-timeline-item__node{
+        background: #E4E7ED !important;
+  }
+  .el-timeline-item:first-child .el-timeline-item__node{
+        background: #ff6600 !important;
   }
 }
 </style>

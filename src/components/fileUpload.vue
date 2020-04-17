@@ -13,6 +13,8 @@
           :on-exceed="handleExceed"
           :before-upload="beforeAvatarUpload"
           :data="dataFiles"
+          :on-progress="onProgress"
+
         >
           <el-button plain>点击上传</el-button>
           <div slot="tip" class="el-upload__tip">上传文件格式为：'.jpg','.png','.gif','.csv','.csv','.xlsx','.xls','.docx','.doc','.pdf'</div>
@@ -37,11 +39,14 @@ export default {
     this.fileList = this.fileUpload_props.fileList;
   },
   methods:{
+      onProgress(event, file, fileList){
+      },
       handlePreview(file){
-        let a = document.createElement('a')
-          a.href = file.url;
-          a.target = '_blank';
-          a.click();
+        this.$toolFn.openWindown(file.url);
+        // let a = document.createElement('a')
+        //   a.href = file.url;
+        //   a.target = '_blank';
+        //   a.click();
       },
       // 限制当前文件个数
       handleExceed(files, fileList) {
@@ -58,13 +63,15 @@ export default {
         }
         if(!isOk){
           this.$message.error('文件格式错误~');
+        }else{
+          this.$emit('fileUpload_tf',{isUploading:true});
         }
         return isOk;
       },
       //上传成功
       handleSuccess(file, fileList) {
-          this.fileList.push({name:'文件' + (this.fileList.length + 1),url:file.data.path});
-          this.$emit('fileUpload_tf',this.fileList);
+        this.fileList.push({name:'文件' + (this.fileList.length + 1),url:file.data.path});
+        this.$emit('fileUpload_tf',{isUploading:false,fileList:this.fileList});
       },
       //删除
       handlBeforeRemove(file, fileList) {

@@ -78,6 +78,7 @@ export default {
         details: [{ title: "", amount: "", typeId: "", remarks: "", claimDate: "" }]
       }, //表单信息
       fileUpload_props:{
+        isUploading:false,
         uploadUrl:'',
         uploadFolder:'',
         fileList:[]
@@ -170,7 +171,10 @@ export default {
     // 新增
     addFun() {
       var totalAmount = 0;
-      
+      if (this.fileUpload_props.isUploading){
+        this.$message.error("正在上传文件，请稍后");
+        return;
+      }
       for(var i = 0;i<this.ruleForm.details.length;i++){
           totalAmount += parseFloat(this.ruleForm.details[i].amount);
       }
@@ -221,7 +225,8 @@ export default {
     },
     //获取子组件数据
     fileUpload_tf(data){
-      this.fileUpload_props.fileList = data;
+      this.fileUpload_props.fileList = data.fileList;
+      this.fileUpload_props.isUploading = data.isUploading;
     }
   },
   components: {

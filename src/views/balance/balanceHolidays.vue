@@ -83,7 +83,7 @@ export default {
       item.canBalance = false;
       var str = "";
       if (this.$toolFn.curUser.access.approvalHolidays.indexOf(3) >= 0){
-        str = "并审批";
+        str = "并结算";
         item.canBalance = true;
       }
       return str;

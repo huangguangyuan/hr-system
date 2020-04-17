@@ -17,7 +17,13 @@
         </el-col>
         <el-col :span="8">
           <el-card shadow="always">是否带薪：{{holidayItem.isWithpayTxt}}</el-card>
-        </el-col>        
+        </el-col>
+        <el-col :span="8" v-if="this.holidayItem.details.typeId == 3">
+          <el-card shadow="always">剩余病假天数：{{holidayItem.sickLeaveDaysRemain}}</el-card>
+        </el-col>
+        <el-col :span="8" v-if="this.holidayItem.details.typeId == 2">
+          <el-card shadow="always">剩余年假天数：{{holidayItem.annualLeaveDaysRemain}}</el-card>
+        </el-col>
         <el-col :span="8" v-if="fileList.length > 0">
           <el-card shadow="always">文件：
             <el-link class="margin" icon="el-icon-download"  v-for="(item,key) in fileList" :key="key" @click="openFile(item)">文件{{key+1}}</el-link> 
@@ -130,6 +136,18 @@ export default {
         }
         return item;
       });
+        // <el-col :span="8" v-if="this.holidayItem.details.typeId == 3">
+        //   <el-card shadow="always">剩余病假天数：{{holidayItem.sickLeaveDays}}</el-card>
+        // </el-col>
+        // <el-col :span="8" v-if="this.holidayItem.details.typeId == 2">
+        //   <el-card shadow="always">剩余年假天数：{{holidayItem.annualLeaveDays}}</el-card>
+        // </el-col>
+      if (this.holidayItem.details[0].typeId == 3){
+        this.holidayItem.sickLeaveDaysRemain = 0;
+      }
+      if (this.holidayItem.details[0].typeId == 2){
+        this.holidayItem.annualLeaveDaysRemain = 0;
+      }
       this.isShowLoading = false;
     },
     openFile(item){
@@ -187,6 +205,12 @@ export default {
     p{
       margin-top: 10px;
     }
+  }
+  .el-timeline-item:last-child .el-timeline-item__node{
+        background: #E4E7ED !important;
+  }
+  .el-timeline-item:first-child .el-timeline-item__node{
+        background: #ff6600 !important;
   }
 }
 </style>

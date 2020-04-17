@@ -559,7 +559,7 @@ export default {
         this.ruleForm.payrollType = this.curInfo.payrollType?this.curInfo.payrollType.toString():"1";
         this.ruleForm.fileUnitMove = this.curInfo.fileUnitMove?this.curInfo.fileUnitMove.toString():"1";
         //this.ruleForm.workStatus = this.ruleForm.workStatus?this.ruleForm.workStatus.toString():null;
-        //this.ruleForm.workStatus = this.ruleForm.workStatus;
+        this.ruleForm.workStatus = this.ruleForm.workStatus;
         this.avatarSrc = this.ruleForm.photo;
         this.IDPositiveSrc = this.ruleForm.IDCopy;
         this.IDNegativeSrc = this.ruleForm.IDCopyBack;
