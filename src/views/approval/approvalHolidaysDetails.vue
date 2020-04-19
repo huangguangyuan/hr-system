@@ -1,7 +1,17 @@
 <template>
   <div class="approvalHolidaysDetails" v-loading="isShowLoading">
+    <el-collapse >
+      <el-collapse-item>
+         <template slot="title" >
+           <div style="padding:0 10px;text-align:right;width:100%"><i class="header-icon el-icon-info"></i> 查看员工假期汇总</div>
+        </template>
+        <div style="width:95%;margin:10px auto;">
+          <staff-holiday-stat :staffCode_props="this.curInfo.staffCode" ></staff-holiday-stat>
+        </div>
+      </el-collapse-item>
+    </el-collapse>
     <el-divider content-position="left">请假明细</el-divider>
-    <div class="view-detail">
+    <div class="view-detail" v-if="isShow" >
       <el-row :gutter="12">
         <el-col :span="8">
           <el-card shadow="always">申请人：{{holidayItem.staff.nameChinese}}</el-card>
@@ -17,12 +27,6 @@
         </el-col>
         <el-col :span="8">
           <el-card shadow="always">是否带薪：{{holidayItem.isWithpayTxt}}</el-card>
-        </el-col>
-        <el-col :span="8" v-if="this.holidayItem.details.typeId == 3">
-          <el-card shadow="always">剩余病假天数：{{holidayItem.sickLeaveDaysRemain}}</el-card>
-        </el-col>
-        <el-col :span="8" v-if="this.holidayItem.details.typeId == 2">
-          <el-card shadow="always">剩余年假天数：{{holidayItem.annualLeaveDaysRemain}}</el-card>
         </el-col>
         <el-col :span="8" v-if="fileList.length > 0">
           <el-card shadow="always">文件：
@@ -76,12 +80,17 @@
 </template>
 <script>
 import {approveHisTypeTxt} from "@/lib/staticData.js";
+import staffHolidayStat from "../staffApply/staffHolidayStat/staffHolidayStat.vue";
 export default {
+  components: {
+    staffHolidayStat
+  },
   name: "approvalHolidaysDetails",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
+      isShow:false,
       isShowLoading:true,
       holidayItem:{},
       holidayTypes:[],
@@ -136,18 +145,7 @@ export default {
         }
         return item;
       });
-        // <el-col :span="8" v-if="this.holidayItem.details.typeId == 3">
-        //   <el-card shadow="always">剩余病假天数：{{holidayItem.sickLeaveDays}}</el-card>
-        // </el-col>
-        // <el-col :span="8" v-if="this.holidayItem.details.typeId == 2">
-        //   <el-card shadow="always">剩余年假天数：{{holidayItem.annualLeaveDays}}</el-card>
-        // </el-col>
-      if (this.holidayItem.details[0].typeId == 3){
-        this.holidayItem.sickLeaveDaysRemain = 0;
-      }
-      if (this.holidayItem.details[0].typeId == 2){
-        this.holidayItem.annualLeaveDaysRemain = 0;
-      }
+      this.isShow = true;
       this.isShowLoading = false;
     },
     openFile(item){
@@ -211,6 +209,12 @@ export default {
   }
   .el-timeline-item:first-child .el-timeline-item__node{
         background: #ff6600 !important;
+  }
+  .el-collapse{
+    border: 0;
+  }
+ /deep/ .el-collapse-item__header{
+    border-bottom: 0;
   }
 }
 </style>

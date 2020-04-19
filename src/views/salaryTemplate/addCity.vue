@@ -66,7 +66,7 @@ export default {
         this.$myApi.http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
                 this.reload();
-                this.$message.success('添加成功~');
+                this.$message.success('添加成功');
             }
         })
     },
@@ -81,7 +81,7 @@ export default {
         this.$myApi.http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
                 this.reload();
-                this.$message.success('修改成功~');
+                this.$message.success('修改成功');
             }
         })
     },

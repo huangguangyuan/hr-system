@@ -59,6 +59,9 @@
       <el-col :span="8">
         <el-card shadow="always" v-if="details.reallyAmount && details.reallyAmount != 0">实发工资：{{ details.reallyAmount}}</el-card>
       </el-col>
+      <el-col :span="8">
+        <el-card shadow="always" v-if="payrollTimes && payrollTimes.length != 0">多次出粮金额：{{ details.payrollTimesAmt}}</el-card>
+      </el-col>
     </el-row>
     <el-divider v-if="taxableItemsList && taxableItemsList.length > 0">应税项目清单</el-divider>
     <el-table  v-if="taxableItemsList && taxableItemsList.length > 0"  :data="taxableItemsList" stripe border show-summary>
@@ -205,13 +208,16 @@ export default {
           this.notTaxableItemsList = this.details.detail.notTaxableItemsList;
           this.MPFList = this.details.detail.MPFList || [];
           let payrollTimes = this.details.detail.payrollTimes || [];
+          let payrollTimesAmt = 0;
           for (let index = 0; index < payrollTimes.length; index++) {
             payrollTimes[index].reallyAmount = parseFloat(payrollTimes[index].totalAmount) + parseFloat(payrollTimes[index].adjAmount);
             payrollTimes[index].isInsuredTxt = payrollTimes[index].isInsured == 1?'是':'否';
             payrollTimes[index].payDay = this.$toolFn.timeFormat(payrollTimes[index].payDay,"yyyy-MM-dd");
             payrollTimes[index].typeTxt = payrollListTypeTxt(payrollTimes[index].typeId);
+            payrollTimesAmt += payrollTimes[index].reallyAmount
           }
           this.payrollTimes = payrollTimes;
+          this.details.payrollTimesAmt = payrollTimesAmt;
           this.details.typeTxt = payrollListTypeTxt(this.details.typeId);
           this.details.netAmount = parseFloat(this.details.grossPay - this.details.taxAmount).toFixed(2);
           this.details.reallyAmount = parseFloat(parseFloat(this.netAmount) + parseFloat(this.details.notTaxableAmount) + parseFloat(this.arrSum(this.claimList,'totalAmount')) + this.details.adjAmount).toFixed(2);

@@ -247,7 +247,7 @@ export default {
       hrCode: "",
       userInfo: {},
       filter: { searchKey: "", searchField: ["nameChinese", "staffNo"] },
-      multipleSelection: [],
+      multipleSelection: [],//多选项目
       approvePayrollSlip_right: false, //审批工资单权限
       deletePayrollSlip_right: false, //删除工资单权限
       genPayrollSlip_right: false, //重新生成工资单
@@ -360,6 +360,7 @@ export default {
       this.BUCode = val;
       this.seachMsg.BUCode = val;
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
+      this.$toolFn.sessionSet("staffPayrollList_multipleSelection",'');
       this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },
@@ -367,6 +368,7 @@ export default {
     selectYear(val) {
       this.seachMsg.year = val;
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
+      this.$toolFn.sessionSet("staffPayrollList_multipleSelection",'');
       this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },
@@ -374,6 +376,7 @@ export default {
     selectMonth(val) {
       this.seachMsg.month = val;
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
+      this.$toolFn.sessionSet("staffPayrollList_multipleSelection",'');
       this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },
@@ -381,6 +384,7 @@ export default {
     selectInsuredType(val){
       this.seachMsg.insuredType = val;
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
+      this.$toolFn.sessionSet("staffPayrollList_multipleSelection",'');
       this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },
@@ -388,6 +392,7 @@ export default {
     selectPayrollTimesType(val){
       this.seachMsg.payrollTimesType = val;
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
+      this.$toolFn.sessionSet("staffPayrollList_multipleSelection",'');
       this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },

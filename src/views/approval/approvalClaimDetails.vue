@@ -160,7 +160,7 @@ export default {
       this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.reload();
-          this.$message.success('审批成功~');
+          this.$message.success('审批成功');
         }else{
           this.$message.error(res.data.msg);
         }
@@ -186,12 +186,6 @@ export default {
     p {
       margin-top: 10px;
     }
-  }
-  .el-timeline-item:last-child .el-timeline-item__node{
-        background: #E4E7ED !important;
-  }
-  .el-timeline-item:first-child .el-timeline-item__node{
-        background: #ff6600 !important;
   }
 }
 </style>

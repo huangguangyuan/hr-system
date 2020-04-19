@@ -97,7 +97,7 @@ export default {
         }).then(() => {
           this.$myApi.http.post("/server/api/v1/claim/delete", { id: res.id }).then(res => {
               this.reload();
-              this.$message('取消成功~');
+              this.$message('取消成功');
             });
         })
     },

@@ -1,9 +1,9 @@
+
 <template>
   <div class="wrap MPFtemplate">
     <!-- 头部内容 -->
     <div class="my-top">
       <span>香港MPF模板</span>
-      <el-button type="primary" size="small" @click="isShowAdd = true;curInfo.type='add'">添加模板</el-button>
     </div>
     <!-- 列表内容 -->
     <el-table v-loading='isShowLoading' :data="queryTableDate" stripe style="width: 100%" border>

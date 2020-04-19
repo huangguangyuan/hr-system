@@ -62,7 +62,7 @@ export default {
           }
         }
         if(!isOk){
-          this.$message.error('文件格式错误~');
+          this.$message.error('文件格式错误');
         }else{
           this.$emit('fileUpload_tf',{isUploading:true});
         }

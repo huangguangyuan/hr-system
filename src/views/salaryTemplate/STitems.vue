@@ -101,7 +101,7 @@ export default {
         }).then(() => {
           this.$myApi.http.post("/server/api/v1/salaryItem/delete", { id: res.id }).then(res => {
               this.reload();
-              this.$message('取消成功~');
+              this.$message('取消成功');
             });
         })
     },
