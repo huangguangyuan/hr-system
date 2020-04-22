@@ -28,7 +28,7 @@
     </div>
     <br />
     <el-divider content-position="left" >审批流程</el-divider>
-    <el-timeline ::reverse="true">
+    <el-timeline :reverse="true">
       <el-timeline-item
         v-for="item in approveHisList"
         :key="item.id"
@@ -186,6 +186,12 @@ export default {
     p {
       margin-top: 10px;
     }
+  }
+  /deep/ .el-timeline-item:last-child .el-timeline-item__node{
+        background: #E4E7ED !important;
+  }
+  /deep/ .el-timeline-item:first-child .el-timeline-item__node{
+        background: #ff6600 !important;
   }
 }
 </style>

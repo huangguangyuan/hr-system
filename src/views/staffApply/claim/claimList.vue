@@ -15,7 +15,6 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
-            
           >查看详情</el-button>
           <el-button
             size="mini"
@@ -35,7 +34,6 @@
     <el-dialog title="报销申请详情" :visible.sync="isShowDetails" :close-on-click-modal="false">
       <claim-details v-if="isShowDetails" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></claim-details>
     </el-dialog>
-
   </div>
 </template>
 <script>

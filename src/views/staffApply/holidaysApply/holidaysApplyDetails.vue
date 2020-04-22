@@ -131,7 +131,7 @@ export default {
       margin-top: 10px;
     }
   }
-    .stepSet{
+  .stepSet{
     width: 100%;margin: 50px auto 30px;
 
   }
@@ -139,10 +139,10 @@ export default {
       font-size: 14px;
       font-weight: normal;
   }
-  .el-timeline-item:last-child .el-timeline-item__node{
+  /deep/ .el-timeline-item:last-child .el-timeline-item__node{
         background: #E4E7ED !important;
   }
-  .el-timeline-item:first-child .el-timeline-item__node{
+  /deep/ .el-timeline-item:first-child .el-timeline-item__node{
         background: #ff6600 !important;
   }
 }

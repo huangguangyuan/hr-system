@@ -204,10 +204,10 @@ export default {
       margin-top: 10px;
     }
   }
-  .el-timeline-item:last-child .el-timeline-item__node{
+  /deep/ .el-timeline-item:last-child .el-timeline-item__node{
         background: #E4E7ED !important;
   }
-  .el-timeline-item:first-child .el-timeline-item__node{
+  /deep/ .el-timeline-item:first-child .el-timeline-item__node{
         background: #ff6600 !important;
   }
   .el-collapse{
