@@ -186,7 +186,9 @@ export default {
   }
   .container {
     margin: 20px auto 0;
-    .el-card{margin-top: 12px;}
+    .el-card{
+      margin-top: 12px;height: 60px;overflow: hidden;
+      }
   }
   .noContent {
     margin: 20px auto 0;

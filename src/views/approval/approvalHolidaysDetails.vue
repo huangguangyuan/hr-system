@@ -194,6 +194,8 @@ export default {
     margin: 0 auto;
     .el-card{
       margin-top:20px;
+      height: 60px;
+      overflow: hidden;
       .margin{
         margin:0 15px
       }
