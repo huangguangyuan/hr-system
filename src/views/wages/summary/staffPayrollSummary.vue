@@ -2,9 +2,8 @@
   <div class="staffPayrollSummary wrap">
     <!-- 搜索 -->
     <div class="search-wrap">
-      <el-select
-        class="selectItem"
-        v-model="seachMsg.BUCode"
+      <el-select class="selectItem"
+        v-model="BUCode"
         slot="prepend"
         placeholder="请选择"
         style="width:200px;"
@@ -33,24 +32,13 @@
         placeholder="请选择月份"
         @change="selectMonth"
       >
-        <el-option label="1月" value="1"></el-option>
-        <el-option label="2月" value="2"></el-option>
-        <el-option label="3月" value="3"></el-option>
-        <el-option label="4月" value="4"></el-option>
-        <el-option label="5月" value="5"></el-option>
-        <el-option label="6月" value="6"></el-option>
-        <el-option label="7月" value="7"></el-option>
-        <el-option label="8月" value="8"></el-option>
-        <el-option label="9月" value="9"></el-option>
-        <el-option label="10月" value="10"></el-option>
-        <el-option label="11月" value="11"></el-option>
-        <el-option label="12月" value="12"></el-option>
+        <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val"></el-option>
       </el-select>
       <!-- <el-input class="selectItem" placeholder="请输入关键字" v-model="filter.searchKey"></el-input> -->
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
+    <el-table v-loading="isShowLoading" :data="tableData" stripe>
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
@@ -146,159 +134,109 @@
       <el-table-column prop="reallyAmount.val" label="实发工资"></el-table-column>
     </el-table>
     <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
   </div>
 </template>
 <script>
+import {monthList} from "@/lib/staticData.js";
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    pageInfo
+  },
   name: "staffPayrollSummary",
   inject: ["reload"],
   data() {
     return {
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      pageList: [],
       curInfo: {}, //当前内容
       regionBUlist: [], //单位列表
       isShowLoading: false, //是否显示loading页
+      BUCode:'',
       seachMsg: {
-        BUCode: "", //角色类型
         year: "", //年份
         month: "" //月份
       },
       filter:{searchKey:'',searchField:['nameChinese','staffNo']},
+      monthList:[]
     };
   },
+  computed:{
+    pageInfo(){
+      return {
+        reqParams:{
+            isReq:false,
+            url:"/server/api/v1/payroll/staff/staffPayrollSummary",
+            data:{BUCode:this.BUCode,year: parseInt(this.seachMsg.year),month: parseInt(this.seachMsg.month) }
+          }
+        }
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        return item;
+      });
+    }
+  },
   mounted() {
+    this.monthList = monthList();
     this.InitializationFun();
   },
   methods: {
     // 初始化
     InitializationFun() {
-    this.getregionBU();
-    var date = new Date();
-    this.seachMsg = {
-              year: date.getFullYear().toString(),
-              month: (date.getMonth()+1).toString()
-            };     
+      this.getRegionBU();
+      var date = new Date();
+      this.seachMsg = {
+        year: date.getFullYear().toString(),
+        month: (date.getMonth()+1).toString()
+      };     
       if (this.$toolFn.sessionGet("staffPayrollSummary")) {
         this.seachMsg = {
           year: this.$toolFn.sessionGet("staffPayrollSummary").year,
           month: this.$toolFn.sessionGet("staffPayrollSummary").month
         };
       }
-      
     },
     // 获取单位列表
-    async getregionBU() {
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+    async getRegionBU() {
+      var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUlist = regionBUs;
-          this.seachMsg.BUCode = this.$toolFn.sessionGet("staffPayrollSummary")? this.$toolFn.sessionGet("staffPayrollSummary").BUCode: this.regionBUlist[0].code;
-          this.getData(
-            this.seachMsg.BUCode,
-            parseInt(this.seachMsg.year),
-            parseInt(this.seachMsg.month)
-          );
+          this.BUCode = this.$toolFn.sessionGet("staffPayrollSummary")? this.$toolFn.sessionGet("staffPayrollSummary").BUCode: this.regionBUlist[0].code;
+          //this.getData(this.seachMsg.BUCode,parseInt(this.seachMsg.year),parseInt(this.seachMsg.month));
         }
-    },
-    //获取项目数据列表
-    getData(BUCode, year, month) {
-      var reqUrl = "/server/api/v1/payroll/staff/staffPayrollSummary";
-      var myData = {
-        BUCode: BUCode,
-        year: year,
-        month: month
-      };
-      this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
-          console.log(res);
-          this.isShowLoading = false;
-          this.tableData = res.data.data
-            .map(item => {
-              return item;
-            })
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
     },
     // 获取单位BUCode
     selectFun(val) {
+      this.BUCode = val;
       this.seachMsg.BUCode = val;
-      this.getData(
-        this.seachMsg.BUCode,
-        parseInt(this.seachMsg.year),
-        parseInt(this.seachMsg.month)
-      );
       this.$toolFn.sessionSet("staffPayrollSummary", this.seachMsg);
     },
     // 选择年份
     selectYear(val) {
       this.seachMsg.year = val;
-      this.getData(
-        this.seachMsg.BUCode,
-        parseInt(this.seachMsg.year),
-        parseInt(this.seachMsg.month)
-      );
+      this.pageInfo.reqParams.isReq = true;
+      this.$refs.pageInfo.getData(this.pageInfo);
       this.$toolFn.sessionSet("staffPayrollSummary", this.seachMsg);
     },
     // 选择月份
     selectMonth(val) {
       this.seachMsg.month = val;
-      this.getData(
-        this.seachMsg.BUCode,
-        parseInt(this.seachMsg.year),
-        parseInt(this.seachMsg.month)
-      );
+      this.pageInfo.reqParams.isReq = true;
+      this.$refs.pageInfo.getData(this.pageInfo);
       this.$toolFn.sessionSet("staffPayrollSummary", this.seachMsg);
     },
   },
-  computed: {
-    queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
+  watch: {
+      "BUCode":{
+        handler: function(newVal) {
+          if (newVal && newVal !=""){
+            this.pageInfo.reqParams.isReq = true;
+            this.$refs.pageInfo.getData(this.pageInfo);
+          }
+        }
       }
-      _this.total = tableData.length;
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
     }
-  },
-  components: {}
 };
 </script>
 <style scoped lang="scss">
@@ -308,15 +246,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
 }
 .search-wrap {
     margin: 20px auto;

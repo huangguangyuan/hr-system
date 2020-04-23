@@ -50,12 +50,11 @@ export default {
     // 获取出粮周期
     annualLeaveByBUCode(BUCode) {
       var reqUrl = "/server/api/v1/bu/annualLeave";
-      this.$http.post(reqUrl, {BUCode:this.BUInfo.code}).then(res => {
+      this.$myApi.http.post(reqUrl, {BUCode:this.BUInfo.code}).then(res => {
         if (res.data.code == 0) {
           this.tableData = res.data.data;
-          this.tableData.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.tableData.annualLeaveWriteOffDate).slice(0, 10);
-          this.tableData.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.tableData.annualLeaveRetainClearDate).slice(0, 10);
-          
+          this.tableData.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.tableData.annualLeaveWriteOffDate,"yyyy-MM-dd")
+          this.tableData.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.tableData.annualLeaveRetainClearDate,"yyyy-MM-dd")
           this.isContent = true;
         }
       });
@@ -101,25 +100,6 @@ export default {
 }
 .noContent{
   line-height: 200px;text-align: center;color: #d3dce6;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  .el-input-group {
-    width: 500px;
-  }
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;

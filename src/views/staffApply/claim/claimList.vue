@@ -15,7 +15,6 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
-            
           >查看详情</el-button>
           <el-button
             size="mini"
@@ -35,7 +34,6 @@
     <el-dialog title="报销申请详情" :visible.sync="isShowDetails" :close-on-click-modal="false">
       <claim-details v-if="isShowDetails" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></claim-details>
     </el-dialog>
-
   </div>
 </template>
 <script>
@@ -51,7 +49,7 @@ export default {
   props: ["staffCode_props"],
   data() {
     return {
-      tableData: [],
+      //tableData: [],
       pageList:[],
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
@@ -63,6 +61,13 @@ export default {
   computed:{
     pageInfo(){
       return {pageType:2,reqParams:{url:"/server/api/v1/staff/claim/staffClaimList",data:{ staffCode: this.staffCode }}}
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
+        return item;
+      });
     }
   },
   mounted() {
@@ -89,9 +94,8 @@ export default {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
-          this.$http.post("/server/api/v1/staff/claim/recallApply", { claimCode: res.code,staffCode:res.staffCode }).then(res => {
+        }).then(() => {
+          this.$myApi.http.post("/server/api/v1/staff/claim/recallApply", { claimCode: res.code,staffCode:res.staffCode }).then(res => {
               if(res.data.code == 0){
                 this.reload();
                 this.$message.success("撤销成功！");
@@ -101,23 +105,8 @@ export default {
               
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
-  },
-  watch: {
-      pageList(val) {//监听分页数据变化
-        this.tableData = val.map(item => {
-          item.createTime = this.$toolFn.timeFormat(item.createTime);
-          item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
-          return item;
-        });
-      }
-    }
+  }
 };
 </script>
 <style scoped lang="scss">

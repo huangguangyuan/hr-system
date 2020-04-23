@@ -57,28 +57,25 @@ export default {
         this.ruleForm.remarks = this.curInfo.remarks;
       }
     },
-    // 提交表单
+    
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              _this.modifyFun();
+              this.modifyFun();
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 新增
     addFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/staff/socialMedia/add";
       var data = {
         staffCode: this.curInfo.staffCode,
@@ -86,69 +83,43 @@ export default {
         account:this.ruleForm.account,
         remarks:this.ruleForm.remarks
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("新增成功~");
+          this.reload();
+          this.$message.success("新增成功");
         } else {
-          _this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg);
         }
       });
     },
     // 修改
     modifyFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/staff/socialMedia/update";
       var data = {
-        id: _this.curInfo.id,
+        id: this.curInfo.id,
         staffCode: this.curInfo.staffCode,
         media:this.ruleForm.media,
         account:this.ruleForm.account,
         remarks:this.ruleForm.remarks
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("修改成功~");
+          this.reload();
+          this.$message.success("修改成功");
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      this.$emit("listenIsShowMask", false);
     },
     // 限制当前文件个数
     handleExceed(files, fileList) {
       this.$message.warning(
         `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件`
       );
-    },
-    // 限制上传文件格式
-    beforeAvatarUpload(file) {
-      var isOk;
-      var fileType = [
-        ".jpg",
-        ".png",
-        ".gif",
-        ".csv",
-        ".csv",
-        ".xlsx",
-        ".xls",
-        ".docx",
-        ".doc"
-      ];
-      for (var i = 0; i < fileType.length; i++) {
-        if (file.name.indexOf(fileType[i]) != -1) {
-          isOk = true;
-        }
-      }
-      if (!isOk) {
-        this.$message.error("文件格式错误~");
-      }
-      return isOk;
     },
     // 获取上传文件路径
     handleChange(file, fileList) {

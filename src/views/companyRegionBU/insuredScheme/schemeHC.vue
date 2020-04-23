@@ -5,7 +5,7 @@
       <el-button type="primary" size="small" @click="handleAdd(curInfo.code)">添加模板</el-button>
     </div>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe style="width: 100%" border>
+    <el-table v-loading="isShowLoading" :data="tableData" stripe style="width: 100%" border>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
       <el-table-column prop="baseLower" label="基数下限"></el-table-column>
@@ -23,86 +23,61 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
-    <!-- 添加公積金 -->
-    <el-dialog title="添加公積金" append-to-body :visible.sync="isShowAdd" :close-on-click-modal="false">
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
+    <!-- 添加公积金 -->
+    <el-dialog title="添加公积金" append-to-body :visible.sync="isShowAdd" :close-on-click-modal="false">
       <schemeHCAdd v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfoNode" v-if="isShowAdd"></schemeHCAdd>
     </el-dialog>
   </div>
 </template>
 <script>
 import schemeHCAdd from './schemeHCAdd.vue';
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    schemeHCAdd,pageInfo
+  },
   name: "schemeHC",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
-      tableData: [], //列表数据
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      pageList: [],
       isShowAdd: false, //是否显示增加项目表单
       isShowLoading: false, //是否显示loading页
       curInfoNode: {}, //传值给子组件
       cityCode: "" //城市代号
     };
   },
+  computed: {
+    pageInfo(){
+      return {
+        reqParams:{
+            url:"/server/api/v1/bu/insuredScheme/hc/list",
+            data:{schemeCode: this.curInfo.code}
+          }
+        }
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.paymentIdTxt = item.paymentId == '1'?'公司':'个人';
+        return item;
+      });
+    },
+    BUInfo() {
+      return this.$store.state.BUModule.BUInfo;
+    }
+  },
   mounted() {
-    console.log(this.curInfo);
-    this.getAllData();
+    //this.getAllData();
   },
   methods: {
-    // 获取所有数据列表
-    getAllData() {
-      var reqUrl = "/server/api/v1/bu/insuredScheme/hc/list";
-      var myData = {
-        schemeCode: this.curInfo.code
-      };
-      this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
-          console.log(res);
-          this.isShowLoading = false;
-          this.tableData = res.data.data
-            .map(item => {
-              item.paymentIdTxt = item.paymentId == '1'?'公司':'个人';
-              return item;
-            })
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
-    },
     // 监听子组件发过的触发函数
     listenIsShowMask(res) {
       this.isShowAdd = res;
-      this.getAllData();
+      this.pageInfo.reqParams.isReq = true;
+      this.$refs.pageInfo.getData(this.pageInfo);
+      //this.getAllData();
     },
     // 添加模板
     handleAdd(res){
@@ -119,44 +94,20 @@ export default {
       this.curInfoNode.cityCode = this.curInfo.cityCode;
       this.isShowAdd = true;
     },
-    // 查询
-    searchFun() {},
     // 删除
     handleDelete(index, res) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$http
-            .post("/server/api/v1/bu/insuredScheme/hc/delete", { id: res.id })
-            .then(res => {
-              this.getAllData();
-              this.$message.success("删除成功~");
+      }).then(() => {
+          this.$myApi.http.post("/server/api/v1/bu/insuredScheme/hc/delete", { id: res.id }).then(res => {
+              //this.getAllData();
+              this.$refs.pageInfo.getData(this.pageInfo);
+              this.$message.success("删除成功");
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     }
-  },
-  computed: {
-    queryTableDate() {
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return this.tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    }
-  },
-  components: {
-    schemeHCAdd
   }
 };
 </script>
@@ -167,20 +118,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
 }
 .search {
   margin: 20px auto;

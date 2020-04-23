@@ -1,6 +1,7 @@
 let toolFn = {
     // 转换时间格式方法
     timeFormat:(time,fmt)=>{
+        if (!time)return;
         var dateee = new Date(time).toJSON();
         var newTime = new Date(+new Date(dateee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');
         if (fmt && fmt != ""){
@@ -9,6 +10,7 @@ let toolFn = {
         return newTime;
     },
     formatTime:(time,fmt)=>{
+        if (!time)return;
         time = new Date(time);
         if (/(y+)/.test(fmt)) {
             fmt = fmt.replace(RegExp.$1, (time.getFullYear() + '').substr(4 - RegExp.$1.length));
@@ -67,18 +69,44 @@ let toolFn = {
         }
         return false;
     },
+    searchFun:function(list, search) {
+      let newList = [];
+      for (let i = 0; i < list.length; i++) {
+        for (let key in list[i]) {
+          if (search.searchField.indexOf(key) >= 0) {
+            if (
+              list[i][key] != undefined &&
+              list[i][key] != "" &&
+              list[i][key].toString().includes(search.searchKey)
+            ) {
+              newList.push(list[i]);
+              break;
+            }
+          }
+        }
+      }
+      return newList;
+    },
     async sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms))
     },
-    
-}
-
-export default {
-    install:function(vm){
-        vm.prototype.$toolFn = toolFn;
+    curUserFn:()=>{ 
+        toolFn.curUser = toolFn.localGet("userInfo");
+        return toolFn.curUser;
     },
-    toolFn
+    /**
+     * @description: 新开窗口
+     * @param {url} 地址
+     */
+    openWindown(url){
+        let a = document.createElement('a')
+        a.href = url;   
+        a.target = '_blank';
+        a.click();
+    },
 }
+toolFn.curUser = {};
+export default toolFn
 
 
 

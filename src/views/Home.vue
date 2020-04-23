@@ -7,11 +7,10 @@
           <div class="collapse-btn" @click="collapseFun">
             <i class="el-icon-menu"></i>
           </div>
-          <img src="@/assets/images/logo.png" alt>
           <p>后台管理系统</p>
         </div>
         <div class="right">
-          <el-badge is-dot class="item" >
+          <el-badge is-dot class="item" v-if="false" >
             <i class="el-icon-bell" @click="goLink('/newsList')"></i>
           </el-badge>
           <img src="@/assets/images/face_ico.jpg" alt>
@@ -22,6 +21,7 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="logout(userInfo.roleTypeId)">退出登录</el-dropdown-item>
+              <el-dropdown-item v-if="userInfo.roleTypeId == 1" @click.native="isShowPasswrdBox = true">修改密码</el-dropdown-item>
               <el-dropdown-item v-if="userInfo.relatedUser" divided disabled>切换账户</el-dropdown-item>
               <el-dropdown-item v-if="userInfo.relatedUser" @click.native="switchUser(userInfo.relatedUser)"><i style="font-size:18px;" class="el-icon-refresh"></i>{{userInfo.relatedUser.typeTxt}}</el-dropdown-item>
             </el-dropdown-menu>
@@ -85,18 +85,33 @@
           </el-main>
           <!-- 底部 -->
           <el-footer>
-            <img src="@/assets/images/logo.png" alt>
-            版权所有 (C) 2019 GRAMMY TECH。保留所有权利。
+            版权所有 (C) 2020 GRAMMY TECH。保留所有权利。
           </el-footer>
         </el-container>
       </el-container>
     </el-container>
+    <!-- 申请表单详情 -->
+    <el-dialog title="修改密码" :visible.sync="isShowPasswrdBox" :close-on-click-modal="false" label-width="140px">
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" >
+        <el-form-item label="输入密码：" prop="password">
+          <el-input v-model="ruleForm.password" show-password  ></el-input>
+        </el-form-item>
+        <el-form-item label="重复密码：" prop="passwordRepeat" >
+          <el-input v-model="ruleForm.passwordRepeat" show-password ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
+          <el-button @click="isShowPasswrdBox = false">取 消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import sidebarInfo from "@/lib/sidebarInfo.js";
 import navMenus from "@/components/navMenus.vue";
+import md5 from "js-md5";
 export default {
   name: "home",
   inject: ["reload"],
@@ -105,8 +120,24 @@ export default {
       sidebarInfo: [], //左侧导航栏数据
       isCollapse: false, //左侧导航栏是否折叠
       collapseSize: "220px", //左侧导航栏宽度大小
-      userInfo:{}
+      isShowPasswrdBox:false,//是否显示表单详情
+      ruleForm: {
+        password: "",
+        passwordRepeat: ""
+      },
+      userInfo:{},
+      rules: {
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" }
+        ],
+        passwordRepeat: [
+          { required: true, message: "请输入重复密码", trigger: "blur" }
+        ]
+      },
     };
+  },
+  created(){
+    this.$toolFn.curUserFn();
   },
   mounted() {
     this.userInfo = this.$toolFn.localGet('userInfo');
@@ -122,7 +153,7 @@ export default {
           account: switchUser.account,
         	typeId:switchUser.typeId
       }
-      this.$http.post(reqUrl,postJson).then(res => {
+      this.$myApi.http.post(reqUrl,postJson).then(res => {
         if (res.data.code == 0){
           sessionStorage.clear();
           localStorage.clear();
@@ -131,6 +162,7 @@ export default {
             navTabs: []
           });
           this.$toolFn.localSet("userInfo", res.data.data.data);
+          this.$toolFn.curUserFn();
           var sidebar = res.data.data.data.roles[0].menuList.map(item => {
             item.id = item.id.toString();
             return item;
@@ -150,6 +182,33 @@ export default {
         }
       });
     },
+    
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          
+          var reqUrl = '/server/api/v1/staff/account/update';
+          var data = {
+            staffCode:this.userInfo.userCode
+          }
+          if (this.ruleForm.password != this.ruleForm.passwordRepeat){
+            this.$message.error("两次秘密不一致！");
+          }else{
+            data.password = md5(this.ruleForm.password);
+          }
+          this.$myApi.http.post(reqUrl,data).then(res => {
+            if(res.data.code == 0){
+              this.isShowPasswrdBox = false;
+              this.$message.success('修改成功！');
+            }else{
+              this.$message.error(res.data.msg);
+            }
+          })
+        } else {
+          return false;
+        }
+      });
+    },
     logout(roleTypeId){
       var reqUrl = "/server/api/v1/admin/logout";
       var returnUrl = "/";
@@ -157,14 +216,20 @@ export default {
         reqUrl = "/server/api/v1/hrSys/logout";
         returnUrl = "/hr";
       }
-      this.$http.post(reqUrl).then(res => {
+      this.$myApi.http.post(reqUrl).then(res => {
         if (res.data.code == 0){
           this.$toolFn.localRemove('userInfo');
           this.$router.replace({
               path: returnUrl // 到登录页重新获取token
             })
         }
-      });
+      }).catch(error => {
+        sessionStorage.clear();
+        localStorage.clear();
+        this.$router.replace({
+              path: '/' // 到登录页重新获取token
+            })
+      })
     },
     // 初始化
     initializeFun() {
@@ -173,16 +238,16 @@ export default {
     },
     // 选中当前tab标签
     tabSelection(tab) {
-      var _this = this;
-      _this.$router.push({ path: tab.name });
+      
+      this.$router.push({ path: tab.name });
     },
     // 删除当前tab标签
     removeTab(targetName) {
-      var _this = this;
-      var activeName = _this.TabsValue;
-      var tabs = _this.navTabs;
+      
+      var activeName = this.TabsValue;
+      var tabs = this.navTabs;
       // 判断如果tab标签的数量是最后一个则不执行
-      if (_this.navTabs.length == 1) {
+      if (this.navTabs.length == 1) {
         return false;
       }
       if (targetName === activeName) {
@@ -197,12 +262,12 @@ export default {
         });
       }
       // 更新tab标签的name值
-      _this.$store.commit({
+      this.$store.commit({
         type: "changeTabsVal",
         TabsValue: activeName
       });
       // 更新tab标签数组列表
-      _this.$store.commit({
+      this.$store.commit({
         type: "getNavTabs",
         navTabs: tabs.filter(tab => {
           return tab.name !== targetName;
@@ -210,23 +275,23 @@ export default {
       });
 
       // home页面的router路径
-      _this.$router.push({ path: activeName });
+      this.$router.push({ path: activeName });
     },
     // 关闭标签
     handleCommand(command) {
-      var _this = this;
-      var tabs = _this.navTabs;
-      var activeName = _this.TabsValue;
+      
+      var tabs = this.navTabs;
+      var activeName = this.TabsValue;
       // 关闭其他tab标签
       if (command == "closeOther") {
-        _this.$store.commit({
+        this.$store.commit({
           type: "getNavTabs",
           navTabs: tabs.filter(tab => {
             return tab.name == activeName;
           })
         });
       } else {
-        _this.$store.commit({
+        this.$store.commit({
           type: "getNavTabs",
           navTabs: []
         });
@@ -234,13 +299,13 @@ export default {
     },
     // 初始化默认第一个tab标签
     initializeTab() {
-      var _this = this;
-      var firstTitle = _this.$route.path;
-      if (_this.navTabs.length != 0) {
+      
+      var firstTitle = this.$route.path;
+      if (this.navTabs.length != 0) {
         return false;
       }
-      var isExist = _this.navTabs.some(item => {
-        return (item.name = _this.$route.path);
+      var isExist = this.navTabs.some(item => {
+        return (item.name = this.$route.path);
       });
       // 判断tab标签是否已经存在
       if (isExist) {
@@ -248,22 +313,22 @@ export default {
       }
       for (let i = 0; i < sidebarInfo.length; i++) {
         for (var j = 0; j < sidebarInfo[i].items.length; j++) {
-          if (sidebarInfo[i].items[j].authUrl == _this.$route.path) {
+          if (sidebarInfo[i].items[j].authUrl == this.$route.path) {
             firstTitle = sidebarInfo[i].items[j].name;
           }
         }
       }
-      _this.$store.commit({
+      this.$store.commit({
         type: "changeNavTabs",
         navTabs: {
           title: firstTitle,
-          name: _this.$route.path
+          name: this.$route.path
         }
       });
       // 更新tab标签的name值
-      _this.$store.commit({
+      this.$store.commit({
         type: "changeTabsVal",
-        TabsValue: _this.$route.path
+        TabsValue: this.$route.path
       });
     },
     // 侧边栏折叠
@@ -287,8 +352,8 @@ export default {
         return this.$store.state.navModule.TabsValue;
       },
       set: function(v) {
-        var _this = this;
-        _this.$store.commit({
+        
+        this.$store.commit({
           type: "changeTabsVal",
           TabsValue: v
         });

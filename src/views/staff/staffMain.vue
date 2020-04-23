@@ -21,18 +21,20 @@ export default {
     };
   },
   mounted() {
-    this.userInfo = this.$toolFn.localGet("userInfo");
-      if (this.userInfo.roleTypeId == 2){
-        if (this.userInfo.access.staffMain.length > 0){
-          this.isShow = true;
-        }
-        if (this.userInfo.access.staffMain.indexOf(2) >= 0 || this.userInfo.access.staffMain.indexOf(3) >= 0 || this.userInfo.access.staffMain.indexOf(4) >= 0){
-          this.userRight = true;
-        }
-      }else if (this.userInfo.roleTypeId == 3 ){
-        this.userRight = true;
+    this.userInfo = this.$toolFn.curUser;
+    if (this.userInfo.roleTypeId == 2){
+      if (this.userInfo.access.staffMain.length > 0){
         this.isShow = true;
       }
+      if (this.userInfo.access.staffMain.indexOf(2) >= 0 || this.userInfo.access.staffMain.indexOf(3) >= 0 || this.userInfo.access.staffMain.indexOf(4) >= 0){
+        this.userRight = true;
+      }
+    }else if (this.userInfo.roleTypeId == 3 ){
+      this.userRight = true;
+      this.isShow = true;
+    }else if (this.userInfo.roleTypeId == 1 ){
+      this.isShow = true;
+    }
   },
   methods: {},
   computed: {

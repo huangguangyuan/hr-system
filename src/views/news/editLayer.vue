@@ -57,7 +57,6 @@
       v-if="!ruleForm.userRight"
     >
       <h1 style="text-align:center">{{ruleForm.title}}</h1>
-
       <p style="padding:15px;">{{ruleForm.content}}</p>
       <el-divider></el-divider>
       <el-form-item>
@@ -68,15 +67,11 @@
 </template>
 <script>
 let id = 0;
-import { setTimeout } from "timers";
-import axios from "axios";
-import { Promise } from "q";
 export default {
   name: "editLayer",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
-    const _that = this;
     return {
       ruleForm: {
         userRight: true,
@@ -129,22 +124,9 @@ export default {
         }
       }
     },
-    //  getCompanys() {
-    //   var _this = this;
-    //   var reqUrl = "/server/api/v1/company/companysWithChild";
-    //   return new Promise((resolve, reject) => {
-    //     _this.$http.post(reqUrl, {}).then(res => {
-    //       if (res.data.code == 0) {
-    //         _this.companyList = res.data.data;
-    //         resolve(_this.companyList);
-    //       }
-    //     });
-    //   });
-    // },
     async getCompanys() {
       var reqUrl = "/server/api/v1/company/companysWithChild";
-      return this.$http.post(reqUrl, {});
-      //return await this.$apiUrl.companysWithChild();
+      return this.$myApi.http.post(reqUrl, {});
     },
     // 选择公司
     selectCompany(val) {
@@ -160,7 +142,7 @@ export default {
       });
       this.BUList = code[0].bus;
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -173,7 +155,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -189,10 +170,10 @@ export default {
         regionCode: this.ruleForm.regionCode || "",
         BUCode: this.ruleForm.BUCode || ""
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("新增成功~");
+          this.$message.success("新增成功");
         } else {
           this.$message.error(res.data.msg);
         }
@@ -210,10 +191,10 @@ export default {
         regionCode: this.ruleForm.codeList[1] || "",
         BUCode: this.ruleForm.codeList[2] || ""
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("修改成功~");
+          this.$message.success("修改成功");
         } else {
           this.$message(res.data.msg);
         }

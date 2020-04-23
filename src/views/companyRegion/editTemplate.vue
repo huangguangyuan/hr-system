@@ -1,21 +1,21 @@
 <template>
-  <div class="editTemplate">
+  <div class="editTemplate" v-if="isShow" >
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
-      <el-form-item label="所属公司" prop="companyCode" v-if='isShow'>
+      <el-form-item label="所属公司" prop="companyCode" v-if='isShowItem'>
         <el-select v-model="ruleForm.companyCode" placeholder="请选择所属公司">
             <el-option v-for='item in companyList' :key="item.id" :label="item.name" :value="item.code"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="名称：" prop="name" v-if='isShow'>
+      <el-form-item label="名称：" prop="name" v-if='isShowItem'>
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="账号：" prop="account" v-if='isShow'>
+      <el-form-item label="账号：" prop="account" v-if='isShowItem'>
         <el-input v-model="ruleForm.account"></el-input>
       </el-form-item>
-      <el-form-item label="密码：" prop="password" v-if='isShow'>
+      <el-form-item label="密码：" prop="password" v-if='isShowItem'>
         <el-input v-model="ruleForm.password" show-password></el-input>
       </el-form-item>
-      <el-form-item label="国家：" v-if='isShow'>
+      <el-form-item label="国家：" v-if='isShowItem'>
         <el-input v-model="ruleForm.country"></el-input>
       </el-form-item>
       <el-form-item label="位置：">
@@ -25,15 +25,7 @@
         <el-input v-model="ruleForm.address"></el-input>
       </el-form-item>
       <el-form-item label="logo图片：">
-        <el-upload
-          class="avatar-uploader"
-          action="/app/api/v1/file/imageUpload"
-          :show-file-list="false"
-          :on-success="uploadLogo"
-        >
-          <el-image v-if="ruleForm.logo" :src="logoSrc" class="avatar" fit="cover"></el-image>
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+        <image-upload :imageUpload_props="imageUpload_props" :imageSrc.sync="ruleForm.logo"></image-upload>
       </el-form-item>
       <el-form-item label="备注：">
         <el-input v-model="ruleForm.remarks"></el-input>
@@ -64,12 +56,18 @@
   </div>
 </template>
 <script>
+import imageUpload from "@/components/imageUpload.vue";
 export default {
+  components: {
+    imageUpload
+  },
   name: "editTemplate",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
+      isShow:false,
+      isShowItem:true,
       ruleForm: {
         companyCode:"",
         name: "",
@@ -87,7 +85,10 @@ export default {
         contactLocation: "",
         contactRemarks: ""
       },//表单信息
-      logoSrc:'',//图片路径
+      imageUpload_props:{
+        imageSrc:'',
+        uploadFolder:''
+      },
       rules: {
         companyCode: [
           { required: true, message: "请选择所属公司", trigger: "change" }
@@ -119,94 +120,83 @@ export default {
         ]
       },
       companyList:[],//公司列表
-      isShow: true //是否显示
     };
   },
   mounted() {
     this.getCompanyData();
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
-      this.isShow = false;
-      this.logoSrc = this.ruleForm.logo;
+      this.imageUpload_props.imageSrc = this.ruleForm.logo;
+      this.isShowItem = false;
     }
+    this.isShow = true;
   },
   methods: {
-    // 获取上传头像
-    uploadLogo(res, file) {
-      this.ruleForm.logo = res.data.path;
-      this.logoSrc = URL.createObjectURL(file.raw);
-    },
-    // 提交表单
+    
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              _this.modifyFun();
+              this.modifyFun();
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 新增区域
     addFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/company/regionAdd";
-      var data = _this.ruleForm;
-      _this.$http.post(reqUrl, data).then(res => {
+      var data = this.ruleForm;
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message('添加成功~');
+          this.reload();
+          this.$message('添加成功');
         }else{
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
         }
       });
     },
     // 修改信息
     modifyFun(){
-        var _this = this;
         var reqUrl = '/server/api/v1/company/regionUpdate';
         var data = {
-            id:_this.ruleForm.id,
-            location:_this.ruleForm.location,
-            address:_this.ruleForm.address,
-            logo:_this.ruleForm.logo,
-            remarks:_this.ruleForm.remarks,
-            contactName:_this.ruleForm.contactName,
-            contactTel:_this.ruleForm.contactTel,
-            contactEmail:_this.ruleForm.contactEmail,
-            contactTitle:_this.ruleForm.contactTitle,
-            contactLocation:_this.ruleForm.contactLocation,
-            contactRemarks:_this.ruleForm.contactRemarks,
+            id:this.ruleForm.id,
+            location:this.ruleForm.location,
+            address:this.ruleForm.address,
+            logo:this.ruleForm.logo,
+            remarks:this.ruleForm.remarks,
+            contactName:this.ruleForm.contactName,
+            contactTel:this.ruleForm.contactTel,
+            contactEmail:this.ruleForm.contactEmail,
+            contactTitle:this.ruleForm.contactTitle,
+            contactLocation:this.ruleForm.contactLocation,
+            contactRemarks:this.ruleForm.contactRemarks,
         }
-        _this.$http.post(reqUrl,data).then(res => {
+        this.$myApi.http.post(reqUrl,data).then(res => {
           if (res.data.code == 0) {
-            _this.reload();
-            _this.$message('修改成功~');
+            this.reload();
+            this.$message('修改成功');
           }else{
-            _this.$message(res.data.msg);
+            this.$message(res.data.msg);
           }
         })
     },
     // 获取公司列表
     async getCompanyData(){
-        var _this = this;
-        var companys = await _this.$myApi.companys(_this,{isCache:true});
+        var companys = await this.$myApi.companys({isCache:true});
         if (companys) {
-            _this.companyList = companys;
+            this.companyList = companys;
         }
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

@@ -68,87 +68,78 @@ export default {
     };
   },
   mounted() {
-    var _this = this;
-    console.log(this.curInfo);
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
       this.ruleForm.paymentId = this.ruleForm.paymentId.toString();
     }
-    _this.getCityList();
+    this.getCityList();
   },
   methods: {
-    // 提交表单
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          if (_this.curInfo.type == "add") {
-            _this.addFun();
+          if (this.curInfo.type == "add") {
+            this.addFun();
           } else {
-            _this.modifyFun();
+            this.modifyFun();
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 获取城市列表
     getCityList() {
-      var _this = this;
       var reqUrl = "/server/api/v1/city/getAll";
       var data = {};
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.cityList = res.data.data;
+          this.cityList = res.data.data;
         }
       });
     },
     // 添加
     addFun(){
-        var _this = this;
         var reqUrl = '/server/api/v1/cityHC/add';
         var data = {
-            cityCode:_this.ruleForm.cityCode,
-            baseUpper:Number(_this.ruleForm.baseUpper),
-            baseLower:Number(_this.ruleForm.baseLower),
-            paymentRatio:Number(_this.ruleForm.paymentRatio),
-            paymentId:Number(_this.ruleForm.paymentId)
+            cityCode:this.ruleForm.cityCode,
+            baseUpper:Number(this.ruleForm.baseUpper),
+            baseLower:Number(this.ruleForm.baseLower),
+            paymentRatio:Number(this.ruleForm.paymentRatio),
+            paymentId:Number(this.ruleForm.paymentId)
         };
-        _this.$http.post(reqUrl,data).then(res => {
+        this.$myApi.http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
-                _this.reload();
-                _this.$message('添加成功~');
+                this.reload();
+                this.$message('添加成功');
             }else{
-                _this.$alert(res.data.msg,'提 示');
+                this.$alert(res.data.msg,'提 示');
             }
         })
     },
     // 修改
     modifyFun(){
-        var _this = this;
         var reqUrl = '/server/api/v1/cityHC/update';
         var data = {
-            id:_this.ruleForm.id,
-            cityCode:_this.ruleForm.cityCode,
-            baseUpper:Number(_this.ruleForm.baseUpper),
-            baseLower:Number(_this.ruleForm.baseLower),
-            paymentRatio:Number(_this.ruleForm.paymentRatio),
-            paymentId:Number(_this.ruleForm.paymentId)
+            id:this.ruleForm.id,
+            cityCode:this.ruleForm.cityCode,
+            baseUpper:Number(this.ruleForm.baseUpper),
+            baseLower:Number(this.ruleForm.baseLower),
+            paymentRatio:Number(this.ruleForm.paymentRatio),
+            paymentId:Number(this.ruleForm.paymentId)
         };
-        _this.$http.post(reqUrl,data).then(res => {
+        this.$myApi.http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
-                _this.reload();
-                _this.$message('修改成功~');
+                this.reload();
+                this.$message('修改成功');
             }else{
-                _this.$alert(res.data.msg,'提 示');
+                this.$alert(res.data.msg,'提 示');
             }
         })
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

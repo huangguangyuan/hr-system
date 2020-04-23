@@ -1,7 +1,6 @@
 <template>
-  <div class="approvalHolidaysDetails">
+  <div class="approvalHolidaysDetails" v-loading="isShowLoading">
     <el-table :data="tableData" stripe>
-      <el-table-column prop="num" label="序号" width="50"></el-table-column>
       <el-table-column prop="days" label="天数" width="50"></el-table-column>
       <el-table-column prop="startDate" label="开始时间" width="180"></el-table-column>
       <el-table-column prop="endDate" label="结束时间" width="180"></el-table-column>
@@ -9,12 +8,12 @@
       <el-table-column prop="remarks" label="备 注"></el-table-column>
     </el-table>
     <el-divider></el-divider>
-    <el-timeline>
+    <el-timeline :reverse="true">
       <el-timeline-item v-for='item in approveHisList' :key='item.id' :timestamp="item.creatorTime" placement="top">
         <el-card class="my-card">
           <p>操作员：{{item.operatorUser.name}}{{item.operatorUser.roleName?" ( "+item.operatorUser.roleName+" ) ":""}}</p>
           <p>操作行为：{{item.operatorUser.tip}}</p>
-          <p>审批类型：{{item.typeIdTxt}}</p>
+          <p>状态：{{item.typeIdTxt}}</p>
           <p>是否完结：{{item.finishFlagTxt}}</p>
         </el-card>
       </el-timeline-item>
@@ -29,18 +28,7 @@
     >
       <el-form-item label="结算月份：" prop="balanceMon">
         <el-select v-model="ruleForm.balanceMon" placeholder="请选择月份">
-          <el-option label="1月" value="1"></el-option>
-          <el-option label="2月" value="2"></el-option>
-          <el-option label="3月" value="3"></el-option>
-          <el-option label="4月" value="4"></el-option>
-          <el-option label="5月" value="5"></el-option>
-          <el-option label="6月" value="6"></el-option>
-          <el-option label="7月" value="7"></el-option>
-          <el-option label="8月" value="8"></el-option>
-          <el-option label="9月" value="9"></el-option>
-          <el-option label="10月" value="10"></el-option>
-          <el-option label="11月" value="11"></el-option>
-          <el-option label="12月" value="12"></el-option>
+          <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="扣除金额：" v-if='curInfo.isWithpay == 0'>
@@ -56,12 +44,16 @@
   </div>
 </template>
 <script>
+import {approveHisTypeTxt,monthList} from "@/lib/staticData.js";
 export default {
   name: "approvalHolidaysDetails",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
+      isShowLoading:true,
+      monthList:[],
+      holidayItem:{},
       tableData: [],
       getClaimList: [],
       approveHisList:[],//审批流程
@@ -74,77 +66,47 @@ export default {
         balanceMon: [
           { required: true, message: "请选择结算月份", trigger: "change" }
         ]
-      }
+      },
+      canBalance:false,
     };
   },
   mounted() {
-    this.dataConvert().then(res => {
-      this.curInfo.details.map(item => {
-          item.typeIdTxt = res.filter(child => {
-              return child.typeId == item.typeId;
-          })[0].val;
-          return item;
-      })
-      var num = 0;
-      this.tableData = this.curInfo.details.map(item => {
-        num++;
-        item.num = num;
-        item.startDate = this.$toolFn.timeFormat(item.startDate);
-        item.endDate = this.$toolFn.timeFormat(item.endDate);
-        return item;
-      });
-    });
-    // 审批流程
-    this.approveHisList = this.curInfo.approveHis.map(item => {
-      item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
-      item.finishFlagTxt = item.finishFlag == 0?'否':'是';
-      switch(item.typeId){
-        case 1:
-          item.typeIdTxt = '批准';
-          break;
-        case 2:
-          item.typeIdTxt = '不批准';
-          break;
-        case 3:
-          item.typeIdTxt = '转派';
-          break;
-        case 90:
-          item.typeIdTxt = '撤回';
-          break;
-        case 99:
-          item.typeIdTxt = '新建';
-          break;
-        case 100:
-          item.typeIdTxt = '结算' ;
-          break;
-        default:
-          item.typeIdTxt = '未知';
-      }
-      return item;
-    });
+    this.canBalance = this.curInfo.canBalance;
+    this.monthList = monthList();
+    this.init();
   },
   methods: {
-    // 数据转换
-    dataConvert() {
-      var _this = this;
-      var p = new Promise(function(resolve, reject) {
-        var reqUrl = "/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId";
-        _this.$http.post(reqUrl, {}).then(res => {
-          if (res.data.code == 0) {
-            _this.getClaimList = res.data.data;
-            resolve(_this.getClaimList);
-          }
+    async init(){
+      this.holidayItem = await this.$myApi.staffHolidays({holidaysApplyCode:this.curInfo.code});
+      this.holidayTypes = await this.$myApi.getHolidaysTypeId();
+      this.holidayItem.createTime = this.$toolFn.timeFormat(this.holidayItem.createTime);
+      if (this.holidayItem.details){
+        this.tableData = this.holidayItem.details.map(item => {
+        item.startDate = this.$toolFn.timeFormat(item.startDate);
+        item.endDate = this.$toolFn.timeFormat(item.endDate);
+        item.typeIdTxt = this.holidayTypes.filter(child => {
+              return child.typeId == item.typeId;
+          })[0].val;
+        return item;
         });
+      this.ruleForm.balanceMon =  new Date(this.holidayItem.details[0].startDate).getMonth()+1;
+      }
+      
+      // 审批流程
+      this.approveHisList = this.holidayItem.approveHis.map(item => {
+        item.creatorTime = this.$toolFn.timeFormat(item.creatorTime);
+        item.finishFlagTxt = item.finishFlag == 0?'否':'是';
+        item.typeIdTxt = approveHisTypeTxt(item.typeId);
+        return item;
       });
-      return p;
+      this.isShowLoading = false;
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.approveFun();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -159,7 +121,7 @@ export default {
         totalAmount:parseFloat(this.ruleForm.totalAmount),
         remarks:this.ruleForm.remarks
       }
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.reload();
           this.$message.success('操作成功！');
@@ -177,6 +139,12 @@ export default {
     p{
       margin-top: 10px;
     }
+  }
+  .el-timeline-item:last-child .el-timeline-item__node{
+        background: #E4E7ED !important;
+  }
+  .el-timeline-item:first-child .el-timeline-item__node{
+        background: #ff6600 !important;
   }
 }
 </style>

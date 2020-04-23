@@ -117,17 +117,17 @@ export default {
       }
       //console.log(this.ruleForm);
     },
-    // 提交表单
+    
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              _this.modifyFun();
+              this.modifyFun();
               break;
           }
         } else {
@@ -137,65 +137,63 @@ export default {
     },
     // 新增
     addFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/staff/promotion/add";
       var data = {
-        staffCode: _this.curInfo.staffCode,
-        salary: parseInt(_this.ruleForm.salary),
-        position: _this.ruleForm.position,
-        reportTo: _this.ruleForm.reportTo,
-        staffGrade: _this.ruleForm.staffGrade,
-        startDate: _this.$toolFn.timeFormat(_this.ruleForm.startDate).slice(0, 10),
-        endDate: _this.$toolFn.timeFormat(_this.ruleForm.endDate).slice(0, 10),
-        remarks: _this.ruleForm.details,
+        staffCode: this.curInfo.staffCode,
+        salary: parseInt(this.ruleForm.salary),
+        position: this.ruleForm.position,
+        reportTo: this.ruleForm.reportTo,
+        staffGrade: this.ruleForm.staffGrade,
+        startDate: this.$toolFn.timeFormat(this.ruleForm.startDate).slice(0, 10),
+        endDate: this.$toolFn.timeFormat(this.ruleForm.endDate).slice(0, 10),
+        remarks: this.ruleForm.details,
         fileSrc:''
       };
-      for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
-        const element = _this.fileUpload_props.fileList[index];
+      for (let index = 0; index < this.fileUpload_props.fileList.length; index++) {
+        const element = this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("新增成功~");
+          this.reload();
+          this.$message.success("新增成功");
         } else {
-          _this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg);
         }
       });
     },
     // 修改
     modifyFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/staff/promotion/update";
       var data = {
-        id: _this.curInfo.id,
-        staffCode: _this.curInfo.staffCode,
-        salary: parseInt(_this.ruleForm.salary),
-        position: _this.ruleForm.position,
-        reportTo: _this.ruleForm.reportTo,
-        staffGrade: _this.ruleForm.staffGrade,
-        startDate: _this.$toolFn.timeFormat(_this.ruleForm.startDate).slice(0, 10),
-        endDate: _this.$toolFn.timeFormat(_this.ruleForm.endDate).slice(0, 10),
-        remarks: _this.ruleForm.details,
+        id: this.curInfo.id,
+        staffCode: this.curInfo.staffCode,
+        salary: parseInt(this.ruleForm.salary),
+        position: this.ruleForm.position,
+        reportTo: this.ruleForm.reportTo,
+        staffGrade: this.ruleForm.staffGrade,
+        startDate: this.$toolFn.timeFormat(this.ruleForm.startDate).slice(0, 10),
+        endDate: this.$toolFn.timeFormat(this.ruleForm.endDate).slice(0, 10),
+        remarks: this.ruleForm.details,
         fileSrc:''
       };
-      for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
-        const element = _this.fileUpload_props.fileList[index];
+      for (let index = 0; index < this.fileUpload_props.fileList.length; index++) {
+        const element = this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("修改成功~");
+          this.reload();
+          this.$message.success("修改成功");
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

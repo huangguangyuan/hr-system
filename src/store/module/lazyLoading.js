@@ -179,13 +179,7 @@ const dynamicRouter = [
     {
         path: '/staffPayrollSlip',
         name: 'staffPayrollSlip',
-        component: resolve => require(['@/views/wages/staffPayrollSlip.vue'], resolve),
-    },
-    // 全年工资清单
-    {
-        path: '/annualStaffPayroll',
-        name: 'annualStaffPayroll',
-        component: resolve => require(['@/views/wages/annualStaffPayroll.vue'], resolve),
+        component: resolve => require(['@/views/wages/payroll/staffPayrollSlip.vue'], resolve),
     },
     // 编辑全年工资清单
     {
@@ -230,19 +224,19 @@ const dynamicRouter = [
     {
         path: '/wagesMain',
         name: 'wagesMain',
-        component: resolve => require(['@/views/wages/wagesMain.vue'], resolve),
+        component: resolve => require(['@/views/wages/base/wagesMain.vue'], resolve),
     },
     // 工资单列表
     {
         path: '/staffPayrollList',
         name: 'staffPayrollList',
-        component: resolve => require(['@/views/wages/staffPayrollList.vue'], resolve),
+        component: resolve => require(['@/views/wages/payroll/payrollMain.vue'], resolve),
     },
     // 工资汇总表
     {
         path: '/staffPayrollSummary',
         name: 'staffPayrollSummary',
-        component: resolve => require(['@/views/wages/staffPayrollSummary.vue'], resolve),
+        component: resolve => require(['@/views/wages/summary/staffPayrollSummary.vue'], resolve),
     },
     // <==========消息中心==========>
     // 消息列表

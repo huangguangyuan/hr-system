@@ -41,20 +41,19 @@ export default {
             };
   },
   methods: {
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.addFun();
         } else {
-          console.log("error submit!!");
+          
           return false;
         }
       });
     },
     // 生成工资单
     async addFun() {
-      //var reqUrl = "/server/api/v1/payroll/staff/genStaffPayroll";
       var data = {
           hrCode:this.curInfo.hrCode,
           //staffCode:this.curInfo.code,
@@ -67,8 +66,7 @@ export default {
           const element = this.curInfo.createItems[index];
           data.staffCode = element.code;
           await this.$toolFn.sleep(1000);
-          var genStaffPayroll = await this.$myApi.genStaffPayroll(this,data);
-          //console.log(genStaffPayroll);
+          var genStaffPayroll = await this.$myApi.genStaffPayroll(data);
           if (genStaffPayroll && genStaffPayroll.code == 0) {
             this.$message.success(element.nameChinese+" 工资单生成成功");
           } else {
@@ -79,16 +77,15 @@ export default {
         this.reload();
       }else if(this.curInfo.typeId == 1){
           data.staffCode = this.curInfo.code;
-          var genStaffPayroll = await this.$myApi.genStaffPayroll(this,data);
-          //console.log(genStaffPayroll);
+          var genStaffPayroll = await this.$myApi.genStaffPayroll(data);
+          console.log(genStaffPayroll);
           if (genStaffPayroll && genStaffPayroll.code == 0) {
             this.reload();
-            this.$message.success("生成成功~");
+            this.$message.success("生成成功");
           } else {
             this.$message.error(genStaffPayroll.msg);
           }
       }
-
     },
     // 取消
     cancelFn() {

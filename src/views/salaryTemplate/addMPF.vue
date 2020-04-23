@@ -62,7 +62,6 @@ export default {
     }
   },
   methods: {
-    // 提交表单
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -72,7 +71,6 @@ export default {
             this.modifyFun();
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -87,10 +85,10 @@ export default {
         paymentRatio: parseFloat(this.ruleForm.paymentRatio),
         paymentId: parseInt(this.ruleForm.paymentId)
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("添加成功~");
+          this.$message.success("添加成功");
         } else {
           this.$message.error(res.data.code);
         }
@@ -106,10 +104,10 @@ export default {
         baseLower: parseFloat(this.ruleForm.baseLower),
         paymentRatio: parseFloat(this.ruleForm.paymentRatio)
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("修改成功~");
+          this.$message.success("修改成功");
         } else {
           this.$message.error(res.data.msg);
         }

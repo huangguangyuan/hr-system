@@ -38,7 +38,7 @@
         <template slot-scope="scope">
           <el-image
             style="width: 50px; height: 50px;border-radius: 100%;"
-            :src="scope.row.photo?scope.row.photo:AvatarDefault"
+            :src="scope.row.photo?scope.row.photo:avatarDefault"
             fit="cover"
           ></el-image>
         </template>
@@ -103,7 +103,7 @@ export default {
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
       isShowState: false, //是否显示状态
-      AvatarDefault:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", //默认头像
+      avatarDefault:require("@/assets/images/avatar.png"), //默认头像
       hrCode: "",
       userInfo:{},
       filter:{searchKey:'',searchField:['nameChinese','genderTxt']},
@@ -112,13 +112,13 @@ export default {
     };
   },
   mounted() {
-    var _this = this;
-    _this.userInfo = _this.$toolFn.localGet("userInfo");
+    
+    this.userInfo = this.$toolFn.curUser;
     if (this.userInfo.access.payrollMain.length > 0){
-      _this.isShow = true;
+      this.isShow = true;
     }
-    if (_this.userInfo.roleTypeId == 2 ){
-      _this.hrCode = _this.userInfo.userCode;
+    if (this.userInfo.roleTypeId == 2 ){
+      this.hrCode = this.userInfo.userCode;
     }
     if (this.userInfo.access.payrollMain.indexOf(2) >= 0){
       this.genPayrollSlip_right = true;
@@ -129,7 +129,7 @@ export default {
   methods: {
     // 初始化
     InitializationFun() {
-      this.getregionBU();
+      this.getRegionBU();
     },
     handleSelectionChange(val) {
         this.multipleSelection = val;
@@ -152,9 +152,9 @@ export default {
       return row.id
     },
     // 获取单位列表
-    async getregionBU() {
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+    async getRegionBU() {
+      
+      var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUlist = regionBUs;
           this.BUCode = this.$toolFn.sessionGet("staffBUCode")? this.$toolFn.sessionGet("staffBUCode"): this.regionBUlist[0].code;
@@ -166,7 +166,7 @@ export default {
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollInfoList";
       var myData = { BUCode: BUCode };
       this.isShowLoading = true;
-      this.$http.post(reqUrl, myData).then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
               // 性别
@@ -207,9 +207,6 @@ export default {
 
 
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 获取当前页数
     curChange(val) {
@@ -247,14 +244,14 @@ export default {
   },
   computed: {
     queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
+      
+      let tableData = this.tableData;
+      if (this.filter.searchKey != ""){
+        tableData = this.$toolFn.searchFun(tableData,this.filter);
       }
-      _this.total = tableData.length;
-      var begin = (_this.wagesCurPage - 1) * _this.pageSize;
-      var end = _this.wagesCurPage * _this.pageSize;
+      this.total = tableData.length;
+      var begin = (this.wagesCurPage - 1) * this.pageSize;
+      var end = this.wagesCurPage * this.pageSize;
       return tableData.slice(begin, end);
     },
     pageTotal() {

@@ -29,7 +29,6 @@
       label-width="160px"
       v-if="ruleForm.showText"
     >
-
       <p style="padding:15px;">{{ruleForm.contents}}</p>
       <p style="text-align:right;padding:5px;">发起人：{{ruleForm.hrName}}</p>
       <p style="text-align:right;padding:5px;">{{ruleForm.issueTime}}</p>
@@ -111,23 +110,22 @@ export default {
     getHRadminList(){
       var reqUrl = '/server/api/v1/admin/hrSys/getAll';
       var data = {BUCode:this.curInfo.BUCode}
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.data){
           this.HRadminList = res.data.data;
         }
       })
     },
-    // 提交表单
+    
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              _this.modifyFun();
+              this.modifyFun();
               break;
           }
         } else {
@@ -137,57 +135,54 @@ export default {
     },
     // 新增
     addFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/staff/warning/add";
       var data = {
-        staffCode: _this.curInfo.staffCode,
-        issueBy: _this.ruleForm.issueBy,
-        issueTime: _this.ruleForm.issueTime,
-        contents: _this.ruleForm.contents,
+        staffCode: this.curInfo.staffCode,
+        issueBy: this.ruleForm.issueBy,
+        issueTime: this.ruleForm.issueTime,
+        contents: this.ruleForm.contents,
         fileSrc:''
       };
-      for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
-        const element = _this.fileUpload_props.fileList[index];
+      for (let index = 0; index < this.fileUpload_props.fileList.length; index++) {
+        const element = this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("新增成功~");
+          this.reload();
+          this.$message.success("新增成功");
         } else {
-          _this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg);
         }
       });
     },
     // 修改
     modifyFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/staff/warning/update";
       var data = {
-        id: _this.curInfo.id,
-        staffCode: _this.curInfo.staffCode,
-        issueTime: _this.ruleForm.issueTime,
-        issueBy: _this.ruleForm.issueBy,
-        contents: _this.ruleForm.contents,
+        id: this.curInfo.id,
+        staffCode: this.curInfo.staffCode,
+        issueTime: this.ruleForm.issueTime,
+        issueBy: this.ruleForm.issueBy,
+        contents: this.ruleForm.contents,
         fileSrc:''
       };
-      for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
-        const element = _this.fileUpload_props.fileList[index];
+      for (let index = 0; index < this.fileUpload_props.fileList.length; index++) {
+        const element = this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message.success("修改成功~");
+          this.reload();
+          this.$message.success("修改成功");
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

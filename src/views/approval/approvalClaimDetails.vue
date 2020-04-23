@@ -1,10 +1,10 @@
 <template>
-  <div class="approvalClaimDetails">
+  <div class="approvalClaimDetails" v-if="isShow">
     <el-divider content-position="left">报销明细</el-divider>
-    <div class="view-detail">
+    <div class="view-detail" v-loading="isShowLoading">
       <el-row :gutter="12">
         <el-col :span="8">
-          <el-card shadow="always">申请人：{{claimItem.nameChinese}}</el-card>
+          <el-card shadow="always">申请人：{{claimItem.staff.nameChinese}}</el-card>
         </el-col>
         <el-col :span="8">
           <el-card shadow="always">申请时间：{{claimItem.createTime}}</el-card>
@@ -19,7 +19,7 @@
         </el-col>
       </el-row>
       <br />
-        <el-table :data="tableData" stripe>
+        <el-table :data="tableData" stripe  >
         <el-table-column prop="title" label="项目名称"></el-table-column>
         <el-table-column prop="amount" label="报销金额"></el-table-column>
         <el-table-column prop="typeIdTxt" label="报销类型"></el-table-column>
@@ -27,8 +27,8 @@
       </el-table>
     </div>
     <br />
-<el-divider content-position="left">审批流程</el-divider>
-    <el-timeline>
+    <el-divider content-position="left" >审批流程</el-divider>
+    <el-timeline :reverse="true">
       <el-timeline-item
         v-for="item in approveHisList"
         :key="item.id"
@@ -38,7 +38,7 @@
         <el-card class="my-card">
           <p>操作员：{{item.operatorUser.name}}{{item.operatorUser.roleName?" ( "+item.operatorUser.roleName+" ) ":""}}</p>
           <p>操作行为：{{item.operatorUser.tip}}</p>
-          <p>审批类型：{{item.typeIdTxt}}</p>
+          <p>状态：{{item.typeIdTxt}}</p>
           <p>是否完结：{{item.finishFlagTxt}}</p>
         </el-card>
       </el-timeline-item>
@@ -68,106 +68,81 @@
   </div>
 </template>
 <script>
+import {approveHisTypeTxt} from "@/lib/staticData.js";
 export default {
   name: "approvalClaimDetails",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
+      isShow:false,
+      isShowLoading:true,
       claimItem:{},
+      claimTypes:[],
       tableData: [], //数据列表
-      getClaimList: [], //审批类型
       approveHisList: [], //审批流程
       fileList:[],
       ruleForm: {
         approve: "",
         remarks: ""
       },
+      isFinish:false,
+      canApprove:false,
       rules: {
         approve: [
           { required: true, message: "请选择是否批准", trigger: "change" }
         ]
       },
-      isFinish:false,
-      canApprove:false
     };
   },
   mounted() {
+    this.init();
     this.canApprove = this.curInfo.canApprove;
-    this.dataConvert().then(res => {
-      this.curInfo.details.map(item => {
-        item.typeIdTxt = res.filter(child => {
-          return child.typeId == item.typeId;
-        })[0].val;
+  },
+  methods: {
+    async init(){
+      this.claimItem = await this.$myApi.staffClaim({claimCode:this.curInfo.code});
+      this.claimTypes = await this.$myApi.getBUClaimType();
+      this.claimItem.details.map(item => {
+        let filterResult = this.claimTypes.filter(child => {
+          return child.id == item.typeId;
+        });
+        item.typeIdTxt = filterResult.length>0?filterResult[0].name:'';
         return item;
       });
-      this.claimItem = this.curInfo;
       if (this.claimItem.fileSrc && this.claimItem.fileSrc != ''){
         this.fileList = this.claimItem.fileSrc.split(',');
       }
-      this.tableData = this.curInfo.details;
+      this.claimItem.createTime = this.$toolFn.timeFormat(this.claimItem.createTime);
+      this.tableData = this.claimItem.details;
       // 审批流程
-      this.approveHisList = this.curInfo.approveHis.map(item => {
+      this.approveHisList = this.claimItem.approveHis.map(item => {
         item.createTime = this.$toolFn.timeFormat(item.createTime);
         item.finishFlagTxt = item.finishFlag == 0 ? "否" : "是";
         if (item.finishFlag == 1){
           this.isFinish = true;
         }
-        switch (item.typeId) {
-          case 1:
-            item.typeIdTxt = "批准";
-            break;
-          case 2:
-            item.typeIdTxt = "不批准";
-            break;
-          case 3:
-            item.typeIdTxt = "转派";
-            break;
-          case 90:
-            item.typeIdTxt = "撤回";
-            break;
-          case 99:
-            item.typeIdTxt = "新建";
-            break;
-          case 100:
-            item.typeIdTxt = '结算 ( 结算月份 '+ this.claimItem.balanceMon + " 月 " + (this.claimItem.totalAmount != 0?"， 总金额 ： " + this.claimItem.totalAmount + " 元 ":"" ) + " )" ;
-            break;
-          default:
-            item.typeIdTxt = "未知";
+        item.typeIdTxt = approveHisTypeTxt(item.typeId);
+        if (item.typeId == 100){
+          item.typeIdTxt +=  '( 结算月份 '+ this.claimItem.balanceMon + " 月 " + (this.claimItem.totalAmount != 0?"， 总金额 ： " + this.claimItem.totalAmount + " 元 ":"" ) + " )"; 
         }
         return item;
       });
-    });
-
-  },
-  methods: {
+      this.isShow = true;
+      this.isShowLoading = false;
+    },
     openFile(item){
         let a = document.createElement('a')
           a.href = item;
           a.target = '_blank';
           a.click();
     },
-    // 数据转换,用于把类型转换成对应的文字
-    dataConvert() {
-      var _this = this;
-      var p = new Promise(function(resolve, reject) {
-        var reqUrl = "/server/api/v1/staff/claim/getClaimTypeId";
-        _this.$http.post(reqUrl, {}).then(res => {
-          if (res.data.code == 0) {
-            _this.getClaimList = res.data.data;
-            resolve(_this.getClaimList);
-          }
-        });
-      });
-      return p;
-    },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.approveFun();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -182,10 +157,10 @@ export default {
         remarks:this.ruleForm.remarks
       }
       
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.reload();
-          this.$message.success('审批成功~');
+          this.$message.success('审批成功');
         }else{
           this.$message.error(res.data.msg);
         }
@@ -211,6 +186,12 @@ export default {
     p {
       margin-top: 10px;
     }
+  }
+  /deep/ .el-timeline-item:last-child .el-timeline-item__node{
+        background: #E4E7ED !important;
+  }
+  /deep/ .el-timeline-item:first-child .el-timeline-item__node{
+        background: #ff6600 !important;
   }
 }
 </style>

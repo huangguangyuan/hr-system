@@ -1,23 +1,18 @@
 <template>
-  <div class="wrap HRadminList">
+  <div class="wrap HRadminList" v-if="isShow">
     <!-- 头部内容 -->
     <div class="my-top">
       <span>HR管理员列表</span>
       <el-button type="warning" v-if="userRight" size="small" @click="isShowAddAdmin = true;modifyInfo.adminType = 'HRadmin'">添加HR管理员</el-button>
     </div>
     <!-- 搜索 -->
-    <div class="search" v-if="userRight">
-      <el-input placeholder="请输入关键字" v-model="filter.searchKey">
-        <el-select v-model="BUCode" slot="prepend" placeholder="请选择" @change="changeBUCode" style="width:200px;">
-          <el-option v-for='(item,index) in regionBUList' :key='index' :label="item.name" :value="item.code"></el-option>
-        </el-select>
-      </el-input>
-    </div>
+    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCodeSelected" ref="busAndSearch" v-if="userRight"></bus-and-search>
     <!-- 列表内容 -->
-    <el-table v-loading='isShowLoading' :data="queryTableDate" stripe row-key="id" border>
+    <el-table v-loading='isShowLoading' :data="tableData" stripe row-key="id" border>
       <el-table-column sortable prop="name" label="名称"></el-table-column>
       <el-table-column sortable prop="roleTypeTxt" label="权限"></el-table-column>
       <el-table-column sortable prop="levExtendTxt" label="扩展权限"></el-table-column>
+      <el-table-column sortable prop="serveIdTxt" label="服务归属"></el-table-column>
       <el-table-column sortable prop="account" label="账号"></el-table-column>
       <!-- <el-table-column prop="mobile" label="手机"></el-table-column> -->
       <el-table-column sortable prop="isStatus" label="状态"></el-table-column>
@@ -45,16 +40,7 @@
       </el-table-column>
     </el-table>
     <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 新增管理员 -->
     <el-dialog
       title="新增管理员"
@@ -62,7 +48,7 @@
       :close-on-click-modal="false"
       width="65%"
     >
-      <add-h-radmin v-if="isShowAddAdmin" v-on:listenIsShowAddAdmin="IsShowAddAdminFn" :modifyInfo="modifyInfo"></add-h-radmin>
+    <add-h-radmin v-if="isShowAddAdmin" v-on:listenIsShowAddAdmin="IsShowAddAdminFn" :modifyInfo="modifyInfo"></add-h-radmin>
     </el-dialog>
     <!-- 修改管理员 -->
     <el-dialog
@@ -104,99 +90,71 @@
 </template>
 <script>
 import addHRadmin from "./addHRadmin.vue";
-import modifyAdmin from "./modifyAdmin.vue";
+import modifyAdmin from "./modifyHRAdmin.vue";
 import modifyPassword from "./modifyPassword.vue";
 import addRole from "./addRole.vue";
-import { Promise } from 'q';
+import pageInfo from "@/components/pageInfo.vue";
+import busAndSearch from "@/components/busAndSearch.vue";
 export default {
+  components: {
+    addHRadmin,modifyAdmin,modifyPassword,addRole,pageInfo,busAndSearch
+  },
   name: "HRadminList",
   inject: ["reload"],
   data() {
     return {
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
-      searchInner: "", //搜索内容
+      isShow:false,
+      pageList:[],
       isShowAddAdmin: false, //是否显示新增后台管理员
       isShowModifyAdmin: false, //是否显示修改后台管理员
       isShowModifyPassword: false, //是否显示修改密码
       isShowAddRole: false, //是否显示增加角色
       modifyInfo: {}, //当前列表信息
-      BUCode:'',//单位code
-      regionBUList:[],//单位列表
+      BUCodeSelected:'',//单位code
       isShowLoading:false,//加载
       userInfo:{},
       userRight:true,
       filter:{searchKey:'',searchField:['name','roleTypeTxt','account']}
     };
   },
-  mounted() {
-    this.initializeFun();
-  },
-  methods: {
-    // 初始化
-     initializeFun(){
-      this.userInfo = this.$toolFn.localGet("userInfo");
-      //console.log(this.userInfo);
-      if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301 ){
-        this.userRight = false;
-      }
-      this.getBUCodeFun();
-    },
-    //获取项目数据列表
-    getData(code) {
-      var _this = this;
-      var reqUrl = "/server/api/v1/admin/hrSys/getAll";
-      var myData = { BUCode: code };
-      _this.isShowLoading =true;
-      _this.$http.post(reqUrl, myData)
-        .then(res => {
-          _this.isShowLoading =false;
-          _this.tableData = res.data.data
-            .map(item => {
-              item.createTime = _this.$toolFn.timeFormat(item.createTime);
-              item.modifyTime = _this.$toolFn.timeFormat(item.modifyTime);
-              item.isStatus = item.status == 1 ? "启用" : "禁用";
-              item.children = item.nodes;
-              return item;
-            }) //倒序
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          _this.total = _this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取单位列表
-    async getBUCodeFun(){
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
-        if (regionBUs && regionBUs.length > 0) {
-          this.regionBUList = regionBUs;
-          this.BUCode = this.$toolFn.sessionGet('hrBUCode')?this.$toolFn.sessionGet('hrBUCode'):this.regionBUList[0].code;
-          this.getData(this.BUCode);
+  computed:{
+    pageInfo(){
+      return {
+        reqParams:{
+            isReq:false,
+            url:"/server/api/v1/admin/hrSys/getAll",
+            data:{ BUCode:this.BUCodeSelected }
+          }
         }
     },
-    // 选择单位
-    changeBUCode(code){
-      this.BUCode = code;
-      this.getData(this.BUCode);
-      this.$toolFn.sessionSet('hrBUCode',code);
+    busAndSearch(){
+      return {BUCodeOptionsShow:true,filter:this.filter};
     },
-    // 获取当前页数
-    curChange(val) {
-      var _this = this;
-      _this.curPage = val;
-    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.modifyTime = this.$toolFn.timeFormat(item.modifyTime);
+        item.isStatus = item.status == 1 ? "启用" : "禁用";
+        item.children = item.nodes;
+        return item;
+      });
+    }
+  },
+  mounted() {
+    this.userInfo = this.$toolFn.curUser;
+    if (this.userInfo.roleTypeId == 2 && this.userInfo.lev != 301 ){
+      this.userRight = false;
+      this.BUCodeSelected = this.userInfo.BUCode;
+    }
+    if ([3,4].indexOf(this.userInfo.roleTypeId) >= 0){//如果是平台管理员,用户管理员
+      this.isShow = true;
+    }else if ([2].indexOf(this.$toolFn.curUser.roleTypeId) >= 0){//如果是hr管理员
+      this.isShow = true;
+      this.busAndSearch.BUCodeOptionsShow = false;
+      this.busAndSearch.BUCodeSelected = this.userInfo.BUCode;
+    }
+  },
+  methods: {
     // 接受子组件接受的值
     IsShowAddAdminFn(res) {
       this.isShowAddAdmin = res;
@@ -206,28 +164,24 @@ export default {
     },
     // 编辑
     editFn(index, res) {
-      var _this = this;
-      _this.isShowModifyAdmin = true;
-      _this.modifyInfo = res;
-      _this.modifyInfo.adminType = "HRadmin";
+      this.isShowModifyAdmin = true;
+      this.modifyInfo = res;
+      this.modifyInfo.adminType = "HRadmin";
     },
     // 修改密码
     modifyPassWord(index, res) {
-      var _this = this;
-      _this.isShowModifyPassword = true;
-      _this.modifyInfo = res;
-      _this.modifyInfo.adminType = "HRadmin";
+      this.isShowModifyPassword = true;
+      this.modifyInfo = res;
+      this.modifyInfo.adminType = "HRadmin";
     },
     // 添加角色
     addRole(index, res) {
-      var _this = this;
-      _this.isShowAddRole = true;
-      _this.modifyInfo = res;
-      _this.modifyInfo.adminType = "HRadmin";
+      this.isShowAddRole = true;
+      this.modifyInfo = res;
+      this.modifyInfo.adminType = "HRadmin";
     },
     // 禁用
     forbidden(index, res) {
-      var _this = this;
       var reqUrl = "/server/api/v1/admin/hrSys/update";
       var data = { id: res.id };
       var txt = "";
@@ -238,76 +192,50 @@ export default {
         data.status = 1;
         txt = "此操作将启用, 是否继续?";
       }
-      _this
-        .$confirm(txt, "提 示", {
+      this.$confirm(txt, "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
-          _this.$http.post(reqUrl, data).then(res => {
+        }).then(() => {
+          this.$myApi.http.post(reqUrl, data).then(res => {
             if (res.data.code == 0) {
-            _this.reload();
+            this.reload();
             }
           });
         })
-        .catch(() => {
-          _this.$message({
-            type: "info",
-            message: "已取消操作~"
-          });
-        });
     },
     // 删除
     handleDelete(index, res) {
-      var _this = this;
-      _this
-        .$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        })
-        .then(() => {
-          _this.$http
-            .post("/server/api/v1/admin/hrSys/delete", { id: res.id })
-            .then(res => {
-              console.log(res);
-              _this.reload();
-              _this.$message('删除成功！');
+        }).then(() => {
+          this.$myApi.http.post("/server/api/v1/admin/hrSys/delete", { id: res.id }).then(res => {
+              this.reload();
+              this.$message('删除成功！');
             });
         })
-        .catch(() => {
-          _this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     }
   },
-  computed: {
-    queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
+  watch: {
+    BUCodeSelected: {
+      handler: function(newVal) {
+        this.pageInfo.reqParams.isReq = true;
+        if (this.$refs.busAndSearch){
+          this.$refs.busAndSearch.init(this.busAndSearch);
+        }
+        if (this.$refs.pageInfo){
+          this.$refs.pageInfo.getData(this.pageInfo);
+        }
       }
-      _this.total = tableData.length;
-      var begin = (_this.curPage - 1) * _this.pageSize;
-      var end = _this.curPage * _this.pageSize;
-      return tableData.slice(begin, end);
     },
-    pageTotal() {
-      var _this = this;
-      var pageTotal = Math.ceil(_this.total / _this.pageSize);
-      return pageTotal;
+    "filter.searchKey":{
+      handler: function(newVal) {
+        this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
+      }
     }
   },
-  components: {
-    addHRadmin,
-    modifyAdmin,
-    modifyPassword,
-    addRole
-  }
 };
 </script>
 <style scoped lang="scss">

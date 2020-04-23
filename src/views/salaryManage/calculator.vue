@@ -224,12 +224,12 @@ export default {
     };
   },
   mounted() {
-    var _this = this;
+    
     for (let index = 1; index < 13; index++) {
       let demo = JSON.parse(JSON.stringify(this.demo));
       demo.id = index;
       demo.Mth = index + "月";
-      _this.dataList.push(demo);
+      this.dataList.push(demo);
     }
   },
   methods: {
@@ -238,7 +238,7 @@ export default {
     },
     //专项扣除
     deductFn(index, res) {
-      var _this = this;
+      
       let deductListIndex = 0;
       let deductListLogic = res.deductList;
       if (deductListLogic.length == 0){
@@ -248,25 +248,25 @@ export default {
         }
         deductListLogic = this.dataList[logicIndex].deductList;
       }
-      for (let i in _this.deductFrom) {
-        _this.deductFrom[i] = deductListLogic[deductListIndex] || 0;
+      for (let i in this.deductFrom) {
+        this.deductFrom[i] = deductListLogic[deductListIndex] || 0;
         deductListIndex++;
       }
-      _this.isShowDeduct = true;
-      _this.currentInfo.index = index;
+      this.isShowDeduct = true;
+      this.currentInfo.index = index;
     },
     onSubmit(deductFrom) {
-      var _this = this;
-      _this.isShowDeduct = false;
-      _this.dataList[_this.currentInfo.index].deductList = [];
+      
+      this.isShowDeduct = false;
+      this.dataList[this.currentInfo.index].deductList = [];
       for (let i in deductFrom) {
-        _this.dataList[_this.currentInfo.index].deductList.push(deductFrom[i]);
+        this.dataList[this.currentInfo.index].deductList.push(deductFrom[i]);
       }
-      _this.dataList[_this.currentInfo.index].deduct = _this.totalDeduct;
+      this.dataList[this.currentInfo.index].deduct = this.totalDeduct;
     },
     // 附加专项扣除
     addDeductFn(index, res) {
-      var _this = this;
+      
       let deductListIndex = 0;
       let addDeductListLogic = res.addDeductList;
       if (addDeductListLogic.length == 0){
@@ -276,21 +276,21 @@ export default {
         }
         addDeductListLogic = this.dataList[logicIndex].addDeductList;
       }
-      for (let i in _this.addDeductFrom) {
-        _this.addDeductFrom[i] = addDeductListLogic[deductListIndex] || 0;
+      for (let i in this.addDeductFrom) {
+        this.addDeductFrom[i] = addDeductListLogic[deductListIndex] || 0;
         deductListIndex++;
       }
-      _this.isShowAddDeduct = true;
-      _this.currentInfo.index = index;
+      this.isShowAddDeduct = true;
+      this.currentInfo.index = index;
     },
     onSubmit2(addDeductFrom) {
-      var _this = this;
-      _this.isShowAddDeduct = false;
-      _this.dataList[_this.currentInfo.index].addDeductList = [];
+      
+      this.isShowAddDeduct = false;
+      this.dataList[this.currentInfo.index].addDeductList = [];
       for (let i in addDeductFrom) {
-        _this.dataList[_this.currentInfo.index].addDeductList.push(addDeductFrom[i]);
+        this.dataList[this.currentInfo.index].addDeductList.push(addDeductFrom[i]);
       }
-      _this.dataList[_this.currentInfo.index].addDeduct = _this.totalAddDeduct;
+      this.dataList[this.currentInfo.index].addDeduct = this.totalAddDeduct;
     },
     // 计算当月个税(累计)
     monthlySumIit(grossAmtSum,taxRateAmtSum,fixedDeductSum) {
@@ -338,25 +338,25 @@ export default {
   computed: {
     // 计算个税
     monthlyTax() {
-      var _this = this;
+      
       let grossAmtSum = 0;//累计应税收入
       let taxRateAmtSum = 0;//累计纳税金额
       let fixedDeductNoUsedSum = 0;//累计起征点结余
-      _this.netPayAmtSum = 0;//累计税后所得额
-      _this.incomeSum = 0;//累计税前收入
-      _this.deductSum = 0;//社保累计
-      _this.addDeductSum = 0;//附加扣除累计
-      _this.fixedDeductSum = 0;//累计起征点
+      this.netPayAmtSum = 0;//累计税后所得额
+      this.incomeSum = 0;//累计税前收入
+      this.deductSum = 0;//社保累计
+      this.addDeductSum = 0;//附加扣除累计
+      this.fixedDeductSum = 0;//累计起征点
       
-      //_this.grossAmtSum = 0;//累计应税金额
+      //this.grossAmtSum = 0;//累计应税金额
       //let grossAmtSumNotCur = 0;//累计纳税金额不包当前月纳税
-      for (var i = 0; i < _this.dataList.length; i++) {
-        // if (_this.dataList[i].income && _this.dataList[i].income > 0){
-        if (_this.dataList[i].income){
-          _this.dataList[i].iit = 0;
-          let curGrossAmt = parseFloat(_this.dataList[i].income - _this.dataList[i].deduct -  _this.dataList[i].addDeduct - _this.dataList[i].fixedDeduct) > 0 ? parseFloat(_this.dataList[i].income - _this.dataList[i].deduct -  _this.dataList[i].addDeduct - _this.dataList[i].fixedDeduct) : 0; //应税工资
-          //_this.dataList[i].grossAmtSum = grossAmtSum;
-          let fixedDeductNoUsed = parseFloat(_this.dataList[i].fixedDeduct - (_this.dataList[i].income - _this.dataList[i].deduct -  _this.dataList[i].addDeduct));//当月已用起征点
+      for (var i = 0; i < this.dataList.length; i++) {
+        // if (this.dataList[i].income && this.dataList[i].income > 0){
+        if (this.dataList[i].income){
+          this.dataList[i].iit = 0;
+          let curGrossAmt = parseFloat(this.dataList[i].income - this.dataList[i].deduct -  this.dataList[i].addDeduct - this.dataList[i].fixedDeduct) > 0 ? parseFloat(this.dataList[i].income - this.dataList[i].deduct -  this.dataList[i].addDeduct - this.dataList[i].fixedDeduct) : 0; //应税工资
+          //this.dataList[i].grossAmtSum = grossAmtSum;
+          let fixedDeductNoUsed = parseFloat(this.dataList[i].fixedDeduct - (this.dataList[i].income - this.dataList[i].deduct -  this.dataList[i].addDeduct));//当月已用起征点
           fixedDeductNoUsedSum += fixedDeductNoUsed > 0 ? fixedDeductNoUsed : 0;//累计起征点结余
           console.log(fixedDeductNoUsed);
           console.log(fixedDeductNoUsedSum);
@@ -372,37 +372,37 @@ export default {
           }
           console.log(fixedDeductNoUsedSum);
           grossAmtSum += curGrossAmt > 0?curGrossAmt:0;
-          let monthlyIit = _this.monthlySumIit(grossAmtSum,taxRateAmtSum);
-          _this.dataList[i].grossAmt = curGrossAmt;
-          _this.dataList[i].iit = curGrossAmt > 0 ? monthlyIit.iit : 0;
-          _this.dataList[i].taxRate = curGrossAmt > 0 ? monthlyIit.taxRate : 0;
-          _this.dataList[i].taxRateTxt = _this.dataList[i].taxRate * 100 + "%";
-          _this.dataList[i].quickDeduct = curGrossAmt > 0 ? monthlyIit.quickDeduct : 0;
-          _this.dataList[i].accumulate = _this.monthlyWages(
-            _this.dataList[i].income - _this.dataList[i].deduct,
-            _this.dataList[i].iit
+          let monthlyIit = this.monthlySumIit(grossAmtSum,taxRateAmtSum);
+          this.dataList[i].grossAmt = curGrossAmt;
+          this.dataList[i].iit = curGrossAmt > 0 ? monthlyIit.iit : 0;
+          this.dataList[i].taxRate = curGrossAmt > 0 ? monthlyIit.taxRate : 0;
+          this.dataList[i].taxRateTxt = this.dataList[i].taxRate * 100 + "%";
+          this.dataList[i].quickDeduct = curGrossAmt > 0 ? monthlyIit.quickDeduct : 0;
+          this.dataList[i].accumulate = this.monthlyWages(
+            this.dataList[i].income - this.dataList[i].deduct,
+            this.dataList[i].iit
           );
 
-          taxRateAmtSum += parseFloat(_this.dataList[i].iit);
-          _this.incomeSum += parseFloat(_this.dataList[i].income);
-          _this.deductSum += parseFloat(_this.dataList[i].deduct);
-          _this.addDeductSum += parseFloat(_this.dataList[i].addDeduct);
-          _this.fixedDeductSum += parseFloat(_this.dataList[i].fixedDeduct);
+          taxRateAmtSum += parseFloat(this.dataList[i].iit);
+          this.incomeSum += parseFloat(this.dataList[i].income);
+          this.deductSum += parseFloat(this.dataList[i].deduct);
+          this.addDeductSum += parseFloat(this.dataList[i].addDeduct);
+          this.fixedDeductSum += parseFloat(this.dataList[i].fixedDeduct);
          
-          _this.dataList[i].incomeSum = _this.incomeSum;
-          _this.dataList[i].deductSum = _this.deductSum;
-          _this.dataList[i].addDeductSum = _this.addDeductSum;
-          _this.dataList[i].fixedDeductSum = _this.fixedDeductSum;
-          _this.dataList[i].taxRateAmtSum = taxRateAmtSum;
-          _this.dataList[i].grossAmtSum = grossAmtSum;
-          _this.taxRateAmtSum = taxRateAmtSum;
-          _this.netPayAmtSum += parseFloat(_this.dataList[i].accumulate);
-          _this.dataList[i].accumulateSum = _this.netPayAmtSum;
+          this.dataList[i].incomeSum = this.incomeSum;
+          this.dataList[i].deductSum = this.deductSum;
+          this.dataList[i].addDeductSum = this.addDeductSum;
+          this.dataList[i].fixedDeductSum = this.fixedDeductSum;
+          this.dataList[i].taxRateAmtSum = taxRateAmtSum;
+          this.dataList[i].grossAmtSum = grossAmtSum;
+          this.taxRateAmtSum = taxRateAmtSum;
+          this.netPayAmtSum += parseFloat(this.dataList[i].accumulate);
+          this.dataList[i].accumulateSum = this.netPayAmtSum;
         }
       }
-      _this.grossAmtSum = grossAmtSum;
-      //_this.grossAmtSum = grossAmtSum;
-      return _this.dataList;
+      this.grossAmtSum = grossAmtSum;
+      //this.grossAmtSum = grossAmtSum;
+      return this.dataList;
     },
     // 累计应纳税总额
     cummGrossAmt() {

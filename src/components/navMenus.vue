@@ -41,30 +41,30 @@ export default {
     },
     methods:{
         getRoute(res){
-            var _this = this;
+            
             var val = {
                 title: res.name,
                 name: res.authUrl
             }
-            if(_this.navTabs.length == 0){
-                _this.$store.commit({
+            if(this.navTabs.length == 0){
+                this.$store.commit({
                     type:'changeNavTabs',
                     navTabs:val,
                     component:''
                 });
             }else{
                 // 这里判断tab标签是否已经有存在的路径
-                var isOk = _this.navTabs.every((item)=>{
+                var isOk = this.navTabs.every((item)=>{
                     return item.name != res.authUrl;
                 });
                 if(isOk){
-                    _this.$store.commit({
+                    this.$store.commit({
                         type:'changeNavTabs',
                         navTabs:val
                     });
                 }
             }
-            _this.$store.commit({
+            this.$store.commit({
                 type:'changeTabsVal',
                 TabsValue:res.authUrl
             });

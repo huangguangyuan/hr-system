@@ -23,7 +23,7 @@
         </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="角色扩展：" prop="levExtend" v-if="ruleForm.lev != 301">
+      <!--<el-form-item label="角色扩展：" prop="levExtend" v-if="ruleForm.lev != 301">
         <el-select v-model="ruleForm.levExtend" placeholder="请选择管理员类型" multiple>
           <el-option
           v-for="item in hrAdminRoles"
@@ -36,7 +36,7 @@
         </el-option>
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="假期权限：" prop="leavesAccess" v-if="ruleForm.lev != 301">
+       <el-form-item label="假期权限：" prop="leavesAccess" v-if="ruleForm.lev != 301">
         <el-checkbox-group v-model="ruleForm.leavesAccess">
           <el-checkbox label="1">查看</el-checkbox>
           <el-checkbox label="2">审批</el-checkbox>
@@ -49,14 +49,14 @@
           <el-checkbox label="2">审批</el-checkbox>
           <el-checkbox label="3">结算</el-checkbox>
         </el-checkbox-group>
-      </el-form-item> -->
+      </el-form-item> 
       <el-form-item label="服务归属：" prop="serveId">
         <el-radio-group v-model="ruleForm.serveId">
           <el-radio label="1">单位</el-radio>
           <el-radio label="2">区域</el-radio>
           <el-radio label="3">公司</el-radio>
         </el-radio-group>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="账户名：" prop="account">
         <el-input v-model="ruleForm.account"></el-input>
       </el-form-item>
@@ -106,7 +106,7 @@ export default {
         levExtend:[],
         leavesAccess:[],
         claimAccess:[],
-        serveId:''
+        serveId:1
       },
       regionBUs: [],
       hrAdminRoles: [],
@@ -127,11 +127,11 @@ export default {
           { required: true, message: "请选择所属单位", trigger: "change" }
         ],
         lev: [
-          { required: true, message: "请选择管理员等级", trigger: "change" }
+          { required: true, message: "管理员角色", trigger: "change" }
         ],
-        serveId: [
-          { required: true, message: "请选择服务归属", trigger: "change" }
-        ],
+        // serveId: [
+        //   { required: true, message: "请选择服务归属", trigger: "change" }
+        // ],
         mobile: [
           { required: false, message: "请输入手机号码", trigger: "blur" },
           {
@@ -158,18 +158,16 @@ export default {
   methods: {
     // 获取单位列表
     async getBUCodeFun() {
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+      var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUs = regionBUs;
       }
     },
     //提交表单
     submitForm(formName) {
-      var _this = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.addAmdinFn();
+          this.addAmdinFn();
         } else {
           return false;
         }
@@ -177,57 +175,48 @@ export default {
     },
     // 所有HR管理员角色属性
     getHrAdminRoleInfo() {
-      var _this = this;
       var reqUrl = "/server/api/v1/admin/hrSys/getHrAdminRoleInfo";
       var data = {
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.hrAdminRoles = res.data.data;
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
           return false;
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
     },    
     // 新增后台管理员
     addAmdinFn() {
-      var _this = this;
       var reqUrl = "/server/api/v1/admin/hrSys/add";
       var data = {
-        BUCode:_this.ruleForm.BUCode,
-        account: _this.ruleForm.account,
-        email: _this.ruleForm.email,
-        password: md5(_this.ruleForm.password),
-        mobile: _this.ruleForm.mobile,
-        status: parseInt(_this.ruleForm.status),
-        lev: parseInt(_this.ruleForm.lev),
-        levExtend: _this.ruleForm.levExtend.join(","),
-        leavesAccess: _this.ruleForm.leavesAccess.join(","),
-        claimAccess: _this.ruleForm.claimAccess.join(","),
-        serveId: parseInt(_this.ruleForm.serveId),
-        name: _this.ruleForm.name
+        BUCode:this.ruleForm.BUCode,
+        account: this.ruleForm.account,
+        email: this.ruleForm.email,
+        password: md5(this.ruleForm.password),
+        mobile: this.ruleForm.mobile,
+        status: parseInt(this.ruleForm.status),
+        lev: parseInt(this.ruleForm.lev),
+        levExtend: this.ruleForm.levExtend.join(","),
+        leavesAccess: this.ruleForm.leavesAccess.join(","),
+        claimAccess: this.ruleForm.claimAccess.join(","),
+        serveId: parseInt(this.ruleForm.serveId),
+        name: this.ruleForm.name
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.$message("新增成功");
-          _this.reload();
+          this.$message("新增成功");
+          this.reload();
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
           return false;
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowAddAdmin", false);
+      this.$emit("listenIsShowAddAdmin", false);
     },
     // 重置
     resetForm(formName) {

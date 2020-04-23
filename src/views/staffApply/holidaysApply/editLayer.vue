@@ -13,7 +13,7 @@
       </el-form-item>
 
       <el-form-item label="请假天数" prop="days">
-        <el-input-number v-model="ruleForm.days" :precision="2" :step="0.5" :max="30" :min="0.5"></el-input-number>
+        <el-input-number v-model="ruleForm.days" :precision="1" :step="0.5" :max="30" :min="0"  class="inp01" @keyup.native="proving(index)"></el-input-number>
         <span class="inptTip">最少单位为0.5</span>
       </el-form-item>
       <el-form-item label="是否带薪" prop="isWithpay">
@@ -33,12 +33,12 @@
         </el-select>
       </el-form-item>
       <fileUpload :fileUpload_props="fileUpload_props" @fileUpload_tf="fileUpload_tf"></fileUpload>
-      <el-form-item label="审批人员：">
-        <el-checkbox-group v-model="approveOfficer">
+      <el-form-item label="审批人员：" :rules="{required: true, message: '请最少选择一名审批人员', trigger: 'blur'}">
+        <el-checkbox-group v-model="approveOfficer" >
           <el-checkbox v-for="approve in approveOfficerList" :label="approve.code" :key="approve.code" >{{approve.name}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="结算人员：">
+      <el-form-item label="结算人员：" >
         <el-checkbox-group v-model="balanceOfficer">
           <el-checkbox v-for="balance in balanceOfficerList" :label="balance.code" :key="balance.code" >{{balance.name}}</el-checkbox>
         </el-checkbox-group>
@@ -48,8 +48,8 @@
           <el-checkbox v-for="notice in noticeOfficerList" :label="notice.code" :key="notice.code">{{notice.name}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="发送邮件：">
-        <el-input v-model="ruleForm.sendEmail"></el-input> 多个请用'，'隔开,例：abc@163.com,abc@qq.com
+      <el-form-item label="抄送邮件：">
+        <el-input v-model="ruleForm.sendEmail"></el-input> 抄送至其他电子邮件，多个地址请用“,”隔开，例：abc@163.com,abc@qq.com；
       </el-form-item>
       <el-form-item label="备 注：">
         <el-input v-model="ruleForm.remarks"></el-input>
@@ -78,14 +78,15 @@ export default {
       ruleForm: {
         staffCode: "",
         applyTime: [],
-        days: 1,
+        days: 0,
         typeId: "",
         remarks: "",
-        isWithpay:0,
+        isWithpay:1,
         fileSrc: "",
         sendEmail:"",
       }, //表单信息
       fileUpload_props:{
+        isUploading:false,
         uploadUrl:'',
         uploadFolder:'',
         fileList:[]
@@ -114,34 +115,76 @@ export default {
     this.ruleForm.applyTime.push(s,e);
   },
   methods: {
+    // 只能输入数字且只有一位小数
+    proving(e) {
+        // 先把非数字的都替换掉，除了数字和.
+        this.ruleForm.days = this.ruleForm.days.toString().replace(/[^\d.]/g, '');
+        // 必须保证第一个为数字而不是.
+        this.ruleForm.days = this.ruleForm.days.toString().replace(/^\./g, '');
+        // 保证只有出现一个.而没有多个.
+        this.ruleForm.days = this.ruleForm.days.toString().replace(/\.{2,}/g, '');
+        // 保证.只出现一次，而不能出现两次以上
+        this.ruleForm.days = this.ruleForm.days.toString().replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
+        let index = -1;
+        for (let i in this.ruleForm.days) {
+            if (this.ruleForm.days[i] === '.') {
+                index = i
+            }
+            if (index !== -1) {
+                if (i - index > 1) {
+                    this.ruleForm.days = this.ruleForm.days.substring(0, this.ruleForm.days.length - 1)
+                }
+            }
+        }
+    },
     // 初始化
     initializeFun() {
+      this.userInfo = this.$toolFn.curUser;
       this.getHolidaysApplyTypeFun();
-      this.holidayProcessRelate(this.curInfo.staffCode); //获取报假期程相关人员
+      this.holidayProcessRelate(this.curInfo.staffCode); //获取报假期相关人员
     },
     // 获取假期流程相关人员
     holidayProcessRelate(staffCode) {
       var reqUrl = "/server/api/v1/staff/holidaysApply/holidayProcessRelate";
-      this.$http.post(reqUrl, {staffCode:staffCode}).then(res => {
+      this.$myApi.http.post(reqUrl, {staffCode:staffCode}).then(res => {
         if (res.data.code == 0) {
-          //this.claimTypeList = res.data.data;
           this.approveOfficerList = res.data.data.approveOfficerList;
-          this.approveOfficer = this.approveOfficerList.map(m => m.code);
+          //this.approveOfficer = this.approveOfficerList.map(m => m.code);
+          for (let index = 0; index < this.approveOfficerList.length; index++) {
+            const element = this.approveOfficerList[index];
+            if (element.selected){
+              this.approveOfficer.push(element.code);
+            }
+          }
+
           this.balanceOfficerList = res.data.data.balanceOfficerList;
           this.balanceOfficer = this.balanceOfficerList.map(m => m.code);
           this.noticeOfficerList = res.data.data.noticeOfficerList;
           this.noticeOfficer = this.noticeOfficerList.map(m => m.code);
+          for (let index = 0; index < this.approveOfficerList.length; index++) {
+            const element = this.approveOfficerList[index];
+            if (this.noticeOfficer.indexOf(element.code) < 0){
+              this.noticeOfficerList.push(element);
+              this.noticeOfficer.push(element.code);
+            }
+          }
+          for (let index = 0; index < this.balanceOfficerList.length; index++) {
+            const element = this.balanceOfficerList[index];
+            if (this.noticeOfficer.indexOf(element.code) < 0){
+              this.noticeOfficerList.push(element);
+              this.noticeOfficer.push(element.code);
+            }
+          }
+          this.noticeOfficer = [];
         }
       });
     },
-    // 提交表单
     submitForm(formName) {
       this.addFun();
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.addFun();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -149,7 +192,7 @@ export default {
     // 获取请假类型
     getHolidaysApplyTypeFun() {
       var reqUrl = "/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId";
-      this.$http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           this.holidaysApplyTypeList = res.data.data;
         }
@@ -157,8 +200,11 @@ export default {
     },
     // 新增
     addFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/staff/holidaysApply/approveApply";
+      if (this.fileUpload_props.isUploading){
+        this.$message.error("正在上传文件，请稍后");
+        return;
+      }
       var details = [
         {
           startDate: this.ruleForm.applyTime[0],
@@ -181,23 +227,31 @@ export default {
         noticeOfficer:this.noticeOfficer.join(','),
         sendEmail:this.ruleForm.sendEmail.replace(/，/g,","),
       };
+      if (data.totalDay <= 0){
+        this.$message.error("请选择请假天数");
+        return;
+      }
+      if (!Number.isInteger((data.totalDay * 2))){
+        this.$message.error("请确保请假天数是0.5的倍数");
+        return;
+      }
       if(this.approveOfficer.length == 0){
         this.$message.error("请至少选中一个审批人员");
         return;
       }
-      if(this.balanceOfficer.length == 0){
-        this.$message.error("请至少选中一个结算人员");
-        return;
-      }
-      for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
-        const element = _this.fileUpload_props.fileList[index];
+      // if(this.balanceOfficer.length == 0){
+      //   this.$message.error("请至少选中一个结算人员");
+      //   return;
+      // }
+      for (let index = 0; index < this.fileUpload_props.fileList.length; index++) {
+        const element = this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
       
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("新增成功~");
+          this.$message.success("新增成功");
         } else {
           this.$message.error(res.data.msg);
         }
@@ -213,7 +267,8 @@ export default {
     },
     //获取子组件数据
     fileUpload_tf(data){
-      this.fileUpload_props.fileList = data;
+      this.fileUpload_props.fileList = data.fileList;
+      this.fileUpload_props.isUploading = data.isUploading;
     }
   },
   components: {
@@ -225,7 +280,6 @@ export default {
 
 <style scoped lang="scss">
 .inptTip{padding: 0 10px;color: #ff6600}
-
 </style>
 
 

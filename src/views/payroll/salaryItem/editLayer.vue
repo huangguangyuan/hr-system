@@ -91,19 +91,19 @@ export default {
     getSalaryItemCode(){
       var reqUrl = '/server/api/v1/bu/salaryItems';
       var data = {BUCode: this.curInfo.BUCode}
-      this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
           this.salaryCodeList = res.data.data.filter(item => {
-                 if (item.taxable == this.ruleForm.taxable){
-                   return item;
-                 }
-               });
+            if (item.taxable == this.ruleForm.taxable){
+              return item;
+            }
+          });
         }else{
           this.$message.error(res.data.msg);
         }
       })
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -116,7 +116,6 @@ export default {
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -131,10 +130,10 @@ export default {
         status: parseInt(this.ruleForm.status),
         remarks: this.ruleForm.remarks
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("新增成功~");
+          this.$message.success("新增成功");
         } else {
           this.$message.error(res.data.msg);
         }
@@ -150,10 +149,10 @@ export default {
         status: parseInt(this.ruleForm.status),
         remarks: this.ruleForm.remarks
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("修改成功~");
+          this.$message.success("修改成功");
         } else {
           this.$message(res.data.msg);
         }

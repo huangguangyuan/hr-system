@@ -28,49 +28,40 @@ export default {
   methods: {
     //获取后台管理员角色列表
     getRoleList() {
-      var _this = this;
       var reqUrl = "/server/api/v1/projectRole/projectRolesWithAll";
-      if(_this.modifyInfo.adminType == "admin"){
+      if(this.modifyInfo.adminType == "admin"){
         var data = { typeId: 1 };
       }else{
         var data = { typeId: 2 };
       }
-      _this.$http
-        .post(reqUrl, data)
-        .then(res => {
-          console.log(res);
-          _this.data = res.data.data;
+      this.$myApi.http.post(reqUrl, data).then(res => {
+          this.data = res.data.data;
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 获取用户当前的角色
     getCurrentRole() {
-      var _this = this;
       var reqUrl = "";
-      if(_this.modifyInfo.adminType == "admin"){
+      if(this.modifyInfo.adminType == "admin"){
         reqUrl = '/server/api/v1/admin/getByCode';
       }else{
         reqUrl = '/server/api/v1/admin/hrSys/getByCode';
       }
-      var data = { code: _this.modifyInfo.code };
-      _this.$http.post(reqUrl, data).then(res => {
+      var data = { code: this.modifyInfo.code };
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.data.roles != 0) {
           var arr = res.data.data.roles.map(item => {
             return item.code;
           });
-          _this.$refs.tree.setCheckedKeys(arr);
+          this.$refs.tree.setCheckedKeys(arr);
         }
       });
     },
     // 添加角色
     addRolr() {
-      var _this = this;
       var reqUrl = "/server/api/v1/admin/updateAdminRoleRelation";
-      var roleCodeArr = _this.$refs.tree.getCheckedKeys();
+      var roleCodeArr = this.$refs.tree.getCheckedKeys();
       var data = {
-        adminCode: _this.modifyInfo.code,
+        adminCode: this.modifyInfo.code,
         params: []
       };
       for (var i = 0; i < roleCodeArr.length; i++) {
@@ -79,17 +70,16 @@ export default {
           roleCode: roleCodeArr[i]
         });
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if(res.data.code == 0){
-          _this.$message('操作成功~');
-          _this.reload();
+          this.$message('操作成功');
+          this.reload();
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowAddAdmin", false);
+      this.$emit("listenIsShowAddAdmin", false);
     }
   }
 };

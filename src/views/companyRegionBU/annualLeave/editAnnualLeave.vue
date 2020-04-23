@@ -56,7 +56,6 @@ export default {
         annualLeaveRetain: [{required: true,message: "请填写年假清空后可保留天数",trigger: "blur"}],
         annualLeaveRetainClearDate: [{ required: true, message: "请选择可保留天数清空日期", trigger: "change" }],
       }
-      
     };
   },
   mounted() {
@@ -82,15 +81,14 @@ export default {
         this.ruleForm.remarks = this.curInfo.remarks;
       }
     },
-    // 提交表单
+    
     submitForm(formName) {
-      var _this = this;
       this.ruleForm.annualLeaveWriteOffDate = new Date((new Date().getFullYear()+1) + "-" + this.$toolFn.timeFormat(this.ruleForm.annualLeaveWriteOffDate,"MM-dd"));
       this.ruleForm.annualLeaveRetainClearDate = new Date((new Date().getFullYear()+1) + "-" +  this.$toolFn.timeFormat(this.ruleForm.annualLeaveRetainClearDate,"MM-dd"));
-      _this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.ruleForm.annualLeaveWriteOffDate > this.ruleForm.annualLeaveRetainClearDate){
-            _this.$message.error("年假保留天数清空日期不能早于年假清空日期");
+            this.$message.error("年假保留天数清空日期不能早于年假清空日期");
             return false;
           }
           var postData = {
@@ -101,7 +99,7 @@ export default {
             annualLeaveRetain : this.ruleForm.annualLeaveRetain
           }
           var reqUrl = '/server/api/v1/bu/annualLeaveUpdate';
-          this.$http.post(reqUrl,postData).then(res => {
+          this.$myApi.http.post(reqUrl,postData).then(res => {
             if(res.data.code == 0){
               this.$message.success('修改成功！');
               this.reload();
@@ -110,15 +108,13 @@ export default {
             }
           });
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      this.$emit("listenIsShowMask", false);
     }
   }
 };

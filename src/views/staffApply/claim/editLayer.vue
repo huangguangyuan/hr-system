@@ -24,14 +24,13 @@
         <el-form-item label="报销金额" :prop="'details.'+index+'.amount'" :rules="{required: true, message: '报销金额不能为空', trigger: 'blur'}">
           <el-input v-model="domain.amount"></el-input>
         </el-form-item>
-
         <el-form-item label="备注" :prop="'details.'+index+'.remarks'">
           <el-input v-model="domain.remarks"></el-input>
         </el-form-item>
         <el-divider></el-divider>
       </div>
       <fileUpload :fileUpload_props="fileUpload_props" @fileUpload_tf="fileUpload_tf"></fileUpload>
-      <el-form-item label="审批人员：">
+      <el-form-item label="审批人员：" :rules="{required: true, message: '请最少选择一名审批人员', trigger: 'blur'}">
         <el-checkbox-group v-model="approveOfficer">
           <el-checkbox v-for="approve in approveOfficerList" :label="approve.code" :key="approve.code" >{{approve.name}}</el-checkbox>
         </el-checkbox-group>
@@ -46,8 +45,8 @@
           <el-checkbox v-for="notice in noticeOfficerList" :label="notice.code" :key="notice.code">{{notice.name}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="发送邮件：">
-        <el-input v-model="ruleForm.sendEmail"></el-input> 多个请用'，'隔开,例：abc@163.com,abc@qq.com
+      <el-form-item label="抄送邮件：">
+        <el-input v-model="ruleForm.sendEmail"></el-input> 抄送至其他电子邮件，多个地址请用“,”隔开，例：abc@163.com,abc@qq.com；
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
@@ -79,25 +78,27 @@ export default {
         details: [{ title: "", amount: "", typeId: "", remarks: "", claimDate: "" }]
       }, //表单信息
       fileUpload_props:{
+        isUploading:false,
         uploadUrl:'',
         uploadFolder:'',
         fileList:[]
       },
       isShow: true, //是否显示
       fileList: [],
-      claimTypeList: []
+      claimTypeList: [],
+      userInfo:{}
     };
   },
   mounted() {
     this.initializeFun();
+    this.userInfo = this.$toolFn.curUser;
   },
   methods: {
     // 初始化
     initializeFun() {
-      this.getClaimTypeId(); //获取报销类型
+      this.getBUClaimType(); //获取报销类型
       this.claimProcessRelate(this.curInfo.staffCode); //获取报销流程相关人员
     },
-    // 提交表单
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -110,27 +111,41 @@ export default {
     // 获取报销流程相关人员
     claimProcessRelate(staffCode) {
       var reqUrl = "/server/api/v1/staff/claim/claimProcessRelate";
-      this.$http.post(reqUrl, {staffCode:staffCode}).then(res => {
+      this.$myApi.http.post(reqUrl, {staffCode:staffCode}).then(res => {
         if (res.data.code == 0) {
-          //this.claimTypeList = res.data.data;
           this.approveOfficerList = res.data.data.approveOfficerList;
-          this.approveOfficer = this.approveOfficerList.map(m => m.code);
+          for (let index = 0; index < this.approveOfficerList.length; index++) {
+            const element = this.approveOfficerList[index];
+            if (element.selected){
+              this.approveOfficer.push(element.code);
+            }
+          }
           this.balanceOfficerList = res.data.data.balanceOfficerList;
           this.balanceOfficer = this.balanceOfficerList.map(m => m.code);
           this.noticeOfficerList = res.data.data.noticeOfficerList;
           this.noticeOfficer = this.noticeOfficerList.map(m => m.code);
+          for (let index = 0; index < this.approveOfficerList.length; index++) {
+            const element = this.approveOfficerList[index];
+            if (this.noticeOfficer.indexOf(element.code) < 0){
+              this.noticeOfficerList.push(element);
+              this.noticeOfficer.push(element.code);
+            }
+          }
+          for (let index = 0; index < this.balanceOfficerList.length; index++) {
+            const element = this.balanceOfficerList[index];
+            if (this.noticeOfficer.indexOf(element.code) < 0){
+              this.noticeOfficerList.push(element);
+              this.noticeOfficer.push(element.code);
+            }
+          }
+          this.noticeOfficer = [];
+
         }
       });
     },
     // 获取报销类型
-    getClaimTypeId() {
-      var reqUrl = "/server/api/v1/staff/claim/getBUClaimType";
-      this.$http.post(reqUrl, {}).then(res => {
-        console.log(res);
-        if (res.data.code == 0) {
-          this.claimTypeList = res.data.data;
-        }
-      });
+    async getBUClaimType() {
+       this.claimTypeList = await this.$myApi.getBUClaimType();
     },
     // 添加报销项目
     addDomain() {
@@ -156,7 +171,10 @@ export default {
     // 新增
     addFun() {
       var totalAmount = 0;
-      var _this = this;
+      if (this.fileUpload_props.isUploading){
+        this.$message.error("正在上传文件，请稍后");
+        return;
+      }
       for(var i = 0;i<this.ruleForm.details.length;i++){
           totalAmount += parseFloat(this.ruleForm.details[i].amount);
       }
@@ -180,18 +198,18 @@ export default {
         this.$message.error("请至少选中一个审批人员");
         return;
       }
-      if(this.balanceOfficer.length == 0){
-        this.$message.error("请至少选中一个结算人员");
-        return;
-      }
-      for (let index = 0; index < _this.fileUpload_props.fileList.length; index++) {
-        const element = _this.fileUpload_props.fileList[index];
+      // if(this.balanceOfficer.length == 0){
+      //   this.$message.error("请至少选中一个结算人员");
+      //   return;
+      // }
+      for (let index = 0; index < this.fileUpload_props.fileList.length; index++) {
+        const element = this.fileUpload_props.fileList[index];
         data.fileSrc += data.fileSrc != ""?',' + element.url:element.url
       }
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("新增成功~");
+          this.$message.success("新增成功");
         } else {
           this.$message.error(res.data.msg);
         }
@@ -207,7 +225,8 @@ export default {
     },
     //获取子组件数据
     fileUpload_tf(data){
-      this.fileUpload_props.fileList = data;
+      this.fileUpload_props.fileList = data.fileList;
+      this.fileUpload_props.isUploading = data.isUploading;
     }
   },
   components: {

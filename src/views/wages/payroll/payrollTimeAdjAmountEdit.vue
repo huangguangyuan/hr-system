@@ -1,6 +1,8 @@
 <template>
   <div class="editLayer">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="220px">
+    <payroll-times-month-info :curInfo="curInfo"></payroll-times-month-info>
+    <el-divider>本次出粮调整金额</el-divider>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
       <el-form-item label="调整金额：" prop="adjAmount">
         <el-input v-model="ruleForm.adjAmount"></el-input>
       </el-form-item>
@@ -15,15 +17,18 @@
   </div>
 </template>
 <script>
+import payrollTimesMonthInfo from "./payrollTimesMonthInfo.vue";
 export default {
+  components: {
+    payrollTimesMonthInfo
+  },
   name: "editLayer",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
       ruleForm: {
-        code:'',
-        hrCode:'',
+        id:'',
         adjAmount:'',
         adjAmountRemarks:'',
       }, //表单信息
@@ -39,35 +44,46 @@ export default {
     };
   },
   mounted() {
-    this.ruleForm.adjAmount = this.curInfo.adjAmount;
-    this.ruleForm.adjAmountRemarks = this.curInfo.adjAmountRemarks;
+    this.getItem();
   },
   methods: {
-    // 提交表单
+    /**
+     * @description: 获取详细信息
+     */
+    getItem() {
+      var reqUrl = "/server/api/v1/payroll/staff/payrollTimesItem";
+      var data = {
+        id: this.curInfo.timesId
+      };
+      this.$myApi.http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
+          this.ruleForm.id = res.data.data.id;
+          this.ruleForm.adjAmount = res.data.data.adjAmount;
+          this.ruleForm.adjAmountRemarks = res.data.data.adjAmountRemarks;
+        }
+      });
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.editFun();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 新增
     editFun() {
-      var reqUrl = "/server/api/v1/payroll/staff/payrollAdjAmountEdit";
+      var reqUrl = "/server/api/v1/payroll/staff/payrollTimesUpdate";
       var data = {
-        hrCode:this.curInfo.hrCode,
-        code:this.curInfo.code,
+        id:this.ruleForm.id,
         adjAmount:parseFloat(this.ruleForm.adjAmount),
         adjAmountRemarks:this.ruleForm.adjAmountRemarks
       };
-
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("操作成功~");
+          this.$message.success("操作成功");
         } else {
           this.$message.error(res.data.msg);
         }

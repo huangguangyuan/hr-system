@@ -1,22 +1,22 @@
 <template>
-  <div class="editTemplate">
+  <div class="editTemplate" v-if="isShow" >
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" size="mini">
       <el-divider>
         <i class="hr-icon-jichuxinxi"></i> 基础信息
       </el-divider>
-      <el-form-item label="所属公司/地区" prop="selectedOptions" v-if="isShow">
+      <el-form-item label="所属公司/地区" prop="selectedOptions" v-if="isShowItem">
         <el-cascader v-model="ruleForm.selectedOptions" :props="props"></el-cascader>
       </el-form-item>
-      <el-form-item label="名称：" prop="name" v-if="isShow">
+      <el-form-item label="名称：" prop="name" v-if="isShowItem">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="账号：" prop="account" v-if="isShow">
+      <el-form-item label="账号：" prop="account" v-if="isShowItem">
         <el-input v-model="ruleForm.account"></el-input>
       </el-form-item>
-      <el-form-item label="密码：" prop="password" v-if="isShow">
+      <el-form-item label="密码：" prop="password" v-if="isShowItem">
         <el-input v-model="ruleForm.password" show-password></el-input>
       </el-form-item>
-      <el-form-item label="国家：" v-if="isShow">
+      <el-form-item label="国家：" v-if="isShowItem">
         <el-input v-model="ruleForm.country"></el-input>
       </el-form-item>
       <el-form-item label="位置：">
@@ -29,15 +29,7 @@
         <el-input v-model="ruleForm.remarks"></el-input>
       </el-form-item>
       <el-form-item label="logo图片：">
-        <el-upload
-          class="avatar-uploader"
-          action="/app/api/v1/file/imageUpload"
-          :show-file-list="false"
-          :on-success="uploadLogo"
-        >
-          <el-image v-if="ruleForm.logo" :src="logoSrc" class="avatar" fit="cover"></el-image>
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+        <image-upload :imageUpload_props="imageUpload_props" :imageSrc.sync="ruleForm.logo"></image-upload>
       </el-form-item>
       <el-divider>
         <i class="el-icon-user"></i> 联系人信息
@@ -70,12 +62,18 @@
 <script>
 import axios from "axios";
 import md5 from "js-md5";
+import imageUpload from "@/components/imageUpload.vue";
 export default {
+  components: {
+    imageUpload
+  },
   name: "editTemplate",
   inject: ["reload"],
   props: ["curInfo"],
   data() {
     return {
+      isShow:false,
+      isShowItem:true,
       ruleForm: {
         selectedOptions:[],
         name: "",
@@ -95,6 +93,9 @@ export default {
       }, //表单信息
       props: {
         lazy: true,
+        value: "code",
+        label: "name",
+        children: "children",
         lazyLoad(node, resolve) {
           var nodes;
           if (node.level == 0) {
@@ -110,9 +111,7 @@ export default {
               resolve(nodes);
             });
           } else if (node.level == 1) {
-            axios
-              .post("/server/api/v1/company/company", { id: node.data.id })
-              .then(res => {
+            axios.post("/server/api/v1/company/company", { id: node.data.id }).then(res => {
                 nodes = res.data.data.companyRegionList.map(item => {
                   return {
                     id: item.id,
@@ -125,13 +124,13 @@ export default {
               });
           }
         },
-        value: "code",
-        label: "name",
-        children: "children"
       },
       logoSrc:'',//图片路径
       loading: false, //公司ID号
-      isShow: true, //是否显示
+      imageUpload_props:{
+        imageSrc:'',
+        uploadFolder:''
+      },
       rules: {
         selectedOptions: [
           {
@@ -171,26 +170,26 @@ export default {
   mounted() {
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
-      this.isShow = false;
+      this.imageUpload_props.imageSrc = this.ruleForm.logo;
+      this.isShowItem = false;
       this.logoSrc = this.ruleForm.logo;
     }
+    this.isShow = true;
   },
   methods: {
-    // 提交表单
+    
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              _this.modifyFun();
+              this.modifyFun();
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -216,10 +215,10 @@ export default {
         contactLocation:this.ruleForm.contactLocation,
         contactRemarks:this.ruleForm.contactRemarks
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("新增成功~");
+          this.$message.success("新增成功");
         } else {
           this.$message(res.data.msg);
         }
@@ -227,27 +226,26 @@ export default {
     },
     // 修改信息
     modifyFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/company/regionBUUpdate";
       var data = {
-        id: _this.ruleForm.id,
-        location: _this.ruleForm.location,
-        address: _this.ruleForm.address,
-        logo: _this.ruleForm.logo,
-        remarks: _this.ruleForm.remarks,
-        contactName: _this.ruleForm.contactName,
-        contactTel: _this.ruleForm.contactTel,
-        contactEmail: _this.ruleForm.contactEmail,
-        contactTitle: _this.ruleForm.contactTitle,
-        contactLocation: _this.ruleForm.contactLocation,
-        contactRemarks: _this.ruleForm.contactRemarks
+        id: this.ruleForm.id,
+        location: this.ruleForm.location,
+        address: this.ruleForm.address,
+        logo: this.ruleForm.logo,
+        remarks: this.ruleForm.remarks,
+        contactName: this.ruleForm.contactName,
+        contactTel: this.ruleForm.contactTel,
+        contactEmail: this.ruleForm.contactEmail,
+        contactTitle: this.ruleForm.contactTitle,
+        contactLocation: this.ruleForm.contactLocation,
+        contactRemarks: this.ruleForm.contactRemarks
       };
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message("修改成功~");
+          this.reload();
+          this.$message("修改成功");
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
         }
       });
     },
@@ -258,8 +256,8 @@ export default {
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      
+      this.$emit("listenisShowItemMask", false);
     },
     // 重置
     resetForm(formName) {
@@ -299,30 +297,6 @@ export default {
       font-size: 16px;
     }
   }
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #ebb563;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 120px;
-  height: 120px;
-  line-height: 120px;
-  text-align: center;
-}
-.avatar {
-  width: 120px;
-  height: 120px;
-  display: block;
 }
 </style>
 

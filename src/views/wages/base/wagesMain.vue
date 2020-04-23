@@ -18,8 +18,7 @@ export default {
     };
   },
   mounted() {
-    this.userInfo = this.$toolFn.localGet("userInfo");
-    console.log(this.userInfo.access);
+    this.userInfo = this.$toolFn.curUser;
     if (this.userInfo.access.payrollMain.length > 0){
       this.isShow = true;
     }

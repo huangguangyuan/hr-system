@@ -17,18 +17,7 @@
         @change="selectMonth"
       >
         <el-option label="全年" value="0"></el-option>
-        <el-option label="1月" value="1"></el-option>
-        <el-option label="2月" value="2"></el-option>
-        <el-option label="3月" value="3"></el-option>
-        <el-option label="4月" value="4"></el-option>
-        <el-option label="5月" value="5"></el-option>
-        <el-option label="6月" value="6"></el-option>
-        <el-option label="7月" value="7"></el-option>
-        <el-option label="8月" value="8"></el-option>
-        <el-option label="9月" value="9"></el-option>
-        <el-option label="10月" value="10"></el-option>
-        <el-option label="11月" value="11"></el-option>
-        <el-option label="12月" value="12"></el-option>
+        <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val"></el-option>
       </el-select>
     </div>
     <div class="monthPayroll" v-if="isShowPayrollMonth">
@@ -85,7 +74,6 @@
             <span class="title">{{tableData.remarks.title}}</span>：
             <span class="val">{{tableData.remarks.val || '暂无'}}</span>
           </li>
-
         </ul>
         <br >
         <el-divider v-if="tableData" content-position="left">薪资构成</el-divider>
@@ -98,7 +86,6 @@
             <span class="title">{{tableData.totalAmount.title}}</span>：
             <span class="val">{{tableData.totalAmount.val || '暂无'}}</span>
           </li>
-        
           <li v-if="tableData.SI">
             <span class="title">{{tableData.SI.title}}</span>：
             <span class="val">{{tableData.SI.val || '暂无'}}</span>
@@ -176,13 +163,9 @@
           </div>
           <div class="table-item">
             <el-divider>不应税项目列表</el-divider>
-            <el-table
-              v-if="tableData.staffSalaryItemNotTaxableList"
+            <el-table v-if="tableData.staffSalaryItemNotTaxableList"
               :data="tableData.staffSalaryItemNotTaxableList"
-              stripe
-              border
-              show-summary
-            >
+              stripe border show-summary>
               <el-table-column prop="title" label="名 称"></el-table-column>
               <el-table-column prop="val" label="金 额"></el-table-column>
             </el-table>
@@ -204,6 +187,7 @@
 </template>
 <script>
 import staffPayrollYear from "./staffPayrollYear.vue";
+import {monthList} from "@/lib/staticData.js";
 export default {
   name: "staffPayrollSlip",
   inject: ["reload"],
@@ -217,38 +201,33 @@ export default {
       },
       userInfo:{},
       curInfo:{},
+      monthList:[],
       isShowPayrollMonth:true,
       isShowPayrollYear:false
     };
   },
   mounted() {
+    this.monthList = monthList();
     this.InitializationFun();
   },
   methods: {
     // 初始化
     InitializationFun() {
-      this.userInfo = this.$toolFn.localGet("userInfo");
+      this.userInfo = this.$toolFn.curUser;
       if (this.userInfo.roleTypeId == 1){
           this.staffCode = this.userInfo.staffCode;
       }
       this.curInfo.code = this.staffCode;
       var myDate = new Date();
       var date = new Date();
-      this.seachMsg = {
-                year: date.getFullYear().toString(),
-                month: (date.getMonth()+1).toString()
-              };
+      this.seachMsg = {year: date.getFullYear().toString(),month: (date.getMonth()+1).toString()};
       // if (this.$toolFn.sessionGet("staffPayrollSlip")) {
       //   this.seachMsg = {
       //     year: this.$toolFn.sessionGet("staffPayrollSlip").year.toString(),
       //     month: this.$toolFn.sessionGet("staffPayrollSlip").month.toString()
       //   };
       // }
-      this.getData(
-        this.staffCode,
-        parseInt(this.seachMsg.year),
-        parseInt(this.seachMsg.month)
-      );
+      this.getData(this.staffCode,parseInt(this.seachMsg.year),parseInt(this.seachMsg.month));
     },
     //获取项目数据列表
     getData(staffCode, year, month) {
@@ -258,12 +237,9 @@ export default {
         year: year,
         month: month
       };
-      this.$http.post(reqUrl, myData).then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           this.tableData = res.data.data[0];
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 选择年份
     selectYear(val) {
@@ -286,11 +262,7 @@ export default {
     selectMonth(val) {
       this.seachMsg.month = val;
       if (this.seachMsg.month != "0"){
-        this.getData(
-          this.staffCode,
-          parseInt(this.seachMsg.year),
-          parseInt(this.seachMsg.month)
-        );
+        this.getData(this.staffCode,parseInt(this.seachMsg.year),parseInt(this.seachMsg.month));
         this.isShowPayrollMonth = true;
         this.isShowPayrollYear = false;
         this.curInfo.year = this.seachMsg.year;
@@ -310,7 +282,6 @@ export default {
       var prnhtml = bdhtml.substr(bdhtml.indexOf(sprnstr) + 17);
       prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr));
       window.document.body.innerHTML = prnhtml;
-      console.log(prnhtml);
       window.print();
       window.document.body.innerHTML=bdhtml; 
     },

@@ -57,7 +57,7 @@ export default {
         this.ruleForm.taxAmount = this.curInfo.taxAmount;
         this.ruleForm.nousedTaxThreshold = this.curInfo.nousedTaxThreshold;
     },
-    // 提交表单
+    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -77,10 +77,10 @@ export default {
         taxAmount:parseFloat(this.ruleForm.taxAmount),
         nousedTaxThreshold:parseFloat(this.ruleForm.nousedTaxThreshold),
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("更新成功~");
+          this.$message.success("更新成功");
         } else {
           this.$message.error(res.data.msg);
         }

@@ -107,9 +107,11 @@
   </div>
 </template>
 <script>
+import {SITxt,paymentIdTxt,householdIdTxt} from "@/lib/staticData.js";
 import editLayer from "./editLayer.vue";
 export default {
   name: "insured",
+  inject: ["reload"],
   props: ["userRight_props"],
   data() {
     return {
@@ -131,69 +133,30 @@ export default {
     getData() {
       var reqUrl = "/server/api/v1/payroll/staff/insured/item";
       var myData = { staffCode: this.payrollInfo.code };
-      this.$http.post(reqUrl, myData).then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           if (res.data.code == 0) {
             this.isContent = true;
             this.tableData = res.data.data;
-            this.tableData.householdIdTxt = this.householdIdTxt(this.tableData.householdId);
+            this.tableData.householdIdTxt = householdIdTxt(this.tableData.householdId);
             if (!res.data.data){
               this.isContent = false;
               return;
             }
             this.schemeSIList = res.data.data.SISchemeDetail.schemeSIList.filter(f=>f.paymentId == 2).map(
               item => {
-                switch (item.typeId) {
-                  case 1:
-                    item.typeIdTxt = "养老";
-                    break;
-                  case 2:
-                    item.typeIdTxt = "医疗";
-                    break;
-                  case 3:
-                    item.typeIdTxt = "工伤";
-                    break;
-                  case 4:
-                    item.typeIdTxt = "生育";
-                    break;
-                  case 5:
-                    item.typeIdTxt = "失业";
-                    break;
-                  case 6:
-                    item.typeIdTxt = "大病";
-                    break;
-                  case 7:
-                    item.typeIdTxt = "医疗保险";
-                    break;
-                }
-                switch (item.paymentId) {
-                  case 1:
-                    item.paymentIdTxt = "公司";
-                    break;
-                  case 2:
-                    item.paymentIdTxt = "个人";
-                    break;
-                }
+                item.typeIdTxt = SITxt(item.typeId);
+                item.paymentIdTxt = paymentIdTxt(item.paymentId);
                 return item;
               }
             );
             this.schemeHCList = res.data.data.HCSchemeDetail.schemeHCList.filter(f=>f.paymentId == 2).map(
               item => {
-                switch (item.paymentId) {
-                  case 1:
-                    item.paymentIdTxt = "公司";
-                    break;
-                  case 2:
-                    item.paymentIdTxt = "个人";
-                    break;
-                }
+                item.paymentIdTxt = paymentIdTxt(item.paymentId);
                 return item;
               }
             );
           }
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 新增
     addFun() {
@@ -227,24 +190,15 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$http
-            .post("/server/api/v1/payroll/staff/insured/update", {
+      }).then(() => {
+          this.$myApi.http.post("/server/api/v1/payroll/staff/insured/update", {
               staffCode: this.payrollInfo.code,
               status: status
-            })
-            .then(res => {
+            }).then(res => {
               this.reload();
-              this.$message.success("修改成功~");
+              this.$message.success("修改成功");
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
     // 删除
     handleDelete(index, res) {
@@ -252,27 +206,18 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$http
-            .post("/server/api/v1/payroll/staff/insured/delete", {
+      }).then(() => {
+          this.$myApi.http.post("/server/api/v1/payroll/staff/insured/delete", {
               staffCode: this.payrollInfo.code
-            })
-            .then(res => {
+            }).then(res => {
               if(res.data.code == 0){
                 this.reload();
-                this.$message.success("删除成功~");
+                this.$message.success("删除成功");
               }else{
                 this.$message.error(res.data.msg);
               }
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
     // 监听子组件返回信息
     listenIsShowMask(res) {
@@ -285,30 +230,6 @@ export default {
         payrollKey: "payrollList"
       });
     },
-    householdIdTxt(id){
-      var str = "";
-      switch (id) {
-        case 1:
-          str = "外地农村";
-          break;
-        case 2:
-          str = "外地城镇";
-          break;
-        case 3:
-          str = "本地农村";
-          break;
-        case 4:
-          str = "本地城镇";
-          break;
-        case 5:
-          str = "港澳台";
-          break;
-        case 6:
-          str = "外籍";
-          break;
-      }
-      return str;
-    }
   },
   computed: {
     payrollInfo() {
@@ -327,15 +248,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;

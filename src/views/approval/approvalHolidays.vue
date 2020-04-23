@@ -1,22 +1,10 @@
 <template>
   <div class="approvalHolidays wrap" v-if="isShow">
     <h5 class="title-h5">请假列表</h5>
-    <div class="search-wrap">
-      <el-input placeholder="请输入关键字" v-model="filter.searchKey" >
-        <el-select
-          v-model="BUCode"
-          slot="prepend"
-          placeholder="请选择"
-          style="width:200px;"
-          @change="selectFun"
-        >
-          <el-option v-for='(item,index) in regionBUList' :key='index' :label="item.name" :value="item.code"></el-option>
-        </el-select>
-      </el-input>
-    </div>
+    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCodeSelected" ref="busAndSearch"></bus-and-search>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
+    <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
       <el-table-column sortable prop="nameChinese" label="申请人"></el-table-column>
       <el-table-column sortable prop="deptName" label="部门"></el-table-column>
       <el-table-column sortable prop="createTime" label="创建日期" width="200"></el-table-column>
@@ -26,6 +14,9 @@
       <el-table-column sortable prop="isWithpayTxt" label="是否带薪"></el-table-column>
       <el-table-column prop="nextStepTip" label="下一步提示"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column sortable prop="approveOfficerNameArr" label="审批人员" v-if="userInfo.lev ==301"></el-table-column>
+      <el-table-column sortable prop="balanceOfficerNameArr" label="结算人员" v-if="userInfo.lev ==301"></el-table-column>
+      <el-table-column sortable prop="noticeOfficerNameArr" label="已抄送" v-if="userInfo.lev ==301"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button
@@ -41,17 +32,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 请假表单详情 -->
     <el-dialog title="请假申请详情" :visible.sync="isShowDetails" :close-on-click-modal="false">
       <approval-holidays-details v-if="isShowDetails" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></approval-holidays-details>
@@ -64,76 +45,69 @@
 <script>
 import approvalHolidaysDetails from "./approvalHolidaysDetails.vue";
 import staffHolidayStat from "../staffApply/staffHolidayStat/staffHolidayStat.vue";
-import { truncate } from 'fs';
+import pageInfo from "@/components/pageInfo.vue";
+import busAndSearch from "@/components/busAndSearch.vue";
 let id = 0;
 export default {
+  components: {
+    approvalHolidaysDetails,staffHolidayStat,pageInfo,busAndSearch
+  },
   name: "approvalHolidays",
   inject: ["reload"],
   data() {
     return {
       isShow:false,
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      pageList:[],
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
       isShowStaffHolidays:false,
-      hrCode: "",
-      rightStatus:[], //当前管理员可审批的申请类型
-      BUCode: "", //单位code
-      regionBUList:[],//单位列表
+      BUCodeSelected: "", //单位code
       staffCode_props:'',
-      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip']}
+      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip']},
+      userInfo:{}
     };
   },
+  computed: {
+    pageInfo(){
+      return {
+        reqParams:{
+            isReq:false,
+            url:"/server/api/v1/staff/holidaysApply/hrSysHolidaysApplyList",
+            data:{ hrCode: this.$toolFn.curUser.userCode,BUCode:this.BUCodeSelected }
+          }
+        }
+    },
+    busAndSearch(){
+      return {filter:this.filter};
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.isBalanceTxt = item.isBalance == 1?'是':'否';
+        item.isWithpayTxt = item.isWithpay == 1?'是':'否';
+        return item;
+      });
+    }
+  },
   mounted() {
-    var _this = this;
-     _this.getRegionBUList();
-    _this.userInfo = _this.$toolFn.localGet("userInfo");
-    _this.hrCode = _this.userInfo.userCode;
-    this.approvalHolidays = _this.userInfo.access.approvalHolidays || [];
-    _this.rightStatus = this.approvalHolidays;
-    if (this.rightStatus.length > 0){
+    this.userInfo = this.$toolFn.curUser;
+    this.approvalHolidays = this.$toolFn.curUser.access.approvalHolidays || [];
+    if (this.approvalHolidays.length > 0){
       this.isShow = true;
     }
   },
   methods: {
     approveTxt(item){//显示文字并判断是否有权限审批
-      item.canApprove = false;
+      //item.canApprove = false;
       var str = "";
       if (item.status == 1){
-        if (this.rightStatus.indexOf(2) >= 0){
+        if (this.approvalHolidays.indexOf(2) >= 0 && item.canApprove){//前后端判断是否有权限审批
           str = "并审批";
-          item.canApprove = true;
+          //item.canApprove = true;
         }
       }
       return str;
-    },
-    //获取数据列表
-    getData(hrCode,BUCode) {
-      var reqUrl = "/server/api/v1/staff/holidaysApply/hrSysHolidaysApplyList";
-      var myData = { hrCode: hrCode,BUCode:BUCode  };
-      this.isShowLoading = true;
-      this.$http.post(reqUrl, myData).then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data.map(item => {
-            item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.isBalanceTxt = item.isBalance == 1?'是':'否';
-            item.isWithpayTxt = item.isWithpay == 1?'是':'否';
-            item.nameChinese = item.staff ? item.staff.nameChinese :"";
-            return item;
-          });
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
     },
     // 接收子组件发送信息
     listenIsShowMask(res) {
@@ -143,52 +117,27 @@ export default {
     handleDetails(index, res){
       this.isShowDetails = true;
       this.curInfo = res;
-      this.curInfo.hrCode = this.hrCode;
+      this.curInfo.hrCode = this.$toolFn.curUser.userCode;
     },
     // 员工假期记录
     handleStaffHolidays(index, res){
       this.isShowStaffHolidays= true;
       this.staffCode_props = res.staffCode;
     },
-    selectFun(val) {
-      this.BUCode = val;
-      this.getData(this.hrCode,this.BUCode);
-      this.$toolFn.sessionSet('approveBUCode',val);
-    },
-    // 获取单位列表
-    async getRegionBUList(){
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
-      if (regionBUs && regionBUs.length > 0) {
-          _this.regionBUList = regionBUs;
-          _this.BUCode = this.$toolFn.sessionGet('approveBUCode')?this.$toolFn.sessionGet('approveBUCode'):_this.regionBUList[0].code;
-         _this.getData(_this.hrCode,_this.BUCode);
-      }
-    },
   },
-  computed: {
-    queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
+  watch: {
+    BUCodeSelected: {
+      handler: function(newVal) {
+        this.pageInfo.reqParams.isReq = true;
+        this.$refs.pageInfo.getData(this.pageInfo);
       }
-      _this.total = tableData.length;
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return tableData.slice(begin, end);
     },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    },
-    staffInfo() {
-      return this.$store.state.staffModule.staffInfo;
+    "filter.searchKey":{
+      handler: function(newVal) {
+        this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
+      }
     }
   },
-  components: {
-    approvalHolidaysDetails,staffHolidayStat
-  }
 };
 </script>
 <style scoped lang="scss">

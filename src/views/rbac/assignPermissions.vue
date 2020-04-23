@@ -35,47 +35,36 @@ export default {
   methods: {
     //获取当前角色所在项目下所有权限
     getAccessList() {
-      var _this = this;
       var reqUrl = "/server/api/v1/projectAccess/accessbyProjectCode";
       var data = {
-        projectCode: _this.curInfo.projectCode,
-        typeId: _this.curInfo.typeId
+        projectCode: this.curInfo.projectCode,
+        typeId: this.curInfo.typeId
       };
-      
-      _this.$http
-        .post(reqUrl, data)
-        .then(res => {
-          console.log(res);
-          _this.data = res.data.data.map(item => {
-            // item.disabled = true;
+      this.$myApi.http.post(reqUrl, data).then(res => {
+          this.data = res.data.data.map(item => {
             return item;
           });
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 获取用户当前的权限
     getCurrentAccess() {
-      var _this = this;
       var reqUrl = "/server/api/v1/projectRole/getDetailByCode";
-      var data = { code: _this.curInfo.code };
-      _this.$http.post(reqUrl, data).then(res => {
+      var data = { code: this.curInfo.code };
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.data.accessList != 0) {
           var arr = res.data.data.accessList.map(item => {
             return item.accessCode;
           });
-          _this.$refs.tree.setCheckedKeys(arr);
+          this.$refs.tree.setCheckedKeys(arr);
         }
       });
     },
     // 分配权限
     addAccess() {
-      var _this = this;
       var reqUrl = "/server/api/v1/projectRole/updateProjectRoleAccessRelation";
-      var codeArr = _this.$refs.tree.getCheckedKeys();
+      var codeArr = this.$refs.tree.getCheckedKeys();
       var data = {
-        roleCode: _this.curInfo.code,
+        roleCode: this.curInfo.code,
         params: []
       };
       for (var i = 0; i < codeArr.length; i++) {
@@ -84,17 +73,16 @@ export default {
           accessCode: codeArr[i]
         });
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.$message("操作成功~");
-          _this.reload();
+          this.$message("操作成功");
+          this.reload();
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      this.$emit("listenIsShowMask", false);
     }
   }
 };

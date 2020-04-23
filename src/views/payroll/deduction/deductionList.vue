@@ -9,7 +9,7 @@
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe>
+    <el-table v-loading="isShowLoading" :data="tableData" stripe>
       <el-table-column prop="amount" label="扣除金额"></el-table-column>
       <el-table-column prop="status" label="是否生效">
         <template slot-scope="scope">
@@ -33,17 +33,7 @@
       </el-table-column>
     </el-table>
     <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
-
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 新增 -->
     <el-dialog
       title="新增专项扣除"
@@ -60,82 +50,50 @@
   </div>
 </template>
 <script>
+import {deductionTypeTxt} from "@/lib/staticData.js";
 import editLayer from "./editLayer.vue";
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    editLayer,pageInfo
+  },
   name: "deductionList",
   inject: ["reload"],
   props: ["userRight_props"],
   data() {
     return {
       userRight:[],
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      pageList: [],
       curInfo: {}, //当前内容
       searchInner: "", //搜索内容
       isShowLoading: false, //是否显示loading页
       isShowEditLayer: false //是否显示新增页面
     };
   },
+  computed: {
+    pageInfo(){
+      return {
+        reqParams:{
+            url:"/server/api/v1/staff/deduction/getAll",
+            data:{staffCode: this.payrollInfo.code}
+          }
+        }
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.typeIdTxt = deductionTypeTxt(item.typeId);
+        item.status = item.status.toString();
+        return item;
+      });
+    },
+    payrollInfo() {
+      return this.$store.state.payrollModule.payrollInfo;
+    }
+  },
   mounted() {
     this.userRight = this.userRight_props;
-    this.getData();
   },
   methods: {
-    //获取项目数据列表
-    getData() {
-      var reqUrl = "/server/api/v1/staff/deduction/getAll";
-      var myData = { staffCode: this.payrollInfo.code };
-      this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data
-            .map(item => {
-              switch (item.typeId) {
-                case 1:
-                  item.typeIdTxt = "赡养老人";
-                  break;
-                case 2:
-                  item.typeIdTxt = "子女教育";
-                  break;
-                case 3:
-                  item.typeIdTxt = "房贷利息";
-                  break;
-                case 4:
-                  item.typeIdTxt = "住房租金";
-                  break;
-                case 5:
-                  item.typeIdTxt = "继续教育";
-                  break;
-                case 6:
-                  item.typeIdTxt = "大病医疗";
-                  break;
-              }
-              item.status = item.status.toString();
-              return item;
-            })
-            .sort((a, b) => {
-              if (a.id < b.id) {
-                return 1;
-              }
-              if (a.id > b.id) {
-                return -1;
-              }
-              return 0;
-            });
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
-    },
     // 新增专项扣除
     addFun() {
       this.isShowEditLayer = true;
@@ -156,21 +114,12 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$http
-            .post("/server/api/v1/staff/deduction/delete", { id: res.id })
-            .then(res => {
+      }).then(() => {
+          this.$myApi.http.post("/server/api/v1/staff/deduction/delete", { id: res.id }).then(res => {
               this.reload();
-              this.$message.success("删除成功~");
+              this.$message.success("删除成功");
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
     // 删除所有
     deleteAll() {
@@ -178,23 +127,14 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$http
-            .post("/server/api/v1/staff/deduction/deleteByStaffCode", {
+      }).then(() => {
+          this.$myApi.http.post("/server/api/v1/staff/deduction/deleteByStaffCode", {
               staffCode: this.payrollInfo.code
-            })
-            .then(res => {
+            }).then(res => {
               this.reload();
-              this.$message.success("删除成功~");
+              this.$message.success("删除成功");
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
     // 改变状态
     changStatus(res) {
@@ -204,7 +144,7 @@ export default {
         staffCode: res.staffCode,
         status: res.status
       };
-      this.$http.post(reqUrl, data).then(res => {});
+      this.$myApi.http.post(reqUrl, data).then(res => {});
     },
     // 监听子组件返回信息
     listenIsShowMask(res) {
@@ -217,23 +157,6 @@ export default {
         payrollKey: "payrollList"
       });
     }
-  },
-  computed: {
-    queryTableDate() {
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return this.tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    },
-    payrollInfo() {
-      return this.$store.state.payrollModule.payrollInfo;
-    }
-  },
-  components: {
-    editLayer
   }
 };
 </script>
@@ -245,24 +168,9 @@ export default {
   align-items: center;
   justify-content: flex-start;
 }
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-}
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
 }
-
 .deductionList {
   .photo {
     width: 35px;

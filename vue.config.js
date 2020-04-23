@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2019-07-19 16:06:48
+ * @LastEditTime: 2020-04-15 13:56:51
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \hr-system\vue.config.js
+ */
 const path = require('path');
 
 module.exports = {
@@ -43,10 +51,9 @@ module.exports = {
             }
         }
     },
-
-    chainWebpack: config => {
-        config.plugin('webpack-bundle-analyzer').use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
-    },
+    // chainWebpack: config => {
+    //     config.plugin('webpack-bundle-analyzer').use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+    // },
     devServer: {
         host: "localhost",
         port: 8080, // 端口号

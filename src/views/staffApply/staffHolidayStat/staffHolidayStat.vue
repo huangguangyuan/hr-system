@@ -64,7 +64,6 @@ export default {
     return {
       holidayTypeSelected: 1,
       holidaysTypeList: [],
-      tableData: [],
       pageList:[],
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
@@ -77,6 +76,15 @@ export default {
     pageInfo(){
       return {reqParams:{isReq:false,url:"/server/api/v1/staff/holidaysApply/staffLeaves",data:{ staffCode: this.staffCode,typeId: parseInt(this.holidayTypeSelected) }}}
     },
+    tableData(){
+      return this.pageList.map(item => {
+          item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
+          item.isWithpayTxt = item.isWithpay == 1?'是':'否';
+          item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
+          item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null
+          return item;
+      });
+    },
     staffInfo() {
       return this.$store.state.staffModule.staffInfo;
     }
@@ -87,42 +95,21 @@ export default {
   methods: {
     changeType(typeId){
       this.holidayTypeSelected = typeId;
-      this.pageInfo.isReq = true;
+      this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },
     // 获取请假类型
     getHolidaysApplyTypeFun() {
       var reqUrl = "/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId";
-      this.$http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
           this.holidaysTypeList = res.data.data;
           this.holidayTypeSelected = this.holidaysTypeList[0].typeId;
+          this.pageInfo.reqParams.isReq = true;
           this.$refs.pageInfo.getData(this.pageInfo);
         }
       });
     },
-    // //获取数据列表
-    // getData(staffCode,typeId) {
-    //   //var reqUrl = "/server/api/v1/staff/holidaysApply/staffCompleteHolidays";
-    //   var reqUrl = "/server/api/v1/staff/holidaysApply/staffLeaves";
-    //   var myData = { staffCode: staffCode,typeId: parseInt(typeId) };
-    //   this.isShowLoading = true;
-    //   this.$http.post(reqUrl, myData).then(res => {
-    //       this.isShowLoading = false;
-    //       this.tableData = res.data.data.map(item => {
-    //         item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
-    //         //item.isBalanceTxt = item.isBalance == 1?'是':'否';
-    //         item.isWithpayTxt = item.isWithpay == 1?'是':'否';
-    //         item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
-    //         item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null
-    //         return item;
-    //       });
-    //       this.total = this.tableData.length;
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-    // },
     // 接收子组件发送信息
     listenIsShowMask(res) {
       this.isShowAddAccess = false;
@@ -138,30 +125,10 @@ export default {
       this.isShowDetails = true;
       this.curInfo = res;
     },
-  },
-  watch: {
-      pageList(val) {//监听分页数据变化
-        this.tableData = val.map(item => {
-            item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
-            item.isWithpayTxt = item.isWithpay == 1?'是':'否';
-            item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
-            item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null
-            return item;
-        });
-      }
-    }
+  }
 };
 </script>
 <style scoped lang="scss">
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
 .el-radio-button:focus:not(.is-focus):not(:active):not(.is-disabled){
 box-shadow:0 0 0 0 #f28c38;
 }

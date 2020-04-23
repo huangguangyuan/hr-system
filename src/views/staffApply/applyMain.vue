@@ -1,5 +1,5 @@
 <template>
-  <div class="applyMain wrap">
+  <div class="applyMain wrap" v-if="isShow">
     <div class="header-info">
       <el-avatar :size="130" :src="circleUrl"></el-avatar>
       <div class="message">
@@ -44,7 +44,8 @@ export default {
   inject: ["reload"],
   data() {
     return {
-      circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+      isShow:false,
+      circleUrl: require("@/assets/images/avatar.png"),
       staffInfo:{},
       activeName:'claim',
       staffCode: "",
@@ -53,7 +54,7 @@ export default {
     };
   },
   beforeMount(){
-    this.userInfo = this.$toolFn.localGet("userInfo");
+    this.userInfo = this.$toolFn.curUser;
     if (this.userInfo.roleTypeId == 1 ){
       this.staffCode = this.userInfo.staffCode;
     }else if(this.userInfo.roleTypeId == 2 ){
@@ -62,13 +63,16 @@ export default {
     this.activeName = this.$toolFn.sessionGet('applyActiveName') || 'claim'
   },
   mounted() {
+    if ([1].indexOf(this.$toolFn.curUser.roleTypeId) >= 0){//员工
+      this.isShow = true;
+    }
   },
   methods: {
     // 获取员工信息
     getStaffInfo(){
         var reqUrl = '/server/api/v1/staff/getByCode';
         var data = {code:this.staffCode}
-        this.$http.post(reqUrl,data).then(res => {
+        this.$myApi.http.post(reqUrl,data).then(res => {
             if(res.data.code == 0){
                 this.staffInfo = res.data.data;
             }else{

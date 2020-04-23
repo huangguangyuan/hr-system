@@ -45,7 +45,7 @@
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe show-summary >
+    <el-table v-loading="isShowLoading" :data="tableData" stripe show-summary >
       <el-table-column prop="month" label="月份"></el-table-column>
       <el-table-column prop="taxableWages" label="应税工资"></el-table-column>
       <el-table-column prop="taxAmount" label="个人所得税"></el-table-column>
@@ -62,16 +62,7 @@
       </el-table-column>
     </el-table>
     <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"  
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
 
     <!-- 编辑工资单 -->
     <el-dialog title="编辑工资单" :visible.sync="isShowEditLayer" :close-on-click-modal="false">
@@ -81,39 +72,52 @@
 </template>
 <script>
 import editLayer from "./editLayer.vue";
+import pageInfo from "@/components/pageInfo.vue";
 export default {
+  components: {
+    editLayer,pageInfo
+  },
   name: "annualPayrollEdit",
   inject: ["reload"],
   data() {
     return {
       seachMsg: {
         BUCode: "", //角色类型
-        year: "2019", //年份
+        year: "2020", //年份
         staffCode: "",
         staffName:''
       },
       curInfo: {},
       regionBUlist: [], //单位列表
-      tableData: [],
-      total: 0, //总计
-      pageSize: 12, //页面数据多少
-      curPage: 1, //当前页数
+      pageList:[],
       isShowLoading: false, //是否显示loading页
       isShowEditLayer:false,
       restaurants: [],
     };
   },
+  computed:{
+    pageInfo(){
+      return {
+        reqParams:{
+            isReq:false,
+            url:"/server/api/v1/payroll/staff/staffPayrollMonth",
+            data:{staffCode: this.seachMsg.staffCode,year: parseInt(this.seachMsg.year)}
+          }
+        }
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        return item;
+      });
+    }
+  },
   mounted() {
-    this.getregionBU();
-    //this.getData(this.staffCode, parseInt(this.year));
-    //this.restaurants = this.loadAll();
-    
+    this.getRegionBU();
   },
   methods: {
     // 获取单位列表
-    async getregionBU() {
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
+    async getRegionBU() {
+      var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUlist = regionBUs;
           this.seachMsg.BUCode = this.$toolFn.sessionGet("annualPayrollEdit")? this.$toolFn.sessionGet("annualPayrollEdit").BUCode : this.regionBUlist[0].code;
@@ -122,37 +126,19 @@ export default {
           this.loadAll(this.seachMsg.BUCode);
         }
     },
-    //获取项目数据列表
-    getData(staffCode, year) {
-      var reqUrl = "/server/api/v1/payroll/staff/staffPayrollMonth";
-      var myData = {
-        staffCode: staffCode,
-        year: parseInt(year)
-      };
-      this.isShowLoading = true;
-      this.$http.post(reqUrl, myData).then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data;
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
-    },
     // 获取单位BUCode
     selectFun(val) {
       this.seachMsg.BUCode = val;
+      this.seachMsg.staffName = '';
       this.loadAll(this.seachMsg.BUCode);
       this.$toolFn.sessionSet("annualPayrollEdit", this.seachMsg);
     },
     // 选择年份
     selectYear(val) {
-      this.getData(this.seachMsg.staffCode, parseInt(val));
+      //this.getData(this.seachMsg.staffCode, parseInt(val));
       this.$toolFn.sessionSet("annualPayrollEdit", this.seachMsg);
+      this.pageInfo.reqParams.isReq = true;
+      this.$refs.pageInfo.getData(this.pageInfo);
     },
     staffList(queryString, cb) {
         var restaurants = this.restaurants;
@@ -170,25 +156,26 @@ export default {
         var myData = {
           BUCode: BUCode
         };
-        this.$http.post(reqUrl, myData).then(res => {
+        this.$myApi.http.post(reqUrl, myData).then(res => {
           if (res.data.code == 0){
             this.restaurants = res.data.data;
             let staffCode = "",year = 0;
             if (this.$toolFn.sessionGet("annualPayrollEdit") && this.$toolFn.sessionGet("annualPayrollEdit").staffCode != "" && this.$toolFn.sessionGet("annualPayrollEdit").year != 0){
-              this.getData(this.$toolFn.sessionGet("annualPayrollEdit").staffCode, this.$toolFn.sessionGet("annualPayrollEdit").year);
+              //this.getData(this.$toolFn.sessionGet("annualPayrollEdit").staffCode, this.$toolFn.sessionGet("annualPayrollEdit").year);
+              //this.pageInfo.reqParams.isReq = true;
+              //this.$refs.pageInfo.getData(this.pageInfo);
             }
           }
           
         })
-        .catch(err => {
-          console.log(err);
-        });
       },
       handleSelect(item) {
         this.seachMsg.staffCode = item.code;
         this.seachMsg.staffName = item.nameChinese;
         this.$toolFn.sessionSet("annualPayrollEdit", this.seachMsg);
-        this.getData(item.code,this.seachMsg.year);
+        this.pageInfo.reqParams.isReq = true;
+        this.$refs.pageInfo.getData(this.pageInfo);
+        //this.getData(item.code,this.seachMsg.year);
       },
       // 编辑
       modifyFun(index, res) {
@@ -202,23 +189,6 @@ export default {
       listenIsShowMask(res) {
         this.isShowEditLayer = res;
       }
-  },
-  computed: {
-    queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      _this.total = tableData.length;
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return tableData.slice(begin, end);
-    },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    }
-  },
-  components: {
-    editLayer
   }
 };
 </script>
@@ -229,15 +199,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
 }
 .search-wrap {
   margin: 20px auto;

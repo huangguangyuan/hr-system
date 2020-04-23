@@ -47,44 +47,39 @@ export default {
     };
   },
   mounted() {
-    console.log(this.curInfo);
   },
   methods: {
-    // 提交表单
+    
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.addFun();
+          this.addFun();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 新增单位
     addFun() {
-      var _this = this;
       var reqUrl = "/server/api/v1/buDepartment/childrenAdd";
       var data = {
-        superCode:_this.curInfo.code,
-        name:_this.ruleForm.name,
-        description:_this.ruleForm.description,
-        status:parseInt(_this.ruleForm.status),
+        superCode:this.curInfo.code,
+        name:this.ruleForm.name,
+        description:this.ruleForm.description,
+        status:parseInt(this.ruleForm.status),
       }
-      _this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
-          _this.reload();
-          _this.$message("新增成功~");
+          this.reload();
+          this.$message("新增成功");
         } else {
-          _this.$message(res.data.msg);
+          this.$message(res.data.msg);
         }
       });
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

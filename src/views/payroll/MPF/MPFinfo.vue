@@ -73,6 +73,7 @@
   </div>
 </template>
 <script>
+import {paymentIdTxt} from "@/lib/staticData.js";
 import editLayer from "./editLayer.vue";
 export default {
   name: "MPFinfo",
@@ -97,31 +98,19 @@ export default {
     getData() {
       var reqUrl = "/server/api/v1/payroll/staff/insured/mpf/item";
       var myData = { staffCode: this.payrollInfo.code };
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
+      this.$myApi.http.post(reqUrl, myData).then(res => {
           if (res.data.code == 0) {
             this.isContent = true;
             this.tableData = res.data.data;
             this.tableData.contributionDate = this.$toolFn.timeFormat(this.tableData.contributionDate).substring(0,10);
             this.schemeMPFList = res.data.data.MPFSchemeDetail.schemeMPFList.map(
               item => {
-                switch (item.paymentId) {
-                  case 1:
-                    item.paymentIdTxt = "公司";
-                    break;
-                  case 2:
-                    item.paymentIdTxt = "个人";
-                    break;
-                }
+                item.paymentIdTxt = paymentIdTxt(item.paymentId);
                 return item;
               }
             );
           }
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 新增
     addFun() {
@@ -155,24 +144,15 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$http
-            .post("/server/api/v1/payroll/staff/insured/mpf/update", {
+      }).then(() => {
+          this.$myApi.http.post("/server/api/v1/payroll/staff/insured/mpf/update", {
               staffCode: this.payrollInfo.code,
               status: status
-            })
-            .then(res => {
+            }).then(res => {
               this.reload();
-              this.$message.success("修改成功~");
+              this.$message.success("修改成功");
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
     // 删除
     handleDelete(index, res) {
@@ -180,27 +160,18 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$http
-            .post("/server/api/v1/payroll/staff/insured/mpf/delete", {
+      }).then(() => {
+          this.$myApi.http.post("/server/api/v1/payroll/staff/insured/mpf/delete", {
               staffCode: this.payrollInfo.code
-            })
-            .then(res => {
+            }).then(res => {
               if(res.data.code == 0){
                 this.reload();
-                this.$message.success("删除成功~");
+                this.$message.success("删除成功");
               }else{
                 this.$message.error(res.data.code);
               }
             });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
     },
     // 监听子组件返回信息
     listenIsShowMask(res) {
@@ -231,15 +202,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;

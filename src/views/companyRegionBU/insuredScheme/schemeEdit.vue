@@ -84,27 +84,26 @@ export default {
     // 获取城市模板
     getCityCode() {
       var reqUrl = "/server/api/v1/city/getAll";
-      this.$http.post(reqUrl, {}).then(res => {
+      this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
         this.cityList = res.data.data;
         }
       });
     },
-    // 提交表单
+    
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              _this.modifyFun();
+              this.modifyFun();
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -119,10 +118,10 @@ export default {
         name: this.ruleForm.name,
         copyTemp: parseInt(this.ruleForm.copyTemp)
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("新增成功~");
+          this.$message.success("新增成功");
         } else {
           this.$message.error(res.data.msg);
         }
@@ -135,10 +134,10 @@ export default {
         id: this.ruleForm.id,
         name: this.ruleForm.name
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
-          this.$message.success("修改成功~");
+          this.$message.success("修改成功");
         } else {
           this.$message(res.data.msg);
         }
@@ -146,8 +145,7 @@ export default {
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      this.$emit("listenIsShowMask", false);
     }
   },
   computed: {

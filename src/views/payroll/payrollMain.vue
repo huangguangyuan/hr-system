@@ -12,12 +12,15 @@
 <script>
 import payrollList from './payrolllist/payrolllist.vue';
 import deductionList from './deduction/deductionList.vue';
-import allowanceList from './allowance/allowanceList.vue';
+// import allowanceList from './allowance/allowanceList.vue';
 import salaryItemList from './salaryItem/salaryItemList.vue';
 import salaryItemList2 from './salaryItem/salaryItemList2.vue';
 import insured from './insured/insured.vue';
 import MPFinfo from './MPF/MPFinfo.vue';
 export default {
+  components: {
+    payrollList,deductionList,salaryItemList,salaryItemList2,insured,MPFinfo
+  },
   name: "payrollMain",
   inject: ["reload"],
   data() {
@@ -27,7 +30,7 @@ export default {
     };
   },
   mounted() {
-    this.userInfo = this.$toolFn.localGet("userInfo");
+    this.userInfo = this.$toolFn.curUser;
       if (this.userInfo.roleTypeId == 2){
         if (this.userInfo.access.payrollMain.length > 0){
           this.isShow = true;
@@ -43,9 +46,6 @@ export default {
     payrollKey(){
       return this.$store.state.payrollModule.payrollKey;
     }
-  },
-  components: {
-    payrollList,deductionList,allowanceList,salaryItemList,salaryItemList2,insured,MPFinfo
   }
 };
 </script>

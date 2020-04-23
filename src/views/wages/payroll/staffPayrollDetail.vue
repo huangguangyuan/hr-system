@@ -3,7 +3,7 @@
     <el-divider>工资表信息</el-divider>
     <el-row :gutter="12">
       <el-col :span="8" >
-        <el-card class="showWarning" shadow="always">状态：{{typeIdTxt(details.typeId)}}</el-card>
+        <el-card class="showWarning" shadow="always">状态：{{details.typeTxt}}</el-card>
       </el-col>
       <el-col :span="16" v-if="details.remarks != '' && details.typeId == 2" >
         <el-card class="showWarning" shadow="always">备注：{{details.remarks}}</el-card>
@@ -17,9 +17,6 @@
       <el-col :span="8">
         <el-card shadow="always">基本工资：{{details.salary}}</el-card>
       </el-col>
-      <!-- <el-col :span="8" v-if="allowanceList && allowanceList.length > 0">
-        <el-card shadow="always">津贴总额：{{details.detail.allowanceAmount}}</el-card>
-      </el-col> -->
       <el-col :span="8" v-if="taxableItemsList && taxableItemsList.length > 0">
         <el-card shadow="always">应税项目总额：{{details.detail.taxableItemsAmount}}</el-card>
       </el-col>
@@ -38,17 +35,17 @@
       <el-col :span="8" v-if="MPFList && MPFList.length > 0">
         <el-card shadow="always">MPF应扣总额：-{{details.detail.MPFAmount}}</el-card>
       </el-col>      
-      <el-col :span="8">
+      <el-col :span="8" v-if="details.grossPay && details.grossPay != 0">
         <el-card shadow="always">税前金额：{{details.grossPay}}</el-card>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="8" v-if="details.taxableWages && details.taxableWages != 0">
         <el-card shadow="always">应税金额：{{details.taxableWages}}</el-card>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="8" v-if="details.taxAmount && details.taxAmount != 0">
         <el-card shadow="always">个人所得税：{{details.taxAmount}}</el-card>
       </el-col>
-      <el-col :span="8">
-        <el-card shadow="always">税后收入：{{netAmount}}</el-card>
+      <el-col :span="8" v-if="details.netAmount && details.netAmount != 0">
+        <el-card shadow="always">税后收入：{{details.netAmount}}</el-card>
       </el-col>
       <el-col :span="8">
         <el-card shadow="always"  v-if="notTaxableItemsList && notTaxableItemsList.length > 0">非应税金额：{{details.detail.notTaxableItemsAmount}}</el-card>
@@ -56,18 +53,16 @@
       <el-col :span="8" v-if="claimList && claimList.length > 0">
         <el-card shadow="always">报销总额：{{details.detail.claimAmount}}</el-card>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="8" v-if="details.adjAmount && details.adjAmount != 0">
         <el-card shadow="always">调整金额：{{details.adjAmount}}</el-card>
       </el-col>
       <el-col :span="8">
-        <el-card shadow="always">实发工资：{{ reallyAmount}}</el-card>
+        <el-card shadow="always" v-if="details.reallyAmount && details.reallyAmount != 0">实发工资：{{ details.reallyAmount}}</el-card>
+      </el-col>
+      <el-col :span="8">
+        <el-card shadow="always" v-if="payrollTimes && payrollTimes.length != 0">多次出粮金额：{{ details.payrollTimesAmt}}</el-card>
       </el-col>
     </el-row>
-    <!-- <el-divider v-if="allowanceList && allowanceList.length > 0">津贴清单</el-divider>
-    <el-table v-if="allowanceList && allowanceList.length > 0" :data="allowanceList" stripe border show-summary>
-      <el-table-column prop="name" label="名 称"></el-table-column>
-      <el-table-column prop="amount" label="金额(元)"></el-table-column>
-    </el-table> -->
     <el-divider v-if="taxableItemsList && taxableItemsList.length > 0">应税项目清单</el-divider>
     <el-table  v-if="taxableItemsList && taxableItemsList.length > 0"  :data="taxableItemsList" stripe border show-summary>
       <el-table-column prop="name" label="项目名称"></el-table-column>
@@ -125,9 +120,17 @@
           <el-card class="showWarning" shadow="always">备注：{{details.adjAmountRemarks}}</el-card>
         </el-col>
     </el-row>
+    <el-divider v-if="payrollTimes && payrollTimes.length != 0">多次出粮列表</el-divider>
+    <el-table v-if="payrollTimes && payrollTimes.length > 0" :data="payrollTimes" stripe border show-summary>
+      <el-table-column prop="isInsuredTxt" label="包含缴纳"></el-table-column>
+      <el-table-column prop="reallyAmount" label="出粮金额"></el-table-column>
+      <el-table-column prop="payDay" label="出粮日期"></el-table-column>
+      <el-table-column prop="typeTxt" label="状态"></el-table-column>
+    </el-table>
   </div>
 </template>
 <script>
+import {deductionTypeTxt,payrollListTypeTxt} from "@/lib/staticData.js";
 export default {
   name: "staffPayrollDetail",
   inject: ["reload"],
@@ -144,25 +147,16 @@ export default {
       taxableItemsList: [],
       notTaxableItemsList: [],
       MPFList:[],
+      payrollTimes:[],
       netAmount:0,
-      reallyAmount:0
+      reallyAmount:0,
+      holidayTypes:[],
     };
   },
   mounted() {
     this.getDetails();
-
   },
   methods: {
-    //0未审核1通过2有疑问，需重新审查
-    typeIdTxt(typeId){
-      let r = '未审核';
-      if (typeId == 1){
-        r = '已确认';
-      }else if (typeId == 2){
-        r = '退回'
-      }
-      return r;
-    },
     arrSum(list,val){
       var n = 0;
       if (!list || list.length <= 0 || val == ""){
@@ -174,10 +168,11 @@ export default {
       return parseFloat(n)
     },
     //获取详细信息
-    getDetails() {
+    async getDetails() {
+      this.holidayTypes = await this.$myApi.getHolidaysTypeId();
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollDetail";
       var data = { code: this.curInfo.code };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.details = res.data.data;
           if (!this.details){
@@ -194,30 +189,9 @@ export default {
           }
           if (this.details.detail.holidayList){
             this.holidayList = this.details.detail.holidayList.map(item => {
-              item.typeIdTxt = item.details[0].typeId == 1 ? "生效" : "未生效";
-              switch (item.details[0].typeId) {
-                case 1:
-                  item.typeIdTxt = "事假";
-                  break;
-                case 2:
-                  item.typeIdTxt = "年假";
-                  break;
-                case 3:
-                  item.typeIdTxt = "病假";
-                  break;
-                case 4:
-                  item.typeIdTxt = "婚假";
-                  break;
-                case 5:
-                  item.typeIdTxt = "产假/陪产假";
-                  break;
-                case 6:
-                  item.typeIdTxt = "丧假";
-                  break;
-                case 50:
-                  item.typeIdTxt = "其他";
-                  break;
-              }
+              nodes.typeIdTxt = this.holidayTypes.filter(child => {
+                  return child.typeId == item.details[0].typeId;
+              })[0].val;
               item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
               return item;
             });
@@ -226,37 +200,27 @@ export default {
             this.specialDeductionList = this.details.detail.specialDeductionList.map(
             item => {
               item.statusTxt = item.status == 1 ? "生效" : "未生效";
-              switch (item.typeId) {
-                case 1:
-                  item.typeIdTxt = "赡养老人";
-                  break;
-                case 2:
-                  item.typeIdTxt = "子女教育";
-                  break;
-                case 3:
-                  item.typeIdTxt = "房贷利息";
-                  break;
-                case 4:
-                  item.typeIdTxt = "住房租金";
-                  break;
-                case 5:
-                  item.typeIdTxt = "继续教育";
-                  break;
-                case 6:
-                  item.typeIdTxt = "大病医疗";
-                  break;
-              }
+              item.typeIdTxt = deductionTypeTxt(item.typeId);
               return item;
             });
           }
-
           this.taxableItemsList = this.details.detail.taxableItemsList;
           this.notTaxableItemsList = this.details.detail.notTaxableItemsList;
           this.MPFList = this.details.detail.MPFList || [];
-          //console.log(this.details);
-          
-          this.netAmount = parseFloat(this.details.grossPay - this.details.taxAmount).toFixed(2);
-          this.reallyAmount = parseFloat(parseFloat(this.netAmount) + parseFloat(this.details.notTaxableAmount) + parseFloat(this.arrSum(this.claimList,'totalAmount')) + this.details.adjAmount).toFixed(2);
+          let payrollTimes = this.details.detail.payrollTimes || [];
+          let payrollTimesAmt = 0;
+          for (let index = 0; index < payrollTimes.length; index++) {
+            payrollTimes[index].reallyAmount = parseFloat(payrollTimes[index].totalAmount) + parseFloat(payrollTimes[index].adjAmount);
+            payrollTimes[index].isInsuredTxt = payrollTimes[index].isInsured == 1?'是':'否';
+            payrollTimes[index].payDay = this.$toolFn.timeFormat(payrollTimes[index].payDay,"yyyy-MM-dd");
+            payrollTimes[index].typeTxt = payrollListTypeTxt(payrollTimes[index].typeId);
+            payrollTimesAmt += payrollTimes[index].reallyAmount
+          }
+          this.payrollTimes = payrollTimes;
+          this.details.payrollTimesAmt = payrollTimesAmt;
+          this.details.typeTxt = payrollListTypeTxt(this.details.typeId);
+          this.details.netAmount = parseFloat(this.details.grossPay - this.details.taxAmount).toFixed(2);
+          this.details.reallyAmount = parseFloat(parseFloat(this.details.netAmount) + parseFloat(this.details.notTaxableAmount) + parseFloat(this.arrSum(this.claimList,'totalAmount')) + this.details.adjAmount).toFixed(2);
         }
       });
     }

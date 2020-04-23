@@ -67,21 +67,19 @@ export default {
         this.isShow = false;
       }
     },
-    // 提交表单
+    
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          switch (_this.curInfo.type) {
+          switch (this.curInfo.type) {
             case "add":
-              _this.addFun();
+              this.addFun();
               break;
             case "modify":
-              _this.modifyFun();
+              this.modifyFun();
               break;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -96,10 +94,10 @@ export default {
         paymentRatio: parseFloat(this.ruleForm.paymentRatio),
         paymentId: parseInt(this.ruleForm.paymentId)
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.$emit("listenIsShowMask", false);
-          this.$message.success("新增成功~");
+          this.$message.success("新增成功");
         } else {
           this.$message.error(res.data.msg);
         }
@@ -115,10 +113,10 @@ export default {
         baseLower: parseFloat(this.ruleForm.baseLower),
         paymentRatio:parseFloat(this.ruleForm.paymentRatio)
       };
-      this.$http.post(reqUrl, data).then(res => {
+      this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.$emit("listenIsShowMask", false);
-          this.$message.success("修改成功~");
+          this.$message.success("修改成功");
         } else {
           this.$message(res.data.msg);
         }
@@ -128,9 +126,6 @@ export default {
     cancelFn() {
       this.$emit("listenIsShowMask", false);
     }
-  },
-  computed: {
-    
   }
 };
 </script>

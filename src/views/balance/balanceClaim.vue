@@ -1,25 +1,15 @@
 <template>
-  <div class="settlementClaim wrap">
+  <div class="settlementClaim wrap" v-if="isShow">
     <h5 class="title-h5">结算列表</h5>
-    <div class="search-wrap">
-      <el-input placeholder="请输入关键字" v-model="filter.searchKey" >
-        <el-select
-          v-model="BUCode"
-          slot="prepend"
-          placeholder="请选择"
-          style="width:200px;"
-          @change="selectFun"
-        >
-          <el-option v-for='(item,index) in regionBUList' :key='index' :label="item.name" :value="item.code"></el-option>
-        </el-select>
-      </el-input>
-    </div>
+    <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCodeSelected" ref="busAndSearch"></bus-and-search>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="queryTableDate" stripe row-key="id">
+    <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
       <el-table-column sortable prop="nameChinese" label="申请人"></el-table-column>
+      <el-table-column sortable prop="deptName" label="部门"></el-table-column>
       <el-table-column sortable prop="createTime" label="创建日期"></el-table-column>
       <el-table-column sortable prop="isBalanceTxt" label="是否结算"></el-table-column>
+      <el-table-column sortable prop="totalAmount" label="结算金额"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
@@ -27,21 +17,11 @@
             size="mini"
             icon="el-icon-info"
             @click="handleDetails(scope.$index, scope.row)"
-          >查看/结算</el-button>
+          >查看{{approveTxt(scope.row)}}</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页编码 -->
-    <div class="pageInfo">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="curChange"
-      ></el-pagination>
-      <p>当前为第 {{curPage}} 页，共有 {{pageTotal}} 页</p>
-    </div>
+    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     <!-- 申请表单详情 -->
     <el-dialog title="报销申请详情" :visible.sync="isShowDetails" :close-on-click-modal="false">
       <balance-claim-details
@@ -54,109 +34,84 @@
 </template>
 <script>
 import balanceClaimDetails from "./balanceClaimDetails.vue";
-let id = 0;
+import pageInfo from "@/components/pageInfo.vue";
+import busAndSearch from "@/components/busAndSearch.vue";
 export default {
+  components: {
+    balanceClaimDetails,pageInfo,busAndSearch
+  },
   name: "settlementClaim",
   inject: ["reload"],
   data() {
     return {
-      tableData: [],
-      total: 0, //总计
-      pageSize: 6, //页面数据多少
-      curPage: 1, //当前页数
+      isShow:false,
+      pageList:[],
       curInfo: {},
       isShowDetails: false, //是否显示表单详情
       isShowLoading: false, //是否显示loading页
-      hrCode: "",
-      BUCode: "", //单位code
-      userInfo:{},
-      regionBUList:[],//单位列表
+      BUCodeSelected: "", //单位code
       filter:{searchKey:'',searchField:['nameChinese']}
     };
   },
-  mounted() {
-    var _this = this;
-    _this.userInfo = _this.$toolFn.localGet("userInfo");
-    if (_this.userInfo.roleTypeId == 2 ){
-      _this.hrCode = _this.userInfo.userCode;
+  computed: {
+    pageInfo(){
+      return {
+        reqParams:{
+            isReq:false,
+            url:"/server/api/v1/staff/claim/claimListBalance",
+            data:{ hrCode: this.$toolFn.curUser.userCode,BUCode:this.BUCodeSelected }
+          }
+        }
+    },
+    busAndSearch(){
+      return {filter:this.filter};
+    },
+    tableData(){
+      return this.pageList.map(item => {
+        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
+        return item;
+      });
     }
-    this.getRegionBUList();
-    //this.getData(this.hrCode,this.BUCode);
+  },
+  mounted() {
+    if (this.$toolFn.curUser.access.approvalClaim.length > 0){
+      this.isShow = true;
+    }
   },
   methods: {
-    //获取数据列表
-    getData(hrCode,BUCode) {
-      var reqUrl = "/server/api/v1/staff/claim/claimListBalance";
-      var myData = { hrCode: hrCode,BUCode:BUCode };
-      this.isShowLoading = true;
-      this.$http
-        .post(reqUrl, myData)
-        .then(res => {
-          this.isShowLoading = false;
-          this.tableData = res.data.data.map(item => {
-            item.createTime = this.$toolFn.timeFormat(item.createTime);
-            item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
-            item.nameChinese = item.staff ? item.staff.nameChinese :"";
-            return item;
-          });
-          this.total = this.tableData.length;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取当前页数
-    curChange(val) {
-      this.curPage = val;
-    },
-    // 接收子组件发送信息
-    listenIsShowMask(res) {
-      this.isShowDetails = false;
+    approveTxt(item){//显示文字并判断是否有权限结算
+      item.canBalance = false;
+      var str = "";
+      if (this.$toolFn.curUser.access.approvalClaim.indexOf(3) >= 0){
+        str = "并结算";
+        item.canBalance = true;
+      }
+      return str;
     },
     // 查看详情
     handleDetails(index, res) {
       this.isShowDetails = true;
       this.curInfo = res;
-      this.curInfo.hrCode = this.hrCode;
+      this.curInfo.hrCode = this.$toolFn.curUser.userCode;
     },
-    selectFun(val) {
-      this.BUCode = val;
-      this.getData(this.hrCode,this.BUCode);
-      this.$toolFn.sessionSet('approveBUCode',val);
-    },
-    // 获取单位列表
-    async getRegionBUList(){
-      var _this = this;
-      var regionBUs = await _this.$myApi.regionBUs(_this,{isCache:true});
-      if (regionBUs && regionBUs.length > 0) {
-          _this.regionBUList = regionBUs;
-          _this.BUCode = this.$toolFn.sessionGet('approveBUCode')?this.$toolFn.sessionGet('approveBUCode'):_this.regionBUList[0].code;
-          this.getData(this.hrCode,this.BUCode);
-        }
+    // 接收子组件发送信息
+    listenIsShowMask(res) {
+      this.isShowDetails = false;
     },
   },
-  computed: {
-    queryTableDate() {
-      var _this = this;
-      let tableData = _this.tableData;
-      if (_this.filter.searchKey != ""){
-        tableData = _this.$toolFn.searchFun(tableData,_this.filter);
+  watch: {
+    BUCodeSelected: {
+      handler: function(newVal) {
+        this.pageInfo.reqParams.isReq = true;
+        this.$refs.pageInfo.getData(this.pageInfo);
       }
-      _this.total = tableData.length;
-      var begin = (this.curPage - 1) * this.pageSize;
-      var end = this.curPage * this.pageSize;
-      return this.tableData.slice(begin, end);
     },
-    pageTotal() {
-      var pageTotal = Math.ceil(this.total / this.pageSize);
-      return pageTotal;
-    },
-    staffInfo() {
-      return this.$store.state.staffModule.staffInfo;
+    "filter.searchKey":{
+      handler: function(newVal) {
+        this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
+      }
     }
-  },
-  components: {
-    balanceClaimDetails
   }
 };
 </script>
@@ -164,24 +119,6 @@ export default {
 .title-h5 {
   font-size: 22px;
   font-weight: 500;
-}
-.pageInfo {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  p {
-    font-size: 14px;
-    margin-right: 20px;
-  }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  .el-input-group {
-  }
 }
 </style>
 

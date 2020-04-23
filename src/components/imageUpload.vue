@@ -1,13 +1,14 @@
 <template>
-        <el-upload
-          class="avatar-uploader"
-          :action="uploadUrl + '/app/api/v1/file/imageUpload'"
-          :show-file-list="false"
-          :on-success="uploadImage"
-        >
-          <el-image v-if="imageSrc != ''" :src="imageSrc" class="avatar" fit="cover"></el-image>
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+    <el-upload
+      class="image-uploader"
+      :action="uploadUrl + '/app/api/v1/file/imageUpload'"
+      :show-file-list="false"
+      :data="dataFiles"
+      :on-success="uploadImage"
+    >
+      <el-image v-if="imageSrc != ''" :src="activeImage == ''?imageSrc:activeImage" class="image-uploader-cover" fit="cover"></el-image>
+      <i v-else class="el-icon-plus image-uploader-icon"></i>
+    </el-upload>
 </template>
 <script>
 export default {
@@ -16,9 +17,9 @@ export default {
   props:['imageUpload_props'],
   data() {
     return {
-      //uploadUrl:'http://134.175.150.60:9527'
       uploadUrl:'',
       imageSrc:'',
+      activeImage:'',
       dataFiles:{}
     };
   },
@@ -29,13 +30,37 @@ export default {
   methods:{
     // 获取上传头像
     uploadImage(res, file) {
-      this.imageSrc = URL.createObjectURL(file.raw);
-      this.$emit('fileUpload_tf',this.imageSrc);
+      this.imageSrc = res.data.path;
+      this.activeImage = URL.createObjectURL(file.raw);
+      this.$emit('update:imageSrc',this.imageSrc);
     }
   }
 };
 </script>
 <style scoped lang="scss">
+.image-uploader /deep/  .el-upload {
+  border: 1px dashed #ebb563;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.image-uploader /deep/ .el-upload:hover {
+  border-color: #409eff;
+}
+.image-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 120px;
+  height: 120px;
+  line-height: 120px;
+  text-align: center;
+}
+.image-uploader-cover {
+  width: 120px;
+  height: 120px;
+  display: block;
+}
 </style>
 
 

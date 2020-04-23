@@ -57,56 +57,49 @@ export default {
     };
   },
   mounted() {
-    console.log(this.curInfo);
-    var _this = this;
-    _this.initializationFun();
+    this.initializationFun();
   },
   methods: {
     // 初始化
     initializationFun(){
-        var _this = this;
-        _this.ruleForm.name = _this.curInfo.name;
-        _this.ruleForm.rightCode = _this.curInfo.rightCode;
-        _this.ruleForm.description = _this.curInfo.description;
-        _this.ruleForm.menuUrl = _this.curInfo.menuUrl;
-        _this.ruleForm.orderNo = _this.curInfo.orderNo;
-        _this.ruleForm.addField1 = _this.curInfo.addField1;
+        this.ruleForm.name = this.curInfo.name;
+        this.ruleForm.rightCode = this.curInfo.rightCode;
+        this.ruleForm.description = this.curInfo.description;
+        this.ruleForm.menuUrl = this.curInfo.menuUrl;
+        this.ruleForm.orderNo = this.curInfo.orderNo;
+        this.ruleForm.addField1 = this.curInfo.addField1;
     },
-    // 提交表单
+    
     submitForm(formName) {
-      var _this = this;
-      _this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.modifyFn();
+          this.modifyFn();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 修改权限
     modifyFn() {
-      var _this = this;
       var reqUrl = "/server/api/v1/projectAccess/update";
       var data = {
-        id:_this.curInfo.id,
-        rightCode:_this.ruleForm.rightCode,
-        menuUrl:_this.ruleForm.menuUrl,
-        name: _this.ruleForm.name,
-        description: _this.ruleForm.description,
-        addField1: _this.ruleForm.addField1,
-        orderNo:_this.ruleForm.orderNo
+        id:this.curInfo.id,
+        rightCode:this.ruleForm.rightCode,
+        menuUrl:this.ruleForm.menuUrl,
+        name: this.ruleForm.name,
+        description: this.ruleForm.description,
+        addField1: this.ruleForm.addField1,
+        orderNo:this.ruleForm.orderNo
       };
-      _this.$http.post(reqUrl,data).then(res => {
+      this.$myApi.http.post(reqUrl,data).then(res => {
         if(res.data.code == 0){
-          _this.reload();
+          this.reload();
         }
       })
     },
     // 取消
     cancelFn() {
-      var _this = this;
-      _this.$emit("listenIsShowMask", false);
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {
