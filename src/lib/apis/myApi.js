@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2019-09-05 00:02:26
+ * @LastEditTime: 2020-04-26 02:47:33
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \hr-system\src\lib\apis\myApi.js
+ */
     import request from '@/lib/request'
     import utile from '@/lib/utils'
     //请求带缓存
@@ -62,7 +70,7 @@
         post:(url,params)=>apiMain(url,params),
         requestPost:(url,params)=>requestPost(url,params),
         requestGet:(url,params)=>requestGet(url,params),
-        getClaimTypeId:()=>apiMain('/server/api/v1/staff/claim/getClaimTypeId',{isCache:true}),//获取报销类型
+        getClaimTypeId:()=>apiMain('/server/api/v1/staff/claim/getClaimTypeId',{isCache:true}),//获取报销类型模板
         getBUClaimType:()=>apiMain('/server/api/v1/staff/claim/getBUClaimType',{isCache:true}),//获取单位报销类型
         staffClaim:(params)=>apiMain('/server/api/v1/staff/claim/staffClaim',params),//获取报销详情
         getHolidaysTypeId:()=>apiMain('/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId',{isCache:true}),//获取假期类型

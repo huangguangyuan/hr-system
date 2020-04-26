@@ -92,6 +92,7 @@ let toolFn = {
     },
     curUserFn:()=>{ 
         toolFn.curUser = toolFn.localGet("userInfo");
+        console.log(toolFn.curUser);
         return toolFn.curUser;
     },
     /**

@@ -25,7 +25,7 @@
       <el-form-item label="请假类型" prop="typeId">
         <el-select v-model="ruleForm.typeId" placeholder="请选择请假类型">
           <el-option
-            v-for="item in holidaysApplyTypeList"
+            v-for="item in holidayTypes"
             :key="item.typeId"
             :label="item.val"
             :value="item.typeId"
@@ -93,7 +93,7 @@ export default {
       },
       isShow: true, //是否显示
       fileList: [],
-      holidaysApplyTypeList: [], //请假类型
+      holidayTypes: [], //请假类型
       rules: {
         applyTime: [
           { required: true, message: "请选择请假时间", trigger: "blur" }
@@ -138,9 +138,9 @@ export default {
         }
     },
     // 初始化
-    initializeFun() {
+    async initializeFun() {
       this.userInfo = this.$toolFn.curUser;
-      this.getHolidaysApplyTypeFun();
+      this.holidayTypes = await this.$myApi.getHolidaysTypeId();
       this.holidayProcessRelate(this.curInfo.staffCode); //获取报假期相关人员
     },
     // 获取假期流程相关人员
@@ -185,15 +185,6 @@ export default {
           this.addFun();
         } else {
           return false;
-        }
-      });
-    },
-    // 获取请假类型
-    getHolidaysApplyTypeFun() {
-      var reqUrl = "/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId";
-      this.$myApi.http.post(reqUrl, {}).then(res => {
-        if (res.data.code == 0) {
-          this.holidaysApplyTypeList = res.data.data;
         }
       });
     },

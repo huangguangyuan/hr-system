@@ -74,7 +74,6 @@ export default {
       }, //表单信息
       isShow: true, //是否显示
       fileList: [],
-      holidaysApplyTypeList: [], //请假类型
       rules: {
         salary: [
           { required: true, message: "请输入税前工资", trigger: "blur" }
