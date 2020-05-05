@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2019-09-05 00:02:26
- * @LastEditTime: 2020-04-26 02:47:33
- * @LastEditors: your name
+ * @LastEditTime: 2020-05-04 10:22:06
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \hr-system\src\lib\apis\myApi.js
  */
@@ -76,7 +76,9 @@
         getHolidaysTypeId:()=>apiMain('/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId',{isCache:true}),//获取假期类型
         staffHolidays:(params)=>apiMain('/server/api/v1/staff/holidaysApply/staffHolidaysApply',params),//获取假期审批详情
         companys:(params)=>apiMain('/server/api/v1/company/companys',params),//公司接口
+        companyRegions:(params)=>apiMain('/server/api/v1/company/regions',params),//区域接口
         regionBUs:(params)=>apiMain('/server/api/v1/company/regionBUs',params),//单位接口
+        buDepartments:(params)=>apiMain('/server/api/v1/buDepartment/getAll',params),//部门接口
         genStaffPayroll:(params)=>apiMain('/server/api/v1/payroll/staff/genStaffPayroll',params),//生成工资单
     };
 

@@ -40,6 +40,7 @@
       <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
       <el-table-column sortable prop="position" label="员工职位" width="100"></el-table-column>
       <el-table-column sortable prop="dateOfJoining" label="入职日期" width="100"></el-table-column>
+      <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="100"></el-table-column>
       <el-table-column sortable prop="salary" label="基本工资" width="100"></el-table-column>
       <el-table-column sortable prop="taxableItemsAmount" label="应税项目总额" width="140"></el-table-column>
       <el-table-column sortable prop="claimAmount" label="请假应扣总额" width="140"></el-table-column>
@@ -101,6 +102,7 @@
       <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
       <el-table-column sortable prop="position" label="员工职位" width="100"></el-table-column>
       <el-table-column sortable prop="dateOfJoining" label="入职日期" width="100"></el-table-column>
+      <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="100"></el-table-column>
       <el-table-column sortable prop="salary" label="基本工资" width="100"></el-table-column>
       <el-table-column sortable prop="taxableItemsAmount" label="应税项目总额" width="140"></el-table-column>
       <el-table-column sortable prop="claimAmount" label="请假应扣总额" width="140"></el-table-column>
@@ -270,6 +272,7 @@ export default {
       return this.pageList.map(item => {
         item.typeTxt = payrollListTypeTxt(item.typeId);
         item.dateOfJoining = this.$toolFn.timeFormat(item.dateOfJoining,"yyyy-MM-dd");
+        item.dateOfLeaving = this.$toolFn.timeFormat(item.dateOfLeaving,"yyyy-MM-dd");
         item.netAmount = parseFloat(item.grossPay - item.taxAmount).toFixed(2);
         item.reallyAmount = parseFloat(item.grossPay - item.taxAmount + item.notTaxableItemsAmount + item.claimAmount + item.adjAmount).toFixed(2);
         this.$nextTick(function() {

@@ -2,15 +2,10 @@
   <div class="staffPayrollSummary wrap">
     <!-- 搜索 -->
     <div class="search-wrap">
-      <el-select v-model="companyCode" placeholder="请选择公司" @change="changeCompanyCode" style="width:200px;" class="selectItem">
-          <el-option v-for='(item,index) in companyList' :key='index' :label="item.name" :value="item.code"></el-option>
-      </el-select>
-      <el-select v-model="regionCode" placeholder="请选择区域" @change="changeRegionCode" style="width:200px;" class="selectItem">
-          <el-option v-for='(item,index) in regionList' :key='index' :label="item.name" :value="item.code"></el-option>
-      </el-select>
       <el-select class="selectItem"
         v-model="BUCode"
-        placeholder="请选择单位"
+        slot="prepend"
+        placeholder="请选择"
         style="width:200px;"
         @change="selectFun"
       >
@@ -20,9 +15,6 @@
           :label="item.name"
           :value="item.code"
         ></el-option>
-      </el-select>
-      <el-select v-model="departmentCode" placeholder="请选择部门" style="width:200px;" class="selectItem">
-          <el-option v-for='(item,index) in departmentList' :key='index' :label="item.name" :value="item.code"></el-option>
       </el-select>
       <el-date-picker
         class="selectItem"
@@ -158,16 +150,9 @@ export default {
     return {
       pageList: [],
       curInfo: {}, //当前内容
+      regionBUlist: [], //单位列表
       isShowLoading: false, //是否显示loading页
-      BUDepartmentList:[],//公司下所有部门列表
-      companyCode:'',//选中公司代号
-      companyList:[],//可选择公司列表
-      regionCode:'',//选中区域代号
-      regionList:[],//可选择公司列表
-      departmentCode:'',//选中区域代号
-      departmentList:[],//可选择公司列表
-      BUCode:'',//选中单位代号
-      regionBUlist: [], //可选择单位列表
+      BUCode:'',
       seachMsg: {
         year: "", //年份
         month: "" //月份
@@ -193,15 +178,13 @@ export default {
     }
   },
   mounted() {
-    
+    this.monthList = monthList();
     this.InitializationFun();
   },
   methods: {
     // 初始化
     InitializationFun() {
-      this.monthList = monthList();
-      this.getCompanyList();
-      //this.getRegionBU();
+      this.getRegionBU();
       var date = new Date();
       this.seachMsg = {
         year: date.getFullYear().toString(),
@@ -214,81 +197,25 @@ export default {
         };
       }
     },
-    /**
-     * @description: 获取公司列表
-     */
-    async getCompanyList(){
-      const companys = await this.$myApi.companys({isCache:true});
-      if (companys) {
-          this.companyList = companys;
-          //this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):this.companyList[0].code;
-          //this.pageInfo.reqParams.isReq = true;
-          //this.$refs.pageInfo.getData(this.pageInfo);
-        }
-    },
-    /**
-     * @description: 选中公司事件
-     */
-    async changeCompanyCode(code){
-      this.companyCode = code;
-      const companyRegions = await this.$myApi.companyRegions({companyCode:this.companyCode,isCache:true});
-      if (companyRegions && companyRegions.length > 0){
-        this.regionList.push({name:'选择全部',code:'all'});
-        for (let index = 0; index < companyRegions.length; index++) {
-          this.regionList.push({name:companyRegions[index].name,code:companyRegions[index].code});
-        }
-      }
-      //this.pageInfo.reqParams.isReq = true;
-      //this.$refs.pageInfo.getData(this.pageInfo);
-      //this.$toolFn.sessionSet('hrCompanyCode',code);
-    },
-    /**
-     * @description: 选中区域事件
-     */
-    async changeRegionCode(code){
-      this.regionCode = code;
-      const regionBUs = await this.$myApi.regionBUs({companyRegionCode:this.regionCode});
-      this.regionBUlist = [];
-      if (regionBUs && regionBUs.length > 0){
-        this.regionBUlist.push({name:'选择全部',code:'all'});
-        for (let index = 0; index < regionBUs.length; index++) {
-          this.regionBUlist.push({name:regionBUs[index].name,code:regionBUs[index].code});
-        }
-      }
-      //this.pageInfo.reqParams.isReq = true;
-      //this.$refs.pageInfo.getData(this.pageInfo);
-      //this.$toolFn.sessionSet('hrCompanyCode',code);
-    },    
     // 获取单位列表
     async getRegionBU() {
       var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUlist = regionBUs;
-          //this.BUCode = this.$toolFn.sessionGet("staffPayrollSummary")? this.$toolFn.sessionGet("staffPayrollSummary").BUCode: this.regionBUlist[0].code;
+          this.BUCode = this.$toolFn.sessionGet("staffPayrollSummary")? this.$toolFn.sessionGet("staffPayrollSummary").BUCode: this.regionBUlist[0].code;
           //this.getData(this.seachMsg.BUCode,parseInt(this.seachMsg.year),parseInt(this.seachMsg.month));
         }
     },
-    /**
-     * @description: 选中单位事件
-     */
-    async selectFun(val) {
-      //this.BUCode = val;
-      //this.seachMsg.BUCode = val;
-      //this.$toolFn.sessionSet("staffPayrollSummary", this.seachMsg);
+    // 获取单位BUCode
+    selectFun(val) {
       this.BUCode = val;
-      const buDepartments = await this.$myApi.buDepartments({BUCode:this.BUCode});
-      this.departmentList = [];
-      if (buDepartments && buDepartments.length > 0){
-        this.departmentList.push({name:'选择全部',code:'all'});
-        for (let index = 0; index < buDepartments.length; index++) {
-          this.departmentList.push({name:buDepartments[index].name,code:buDepartments[index].code});
-        }
-      }
+      this.seachMsg.BUCode = val;
+      this.$toolFn.sessionSet("staffPayrollSummary", this.seachMsg);
     },
     // 选择年份
     selectYear(val) {
       this.seachMsg.year = val;
-      this.pageInfo0.reqParams.isReq = true;
+      this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
       this.$toolFn.sessionSet("staffPayrollSummary", this.seachMsg);
     },
@@ -317,7 +244,7 @@ export default {
   border-bottom: 0;
   padding-bottom: 0;
   display: flex;
-    align-items: center;
+  align-items: center;
   justify-content: space-between;
 }
 .search-wrap {
