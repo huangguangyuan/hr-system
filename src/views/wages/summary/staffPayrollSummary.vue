@@ -12,7 +12,9 @@
         v-model="BUCode"
         placeholder="请选择单位"
         style="width:200px;"
-        @change="selectFun"
+        :loading="BUListLoading"
+        loading-text="加载中，请稍后"
+        @change="onSelectBU"
       >
         <el-option
           v-for="(item,index) in regionBUlist"
@@ -21,128 +23,61 @@
           :value="item.code"
         ></el-option>
       </el-select>
-      <el-select v-model="departmentCode" placeholder="请选择部门" style="width:200px;" class="selectItem">
+      <el-select multiple collapse-tags v-model="departmentCodeArr" placeholder="请选择部门" style="width:200px;" class="selectItem" :loading="departmentListLoading" loading-text="加载中，请稍后" @change="onSelectDepartment">
+          <el-checkbox v-model="departmentSelectAlllChecked" @change='onSelectDepartmentAll'>全选</el-checkbox>
           <el-option v-for='(item,index) in departmentList' :key='index' :label="item.name" :value="item.code"></el-option>
+      </el-select>
+      <el-select multiple collapse-tags v-model="staffCode" placeholder="请选择员工" style="width:200px;" class="selectItem" :loading="staffListLoading" loading-text="加载中，请稍后" @change="onSelectStaff">
+          <el-checkbox v-model="staffSelectAlllChecked" @change='onSelectStaffAll'>全选</el-checkbox>
+          <el-option v-for='(item,index) in staffList' :key='index' :label="item.name" :value="item.code"></el-option>
       </el-select>
       <el-date-picker
         class="selectItem"
-        v-model="seachMsg.year"
+        v-model="searchYear"
         type="year"
         placeholder="选择年"
         value-format="yyyy"
         format="yyyy"
-        @change="selectYear"
+        @change="onSelectYear"
       ></el-date-picker>
       <el-select
-         class="selectItem"
+        multiple collapse-tags
+        class="selectItem"
         style="width:200px;"
-        v-model="seachMsg.month"
+        v-model="searchMonthArr"
         placeholder="请选择月份"
-        @change="selectMonth"
+        @change="onSelectMonth"
       >
-        <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val"></el-option>
+        <el-checkbox v-model="monthSelectAlllChecked" @change='onSelectMonthAll'>全选</el-checkbox>
+        <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val.toString()"></el-option>
+        
       </el-select>
-      <!-- <el-input class="selectItem" placeholder="请输入关键字" v-model="filter.searchKey"></el-input> -->
+      <el-button type="primary" @click="onSearchSummary">确定</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="tableData" stripe>
-      <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-form label-position="left" inline class="table-expand">
-            <el-form-item :label="props.row.reallyAmount.title+'：'">
-              <span>{{ props.row.reallyAmount.val || '实发工资' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.name.title+'：'">
-              <span>{{ props.row.name.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.buName.title+'：'">
-              <span>{{ props.row.buName.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.year.title+'：'">
-              <span>{{ props.row.year.va || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.month.title+'：'">
-              <span>{{ props.row.month.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.staffNo.title+'：'">
-              <span>{{ props.row.staffNo.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.payrollPeriod.title+'：'">
-              <span>{{ props.row.payrollPeriod.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.basicSalary.title+'：'">
-              <span>{{ props.row.basicSalary.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.IDNo.title+'：'">
-              <span>{{ props.row.IDNo.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.departmentName.title+'：'">
-              <span>{{ props.row.departmentName.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.position.title+'：'">
-              <span>{{ props.row.position.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.bankName.title+'：'">
-              <span>{{ props.row.bankName.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.bankAccountNo.title+'：'">
-              <span>{{ props.row.bankAccountNo.val || '暂无信息' }}</span>
-            </el-form-item>
-            <!-- <el-form-item :label="props.row.allowance.title+'：'">
-              <span>{{ props.row.allowance.val || '暂无信息' }}</span>
-            </el-form-item> -->
-            <el-form-item :label="props.row.payDay.title+'：'">
-              <span>{{ props.row.payDay.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item v-for="(item,index) in props.row.buSalaryItemTaxableCount" :key="index" :label="props.row['staffSalaryItemTaxable' + item].title+'：'">
-              <span>{{ props.row['staffSalaryItemTaxable' + item].val || '暂无信息' }}</span>
-            </el-form-item>
-
-            <!-- <el-form-item :label="props.row.staffSalaryItemTaxable1.title+'：'">
-              <span>{{ props.row.staffSalaryItemTaxable1.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.staffSalaryItemTaxable2.title+'：'">
-              <span>{{ props.row.staffSalaryItemTaxable2.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.staffSalaryItemTaxable3.title+'：'">
-              <span>{{ props.row.staffSalaryItemTaxable3.val || '暂无信息' }}</span>
-            </el-form-item> -->
-
-            <el-form-item :label="props.row.holiday.title+'：'">
-              <span>{{ props.row.holiday.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.grossPay.title+'：'">
-              <span>{{ props.row.grossPay.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.taxableWages.title+'：'">
-              <span>{{ props.row.taxableWages.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.taxAmount.title+'：'">
-              <span>{{ props.row.taxAmount.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.claim.title+'：'">
-              <span>{{ props.row.claim.val || '暂无信息' }}</span>
-            </el-form-item>
-            <el-form-item :label="props.row.adjAmount.title+'：'">
-              <span>{{ props.row.adjAmount.val || 0 }}</span>
-            </el-form-item>            
-            <el-form-item :label="props.row.staffSalaryItemNotTaxable1.title+'：'">
-              <span>{{ props.row.staffSalaryItemNotTaxable1.val || '暂无信息' }}</span>
-            </el-form-item>
-          </el-form>
-        </template>
-      </el-table-column>
-      <el-table-column prop="name.val" label="姓名"></el-table-column>
-      <!-- <el-table-column prop="IDNo.val" label="身份证号"></el-table-column>
-      <el-table-column prop="buName.val" label="单位名称"></el-table-column> -->
-      <el-table-column prop="year.val" label="出粮年份"></el-table-column>
-      <el-table-column prop="month.val" label="出粮月份"></el-table-column>
-      <el-table-column prop="payrollPeriod.val" label="计粮周期"></el-table-column>
-      <el-table-column prop="reallyAmount.val" label="实发工资"></el-table-column>
+    <el-table v-loading="isShowLoading" :data="dataList" stripe>
+      <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
+      <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
+      <el-table-column sortable prop="position" label="员工职位" width="100"></el-table-column>
+      <el-table-column sortable prop="dateOfJoining" label="入职日期" width="100"></el-table-column>
+      <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="100"></el-table-column>
+      <el-table-column sortable prop="salary" label="基本工资" width="100"></el-table-column>
+      <el-table-column sortable prop="taxableItemsAmount" label="应税项目总额" width="140"></el-table-column>
+      <el-table-column sortable prop="claimAmount" label="请假应扣总额" width="140"></el-table-column>
+      <el-table-column sortable prop="totalAmount" label="收入总额" width="100"></el-table-column>
+      <el-table-column sortable prop="SIAmount" label="社保扣除" width="100"></el-table-column>
+      <el-table-column sortable prop="HCAmount" label="公积金扣除" width="130"></el-table-column>
+      <el-table-column sortable prop="grossPay" label="税前金额" width="100"></el-table-column>
+      <el-table-column sortable prop="specialDeductionAmount" label="专项附加扣除" width="140"></el-table-column>
+      <el-table-column sortable prop="threshold" label="个税起征点扣除" width="160"></el-table-column>
+      <el-table-column sortable prop="taxableWages" label="应税金额" width="100"></el-table-column>
+      <el-table-column sortable prop="taxAmount" label="个人所得税" width="130"></el-table-column>
+      <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column>
+      <el-table-column sortable prop="adjAmount" label="调整金额" width="100"></el-table-column>
+      <el-table-column sortable prop="reallyAmount" label="实发金额" width="100"></el-table-column>
+      <el-table-column sortable prop="typeTxt" label="工资单状态" width="130"></el-table-column>
     </el-table>
-    <!-- 分页编码 -->
-    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
   </div>
 </template>
 <script>
@@ -156,44 +91,32 @@ export default {
   inject: ["reload"],
   data() {
     return {
-      pageList: [],
+      dataList: [],
       curInfo: {}, //当前内容
       isShowLoading: false, //是否显示loading页
-      BUDepartmentList:[],//公司下所有部门列表
       companyCode:'',//选中公司代号
       companyList:[],//可选择公司列表
       regionCode:'',//选中区域代号
-      regionList:[],//可选择公司列表
-      departmentCode:'',//选中区域代号
-      departmentList:[],//可选择公司列表
+      regionList:[],//可选择区域列表
       BUCode:'',//选中单位代号
       regionBUlist: [], //可选择单位列表
-      seachMsg: {
-        year: "", //年份
-        month: "" //月份
-      },
+      BUListLoading:false,
+      departmentSelectAlllChecked: false,// 部门是否全选
+      departmentCodeArr:[],//选中部门代号
+      departmentList:[],//可选择部门列表
+      departmentListLoading:false,
+      staffSelectAlllChecked: false,// 员工是否全选
+      staffCode:[],//选中员工代号
+      staffList:[],//可选择员工列表
+      staffListLoading:false,
+      searchMonthArr:[],
+      searchYear:0,
+      monthSelectAlllChecked: false,// 月份是否全选
       filter:{searchKey:'',searchField:['nameChinese','staffNo']},
       monthList:[]
     };
   },
-  computed:{
-    pageInfo(){
-      return {
-        reqParams:{
-            isReq:false,
-            url:"/server/api/v1/payroll/staff/staffPayrollSummary",
-            data:{BUCode:this.BUCode,year: parseInt(this.seachMsg.year),month: parseInt(this.seachMsg.month) }
-          }
-        }
-    },
-    tableData(){
-      return this.pageList.map(item => {
-        return item;
-      });
-    }
-  },
   mounted() {
-    
     this.InitializationFun();
   },
   methods: {
@@ -201,18 +124,67 @@ export default {
     InitializationFun() {
       this.monthList = monthList();
       this.getCompanyList();
-      //this.getRegionBU();
       var date = new Date();
-      this.seachMsg = {
-        year: date.getFullYear().toString(),
-        month: (date.getMonth()+1).toString()
-      };     
-      if (this.$toolFn.sessionGet("staffPayrollSummary")) {
-        this.seachMsg = {
-          year: this.$toolFn.sessionGet("staffPayrollSummary").year,
-          month: this.$toolFn.sessionGet("staffPayrollSummary").month
-        };
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      this.searchYear = year.toString();
+      if (this.searchYear > year){
+        this.monthList = [];
+        this.searchMonth = [];
+      }else if (this.searchYear == year){
+        this.monthList = monthList().filter(f=>{ return (month >= f.val) });
+      }else{
+        this.monthList = monthList();
       }
+    },
+     /**
+     * @description: 查询工资汇总
+     */
+    async onSearchSummary(){
+      let matchMonth = '1,2,3,4,5,6,7,8,9,10,11,12';
+      if (matchMonth.indexOf(this.searchMonthArr.sort().join(',')) < 0){
+        this.$message.error("请确保月份是连续的");
+        return;
+      }
+      if (this.regionCode === ''){
+        this.$message.error("请选择区域");
+        return;
+      }
+
+      if (this.BUCode === ''){
+        this.$message.error("请选择单位");
+        return;
+      }
+      if (this.departmentCodeArr.length === 0){
+        this.$message.error("请至少选择一个部门");
+        return;
+      }
+      if (this.staffCode.length === 0){
+        this.$message.error("请至少选择一个员工");
+        return;
+      }
+      if (this.searchMonthArr.length === 0){
+        this.$message.error("请至少选择一个月份");
+        return;
+      }
+      let postData = {
+        BUCode:this.BUCode,
+        //searchMonthArr:this.searchMonthArr.map(Number),
+        //staffCodeArr:this.staffCode,
+        searchYear:Number.parseInt(this.searchYear),
+        //departmentCodeArr:this.departmentCodeArr,
+      }
+      if (!this.staffSelectAlllChecked){
+        postData.departmentCodeArr = this.departmentCodeArr
+      }
+      if (!this.departmentSelectAlllChecked){
+        postData.staffCodeArr = this.staffCode
+      }
+      if (!this.monthSelectAlllChecked){
+        postData.searchMonthArr = this.searchMonthArr.map(Number)
+      }
+      this.dataList = await this.$myApi.post('/server/api/v1/payroll/staff/staffPayrollSummaryV2',postData);
+      console.log(this.dataList)
     },
     /**
      * @description: 获取公司列表
@@ -221,9 +193,10 @@ export default {
       const companys = await this.$myApi.companys({isCache:true});
       if (companys) {
           this.companyList = companys;
-          //this.companyCode = this.$toolFn.sessionGet('hrCompanyCode')?this.$toolFn.sessionGet('hrCompanyCode'):this.companyList[0].code;
-          //this.pageInfo.reqParams.isReq = true;
-          //this.$refs.pageInfo.getData(this.pageInfo);
+        }
+        this.companyCode = this.companyList[0].code;
+        if (this.companyCode){
+          this.changeCompanyCode(this.companyCode);
         }
     },
     /**
@@ -233,82 +206,155 @@ export default {
       this.companyCode = code;
       const companyRegions = await this.$myApi.companyRegions({companyCode:this.companyCode,isCache:true});
       if (companyRegions && companyRegions.length > 0){
-        this.regionList.push({name:'选择全部',code:'all'});
+        //this.regionList.push({name:'选择全部',code:'all'});
         for (let index = 0; index < companyRegions.length; index++) {
           this.regionList.push({name:companyRegions[index].name,code:companyRegions[index].code});
         }
       }
-      //this.pageInfo.reqParams.isReq = true;
-      //this.$refs.pageInfo.getData(this.pageInfo);
-      //this.$toolFn.sessionSet('hrCompanyCode',code);
     },
     /**
      * @description: 选中区域事件
      */
     async changeRegionCode(code){
       this.regionCode = code;
+      this.BUCode = '';
+      this.BUListLoading = true;
       const regionBUs = await this.$myApi.regionBUs({companyRegionCode:this.regionCode});
       this.regionBUlist = [];
       if (regionBUs && regionBUs.length > 0){
-        this.regionBUlist.push({name:'选择全部',code:'all'});
+        // this.regionBUlist.push({name:'选择全部',code:'all'});
         for (let index = 0; index < regionBUs.length; index++) {
           this.regionBUlist.push({name:regionBUs[index].name,code:regionBUs[index].code});
         }
       }
-      //this.pageInfo.reqParams.isReq = true;
-      //this.$refs.pageInfo.getData(this.pageInfo);
-      //this.$toolFn.sessionSet('hrCompanyCode',code);
-    },    
-    // 获取单位列表
+      this.BUListLoading = false;
+    },
+    /**
+     * @description: 获取单位列表
+     */
     async getRegionBU() {
       var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUlist = regionBUs;
-          //this.BUCode = this.$toolFn.sessionGet("staffPayrollSummary")? this.$toolFn.sessionGet("staffPayrollSummary").BUCode: this.regionBUlist[0].code;
-          //this.getData(this.seachMsg.BUCode,parseInt(this.seachMsg.year),parseInt(this.seachMsg.month));
         }
     },
     /**
      * @description: 选中单位事件
      */
-    async selectFun(val) {
-      //this.BUCode = val;
-      //this.seachMsg.BUCode = val;
-      //this.$toolFn.sessionSet("staffPayrollSummary", this.seachMsg);
+    async onSelectBU(val) {
       this.BUCode = val;
+      this.departmentCodeArr = [];
+      this.departmentListLoading = true;
       const buDepartments = await this.$myApi.buDepartments({BUCode:this.BUCode});
       this.departmentList = [];
       if (buDepartments && buDepartments.length > 0){
-        this.departmentList.push({name:'选择全部',code:'all'});
         for (let index = 0; index < buDepartments.length; index++) {
           this.departmentList.push({name:buDepartments[index].name,code:buDepartments[index].code});
         }
       }
+      this.departmentListLoading = false;
     },
+    /**
+     * @description: 选中部门事件
+     */
+    async onSelectDepartment(val) {
+      if (val.length === this.departmentList.length) {
+        this.departmentSelectAlllChecked = true
+      } else {
+        this.departmentSelectAlllChecked = false
+      }
+      this.departmentCodeArr = val;
+      this.staffList = [];
+        if (val.length > 0){
+        this.staffListLoading = true;
+        var reqUrl = "/server/api/v1/staff/departmentStaffs";
+        var data = {departmentCode:this.departmentCodeArr};
+        let departmentStaffs = await this.$myApi.post(reqUrl,data);
+        for (let index = 0; index < departmentStaffs.length; index++) {
+          this.staffList.push({name:departmentStaffs[index].nameChinese,code:departmentStaffs[index].code});
+        }
+        this.staffListLoading = false;
+      }
+
+      
+    },
+    /**
+     * @description: 部门选择器选中选择所有事件
+     */
+    onSelectDepartmentAll() {
+      this.departmentCodeArr = []
+      if (this.departmentSelectAlllChecked) {
+        this.departmentList.map((item) => {
+          this.departmentCodeArr.push(item.code)
+        })
+      } else {
+        this.departmentCodeArr = []
+      }
+      this.onSelectDepartment(this.departmentCodeArr)
+    },
+    /**
+     * @description: 选中员工事件
+     */
+    async onSelectStaff(val) {
+      this.staffCode = val;
+      if (val.length === this.departmentList.length) {
+        this.departmentSelectAlllChecked = true
+      } else {
+        this.departmentSelectAlllChecked = false
+      }
+    },
+    /**
+     * @description: 部门选择器选中选择所有事件
+     */
+    onSelectStaffAll() {
+      this.staffCode = []
+      if (this.staffSelectAlllChecked) {
+        this.staffList.map((item) => {
+          this.staffCode.push(item.code)
+        })
+      } else {
+        this.staffCode = []
+      }
+      this.onSelectStaff(this.staffCode)
+    }, 
+    /**
+     * @description: 部门选择器选中选择所有事件
+     */
+    onSelectMonthAll() {
+      this.searchMonthArr = []
+      if (this.monthSelectAlllChecked) {
+        this.monthList.map((item) => {
+          this.searchMonthArr.push(item.val.toString())
+        })
+      }
+    }, 
     // 选择年份
-    selectYear(val) {
-      this.seachMsg.year = val;
-      this.pageInfo0.reqParams.isReq = true;
-      this.$refs.pageInfo.getData(this.pageInfo);
-      this.$toolFn.sessionSet("staffPayrollSummary", this.seachMsg);
+    onSelectYear(val) {
+      this.searchYear = val;
+      const myDate = new Date();
+      const year = myDate.getFullYear();
+      const month = myDate.getMonth() + 1;
+      if (val > year){
+        this.monthList = [];
+        this.searchMonth = [];
+      }else if (val == year){
+        this.monthList = monthList().filter(f=>{ return (month >= f.val) });
+      }else{
+        this.monthList = monthList();
+        
+      }
     },
     // 选择月份
-    selectMonth(val) {
-      this.seachMsg.month = val;
-      this.pageInfo.reqParams.isReq = true;
-      this.$refs.pageInfo.getData(this.pageInfo);
-      this.$toolFn.sessionSet("staffPayrollSummary", this.seachMsg);
+    onSelectMonth(val) {
+      this.searchMonth = val;
+      if (val.length === this.monthList.length) {
+        this.monthSelectAlllChecked = true
+      } else {
+        this.monthSelectAlllChecked = false
+      }
     },
   },
   watch: {
-      "BUCode":{
-        handler: function(newVal) {
-          if (newVal && newVal !=""){
-            this.pageInfo.reqParams.isReq = true;
-            this.$refs.pageInfo.getData(this.pageInfo);
-          }
-        }
-      }
     }
 };
 </script>
@@ -359,7 +405,9 @@ export default {
         box-shadow: darkgrey 0px 2px 15px 1px;border-radius: 8px;
     }
 }
-
+.el-checkbox {
+    padding-left: 20px;
+  }
 </style>
 
 
