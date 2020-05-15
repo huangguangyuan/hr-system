@@ -57,24 +57,34 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="dataList" stripe>
+      <el-table-column sortable prop="idNum" label="序号" width="100"></el-table-column>
+      <el-table-column sortable prop="companyName" label="公司" width="100"></el-table-column>
+      <el-table-column sortable prop="regionName" label="区域" width="100"></el-table-column>
+      <el-table-column sortable prop="buName" label="单位" width="100"></el-table-column>
+      <el-table-column sortable prop="departmentName" label="部门" width="100"></el-table-column>
+      <el-table-column sortable prop="year" label="年份" width="100"></el-table-column>
+      <el-table-column sortable prop="monthSet" label="月份" width="100"></el-table-column>
       <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
-      <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
+      <el-table-column prop="nameChinese" label="第一姓名" width="100" ></el-table-column>
       <el-table-column sortable prop="position" label="员工职位" width="100"></el-table-column>
       <el-table-column sortable prop="dateOfJoining" label="入职日期" width="100"></el-table-column>
       <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="100"></el-table-column>
-      <el-table-column sortable prop="salary" label="基本工资" width="100"></el-table-column>
-      <el-table-column sortable prop="taxableItemsAmount" label="应税项目总额" width="140"></el-table-column>
-      <el-table-column sortable prop="claimAmount" label="请假应扣总额" width="140"></el-table-column>
+      <el-table-column sortable prop="salary" label="基本工资" width="100" fixed></el-table-column>
+      <el-table-column sortable prop="grossPay" label="税前工资" width="100"></el-table-column>
+      <el-table-column sortable prop="taxableWages" label="应税金额" width="100"></el-table-column>
+      <el-table-column sortable prop="taxableItemsAmount" label="应税收入合计" width="140"></el-table-column>
+      <el-table-column sortable prop="SHAmount" label="社保扣除/公积金" width="100"></el-table-column>
+      <el-table-column sortable label="个人调整" width="130"></el-table-column>
+      <el-table-column sortable prop="taxAmount" label="应缴个税" width="130"></el-table-column>
+      <el-table-column sortable prop="netAmount" label="未含报销的税后收入" width="130"></el-table-column>
       <el-table-column sortable prop="totalAmount" label="收入总额" width="100"></el-table-column>
       <el-table-column sortable prop="SIAmount" label="社保扣除" width="100"></el-table-column>
       <el-table-column sortable prop="HCAmount" label="公积金扣除" width="130"></el-table-column>
-      <el-table-column sortable prop="grossPay" label="税前金额" width="100"></el-table-column>
       <el-table-column sortable prop="specialDeductionAmount" label="专项附加扣除" width="140"></el-table-column>
       <el-table-column sortable prop="threshold" label="个税起征点扣除" width="160"></el-table-column>
-      <el-table-column sortable prop="taxableWages" label="应税金额" width="100"></el-table-column>
-      <el-table-column sortable prop="taxAmount" label="个人所得税" width="130"></el-table-column>
-      <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column>
+      <!-- <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column> -->
       <el-table-column sortable prop="adjAmount" label="调整金额" width="100"></el-table-column>
+      <el-table-column sortable prop="claimAmount" label="不应税报销合计" width="140"></el-table-column>
       <el-table-column sortable prop="reallyAmount" label="实发金额" width="100"></el-table-column>
       <el-table-column sortable prop="typeTxt" label="工资单状态" width="130"></el-table-column>
     </el-table>
@@ -184,7 +194,6 @@ export default {
         postData.searchMonthArr = this.searchMonthArr.map(Number)
       }
       this.dataList = await this.$myApi.post('/server/api/v1/payroll/staff/staffPayrollSummaryV2',postData);
-      console.log(this.dataList)
     },
     /**
      * @description: 获取公司列表
