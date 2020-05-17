@@ -50,43 +50,68 @@
       >
         <el-checkbox v-model="monthSelectAlllChecked" @change='onSelectMonthAll'>全选</el-checkbox>
         <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val.toString()"></el-option>
-        
+
       </el-select>
       <el-button type="primary" @click="onSearchSummary">确定</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="dataList" stripe>
-      <el-table-column sortable prop="idNum" label="序号" width="100"></el-table-column>
-      <el-table-column sortable prop="companyName" label="公司" width="100"></el-table-column>
-      <el-table-column sortable prop="regionName" label="区域" width="100"></el-table-column>
-      <el-table-column sortable prop="buName" label="单位" width="100"></el-table-column>
-      <el-table-column sortable prop="departmentName" label="部门" width="100"></el-table-column>
-      <el-table-column sortable prop="year" label="年份" width="100"></el-table-column>
-      <el-table-column sortable prop="monthSet" label="月份" width="100"></el-table-column>
-      <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
-      <el-table-column prop="nameChinese" label="第一姓名" width="100" ></el-table-column>
-      <el-table-column sortable prop="position" label="员工职位" width="100"></el-table-column>
-      <el-table-column sortable prop="dateOfJoining" label="入职日期" width="100"></el-table-column>
-      <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="100"></el-table-column>
-      <el-table-column sortable prop="salary" label="基本工资" width="100" fixed></el-table-column>
-      <el-table-column sortable prop="grossPay" label="税前工资" width="100"></el-table-column>
-      <el-table-column sortable prop="taxableWages" label="应税金额" width="100"></el-table-column>
-      <el-table-column sortable prop="taxableItemsAmount" label="应税收入合计" width="140"></el-table-column>
-      <el-table-column sortable prop="SHAmount" label="社保扣除/公积金" width="100"></el-table-column>
-      <el-table-column sortable label="个人调整" width="130"></el-table-column>
-      <el-table-column sortable prop="taxAmount" label="应缴个税" width="130"></el-table-column>
-      <el-table-column sortable prop="netAmount" label="未含报销的税后收入" width="130"></el-table-column>
-      <el-table-column sortable prop="totalAmount" label="收入总额" width="100"></el-table-column>
-      <el-table-column sortable prop="SIAmount" label="社保扣除" width="100"></el-table-column>
-      <el-table-column sortable prop="HCAmount" label="公积金扣除" width="130"></el-table-column>
-      <el-table-column sortable prop="specialDeductionAmount" label="专项附加扣除" width="140"></el-table-column>
-      <el-table-column sortable prop="threshold" label="个税起征点扣除" width="160"></el-table-column>
+    <el-table v-loading="isShowLoading" :data="dataList" stripe v-if=" dataList.length > 0">
+      <el-table-column label="基本信息" >
+        <!-- <el-table-column sortable prop="idNum" label="序号" width="100" fixed></el-table-column> -->
+        <el-table-column sortable prop="staffNo" label="员工编号" width="120" fixed></el-table-column>
+        <el-table-column prop="nameChinese" label="第一姓名" width="120" fixed></el-table-column>
+        <el-table-column sortable prop="position" label="员工职位" width="120" fixed></el-table-column>
+        <el-table-column sortable prop="dateOfJoining" label="入职日期" width="120" fixed></el-table-column>
+        <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="120" fixed></el-table-column>
+        <el-table-column sortable prop="salary" label="基本工资" width="120" fixed></el-table-column>
+      </el-table-column>
+      <el-table-column label="出粮年月">
+        <el-table-column sortable prop="year" label="年份" width="120"></el-table-column>
+        <el-table-column sortable prop="monthSet" label="月份" width="120"></el-table-column>
+      </el-table-column>
+      <el-table-column label="公司信息">
+        <el-table-column sortable prop="companyName" label="公司" width="120" ></el-table-column>
+        <el-table-column sortable prop="regionName" label="区域" width="120" ></el-table-column>
+        <el-table-column sortable prop="buName" label="单位" width="120" ></el-table-column>
+        <el-table-column sortable prop="departmentName" label="部门" width="120" ></el-table-column>
+      </el-table-column>
+      <el-table-column label="税前收入">
+        <el-table-column sortable prop="grossPay" label="税前工资" width="120"></el-table-column>
+        <el-table-column  v-for="(item,index) in dataList[0].taxableItems" :key="index">
+          <template slot="header">{{item.name}}</template>
+          <template slot-scope="scope">{{scope.row.taxableItems[index].val}}</template>
+        </el-table-column>
+        <el-table-column sortable prop="taxableItemsAmount" label="应税费用" width="120"></el-table-column>
+        <el-table-column sortable prop="taxableWages" label="应税收入合计" width="140"></el-table-column>
+      </el-table-column>
+       <el-table-column label="扣除金额">
+        <el-table-column sortable prop="SHAmount" label="社保扣除/公积金" width="160"></el-table-column>
+        <el-table-column sortable prop="specialDeductionAmount" label="专项附加扣除" width="140"></el-table-column>
+        <!-- <el-table-column sortable label="个税调整" width="130"></el-table-column> -->
+        <el-table-column sortable prop="taxAmount" label="应缴个税" width="130"></el-table-column>
+       </el-table-column>
+        <el-table-column sortable prop="netAmount" label="未含报销的税后收入" width="190"></el-table-column>
+      <!-- <el-table-column sortable prop="totalAmount" label="收入总额" width="100"></el-table-column> -->
+      <!-- <el-table-column sortable prop="threshold" label="个税起征点扣除" width="160"></el-table-column> -->
       <!-- <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column> -->
-      <el-table-column sortable prop="adjAmount" label="调整金额" width="100"></el-table-column>
-      <el-table-column sortable prop="claimAmount" label="不应税报销合计" width="140"></el-table-column>
-      <el-table-column sortable prop="reallyAmount" label="实发金额" width="100"></el-table-column>
-      <el-table-column sortable prop="typeTxt" label="工资单状态" width="130"></el-table-column>
+      <el-table-column label="不应税收入">
+        <el-table-column  v-for="(item,index) in dataList[0].buClaimsItems" :key="index">
+          <template slot="header">{{item.name}}</template>
+          <template slot-scope="scope">{{scope.row.buClaimsItems[index].val}}</template>
+        </el-table-column>
+        <el-table-column sortable prop="claimAmount" label="不应税报销合计" width="150"></el-table-column>
+        <el-table-column  v-for="(item,index) in dataList[0].notTaxableItems" :key="index">
+          <template slot="header">{{item.name}}</template>
+          <template slot-scope="scope">{{scope.row.notTaxableItems[index].val}}</template>
+        </el-table-column>
+        <el-table-column sortable prop="notTaxableAmount" label="不应税收入合计" width="150"></el-table-column>
+      </el-table-column>
+      <el-table-column sortable prop="reallyAmount" label="税后工资" width="120"></el-table-column>
+      <el-table-column sortable prop="adjAmount" label="调整金额" width="120"></el-table-column>
+      <el-table-column sortable prop="SIAmount" label="社保扣除" width="120"></el-table-column>
+      <el-table-column sortable prop="HCAmount" label="公积金扣除" width="130"></el-table-column>
+      <el-table-column sortable prop="remarks" label="备注" width="130"></el-table-column>
     </el-table>
   </div>
 </template>
@@ -285,7 +310,7 @@ export default {
         this.staffListLoading = false;
       }
 
-      
+
     },
     /**
      * @description: 部门选择器选中选择所有事件
@@ -306,10 +331,10 @@ export default {
      */
     async onSelectStaff(val) {
       this.staffCode = val;
-      if (val.length === this.departmentList.length) {
-        this.departmentSelectAlllChecked = true
+      if (val.length === this.staffList.length) {
+        this.staffSelectAlllChecked = true
       } else {
-        this.departmentSelectAlllChecked = false
+        this.staffSelectAlllChecked = false
       }
     },
     /**
@@ -325,9 +350,9 @@ export default {
         this.staffCode = []
       }
       this.onSelectStaff(this.staffCode)
-    }, 
+    },
     /**
-     * @description: 部门选择器选中选择所有事件
+     * @description: 月份选择器选中选择所有事件
      */
     onSelectMonthAll() {
       this.searchMonthArr = []
@@ -336,7 +361,7 @@ export default {
           this.searchMonthArr.push(item.val.toString())
         })
       }
-    }, 
+    },
     // 选择年份
     onSelectYear(val) {
       this.searchYear = val;
@@ -350,7 +375,7 @@ export default {
         this.monthList = monthList().filter(f=>{ return (month >= f.val) });
       }else{
         this.monthList = monthList();
-        
+
       }
     },
     // 选择月份
@@ -417,6 +442,12 @@ export default {
 .el-checkbox {
     padding-left: 20px;
   }
+.el-table__row td{
+  white-space:nowrap
+}
+.el-table /deep/ .cell{
+  text-align: center;
+}
 </style>
 
 
