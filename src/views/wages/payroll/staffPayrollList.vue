@@ -38,7 +38,7 @@
       <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
       <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
       <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
-      <el-table-column sortable prop="position" label="员工职位" width="100"></el-table-column>
+      <el-table-column sortable prop="position" label="员工职位" width="200"></el-table-column>
       <el-table-column sortable prop="dateOfJoining" label="入职日期" width="100"></el-table-column>
       <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="100"></el-table-column>
       <el-table-column sortable prop="salary" label="基本工资" width="100"></el-table-column>
@@ -261,10 +261,11 @@ export default {
   computed:{
     pageInfo(){
       return {
+        pageSize:8,
         reqParams:{
             isReq:false,
             url:"/server/api/v1/payroll/staff/staffPayrollList",
-            data:{BUCode:this.BUCode,year: parseInt(this.seachMsg.year),month: parseInt(this.seachMsg.month),insuredType: this.seachMsg.insuredType,payrollTimesType:this.seachMsg.payrollTimesType }
+            data:{pageSize:8,BUCode:this.BUCode,year: parseInt(this.seachMsg.year),month: parseInt(this.seachMsg.month),insuredType: this.seachMsg.insuredType,payrollTimesType:this.seachMsg.payrollTimesType }
           }
         }
     },

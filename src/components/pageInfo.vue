@@ -37,6 +37,7 @@ export default {
   methods:{
     setParam(p){
       this.pageInfo = p;
+      console.log(p);
       this.total = this.pageInfo.total || this.total;
       this.refresh = this.pageInfo.refresh || this.refresh;
       this.pageSize = this.pageInfo.pageSize || this.pageSize;
