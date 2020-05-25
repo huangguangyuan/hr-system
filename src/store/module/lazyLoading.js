@@ -232,7 +232,14 @@ const dynamicRouter = [
         name: 'staffPayrollList',
         component: resolve => require(['@/views/wages/payroll/payrollMain.vue'], resolve),
     },
-    // 工资汇总表
+    // <==========报销汇总==========>
+    // 工资汇总
+    {
+        path: '/staffPayrollSummary',
+        name: 'staffPayrollSummary',
+        component: resolve => require(['@/views/wages/summary/staffPayrollSummary.vue'], resolve),
+    },
+    // 员工全年工资汇总
     {
         path: '/staffPayrollSummary',
         name: 'staffPayrollSummary',
