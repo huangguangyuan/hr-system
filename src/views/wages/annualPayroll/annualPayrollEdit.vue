@@ -47,7 +47,8 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe show-summary >
       <el-table-column prop="month" label="月份"></el-table-column>
-      <el-table-column prop="taxableWages" label="应税工资"></el-table-column>
+      <el-table-column prop="reallyAmount" label="税前金额"></el-table-column>
+      <!-- <el-table-column prop="taxableWages" label="应税工资"></el-table-column> -->
       <el-table-column prop="taxAmount" label="个人所得税"></el-table-column>
       <el-table-column prop="nousedTaxThreshold" label="结余起征点"></el-table-column>
       <!-- <el-table-column prop="netAmount" label="税后工资"></el-table-column> -->
@@ -225,7 +226,6 @@ export default {
     li {
       line-height: normal;
       padding: 7px;
-
       .name {
         text-overflow: ellipsis;
         overflow: hidden;

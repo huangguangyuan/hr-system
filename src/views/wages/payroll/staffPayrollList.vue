@@ -4,6 +4,12 @@
     <div class="addBtn-wrap">
       <el-button type="primary" v-if="deletePayrollSlip_right" @click="deleteSelectedFun">删除选中项工资单</el-button>
       <el-button type="primary" v-if="approvePayrollSlip_right" @click="approveSelectedFun">审核选中项工资单</el-button>
+      <el-button
+        type="primary"
+        class="buPayrollConfirmBtn"
+        @click="buPayrollConfirmFun()"
+        v-if="approveBUPayroll_right"
+      >确认单位薪水数据</el-button>
     </div>
     <div class="search-wrap">
       <!-- 选择单位 -->
@@ -25,12 +31,6 @@
          <el-option v-for="(item,key) in payrollTimesTypes" :key="key" :label="item.txt" :value="item.val"></el-option>
       </el-select>
       <el-input class="selectItem" placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
-      <el-button
-        type="primary"
-        class="buPayrollConfirmBtn"
-        @click="buPayrollConfirmFun(seachMsg.BUCode)"
-        v-if="fun_right && approveBUPayrollS_right"
-      >确认单位薪水数据</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
@@ -253,7 +253,7 @@ export default {
       approvePayrollSlip_right: false, //审批工资单权限
       deletePayrollSlip_right: false, //删除工资单权限
       genPayrollSlip_right: false, //重新生成工资单
-      approveBUPayrollS_right: false, //确认单位工资单
+      approveBUPayroll_right: false, //确认单位工资单
       fun_right: false, //功能按钮
       monthList:[]
     };
@@ -306,7 +306,7 @@ export default {
       this.hrCode = this.userInfo.userCode;
     }
     if (access.payrollMain.indexOf(4) >= 0) {
-      this.approveBUPayrollS_right = true;
+      this.approveBUPayroll_right = true;
     }
     if (access.payrollMain.indexOf(2) >= 0) {
       this.approvePayrollSlip_right = true;
@@ -534,7 +534,7 @@ export default {
     // 确认单位出粮信息
     buPayrollConfirmFun(res) {
       this.curInfo = {
-        BUCode: res,
+        BUCode: this.seachMsg.BUCode,
         hrCode: this.hrCode,
         year: this.seachMsg.year,
         month: this.seachMsg.month,
@@ -545,7 +545,9 @@ export default {
     // 获取全年工资信息
     staffPayrollYearFun(index, res) {
       this.curInfo = {
-        code: res.staffCode
+        code: res.staffCode,
+        year: this.seachMsg.year,
+        isShowYear: true
       };
       this.isShowPayrollYear = true;
     },
@@ -581,7 +583,7 @@ export default {
       handler: function(newVal) {
         if (newVal && newVal !=""){
           this.pageInfo.reqParams.isReq = true;
-          this.$refs.pageInfo.getData(this.pageInfo);
+          // this.$refs.pageInfo.getData(this.pageInfo);
         }
       }
     }

@@ -136,7 +136,6 @@ export default {
     pageInfo(){
       return {
         reqParams:{
-            isReq:false,
             url:"/server/api/v1/payroll/staff/staffPayrollYear",
             data:{staffCode:this.curInfo.code,year:parseInt(this.year)}
           }
