@@ -7,7 +7,7 @@
       <el-button
         type="primary"
         class="buPayrollConfirmBtn"
-        @click="buPayrollConfirmFun()"
+        @click="buPayrollConfirmFun"
         v-if="approveBUPayroll_right"
       >确认单位薪水数据</el-button>
     </div>
@@ -63,11 +63,11 @@
             icon="el-icon-view"
             @click.stop="openFun(scope.$index, scope.row)"
           >详 细</el-button>
-          <el-button
+          <!-- <el-button
             size="mini"
             icon="el-icon-tickets"
             @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
-          >全年工资单</el-button>
+          >全年工资单</el-button> -->
           <el-button
             size="mini"
             icon="el-icon-document-add"
@@ -149,11 +149,11 @@
             @click.stop="deleteFun(scope.$index, scope.row)"
             v-if="fun_right && deletePayrollSlip_right && scope.row.typeId != 1"
           >删 除</el-button>
-          <el-button
+          <!-- <el-button
             size="mini"
             icon="el-icon-tickets"
             @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
-          >全年工资单</el-button>
+          >全年工资单</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -197,7 +197,7 @@
       ></bu-payroll-confirm>
     </el-dialog>
     <!-- 全年工资单 -->
-    <el-dialog
+    <!-- <el-dialog
       title="全年工资单"
       :visible.sync="isShowPayrollYear"
       :close-on-click-modal="false"
@@ -208,7 +208,7 @@
         :curInfo="curInfo"
         v-on:listenIsShowMask="listenIsShowMask"
       ></staff-payroll-year>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 <script>
@@ -534,7 +534,7 @@ export default {
     // 确认单位出粮信息
     buPayrollConfirmFun(res) {
       this.curInfo = {
-        BUCode: this.seachMsg.BUCode,
+        BUCode: this.BUCode,
         hrCode: this.hrCode,
         year: this.seachMsg.year,
         month: this.seachMsg.month,
@@ -542,17 +542,17 @@ export default {
       };
       this.isShowbuConfirm = true;
     },
-    // 获取全年工资信息
-    staffPayrollYearFun(index, res) {
-      this.curInfo = {
-        code: res.staffCode,
-        year: this.seachMsg.year,
-        isShowYear: true
-      };
-      this.isShowPayrollYear = true;
-    },
+    // // 获取全年工资信息
+    // staffPayrollYearFun(index, res) {
+    //   this.curInfo = {
+    //     code: res.staffCode,
+    //     year: this.seachMsg.year,
+    //     isShowYear: true
+    //   };
+    //   this.isShowPayrollYear = true;
+    // },
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowAddAccess = false;
       this.isShowConfirm = false;
       this.isShowbuConfirm = false;

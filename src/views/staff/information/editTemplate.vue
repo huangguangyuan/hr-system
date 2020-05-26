@@ -591,7 +591,7 @@ export default {
     addFun() {
       var reqUrl = "/server/api/v1/staff/add";
       var data = this.ruleForm;
-      var data = {
+      data = {
         companyCode: this.ruleForm.selectedOptions[0],
         regionCode: this.ruleForm.selectedOptions[1],
         BUCode: this.ruleForm.selectedOptions[2],
@@ -685,7 +685,7 @@ export default {
         nameEnglish: this.ruleForm.nameEnglish,
         gender: this.ruleForm.gender,
         photo: this.ruleForm.photo,
-        dateOfBirth: this.ruleForm.dateOfBirth,
+        dateOfBirth: this.ruleForm.dateOfBirth || ' ',
         address: this.ruleForm.address,
         mobile: this.ruleForm.mobile,
         mobileCountryCode: this.ruleForm.mobileCountryCode,
@@ -703,8 +703,8 @@ export default {
         nameOfSpouse: this.ruleForm.nameOfSpouse,
         countOfKids: this.ruleForm.countOfKids,
         emergencyContact: this.ruleForm.emergencyContact,
-        dateOfJoining: this.ruleForm.dateOfJoining,
-        dateOfLeaving: this.ruleForm.dateOfLeaving,
+        dateOfJoining: this.ruleForm.dateOfJoining || ' ',
+        dateOfLeaving: this.ruleForm.dateOfLeaving || ' ',
         reasonOfLeaving: this.ruleForm.reasonOfLeaving,
         workingLocation: this.ruleForm.workingLocation,
         outsourceLocation: this.ruleForm.outsourceLocation,

@@ -232,25 +232,37 @@ const dynamicRouter = [
         name: 'staffPayrollList',
         component: resolve => require(['@/views/wages/payroll/payrollMain.vue'], resolve),
     },
-    // <==========报销汇总==========>
-    // 工资汇总
-    {
-        path: '/staffPayrollSummary',
-        name: 'staffPayrollSummary',
-        component: resolve => require(['@/views/wages/summary/staffPayrollSummary.vue'], resolve),
-    },
-    // 员工全年工资汇总
-    {
-        path: '/staffPayrollSummary',
-        name: 'staffPayrollSummary',
-        component: resolve => require(['@/views/wages/summary/staffPayrollSummary.vue'], resolve),
-    },
+    // // 工资汇总
+    // {
+    //     path: '/staffPayrollSummary',
+    //     name: 'staffPayrollSummary',
+    //     component: resolve => require(['@/views/wages/summary/staffPayrollSummary.vue'], resolve),
+    // },
     // <==========消息中心==========>
     // 消息列表
     {
         path: '/newsList',
         name: 'newsList',
         component: resolve => require(['@/views/news/newsList.vue'], resolve),
+    },
+    // <==========报销系统==========>
+    // 工资汇总
+    // {
+    //     path: '/staffPayrollSummary1',
+    //     name: 'staffPayrollSummary1',
+    //     component: resolve => require(['@/views/wages/summary/staffPayrollSummary.vue'], resolve),
+    // },
+    // 员工全年工资汇总
+    {
+        path: '/staffPayrollAnnualSummary',
+        name: 'staffPayrollAnnualSummary',
+        component: resolve => require(['@/views/wages/summary/staffPayrollAnnualSummary.vue'], resolve),
+    },
+    // 单位工资汇总
+    {
+        path: '/buPayrollSummary',
+        name: 'buPayrollSummary',
+        component: resolve => require(['@/views/wages/summary/buPayrollSummary.vue'], resolve),
     },
 ]
 
