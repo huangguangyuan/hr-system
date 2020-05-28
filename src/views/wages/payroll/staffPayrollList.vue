@@ -583,7 +583,7 @@ export default {
       handler: function(newVal) {
         if (newVal && newVal !=""){
           this.pageInfo.reqParams.isReq = true;
-          // this.$refs.pageInfo.getData(this.pageInfo);
+          this.$refs.pageInfo.getData(this.pageInfo);
         }
       }
     }

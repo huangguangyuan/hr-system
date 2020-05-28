@@ -28,20 +28,15 @@
         @change="selectYear"
       ></el-date-picker>
 
-      <el-autocomplete class="selectItem"
-        popper-class="my-autocomplete"
-        v-model="seachMsg.staffName"
-        :fetch-suggestions="staffList"
-        placeholder="请选择员工"
-        @select="handleSelect">
-        <i
-          class="el-icon-user-solid el-input__icon"
-          slot="suffix">
-        </i>
-        <template slot-scope="{ item }">
-          <div class="name">{{ item.nameChinese }}({{ item.staffNo }})</div>
-        </template>
-      </el-autocomplete>
+        <el-select v-model="seachMsg.staffCode" filterable placeholder="请选择" @change="staffPayrollYearFun">
+        <el-option
+          v-for="item in staffs"
+          :key="item.code"
+          :label="item.nameChinese"
+          :value="item.code">
+        </el-option>
+      </el-select>
+
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
@@ -93,7 +88,7 @@ export default {
       pageList:[],
       isShowLoading: false, //是否显示loading页
       isShowEditLayer:false,
-      restaurants: [],
+      staffs: [],
     };
   },
   computed:{
@@ -141,17 +136,6 @@ export default {
       this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },
-    staffList(queryString, cb) {
-        var restaurants = this.restaurants;
-        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-        // 调用 callback 返回建议列表的数据
-        cb(results);
-      },
-      createFilter(queryString) {
-        return (restaurant) => {
-          return (restaurant.nameChinese.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
       loadAll(BUCode) {
         var reqUrl = "/server/api/v1/payroll/staff/allowPayrollStaffs";
         var myData = {
@@ -159,8 +143,7 @@ export default {
         };
         this.$myApi.http.post(reqUrl, myData).then(res => {
           if (res.data.code == 0){
-            this.restaurants = res.data.data;
-            let staffCode = "",year = 0;
+            this.staffs = res.data.data;
             if (this.$toolFn.sessionGet("annualPayrollEdit") && this.$toolFn.sessionGet("annualPayrollEdit").staffCode != "" && this.$toolFn.sessionGet("annualPayrollEdit").year != 0){
               //this.getData(this.$toolFn.sessionGet("annualPayrollEdit").staffCode, this.$toolFn.sessionGet("annualPayrollEdit").year);
               //this.pageInfo.reqParams.isReq = true;
@@ -170,9 +153,8 @@ export default {
           
         })
       },
-      handleSelect(item) {
-        this.seachMsg.staffCode = item.code;
-        this.seachMsg.staffName = item.nameChinese;
+      staffPayrollYearFun(item) {
+        this.seachMsg.staffCode = item;
         this.$toolFn.sessionSet("annualPayrollEdit", this.seachMsg);
         this.pageInfo.reqParams.isReq = true;
         this.$refs.pageInfo.getData(this.pageInfo);

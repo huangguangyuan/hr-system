@@ -27,21 +27,14 @@
         format="yyyy"
         @change="selectYear"
       ></el-date-picker>
-
-      <el-autocomplete class="selectItem"
-        popper-class="my-autocomplete"
-        v-model="seachMsg.staffName"
-        :fetch-suggestions="staffList"
-        placeholder="请选择员工"
-        @select="staffPayrollYearFun">
-        <i
-          class="el-icon-user-solid el-input__icon"
-          slot="suffix">
-        </i>
-        <template slot-scope="{ item }">
-          <div class="name">{{ item.nameChinese }}({{ item.staffNo }})</div>
-        </template>
-      </el-autocomplete>
+        <el-select v-model="seachMsg.staffCode" filterable placeholder="请选择" @change="staffPayrollYearFun">
+        <el-option
+          v-for="item in staffs"
+          :key="item.code"
+          :label="item.nameChinese"
+          :value="item.code">
+        </el-option>
+      </el-select>
     </div>
     <el-divider></el-divider>
     <staffPayrollYear v-if="isShowPayrollYear" :curInfo="curInfo"></staffPayrollYear>
@@ -69,7 +62,7 @@ export default {
       pageList:[],
       isShowLoading: false, //是否显示loading页
       isShowEditLayer:false,
-      restaurants: [],
+      staffs: [],
       isShowPayrollYear:false
     };
   },
@@ -118,17 +111,6 @@ export default {
       this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },
-    staffList(queryString, cb) {
-        var restaurants = this.restaurants;
-        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-        // 调用 callback 返回建议列表的数据
-        cb(results);
-      },
-      createFilter(queryString) {
-        return (restaurant) => {
-          return (restaurant.nameChinese.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
       loadAll(BUCode) {
         var reqUrl = "/server/api/v1/payroll/staff/allowPayrollStaffs";
         var myData = {
@@ -136,20 +118,23 @@ export default {
         };
         this.$myApi.http.post(reqUrl, myData).then(res => {
           if (res.data.code == 0){
-            this.restaurants = res.data.data;
+            this.staffs = res.data.data;
           }
         })
       },
       // 获取全年工资信息
       staffPayrollYearFun(item) {
-        this.seachMsg.staffCode = item.code;
-        this.seachMsg.staffName = item.nameChinese;
+        this.isShowPayrollYear = false;
+        this.seachMsg.staffCode = item;
         this.curInfo = {
           code: this.seachMsg.staffCode,
           year: this.seachMsg.year,
           isShowYear: false
         };
-        this.isShowPayrollYear = true;
+        this.$nextTick(() => {
+                this.isShowPayrollYear = true;
+            })
+        
       },
       // 接收子组件发送信息
       listenIsShowMask(res) {
