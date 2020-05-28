@@ -19,6 +19,13 @@
       <el-form-item label="国家：" v-if="isShowItem">
         <el-input v-model="ruleForm.country"></el-input>
       </el-form-item>
+      <el-form-item label="所属行政区：">
+          <el-select v-model="ruleForm.locationType" placeholder="请选择单位所属">
+          <el-option key="1" label="中国大陆" value="1"></el-option>
+          <el-option key="2" label="中国香港" value="2"></el-option>
+          <el-option key="3" label="中国台湾" value="3"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="位置：">
         <el-input v-model="ruleForm.location"></el-input>
       </el-form-item>
@@ -82,6 +89,7 @@ export default {
         address: "",
         country: "",
         location: "",
+        locationType: "",
         logo: "",
         remarks: "",
         contactName: "",
@@ -163,7 +171,11 @@ export default {
             message: "请输入正确的邮箱",
             trigger: ["blur"]
           }
+        ],
+        locationType: [
+          { required: true, message: "请选择行政区", trigger: "blur" }
         ]
+
       }
     };
   },
@@ -177,7 +189,6 @@ export default {
     this.isShow = true;
   },
   methods: {
-    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -206,6 +217,7 @@ export default {
         address:this.ruleForm.address,
         country:this.ruleForm.country,
         location:this.ruleForm.location,
+        locationType:this.ruleForm.locationType.toString(),
         logo:this.ruleForm.logo,
         remarks:this.ruleForm.remarks,
         contactName:this.ruleForm.contactName,
@@ -230,6 +242,7 @@ export default {
       var data = {
         id: this.ruleForm.id,
         location: this.ruleForm.location,
+        locationType: this.ruleForm.locationType,
         address: this.ruleForm.address,
         logo: this.ruleForm.logo,
         remarks: this.ruleForm.remarks,
