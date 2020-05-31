@@ -23,13 +23,13 @@
         <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val"></el-option>
       </el-select>
       <!-- 选择强制缴纳类型 -->
-      <el-select style="width:200px;" v-model="seachMsg.insuredType" placeholder="请选择强制缴纳类型" @change="selectInsuredType" class="selectItem">
+      <!-- <el-select style="width:200px;" v-model="seachMsg.insuredType" placeholder="请选择强制缴纳类型" @change="selectInsuredType" class="selectItem">
          <el-option v-for="(item,key) in insuredTypes" :key="key" :label="item.txt" :value="item.val"></el-option>
-      </el-select>
+      </el-select> -->
       <!-- 选择出粮方式 -->
-      <el-select style="width:200px;" v-model="seachMsg.payrollTimesType" placeholder="选择出粮方式" @change="selectPayrollTimesType" class="selectItem">
+      <!-- <el-select style="width:200px;" v-model="seachMsg.payrollTimesType" placeholder="选择出粮方式" @change="selectPayrollTimesType" class="selectItem">
          <el-option v-for="(item,key) in payrollTimesTypes" :key="key" :label="item.txt" :value="item.val"></el-option>
-      </el-select>
+      </el-select> -->
       <el-input class="selectItem" placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
     </div>
     <el-divider></el-divider>
@@ -233,6 +233,7 @@ export default {
       pageList:[],
       curInfo: {}, //当前内容
       regionBUlist: [], //单位列表
+      buSelectedLocationType:1,//当前单位区域类型（对应强制缴纳类型）1，中国社保，2香港mpf
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
       isShowConfirm: false, //是否显示确认工资单
@@ -346,6 +347,7 @@ export default {
       if (regionBUs && regionBUs.length > 0) {
         this.regionBUlist = regionBUs;
         this.BUCode = this.BUCode != '' ? this.BUCode : this.regionBUlist[0].code;
+        this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.BUCode === this.BUCode })[0].locationType;
         //this.getData(this.seachMsg.BUCode,parseInt(this.seachMsg.year),parseInt(this.seachMsg.month));
       }
     },
@@ -365,6 +367,8 @@ export default {
       this.seachMsg.BUCode = val;
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
       this.$toolFn.sessionSet("staffPayrollList_multipleSelection",'');
+      this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.BUCode === val})[0].locationType;
+      this.insuredTypes = insuredTypes().filter(f=>{return f.val === this.buSelectedLocationType});
       this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },
@@ -583,7 +587,7 @@ export default {
       handler: function(newVal) {
         if (newVal && newVal !=""){
           this.pageInfo.reqParams.isReq = true;
-          this.$refs.pageInfo.getData(this.pageInfo);
+          // this.$refs.pageInfo.getData(this.pageInfo);
         }
       }
     }
