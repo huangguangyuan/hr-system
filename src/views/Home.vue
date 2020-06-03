@@ -10,20 +10,31 @@
           <p>后台管理系统</p>
         </div>
         <div class="right">
-          <el-badge is-dot class="item" v-if="false" >
+          <el-badge is-dot class="item" v-if="false">
             <i class="el-icon-bell" @click="goLink('/newsList')"></i>
           </el-badge>
-          <img src="@/assets/images/face_ico.jpg" alt>
+          <img src="@/assets/images/face_ico.jpg" alt />
           <el-dropdown>
             <span class="el-dropdown-link">
               {{userInfo.account}}（{{userInfo.roleTypeTxt||userInfo.typeTxt}}）
-              <i class="el-icon-arrow-down el-icon--right"></i>
+              <i
+                class="el-icon-arrow-down el-icon--right"
+              ></i>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="logout(userInfo.roleTypeId)">退出登录</el-dropdown-item>
-              <el-dropdown-item v-if="userInfo.roleTypeId == 1" @click.native="isShowPasswrdBox = true">修改密码</el-dropdown-item>
+              <el-dropdown-item
+                v-if="userInfo.roleTypeId == 1"
+                @click.native="isShowPasswrdBox = true"
+              >修改密码</el-dropdown-item>
               <el-dropdown-item v-if="userInfo.relatedUser" divided disabled>切换账户</el-dropdown-item>
-              <el-dropdown-item v-if="userInfo.relatedUser" @click.native="switchUser(userInfo.relatedUser)"><i style="font-size:18px;" class="el-icon-refresh"></i>{{userInfo.relatedUser.typeTxt}}</el-dropdown-item>
+              <el-dropdown-item
+                v-if="userInfo.relatedUser"
+                @click.native="switchUser(userInfo.relatedUser)"
+              >
+                <i style="font-size:18px;" class="el-icon-refresh"></i>
+                {{userInfo.relatedUser.typeTxt}}
+              </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -84,20 +95,23 @@
             </el-scrollbar>
           </el-main>
           <!-- 底部 -->
-          <el-footer style="height:50px">
-            版权所有 (C) 2020 GRAMMY TECH。保留所有权利。
-          </el-footer>
+          <el-footer style="height:50px">版权所有 (C) 2020 GRAMMY TECH。保留所有权利。</el-footer>
         </el-container>
       </el-container>
     </el-container>
     <!-- 申请表单详情 -->
-    <el-dialog title="修改密码" :visible.sync="isShowPasswrdBox" :close-on-click-modal="false" label-width="140px">
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" >
+    <el-dialog
+      title="修改密码"
+      :visible.sync="isShowPasswrdBox"
+      :close-on-click-modal="false"
+      label-width="140px"
+    >
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <el-form-item label="输入密码：" prop="password">
-          <el-input v-model="ruleForm.password" show-password  ></el-input>
+          <el-input v-model="ruleForm.password" show-password></el-input>
         </el-form-item>
-        <el-form-item label="重复密码：" prop="passwordRepeat" >
-          <el-input v-model="ruleForm.passwordRepeat" show-password ></el-input>
+        <el-form-item label="重复密码：" prop="passwordRepeat">
+          <el-input v-model="ruleForm.passwordRepeat" show-password></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
@@ -120,41 +134,39 @@ export default {
       sidebarInfo: [], //左侧导航栏数据
       isCollapse: false, //左侧导航栏是否折叠
       collapseSize: "220px", //左侧导航栏宽度大小
-      isShowPasswrdBox:false,//是否显示表单详情
+      isShowPasswrdBox: false, //是否显示表单详情
       ruleForm: {
         password: "",
         passwordRepeat: ""
       },
-      userInfo:{},
+      userInfo: {},
       rules: {
-        password: [
-          { required: true, message: "请输入密码", trigger: "blur" }
-        ],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         passwordRepeat: [
           { required: true, message: "请输入重复密码", trigger: "blur" }
         ]
-      },
+      }
     };
   },
-  created(){
+  created() {
     this.$toolFn.curUserFn();
   },
   mounted() {
-    this.userInfo = this.$toolFn.localGet('userInfo');
+    this.userInfo = this.$toolFn.localGet("userInfo");
     this.initializeFun();
   },
   methods: {
-    goLink(path){
-      this.$router.replace({ path: path});
+    goLink(path) {
+      this.$router.replace({ path: path });
     },
-    switchUser(switchUser){
+    switchUser(switchUser) {
       var reqUrl = "/server/api/v1/hrSys/loginRelated";
       var postJson = {
-          account: switchUser.account,
-        	typeId:switchUser.typeId
-      }
-      this.$myApi.http.post(reqUrl,postJson).then(res => {
-        if (res.data.code == 0){
+        account: switchUser.account,
+        typeId: switchUser.typeId
+      };
+      this.$myApi.http.post(reqUrl, postJson).then(res => {
+        if (res.data.code == 0) {
           sessionStorage.clear();
           localStorage.clear();
           this.$store.commit({
@@ -167,83 +179,86 @@ export default {
             item.id = item.id.toString();
             return item;
           });
-          this.$store.dispatch("add_Routes", sidebar).then(res => {
-              return this.$store.dispatch('getAccessData_Fun',sidebar)
-            }).then(res => {
+          this.$store
+            .dispatch("add_Routes", sidebar)
+            .then(res => {
+              return this.$store.dispatch("getAccessData_Fun", sidebar);
+            })
+            .then(res => {
               var userInfo = this.$toolFn.localGet("userInfo");
               this.userInfo = userInfo;
               this.reload();
-              if (userInfo.roleTypeId == 1){
+              if (userInfo.roleTypeId == 1) {
                 this.$router.push({ path: "/applyMain" });
-              }else{
+              } else {
                 this.$router.push({ path: "/home" });
               }
-            })
+            });
         }
       });
     },
-    
+
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          
-          var reqUrl = '/server/api/v1/staff/account/update';
+          var reqUrl = "/server/api/v1/staff/account/update";
           var data = {
-            staffCode:this.userInfo.userCode
-          }
-          if (this.ruleForm.password != this.ruleForm.passwordRepeat){
+            staffCode: this.userInfo.userCode
+          };
+          if (this.ruleForm.password != this.ruleForm.passwordRepeat) {
             this.$message.error("两次秘密不一致！");
-          }else{
+          } else {
             data.password = md5(this.ruleForm.password);
           }
-          this.$myApi.http.post(reqUrl,data).then(res => {
-            if(res.data.code == 0){
+          this.$myApi.http.post(reqUrl, data).then(res => {
+            if (res.data.code == 0) {
               this.isShowPasswrdBox = false;
-              this.$message.success('修改成功！');
-            }else{
+              this.$message.success("修改成功！");
+            } else {
               this.$message.error(res.data.msg);
             }
-          })
+          });
         } else {
           return false;
         }
       });
     },
-    logout(roleTypeId){
+    logout(roleTypeId) {
       var reqUrl = "/server/api/v1/admin/logout";
       var returnUrl = "/";
-      if (roleTypeId == 1 || roleTypeId == 2){
+      if (roleTypeId == 1 || roleTypeId == 2) {
         reqUrl = "/server/api/v1/hrSys/logout";
         returnUrl = "/hr";
       }
-      this.$myApi.http.post(reqUrl).then(res => {
-        if (res.data.code == 0){
-          this.$toolFn.localRemove('userInfo');
-          this.$router.replace({
+      this.$myApi.http
+        .post(reqUrl)
+        .then(res => {
+          if (res.data.code == 0) {
+            this.$toolFn.localRemove("userInfo");
+            this.$router.replace({
               path: returnUrl // 到登录页重新获取token
-            })
-        }
-      }).catch(error => {
-        sessionStorage.clear();
-        localStorage.clear();
-        this.$router.replace({
-              path: '/' // 到登录页重新获取token
-            })
-      })
+            });
+          }
+        })
+        .catch(error => {
+          sessionStorage.clear();
+          localStorage.clear();
+          this.$router.replace({
+            path: "/" // 到登录页重新获取token
+          });
+        });
     },
     // 初始化
     initializeFun() {
-      this.initializeTab();
       this.sidebarInfo = this.getSidebar;
+      this.initializeTab();
     },
     // 选中当前tab标签
     tabSelection(tab) {
-      
       this.$router.push({ path: tab.name });
     },
     // 删除当前tab标签
     removeTab(targetName) {
-      
       var activeName = this.TabsValue;
       var tabs = this.navTabs;
       // 判断如果tab标签的数量是最后一个则不执行
@@ -279,7 +294,6 @@ export default {
     },
     // 关闭标签
     handleCommand(command) {
-      
       var tabs = this.navTabs;
       var activeName = this.TabsValue;
       // 关闭其他tab标签
@@ -299,7 +313,6 @@ export default {
     },
     // 初始化默认第一个tab标签
     initializeTab() {
-      
       var firstTitle = this.$route.path;
       if (this.navTabs.length != 0) {
         return false;
@@ -311,10 +324,10 @@ export default {
       if (isExist) {
         return false;
       }
-      for (let i = 0; i < sidebarInfo.length; i++) {
-        for (var j = 0; j < sidebarInfo[i].items.length; j++) {
-          if (sidebarInfo[i].items[j].authUrl == this.$route.path) {
-            firstTitle = sidebarInfo[i].items[j].name;
+      for (let i = 0; i < this.sidebarInfo.length; i++) {
+        for (var j = 0; j < this.sidebarInfo[i].items.length; j++) {
+          if (this.sidebarInfo[i].items[j].authUrl == this.$route.path) {
+            firstTitle = this.sidebarInfo[i].items[j].name;
           }
         }
       }
@@ -336,10 +349,12 @@ export default {
       this.isCollapse = !this.isCollapse;
       if (this.isCollapse) {
         this.collapseSize = "60px";
-        document.getElementsByClassName("wrap")[0].style.width='calc(100vw - 60px)'
+        document.getElementsByClassName("wrap")[0].style.width =
+          "calc(100vw - 60px)";
       } else {
         this.collapseSize = "220px";
-        document.getElementsByClassName("wrap")[0].style.width='calc(100vw - 220px)'
+        document.getElementsByClassName("wrap")[0].style.width =
+          "calc(100vw - 220px)";
       }
     }
   },
@@ -352,7 +367,6 @@ export default {
         return this.$store.state.navModule.TabsValue;
       },
       set: function(v) {
-        
         this.$store.commit({
           type: "changeTabsVal",
           TabsValue: v
@@ -364,11 +378,14 @@ export default {
       return this.$store.state.accessModule.accessList;
     },
     hasScrollbar() {
-      var isOK
+      var isOK;
       var obj = document.getElementsByClassName("el-scrollbar__wrap")[1];
-      if (obj.scrollHeight > obj.clientHeight || obj.offsetHeight > obj.clientHeight) {
+      if (
+        obj.scrollHeight > obj.clientHeight ||
+        obj.offsetHeight > obj.clientHeight
+      ) {
         isOK = true;
-      }else{
+      } else {
         isOK = false;
       }
       return isOK;
@@ -382,11 +399,10 @@ export default {
 <style scoped lang="scss">
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 220px;
-
 }
-  .el-icon-bell{
-    cursor: pointer;
-  }
+.el-icon-bell {
+  cursor: pointer;
+}
 </style>
 
 
