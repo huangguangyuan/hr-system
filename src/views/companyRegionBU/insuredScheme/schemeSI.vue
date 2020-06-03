@@ -33,6 +33,7 @@
 </template>
 <script>
 import schemeSIAdd from './schemeSIAdd.vue';
+import {SITxt,paymentIdTxt,householdIdTxt} from "@/lib/staticData.js";
 import pageInfo from "@/components/pageInfo.vue";
 export default {
   components: {
@@ -61,9 +62,11 @@ export default {
     },
     tableData(){
       return this.pageList.map(item => {
-        item.paymentIdTxt = item.paymentId == '1'?'公司':'个人';
-        item.typeIdTxt = this.typeIdTxt(item.typeId);
-        return item;
+         if (item){
+          item.paymentIdTxt = paymentIdTxt(item.paymentId);
+          item.typeIdTxt = SITxt(item.typeId);
+          return item;
+         }
       });
     },
     BUInfo() {
@@ -74,28 +77,6 @@ export default {
     //this.getAllData();
   },
   methods: {
-    typeIdTxt(){
-      switch (item.typeId) {
-          case 1:
-            return "养老";
-            break;
-          case 2:
-            return "医疗";
-            break;
-          case 3:
-            return "工伤";
-            break;
-          case 4:
-            return "生育";
-            break;
-          case 5:
-            return "失业";
-            break;
-          case 6:
-            return "大病";
-            break;
-        }
-    },
     // 监听子组件发过的触发函数
     listenIsShowMask(res) {
       this.isShowAdd = res;

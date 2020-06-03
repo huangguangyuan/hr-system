@@ -83,8 +83,8 @@ export default {
     },
     
     submitForm(formName) {
-      this.ruleForm.annualLeaveWriteOffDate = new Date((new Date().getFullYear()+1) + "-" + this.$toolFn.timeFormat(this.ruleForm.annualLeaveWriteOffDate,"MM-dd"));
-      this.ruleForm.annualLeaveRetainClearDate = new Date((new Date().getFullYear()+1) + "-" +  this.$toolFn.timeFormat(this.ruleForm.annualLeaveRetainClearDate,"MM-dd"));
+      // this.ruleForm.annualLeaveWriteOffDate = new Date((new Date().getFullYear()+1) + "-" + this.$toolFn.timeFormat(this.ruleForm.annualLeaveWriteOffDate,"MM-dd"));
+      // this.ruleForm.annualLeaveRetainClearDate = new Date((new Date().getFullYear()+1) + "-" +  this.$toolFn.timeFormat(this.ruleForm.annualLeaveRetainClearDate,"MM-dd"));
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.ruleForm.annualLeaveWriteOffDate > this.ruleForm.annualLeaveRetainClearDate){

@@ -84,7 +84,7 @@
             </el-scrollbar>
           </el-main>
           <!-- 底部 -->
-          <el-footer>
+          <el-footer style="height:50px">
             版权所有 (C) 2020 GRAMMY TECH。保留所有权利。
           </el-footer>
         </el-container>

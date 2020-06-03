@@ -4,6 +4,12 @@
     <div class="addBtn-wrap">
       <el-button type="primary" v-if="deletePayrollSlip_right" @click="deleteSelectedFun">删除选中项工资单</el-button>
       <el-button type="primary" v-if="approvePayrollSlip_right" @click="approveSelectedFun">审核选中项工资单</el-button>
+      <el-button
+        type="primary"
+        class="buPayrollConfirmBtn"
+        @click="buPayrollConfirmFun"
+        v-if="approveBUPayroll_right"
+      >确认单位薪水数据</el-button>
     </div>
     <div class="search-wrap">
       <!-- 选择单位 -->
@@ -17,20 +23,14 @@
         <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val"></el-option>
       </el-select>
       <!-- 选择强制缴纳类型 -->
-      <el-select style="width:200px;" v-model="seachMsg.insuredType" placeholder="请选择强制缴纳类型" @change="selectInsuredType" class="selectItem">
+      <!-- <el-select style="width:200px;" v-model="seachMsg.insuredType" placeholder="请选择强制缴纳类型" @change="selectInsuredType" class="selectItem">
          <el-option v-for="(item,key) in insuredTypes" :key="key" :label="item.txt" :value="item.val"></el-option>
-      </el-select>
+      </el-select> -->
       <!-- 选择出粮方式 -->
-      <el-select style="width:200px;" v-model="seachMsg.payrollTimesType" placeholder="选择出粮方式" @change="selectPayrollTimesType" class="selectItem">
+      <!-- <el-select style="width:200px;" v-model="seachMsg.payrollTimesType" placeholder="选择出粮方式" @change="selectPayrollTimesType" class="selectItem">
          <el-option v-for="(item,key) in payrollTimesTypes" :key="key" :label="item.txt" :value="item.val"></el-option>
-      </el-select>
+      </el-select> -->
       <el-input class="selectItem" placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
-      <el-button
-        type="primary"
-        class="buPayrollConfirmBtn"
-        @click="buPayrollConfirmFun(seachMsg.BUCode)"
-        v-if="fun_right && approveBUPayrollS_right"
-      >确认单位薪水数据</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
@@ -38,8 +38,9 @@
       <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
       <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
       <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
-      <el-table-column sortable prop="position" label="员工职位" width="100"></el-table-column>
+      <el-table-column sortable prop="position" label="员工职位" width="200"></el-table-column>
       <el-table-column sortable prop="dateOfJoining" label="入职日期" width="100"></el-table-column>
+      <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="100"></el-table-column>
       <el-table-column sortable prop="salary" label="基本工资" width="100"></el-table-column>
       <el-table-column sortable prop="taxableItemsAmount" label="应税项目总额" width="140"></el-table-column>
       <el-table-column sortable prop="claimAmount" label="请假应扣总额" width="140"></el-table-column>
@@ -62,11 +63,11 @@
             icon="el-icon-view"
             @click.stop="openFun(scope.$index, scope.row)"
           >详 细</el-button>
-          <el-button
+          <!-- <el-button
             size="mini"
             icon="el-icon-tickets"
             @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
-          >全年工资单</el-button>
+          >全年工资单</el-button> -->
           <el-button
             size="mini"
             icon="el-icon-document-add"
@@ -101,6 +102,7 @@
       <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
       <el-table-column sortable prop="position" label="员工职位" width="100"></el-table-column>
       <el-table-column sortable prop="dateOfJoining" label="入职日期" width="100"></el-table-column>
+      <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="100"></el-table-column>
       <el-table-column sortable prop="salary" label="基本工资" width="100"></el-table-column>
       <el-table-column sortable prop="taxableItemsAmount" label="应税项目总额" width="140"></el-table-column>
       <el-table-column sortable prop="claimAmount" label="请假应扣总额" width="140"></el-table-column>
@@ -147,11 +149,11 @@
             @click.stop="deleteFun(scope.$index, scope.row)"
             v-if="fun_right && deletePayrollSlip_right && scope.row.typeId != 1"
           >删 除</el-button>
-          <el-button
+          <!-- <el-button
             size="mini"
             icon="el-icon-tickets"
             @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
-          >全年工资单</el-button>
+          >全年工资单</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -195,7 +197,7 @@
       ></bu-payroll-confirm>
     </el-dialog>
     <!-- 全年工资单 -->
-    <el-dialog
+    <!-- <el-dialog
       title="全年工资单"
       :visible.sync="isShowPayrollYear"
       :close-on-click-modal="false"
@@ -206,7 +208,7 @@
         :curInfo="curInfo"
         v-on:listenIsShowMask="listenIsShowMask"
       ></staff-payroll-year>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 <script>
@@ -231,6 +233,7 @@ export default {
       pageList:[],
       curInfo: {}, //当前内容
       regionBUlist: [], //单位列表
+      buSelectedLocationType:1,//当前单位区域类型（对应强制缴纳类型）1，中国社保，2香港mpf
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
       isShowConfirm: false, //是否显示确认工资单
@@ -251,7 +254,7 @@ export default {
       approvePayrollSlip_right: false, //审批工资单权限
       deletePayrollSlip_right: false, //删除工资单权限
       genPayrollSlip_right: false, //重新生成工资单
-      approveBUPayrollS_right: false, //确认单位工资单
+      approveBUPayroll_right: false, //确认单位工资单
       fun_right: false, //功能按钮
       monthList:[]
     };
@@ -259,10 +262,11 @@ export default {
   computed:{
     pageInfo(){
       return {
+        pageSize:8,
         reqParams:{
             isReq:false,
             url:"/server/api/v1/payroll/staff/staffPayrollList",
-            data:{BUCode:this.BUCode,year: parseInt(this.seachMsg.year),month: parseInt(this.seachMsg.month),insuredType: this.seachMsg.insuredType,payrollTimesType:this.seachMsg.payrollTimesType }
+            data:{pageSize:8,BUCode:this.BUCode,year: parseInt(this.seachMsg.year),month: parseInt(this.seachMsg.month),insuredType: this.seachMsg.insuredType,payrollTimesType:this.seachMsg.payrollTimesType }
           }
         }
     },
@@ -270,6 +274,7 @@ export default {
       return this.pageList.map(item => {
         item.typeTxt = payrollListTypeTxt(item.typeId);
         item.dateOfJoining = this.$toolFn.timeFormat(item.dateOfJoining,"yyyy-MM-dd");
+        item.dateOfLeaving = this.$toolFn.timeFormat(item.dateOfLeaving,"yyyy-MM-dd");
         item.netAmount = parseFloat(item.grossPay - item.taxAmount).toFixed(2);
         item.reallyAmount = parseFloat(item.grossPay - item.taxAmount + item.notTaxableItemsAmount + item.claimAmount + item.adjAmount).toFixed(2);
         this.$nextTick(function() {
@@ -302,7 +307,7 @@ export default {
       this.hrCode = this.userInfo.userCode;
     }
     if (access.payrollMain.indexOf(4) >= 0) {
-      this.approveBUPayrollS_right = true;
+      this.approveBUPayroll_right = true;
     }
     if (access.payrollMain.indexOf(2) >= 0) {
       this.approvePayrollSlip_right = true;
@@ -342,6 +347,7 @@ export default {
       if (regionBUs && regionBUs.length > 0) {
         this.regionBUlist = regionBUs;
         this.BUCode = this.BUCode != '' ? this.BUCode : this.regionBUlist[0].code;
+        this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.BUCode === this.BUCode })[0].locationType;
         //this.getData(this.seachMsg.BUCode,parseInt(this.seachMsg.year),parseInt(this.seachMsg.month));
       }
     },
@@ -361,6 +367,8 @@ export default {
       this.seachMsg.BUCode = val;
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
       this.$toolFn.sessionSet("staffPayrollList_multipleSelection",'');
+      this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.BUCode === val})[0].locationType;
+      this.insuredTypes = insuredTypes().filter(f=>{return f.val === this.buSelectedLocationType});
       this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },
@@ -530,7 +538,7 @@ export default {
     // 确认单位出粮信息
     buPayrollConfirmFun(res) {
       this.curInfo = {
-        BUCode: res,
+        BUCode: this.BUCode,
         hrCode: this.hrCode,
         year: this.seachMsg.year,
         month: this.seachMsg.month,
@@ -538,15 +546,17 @@ export default {
       };
       this.isShowbuConfirm = true;
     },
-    // 获取全年工资信息
-    staffPayrollYearFun(index, res) {
-      this.curInfo = {
-        code: res.staffCode
-      };
-      this.isShowPayrollYear = true;
-    },
+    // // 获取全年工资信息
+    // staffPayrollYearFun(index, res) {
+    //   this.curInfo = {
+    //     code: res.staffCode,
+    //     year: this.seachMsg.year,
+    //     isShowYear: true
+    //   };
+    //   this.isShowPayrollYear = true;
+    // },
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowAddAccess = false;
       this.isShowConfirm = false;
       this.isShowbuConfirm = false;
@@ -579,6 +589,11 @@ export default {
           this.pageInfo.reqParams.isReq = true;
           this.$refs.pageInfo.getData(this.pageInfo);
         }
+      }
+    },
+    "filter.searchKey":{
+      handler: function(newVal) {
+        this.$refs.pageInfo.searchKey(this.filter);
       }
     }
   }

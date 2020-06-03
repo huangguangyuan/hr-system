@@ -27,7 +27,6 @@
         format="yyyy"
         @change="selectYear"
       ></el-date-picker>
-
         <el-select v-model="seachMsg.staffCode" filterable placeholder="请选择" @change="staffPayrollYearFun">
         <el-option
           v-for="item in staffs"
@@ -36,42 +35,17 @@
           :value="item.code">
         </el-option>
       </el-select>
-
     </div>
     <el-divider></el-divider>
-    <!-- 列表内容 -->
-    <el-table v-loading="isShowLoading" :data="tableData" stripe show-summary >
-      <el-table-column prop="month" label="月份"></el-table-column>
-      <el-table-column prop="reallyAmount" label="税前金额"></el-table-column>
-      <!-- <el-table-column prop="taxableWages" label="应税工资"></el-table-column> -->
-      <el-table-column prop="taxAmount" label="个人所得税"></el-table-column>
-      <el-table-column prop="nousedTaxThreshold" label="结余起征点"></el-table-column>
-      <!-- <el-table-column prop="netAmount" label="税后工资"></el-table-column> -->
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            icon="el-icon-edit"
-            @click="modifyFun(scope.$index, scope.row)"
-          >更 新</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页编码 -->
-    <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
+    <staffPayrollYear v-if="isShowPayrollYear" :curInfo="curInfo"></staffPayrollYear>
 
-    <!-- 编辑工资单 -->
-    <el-dialog title="编辑工资单" :visible.sync="isShowEditLayer" :close-on-click-modal="false">
-      <editLayer v-if="isShowEditLayer" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
-    </el-dialog>
   </div>
 </template>
 <script>
-import editLayer from "./editLayer.vue";
-import pageInfo from "@/components/pageInfo.vue";
+import staffPayrollYear from "../payroll/staffPayrollYear.vue";
 export default {
   components: {
-    editLayer,pageInfo
+    staffPayrollYear
   },
   name: "annualPayrollEdit",
   inject: ["reload"],
@@ -89,6 +63,7 @@ export default {
       isShowLoading: false, //是否显示loading页
       isShowEditLayer:false,
       staffs: [],
+      isShowPayrollYear:false
     };
   },
   computed:{
@@ -130,7 +105,7 @@ export default {
       this.$toolFn.sessionSet("annualPayrollEdit", this.seachMsg);
     },
     // 选择年份
-    selectYear(val) {
+    selectYear() {
       //this.getData(this.seachMsg.staffCode, parseInt(val));
       this.$toolFn.sessionSet("annualPayrollEdit", this.seachMsg);
       this.pageInfo.reqParams.isReq = true;
@@ -144,35 +119,28 @@ export default {
         this.$myApi.http.post(reqUrl, myData).then(res => {
           if (res.data.code == 0){
             this.staffs = res.data.data;
-            if (this.$toolFn.sessionGet("annualPayrollEdit") && this.$toolFn.sessionGet("annualPayrollEdit").staffCode != "" && this.$toolFn.sessionGet("annualPayrollEdit").year != 0){
-              //this.getData(this.$toolFn.sessionGet("annualPayrollEdit").staffCode, this.$toolFn.sessionGet("annualPayrollEdit").year);
-              //this.pageInfo.reqParams.isReq = true;
-              //this.$refs.pageInfo.getData(this.pageInfo);
-            }
           }
-          
         })
       },
+      // 获取全年工资信息
       staffPayrollYearFun(item) {
+        this.isShowPayrollYear = false;
         this.seachMsg.staffCode = item;
-        this.$toolFn.sessionSet("annualPayrollEdit", this.seachMsg);
-        this.pageInfo.reqParams.isReq = true;
-        this.$refs.pageInfo.getData(this.pageInfo);
-        //this.getData(item.code,this.seachMsg.year);
-      },
-      // 编辑
-      modifyFun(index, res) {
-        this.isShowEditLayer = true;
-        this.curInfo = res;
-        this.curInfo.year = this.seachMsg.year;
-        this.curInfo.staffCode = this.seachMsg.staffCode;
-        //console.log(this.curInfo);
+        this.curInfo = {
+          code: this.seachMsg.staffCode,
+          year: this.seachMsg.year,
+          isShowYear: false
+        };
+        this.$nextTick(() => {
+                this.isShowPayrollYear = true;
+            })
+        
       },
       // 接收子组件发送信息
       listenIsShowMask(res) {
         this.isShowEditLayer = res;
       }
-  }
+    }
 };
 </script>
 <style scoped lang="scss">

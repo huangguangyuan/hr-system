@@ -101,7 +101,7 @@
       <el-table :data="msg.holidaysApplyList" v-if="msg.holidaysApplyList  && msg.holidaysApplyList.length > 0" stripe border show-summary style="width: 100%">
         <el-table-column prop="balanceMonTxt" label="结算月份"></el-table-column>
         <el-table-column prop="createTime" label="申请时间"></el-table-column>
-        <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>
+        <el-table-column prop="detailTypeIdTxt" label="请假类型"></el-table-column>
         <el-table-column prop="totalDay" label="请假天数"></el-table-column>
         <el-table-column prop="totalAmount" label="扣除金额"></el-table-column>
         <!-- <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column> -->
@@ -120,7 +120,8 @@ export default {
       circleUrl: "",
       msg: {}, //员工薪资信息
       staffInsuredInfo: {}, //员工社保、公积金信息
-      staffInsuredInfoMPF:{}//mpf
+      staffInsuredInfoMPF:{},//mpf
+      holidayTypes: [], //请假类型
     };
   },
   beforeMount() {
@@ -128,6 +129,7 @@ export default {
     this.getData();
   },
   methods: {
+    // 获取请假类型
     arrSum(list,val){
       if (!list || !val){
         return 0;
@@ -147,8 +149,9 @@ export default {
       });
     },
     // 获取数据
-    getData() {
+    async getData() {
       var reqUrl = "/server/api/v1/payroll/staff/staffPayrollInfo";
+      this.holidayTypes = await this.$myApi.getHolidaysTypeId();
       var data = { staffCode: this.staffInfo.code };
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
@@ -165,15 +168,16 @@ export default {
               item.typeIdTxt = deductionTypeTxt(item.typeId);
             });
           }
-
           this.msg.salaryItemsNeedTax.map(item => {
             item.statusTxt = item.status == 1 ? "生效" : "未生效";
           });
           this.msg.salaryItemsNotNeedTax.map(item => {
             item.statusTxt = item.status == 1 ? "生效" : "未生效";
-          });          
+          });
           this.msg.holidaysApplyList.map(item => {
-            item.typeIdTxt = item.details[0].typeId == 1 ? "生效" : "未生效";
+            item.detailTypeIdTxt = this.holidayTypes.filter(child => {
+                return child.typeId == item.detailTypeId;
+            })[0].val;
             item.balanceMonTxt= item.balanceMon + "月";
             item.createTime = this.$toolFn.timeFormat(item.createTime);
             item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";

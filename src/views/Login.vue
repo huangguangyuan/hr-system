@@ -40,7 +40,6 @@
 <script>
 import md5 from "js-md5";
 import sidebarInfo from "@/lib/sidebarInfo.js";
-import { setTimeout } from "timers";
 import Cookies from 'js-cookie'
 export default {
   name: "login",

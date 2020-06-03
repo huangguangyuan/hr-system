@@ -5,19 +5,19 @@
       <el-form-item label="基本工资：" prop="salary">
         <el-input v-model="ruleForm.salary" oninput = "value=value.replace(/[^\d.]/g,'')"></el-input>
       </el-form-item>
-      <el-form-item label="是否正常缴纳社保：" prop="needSI">
+      <el-form-item label="是否正常缴纳社保：" prop="needSI" v-if="buSelectedLocationType === 1">
         <el-radio-group v-model="ruleForm.needSI">
           <el-radio label="1">是</el-radio>
           <el-radio label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="是否正常缴纳公积金：" prop="needHC">
+      <el-form-item label="是否正常缴纳公积金：" prop="needHC"  v-if="buSelectedLocationType === 1">
         <el-radio-group v-model="ruleForm.needHC">
           <el-radio label="1">是</el-radio>
           <el-radio label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="是否正常使用专项附加扣除：" prop="needSD">
+      <el-form-item label="是否正常使用专项附加扣除：" prop="needSD"  v-if="buSelectedLocationType === 1">
         <el-radio-group v-model="ruleForm.needSD">
           <el-radio label="1">是</el-radio>
           <el-radio label="0">否</el-radio>
@@ -37,12 +37,12 @@
       </el-form-item>
       <el-form-item label="强制缴纳类型：" prop="insuredTypeId">
         <el-radio-group v-model="ruleForm.insuredTypeId">
-          <el-radio :label="item.val" :key='item.val' v-for='(item,key) in insuredTypes'>{{item.txt}}</el-radio>
+          <el-radio  :label="item.val" :key='item.val' v-for='(item) in insuredTypes' >{{item.txt}}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="出粮方式：" prop="payrollTimesType">
+      <el-form-item label="出粮方式：" prop="payrollTimesType" v-if="ruleForm.insuredTypeId !==1">
         <el-radio-group v-model="ruleForm.payrollTimesType">
-        <el-radio :label="item.val" :key='item.val' v-for='(item,key) in payrollTimesTypes'>{{item.txt}}</el-radio>
+        <el-radio :label="item.val" :key='item.val' v-for='(item) in payrollTimesTypes'>{{item.txt}}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item>
@@ -60,6 +60,7 @@ export default {
   props: ["curInfo"],
   data() {
     return {
+      buSelectedLocationType:1,
       payrollTimesTypes:[],
       insuredTypes:[],
       ruleForm: {
@@ -74,7 +75,6 @@ export default {
       }, //表单信息
       isShow: true, //是否显示
       fileList: [],
-      holidaysApplyTypeList: [], //请假类型
       rules: {
         salary: [
           { required: true, message: "请输入税前工资", trigger: "blur" }
@@ -104,13 +104,15 @@ export default {
     };
   },
   mounted() {
-    this.payrollTimesTypes = payrollTimesTypes();
-    this.insuredTypes = insuredTypes();
     this.initializeFun();
+    this.payrollTimesTypes = payrollTimesTypes();
+    this.insuredTypes = insuredTypes().filter(f=>{return f.val === this.buSelectedLocationType});
+
   },
   methods: {
     // 初始化
     initializeFun() {
+      this.buSelectedLocationType = this.curInfo.buSelectedLocationType;
       if(this.curInfo.type == 'modify'){
         this.ruleForm.salary = this.curInfo.salary;
         this.ruleForm.needSI = this.curInfo.needSI.toString();
@@ -128,7 +130,6 @@ export default {
         if (valid) {
           this.addFun();
         } else {
-          
           return false;
         }
       });
@@ -147,6 +148,9 @@ export default {
         insuredTypeId:parseInt(this.ruleForm.insuredTypeId),
         payrollTimesType:parseInt(this.ruleForm.payrollTimesType),
       };
+      if (this.ruleForm.insuredTypeId === 1){// 如果强制缴纳类型为社保,则出粮方式为一次出粮
+        data.payrollTimesType = 1;
+      }
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();

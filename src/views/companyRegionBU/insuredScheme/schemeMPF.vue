@@ -33,6 +33,7 @@
 <script>
 import schemeMPFAdd from './schemeMPFAdd.vue';
 import pageInfo from "@/components/pageInfo.vue";
+import {SITxt,paymentIdTxt,householdIdTxt} from "@/lib/staticData.js";
 export default {
   components: {
     schemeMPFAdd,pageInfo
@@ -60,8 +61,10 @@ export default {
     },
     tableData(){
       return this.pageList.map(item => {
-        item.paymentIdTxt = item.paymentId == '1'?'公司':'个人';
-        return item;
+        if (item){
+          item.paymentIdTxt = paymentIdTxt(item.paymentId);
+          return item;
+        }
       });
     },
     BUInfo() {

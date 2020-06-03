@@ -2,9 +2,9 @@
   <div class="schemeList">
     <div class="addBtn-wrap">
       <el-select v-model="typeId" placeholder="请选择" class="typeId" @change='changeType'>
-        <el-option label="社保" value="1"></el-option>
-        <el-option label="公积金" value="2"></el-option>
-        <el-option label="香港MPF" value="3"></el-option>
+        <el-option label="社保" value="1" v-if="BUInfo.locationType === 1"></el-option>
+        <el-option label="公积金" value="2" v-if="BUInfo.locationType === 1"></el-option>
+        <el-option label="香港MPF" value="3" v-if="BUInfo.locationType === 2"></el-option>
       </el-select>
       <el-button type="primary" @click="newAddFun">新 增</el-button>
     </div>
@@ -223,6 +223,7 @@ export default {
 .addBtn-wrap {
   margin: 10px auto;
   display: flex;
+  justify-content: space-between;
 }
 .typeId{width: 200px;margin-right: 10px;}
 </style>

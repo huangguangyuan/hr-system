@@ -60,8 +60,6 @@ export default {
     searchKey(filter) {
       if (this.pageType == 2){
         this.getData();
-      }else{
-        
       }
       if (filter.searchKey != ""){
         if (this.pageType == 2){

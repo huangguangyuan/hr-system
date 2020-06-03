@@ -136,7 +136,6 @@ export default {
     pageInfo(){
       return {
         reqParams:{
-            isReq:false,
             url:"/server/api/v1/payroll/staff/staffPayrollYear",
             data:{staffCode:this.curInfo.code,year:parseInt(this.year)}
           }
@@ -152,13 +151,15 @@ export default {
         }
         if(item.holidayList){
           item.holidayList.map(nodes => {
-          nodes.typeIdTxt =
-            nodes.details[0].typeId == 1 ? "生效" : "未生效";
+          // nodes.typeIdTxt = nodes.details[0].typeId == 1 ? "生效" : "未生效";
+          if (item.details){
             nodes.typeIdTxt = this.holidayTypes.filter(child => {
                 return child.typeId == item.details[0].typeId;
             })[0].val;
-            nodes.isBalanceTxt = nodes.isBalance == 1 ? "已结算" : "未结算";
-            return nodes;
+          }
+
+          nodes.isBalanceTxt = nodes.isBalance == 1 ? "已结算" : "未结算";
+          return nodes;
           });
         }
         if(item.specialDeductionList){

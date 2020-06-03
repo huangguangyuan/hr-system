@@ -30,46 +30,46 @@
         <br >
         <el-divider v-if="tableData" content-position="left">个人信息</el-divider>
         <ul class="msgList" v-if="tableData">
-          <li v-if="tableData.name">
-            <span class="title">{{tableData.name.title}}</span>：
-            <span class="val">{{tableData.name.val}}</span>
-          </li>
           <li v-if="tableData.buName">
             <span class="title">{{tableData.buName.title}}</span>：
             <span class="val">{{tableData.buName.val}}</span>
-          </li>
-          <li v-if="tableData.payrollPeriod">
-            <span class="title">{{tableData.payrollPeriod.title}}</span>：
-            <span class="val">{{tableData.payrollPeriod.val}}</span>
-          </li>
-          <li v-if="tableData.IDNo">
-            <span class="title">{{tableData.IDNo.title}}</span>：
-            <span class="val">{{tableData.IDNo.val || '暂无'}}</span>
-          </li>
-          <li v-if="tableData.position">
-            <span class="title">{{tableData.position.title}}</span>：
-            <span class="val">{{tableData.position.val || '暂无'}}</span>
-          </li>
-          <li v-if="tableData.departmentName">
-            <span class="title">{{tableData.departmentName.title}}</span>：
-            <span class="val">{{tableData.departmentName.val || '暂无'}}</span>
           </li>
           <li v-if="tableData.insuredCity">
             <span class="title">{{tableData.insuredCity.title}}</span>：
             <span class="val">{{tableData.insuredCity.val || '暂无'}}</span>
           </li>
+          <li v-if="tableData.name">
+            <span class="title">{{tableData.name.title}}</span>：
+            <span class="val">{{tableData.name.val}}</span>
+          </li>
           <li v-if="tableData.bankName">
             <span class="title">{{tableData.bankName.title}}</span>：
             <span class="val">{{tableData.bankName.val || '暂无'}}</span>
           </li>
-          <li v-if="tableData.bankAccountNo">
+          <li v-if="tableData.IDNo">
+            <span class="title">{{tableData.IDNo.title}}</span>：
+            <span class="val">{{tableData.IDNo.val || '暂无'}}</span>
+          </li>
+           <li v-if="tableData.bankAccountNo">
             <span class="title">{{tableData.bankAccountNo.title}}</span>：
             <span class="val">{{tableData.bankAccountNo.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.departmentName">
+            <span class="title">{{tableData.departmentName.title}}</span>：
+            <span class="val">{{tableData.departmentName.val || '暂无'}}</span>
           </li>
           <li v-if="tableData.payDay">
             <span class="title">{{tableData.payDay.title}}</span>：
             <span class="val">{{tableData.payDay.val || '暂无'}}</span>
           </li>
+          <li v-if="tableData.position">
+            <span class="title">{{tableData.position.title}}</span>：
+            <span class="val">{{tableData.position.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.payrollPeriod">
+            <span class="title">{{tableData.payrollPeriod.title}}</span>：
+            <span class="val">{{tableData.payrollPeriod.val}}</span>
+          </li> 
           <li v-if="tableData.remarks">
             <span class="title">{{tableData.remarks.title}}</span>：
             <span class="val">{{tableData.remarks.val || '暂无'}}</span>
@@ -78,46 +78,43 @@
         <br >
         <el-divider v-if="tableData" content-position="left">薪资构成</el-divider>
         <ul class="msgList" v-if="tableData">
-          <li v-if="tableData.holiday">
-            <span class="title">{{tableData.holiday.title}}</span>：
-            <span class="val">{{tableData.holiday.val || '暂无'}}</span>
-          </li>  
           <li v-if="tableData.totalAmount">
             <span class="title">{{tableData.totalAmount.title}}</span>：
             <span class="val">{{tableData.totalAmount.val || '暂无'}}</span>
-          </li>
-          <li v-if="tableData.SI">
-            <span class="title">{{tableData.SI.title}}</span>：
-            <span class="val">{{tableData.SI.val || '暂无'}}</span>
-          </li>
-          <li v-if="tableData.HC">
-            <span class="title">{{tableData.HC.title}}</span>：
-            <span class="val">{{tableData.HC.val || '暂无'}}</span>
-          </li>
-          <li v-if="tableData.specialDeduction">
-            <span class="title">{{tableData.specialDeduction.title}}</span>：
-            <span class="val">{{tableData.specialDeduction.val || '暂无'}}</span>
           </li>
           <li v-if="tableData.grossPay">
             <span class="title">{{tableData.grossPay.title}}</span>：
             <span class="val">{{tableData.grossPay.val || '暂无'}}</span>
           </li>
+          <li v-if="tableData.holiday">
+            <span class="title">{{tableData.holiday.title}}</span>：
+            <span class="val">{{tableData.holiday.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.SI">
+            <span class="title">{{tableData.SI.title}}</span>：
+            <span class="val">{{tableData.SI.val || '暂无'}}</span>
+          </li>
           <li v-if="tableData.taxableWages">
             <span class="title">{{tableData.taxableWages.title}}</span>：
             <span class="val">{{tableData.taxableWages.val || '暂无'}}</span>
+          </li>
+          <li v-if="tableData.HC">
+            <span class="title">{{tableData.HC.title}}</span>：
+            <span class="val">{{tableData.HC.val || '暂无'}}</span>
           </li>
           <li v-if="tableData.taxAmount">
             <span class="title">{{tableData.taxAmount.title}}</span>：
             <span class="val">{{tableData.taxAmount.val || '暂无'}}</span>
           </li>
-          <li v-if="tableData.netAmount">
+          <li v-if="tableData.specialDeduction">
+            <span class="title">{{tableData.specialDeduction.title}}</span>：
+            <span class="val">{{tableData.specialDeduction.val || '暂无'}}</span>
+          </li>
+
+          <!-- <li v-if="tableData.netAmount">
             <span class="title">{{tableData.netAmount.title}}</span>：
             <span class="val">{{tableData.netAmount.val || '暂无'}}</span>
-          </li>
-          <li v-if="tableData.netAmount">
-            <span class="title">{{tableData.netAmount.title}}</span>：
-            <span class="val">{{tableData.netAmount.val || '暂无'}}</span>
-          </li>
+          </li> -->
           <!-- <li v-if="tableData.netAmount">
             <span class="title">{{tableData.netAmount.title}}</span>：
             <span class="val">{{tableData.netAmount.val || '暂无'}}</span>
