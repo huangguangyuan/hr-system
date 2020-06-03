@@ -87,6 +87,7 @@
 </template>
 <script>
 import genStaffPayroll from './genStaffPayroll.vue';
+import {genderTxt}  from "@/lib/staticData.js";
 export default {
   name: "wagesStaffList",
   inject: ["reload"],
@@ -99,7 +100,8 @@ export default {
       curInfo: {}, //当前内容
       searchInner: "", //搜索内容
       regionBUlist: [], //单位列表
-      BUCode: "", //角色类型
+      buSelectedLocationType:1,//当前单位区域类型（对应强制缴纳类型）1，中国社保，2香港mpf
+      BUCode: "", //单位类型
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
       isShowState: false, //是否显示状态
@@ -153,11 +155,12 @@ export default {
     },
     // 获取单位列表
     async getRegionBU() {
-      
       var regionBUs = await this.$myApi.regionBUs({isCache:true});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUlist = regionBUs;
           this.BUCode = this.$toolFn.sessionGet("staffBUCode")? this.$toolFn.sessionGet("staffBUCode"): this.regionBUlist[0].code;
+          this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.code === this.BUCode})[0].locationType;
+          console.log(this.buSelectedLocationType);
           this.getData(this.BUCode);
         }
     },
@@ -170,16 +173,7 @@ export default {
           this.isShowLoading = false;
           this.tableData = res.data.data.map(item => {
               // 性别
-              switch (item.gender) {
-                case "M":
-                  item.genderTxt = "男";
-                  break;
-                case "F":
-                  item.genderTxt = "女";
-                  break;
-                default:
-                  item.genderTxt = "未知";
-              }
+              item.genderTxt = genderTxt(item.gender);
               return item;
             })
             .sort((a, b) => {
@@ -219,10 +213,12 @@ export default {
     selectFun(val) {
       this.BUCode = val;
       this.getData(this.BUCode);
+      this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.BUCode === val})[0].locationType;
       this.$toolFn.sessionSet("staffBUCode", val);
     },
     // 打开详细页面
     openFun(index, res, key) {
+      res.buSelectedLocationType = this.buSelectedLocationType;
       this.$store.commit({
         type: "getWagesInfo",
         wagesInfo: res,

@@ -180,6 +180,7 @@ export default {
       });
     },
     submitForm(formName) {
+      this.addFun();
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.addFun();
@@ -205,6 +206,7 @@ export default {
           remarks: this.ruleForm.remarks,
         }
       ];
+      console.log(details);
       var data = {
         staffCode: this.curInfo.staffCode,
         totalDay: parseFloat(this.ruleForm.days),
