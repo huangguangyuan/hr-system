@@ -53,11 +53,12 @@
 
       </el-select>
       <el-button type="primary" @click="onSearchSummary">确定</el-button>
+      <el-button type="primary" @click="onFlash" plain>复位</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <div>
-      <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0" height="585">
+      <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0" height="585" >
           <!-- <el-table-column sortable prop="idNum" label="序号" width="100" fixed></el-table-column> -->
           <el-table-column sortable prop="staffNo" label="员工编号" width="120" fixed></el-table-column>
           <el-table-column prop="nameChinese" label="第一姓名" width="120" fixed></el-table-column>
@@ -67,10 +68,12 @@
           <el-table-column sortable prop="salary" label="基本工资" width="120" fixed></el-table-column>
         <el-table-column label="出粮年月">
           <el-table-column sortable prop="year" label="年份" width="120"></el-table-column>
-          <el-table-column sortable prop="monthSet" label="月份" width="120"></el-table-column>
+          <el-table-column sortable label="月份" width="120">
+            <template slot-scope="scope">{{scope.row.monthSet.toString().indexOf(',')>=0 ? scope.row.monthSet.toString().split(',').sort((a,b)=>{return a - b}).join(',') : scope.row.monthSet}}</template>
+          </el-table-column>
         </el-table-column>
         <el-table-column label="公司信息">
-          <el-table-column sortable prop="companyName" label="公司" width="120" ></el-table-column>
+          <!-- <el-table-column sortable prop="companyName" label="公司" width="120" ></el-table-column> -->
           <el-table-column sortable prop="regionName" label="区域" width="120" ></el-table-column>
           <el-table-column sortable prop="buName" label="单位" width="120" ></el-table-column>
           <el-table-column sortable prop="departmentName" label="部门" width="120" ></el-table-column>
@@ -110,7 +113,7 @@
         <el-table-column sortable prop="adjAmount" label="调整金额" width="120"></el-table-column>
         <el-table-column sortable prop="SIAmount" label="社保扣除" width="120"></el-table-column>
         <el-table-column sortable prop="HCAmount" label="公积金扣除" width="130"></el-table-column>
-        <el-table-column sortable prop="remarks" label="备注" width="130"></el-table-column>
+        <el-table-column sortable prop="remarks" label="备注" width="250"></el-table-column>
       </el-table>
     </div>
   </div>
@@ -252,6 +255,21 @@ export default {
       });
       this.dataList = await this.$myApi.post('/server/api/v1/payroll/staff/staffPayrollSummaryV2',postData);
     },
+    async onFlash(){
+      this.$toolFn.sessionSet("staffPayrollSummaryData",
+      {
+        regionCode:"",
+        BUCode:"",
+        departmentSelectAlllChecked:"",
+        departmentCodeArr:"",
+        staffSelectAlllChecked:"",
+        staffCodeArr:"",
+        monthSelectAlllChecked:"",
+        searchMonthArr:"",
+        searchYear:""
+      });
+      this.reload();
+    },
     /**
      * @description: 获取公司列表
      */
@@ -332,6 +350,8 @@ export default {
       }
       this.departmentCodeArr = val;
       this.staffList = [];
+      this.staffCodeArr = [];
+      this.staffSelectAlllChecked = false;
       if (val.length > 0){
         this.staffListLoading = true;
         var reqUrl = "/server/api/v1/staff/departmentStaffs";
