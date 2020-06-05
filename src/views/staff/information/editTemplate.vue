@@ -224,7 +224,7 @@
         <i class="hr-icon-yuangongfulitaizhang"></i> 薪资福利
       </el-divider>
       <el-form-item label="每年可享有薪年假：" prop="annualLeaveEntitled">
-        <el-input v-model="ruleForm.annualLeaveEntitled"></el-input>
+        <el-input v-model="ruleForm.annualLeaveEntitled" style="width:50%;padding-right:20px"></el-input><el-button type="primary" @click="getAnnualLeave(curInfo.BUCode)">引用单位年假默认配置</el-button>
       </el-form-item>
       <!-- <el-form-item label="年假结算方法：" prop="annualLeaveWriteOffMethod" >
         <el-radio-group v-model="ruleForm.annualLeaveWriteOffMethod">
@@ -785,25 +785,41 @@ export default {
     // 获取年假配置
     async getAnnualLeave(val) {
       var reqUrl = "/server/api/v1/bu/annualLeave";
-      this.$myApi.http.post(reqUrl, {BUCode:val}).then(res => {
-        if (res.data.code == 0) {
-          this.annualLeaveConfig = res.data.data;
-          this.annualLeaveConfig.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate,"yyyy-MM-dd")
-          this.annualLeaveConfig.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveRetainClearDate,"yyyy-MM-dd")
-          if (this.annualLeaveConfig.annualLeaveEntitled != undefined){
-            this.ruleForm.annualLeaveEntitled = this.annualLeaveConfig.annualLeaveEntitled;
-          }
-          if (this.annualLeaveConfig.annualLeaveWriteOffDate){
-            this.ruleForm.annualLeaveWriteOffDate = new Date(this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate,"yyyy-MM-dd"));
-          }
-          if (this.annualLeaveConfig.annualLeaveRetain != undefined){
-            this.ruleForm.annualLeaveRetain = this.annualLeaveConfig.annualLeaveRetain;
-          }
-          if (this.annualLeaveConfig.annualLeaveRetainClearDate){
-            this.ruleForm.annualLeaveRetainClearDate = new Date(this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveRetainClearDate,"yyyy-MM-dd"));
-          }
+      if (this.annualLeaveConfig.annualLeaveEntitled){
+        if (this.annualLeaveConfig.annualLeaveEntitled != undefined){
+          this.ruleForm.annualLeaveEntitled = this.annualLeaveConfig.annualLeaveEntitled;
         }
-      });
+        if (this.annualLeaveConfig.annualLeaveWriteOffDate){
+          this.ruleForm.annualLeaveWriteOffDate = new Date(this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate,"yyyy-MM-dd"));
+        }
+        if (this.annualLeaveConfig.annualLeaveRetain != undefined){
+          this.ruleForm.annualLeaveRetain = this.annualLeaveConfig.annualLeaveRetain;
+        }
+        if (this.annualLeaveConfig.annualLeaveRetainClearDate){
+          this.ruleForm.annualLeaveRetainClearDate = new Date(this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveRetainClearDate,"yyyy-MM-dd"));
+        }
+      }else{
+        this.$myApi.http.post(reqUrl, {BUCode:val}).then(res => {
+          if (res.data.code == 0) {
+            this.annualLeaveConfig = res.data.data;
+            this.annualLeaveConfig.annualLeaveWriteOffDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate,"yyyy-MM-dd")
+            this.annualLeaveConfig.annualLeaveRetainClearDate = this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveRetainClearDate,"yyyy-MM-dd")
+            if (this.annualLeaveConfig.annualLeaveEntitled != undefined){
+              this.ruleForm.annualLeaveEntitled = this.annualLeaveConfig.annualLeaveEntitled;
+            }
+            if (this.annualLeaveConfig.annualLeaveWriteOffDate){
+              this.ruleForm.annualLeaveWriteOffDate = new Date(this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveWriteOffDate,"yyyy-MM-dd"));
+            }
+            if (this.annualLeaveConfig.annualLeaveRetain != undefined){
+              this.ruleForm.annualLeaveRetain = this.annualLeaveConfig.annualLeaveRetain;
+            }
+            if (this.annualLeaveConfig.annualLeaveRetainClearDate){
+              this.ruleForm.annualLeaveRetainClearDate = new Date(this.$toolFn.timeFormat(this.annualLeaveConfig.annualLeaveRetainClearDate,"yyyy-MM-dd"));
+            }
+          }
+        });
+      }
+
     },
     // 获取HR管理员列表
     getHRadminList(val){
