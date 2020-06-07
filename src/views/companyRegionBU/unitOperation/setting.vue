@@ -1,3 +1,4 @@
+
 <template>
   <div class="setting">
     <el-page-header @back="goBack" content="单位设置"></el-page-header>
@@ -19,7 +20,7 @@
         <annual-leave></annual-leave>
       </el-tab-pane>     
       <el-tab-pane label="社保方案" name="insuredScheme">
-        <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 社保方案</span>
+        <span slot="label"><i class="hr-icon-zinvjiaoyu"></i> 缴纳方案</span>
         <scheme-list></scheme-list>
       </el-tab-pane>
       <el-tab-pane label="薪资应税项目" name="salaryItems">

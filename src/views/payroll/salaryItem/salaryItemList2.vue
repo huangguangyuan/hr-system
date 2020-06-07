@@ -89,7 +89,7 @@ export default {
     this.userRight = this.userRight_props;
   },
   methods: {
-    // 新增专项扣除
+    // 新增
     addFun() {
       this.isShowEditLayer = true;
       this.curInfo = {

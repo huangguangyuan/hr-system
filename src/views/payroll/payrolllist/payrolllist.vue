@@ -24,14 +24,16 @@
         <template slot-scope="scope">
           <!-- 缴纳社保/公积金信息 -->
           <el-button
+            v-if="buSelectedLocationType === 1"
             size="mini"
             icon="hr-icon-gongjijinjiaoyimingxi"
             @click="openFun(scope.$index, scope.row, 'insured')"
           >社保/公积金</el-button>
           <!-- MPF信息（香港） -->
-          <el-button size="mini" icon="hr-icon-shebaogongjijin" @click="openFun(scope.$index, scope.row, 'MPFinfo')">MPF信息</el-button>
+          <el-button v-if="buSelectedLocationType === 2" size="mini" icon="hr-icon-shebaogongjijin" @click="openFun(scope.$index, scope.row, 'MPFinfo')">MPF信息</el-button>
           <!-- 专项扣除 -->
           <el-button
+          v-if="buSelectedLocationType === 1"
             size="mini"
             icon="hr-icon-zhuanxiangkouchu"
             @click="openFun(scope.$index, scope.row, 'deduction')"
@@ -75,6 +77,7 @@ export default {
       searchInner: "", //搜索内容
       regionBUlist: [], //单位列表
       BUCodeSelected: "", //单位code
+      buSelectedLocationType:'',// 当前单位区域类型（对应强制缴纳类型）1，中国社保，2香港mpf
       staffState: "", //员工状态
       staffID: "", //员工ID
       isShowLoading: false, //是否显示loading页
@@ -112,8 +115,16 @@ export default {
     if ([2].indexOf(this.userInfo.roleTypeId) >= 0){//hr管理员
       this.isShow = true;
     }
+    this.getRegionBU();
   },
   methods: {
+    // 获取单位列表
+    async getRegionBU() {
+      var regionBUs = await this.$myApi.regionBUs({ isCache: true });
+      if (regionBUs && regionBUs.length > 0) {
+        this.regionBUlist = regionBUs;
+      }
+    },
     // 打开详细页面
     openFun(index, res, key) {
       this.$store.commit({
@@ -125,9 +136,10 @@ export default {
   },
   watch: {
     BUCodeSelected: {
-      handler: function(newVal) {
+      handler: function(newVal,oldVal) {
         this.pageInfo.reqParams.isReq = true;
         this.$refs.pageInfo.getData(this.pageInfo);
+        this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.code === newVal })[0].locationType;
       }
     },
     "filter.searchKey":{

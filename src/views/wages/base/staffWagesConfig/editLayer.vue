@@ -107,7 +107,6 @@ export default {
     this.initializeFun();
     this.payrollTimesTypes = payrollTimesTypes();
     this.insuredTypes = insuredTypes().filter(f=>{return f.val === this.buSelectedLocationType});
-
   },
   methods: {
     // 初始化

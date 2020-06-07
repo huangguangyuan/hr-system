@@ -5,8 +5,8 @@
         <el-input v-model.number="ruleForm.account"></el-input>
       </el-form-item>
 
-      <el-form-item label="社保缴费方案：" prop="schemeCode">
-        <el-select v-model="ruleForm.schemeCode" placeholder="请选择社保缴费方案">
+      <el-form-item label="缴费方案：" prop="schemeCode">
+        <el-select v-model="ruleForm.schemeCode" placeholder="请选择缴费方案">
           <el-option
             v-for="item in schemeMPFList"
             :key="item.code"

@@ -213,7 +213,7 @@ export default {
     selectFun(val) {
       this.BUCode = val;
       this.getData(this.BUCode);
-      this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.BUCode === val})[0].locationType;
+      this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.code === val})[0].locationType;
       this.$toolFn.sessionSet("staffBUCode", val);
     },
     // 打开详细页面
