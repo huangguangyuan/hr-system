@@ -74,19 +74,53 @@ let toolFn = {
       for (let i = 0; i < list.length; i++) {
         for (let key in list[i]) {
           if (search.searchField.indexOf(key) >= 0) {
-            if (
-              list[i][key] != undefined &&
-              list[i][key] != "" &&
-              list[i][key].toString().includes(search.searchKey)
-            ) {
-              newList.push(list[i]);
-              break;
+            if (list[i][key] != undefined && list[i][key] != "") {
+              if (toolFn.isNumber(search.searchKey)){
+                if (list[i][key].toString().indexOf(search.searchKey) === 0){
+                    newList.push(list[i]);
+                    break;
+                }
+              }else{
+                if (list[i][key].toString().includes(search.searchKey)){
+                    newList.push(list[i]);
+                    break;
+                  }
+              }
             }
           }
         }
       }
       return newList;
     },
+    isNumber(val){
+        　　if (parseFloat(val).toString() == "NaN") {
+        　　　　return false;
+        　　} else {
+        　　　　return true;
+        　　}
+        },
+    //     searchFun:function(list, search) {
+    //       let newList = [];
+    //       for (let i = 0; i < list.length; i++) {
+    //         for (let key in list[i]) {
+    //           if (search.searchField.indexOf(key) >= 0) {
+    //             if (list[i][key] != undefined && list[i][key] != "") {
+    //                 if(!toolFn.isNumber(search.searchKey)){
+    //                   if (list[i][key].toString().includes(search.searchKey.toString())){
+    //                     newList.push(list[i]);
+    //                   }
+    //               　}else{
+    //                     if (list[i][key].toString().includes(search.searchKey)){
+    //                         newList.push(list[i]);
+    //                     }
+    //                 }
+    //               break;
+    //             }
+    //           }
+    //         }
+    //       }
+    //       return newList;
+    //     },
     async sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms))
     },
