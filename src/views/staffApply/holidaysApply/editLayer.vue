@@ -1,7 +1,7 @@
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
-      <el-form-item label="请假时间" prop="applyTime">
+      <!-- <el-form-item label="请假时间" prop="applyTime">
         <el-date-picker
           v-model="ruleForm.applyTime"
           type="datetimerange"
@@ -10,8 +10,43 @@
           end-placeholder="结束时间"
           value-format="yyyy-MM-dd HH:mm:ss"
         ></el-date-picker>
+      </el-form-item> -->
+      <el-form-item label="请假开始时间" prop="startDate">
+        <el-date-picker
+          v-model="ruleForm.startDate"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择开始日期"
+        ></el-date-picker>
+      <el-select v-model="ruleForm.startTime" placeholder="请选择时间" style="width:200px;padding-left:10px">
+        <el-option key="am"
+          label="上午"
+          value="am">
+        </el-option>
+        <el-option key="pm"
+          label="下午"
+          value="pm">
+        </el-option>
+      </el-select>
       </el-form-item>
-
+      <el-form-item label="请假结束时间" prop="startDate">
+        <el-date-picker
+          v-model="ruleForm.endDate"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择结束日期"
+        ></el-date-picker>
+      <el-select v-model="ruleForm.endTime" placeholder="请选择时间" style="width:200px;padding-left:10px">
+        <el-option key="am"
+          label="上午"
+          value="am">
+        </el-option>
+        <el-option key="pm"
+          label="下午"
+          value="pm">
+        </el-option>
+      </el-select>
+      </el-form-item>
       <el-form-item label="请假天数" prop="days">
         <el-input-number v-model="ruleForm.days" :precision="1" :step="0.5" :max="30" :min="0"  class="inp01" @keyup.native="proving(index)"></el-input-number>
         <span class="inptTip">最少单位为0.5</span>
@@ -76,6 +111,10 @@ export default {
       noticeOfficerList:[],
       noticeOfficer:[],
       ruleForm: {
+        startDate:new Date(),
+        startTime:'am',
+        endDate:new Date(),
+        endTime:'pm',
         staffCode: "",
         applyTime: [],
         days: 0,
@@ -110,9 +149,9 @@ export default {
   },
   mounted() {
     this.initializeFun();
-    let s = this.$toolFn.timeFormat(this.$toolFn.formatTime(new Date(),"yyyy-MM-dd") + " 09:00:00");
-    let e = this.$toolFn.timeFormat(this.$toolFn.formatTime(new Date(),"yyyy-MM-dd") + " 18:00:00");
-    this.ruleForm.applyTime.push(s,e);
+    // let s = this.$toolFn.timeFormat(this.$toolFn.formatTime(new Date(),"yyyy-MM-dd") + " 09:00:00");
+    // let e = this.$toolFn.timeFormat(this.$toolFn.formatTime(new Date(),"yyyy-MM-dd") + " 18:00:00");
+    // this.ruleForm.applyTime.push(s,e);
   },
   methods: {
     // 只能输入数字且只有一位小数
@@ -180,7 +219,6 @@ export default {
       });
     },
     submitForm(formName) {
-      this.addFun();
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.addFun();
@@ -188,6 +226,44 @@ export default {
           return false;
         }
       });
+    },
+    timeSetS(s){
+      if (s === 'am'){
+        return '09:00:00'
+      }
+      return '12:00:00'
+    },
+    timeSetE(s){
+      if (s === 'am'){
+        return '12:00:00'
+      }
+      return '18:00:00'
+    },
+    /**
+     * @description: 计算两个日期相差
+     */
+    dayDiff(s,e){
+      const date_s = new Date(s);  //开始时间
+      const date_e = new Date(e);    //结束时间
+      const date_d = date_e.getTime() - date_s.getTime();   //时间差的毫秒数    
+      // 计算出相差天数
+      let days = Math.floor(date_d/(24*3600*1000));
+      var weekday = 0; //周六日
+      // 计算出小时数
+      const leave1 = date_d%(24*3600*1000) //计算天数后剩余的毫秒数
+      const hours = Math.floor(leave1/(3600*1000))
+      for (var i = 1; i < days + 1; i++) {
+          var time = new Date(date_s.getYear(), date_s.getMonth(), date_s.getDate() + i);
+          if (time.getDay() == 0 || time.getDay() == 6) {
+              weekday++;
+          }
+      }
+      if (hours >= 8){// 超过8小时判断为1天，否则0.5天
+        days++;
+      }else{
+        days = days + 0.5
+      }
+      return days - weekday;
     },
     // 新增
     addFun() {
@@ -198,15 +274,24 @@ export default {
       }
       var details = [
         {
-          startDate: this.ruleForm.applyTime[0],
-          endDate: this.ruleForm.applyTime[1],
+          startDate: this.$toolFn.timeFormat(this.ruleForm.startDate,'yyyy-MM-dd') + " " +  this.timeSetS(this.ruleForm.startTime),
+          endDate: this.$toolFn.timeFormat(this.ruleForm.endDate,'yyyy-MM-dd') + " " +  this.timeSetE(this.ruleForm.endTime),
           days: parseFloat(this.ruleForm.days),
           isWithpay: parseInt(this.ruleForm.isWithpay),
           typeId: parseInt(this.ruleForm.typeId),
           remarks: this.ruleForm.remarks,
         }
       ];
-      console.log(details);
+      const days = this.dayDiff(details[0].startDate,details[0].endDate);
+      if (days <= 0){
+        this.$message.error("请检查请假日期区间");
+        return;
+      }else{
+        if (days < this.ruleForm.days){
+          this.$message.error("请检查请假天数是否超出");
+          return;
+        }
+      }
       var data = {
         staffCode: this.curInfo.staffCode,
         totalDay: parseFloat(this.ruleForm.days),
