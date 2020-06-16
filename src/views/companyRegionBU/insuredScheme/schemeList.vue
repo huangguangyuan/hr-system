@@ -103,6 +103,9 @@ export default {
   },
   computed: {
     pageInfo(){
+      if (this.BUInfo.locationType === 2){
+        this.typeId = "3";
+      }
       return {
         reqParams:{
             url:"/server/api/v1/insuredScheme/getAll",
@@ -132,6 +135,9 @@ export default {
     }
   },
   mounted() {
+    if (this.BUInfo.locationType === 2){
+      this.typeId = "3";
+    }
   },
   methods: {
     // 接收子组件发送信息

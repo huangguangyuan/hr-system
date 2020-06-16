@@ -10,8 +10,8 @@
           <el-radio label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="社保缴费方案：" prop="SISchemeCode">
-        <el-select v-model="ruleForm.SISchemeCode" placeholder="请选择社保缴费方案">
+      <el-form-item label="缴费方案：" prop="SISchemeCode">
+        <el-select v-model="ruleForm.SISchemeCode" placeholder="请选择缴费方案">
           <el-option
             v-for="item in schemeSIList"
             :key="item.code"

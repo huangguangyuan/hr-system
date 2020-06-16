@@ -269,8 +269,7 @@ export default {
     },
     // 取消
     cancelFn() {
-      
-      this.$emit("listenisShowItemMask", false);
+      this.$emit("listenIsShowMask", false);
     },
     // 重置
     resetForm(formName) {

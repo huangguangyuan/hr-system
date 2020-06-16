@@ -27,9 +27,9 @@
          <el-option v-for="(item,key) in insuredTypes" :key="key" :label="item.txt" :value="item.val"></el-option>
       </el-select> -->
       <!-- 选择出粮方式 -->
-      <!-- <el-select style="width:200px;" v-model="seachMsg.payrollTimesType" placeholder="选择出粮方式" @change="selectPayrollTimesType" class="selectItem">
+      <el-select style="width:200px;" v-if="buSelectedLocationType === 2" v-model="seachMsg.payrollTimesType" placeholder="选择出粮方式" @change="selectPayrollTimesType" class="selectItem">
          <el-option v-for="(item,key) in payrollTimesTypes" :key="key" :label="item.txt" :value="item.val"></el-option>
-      </el-select> -->
+      </el-select>
       <el-input class="selectItem" placeholder="请输入关键字" v-model="filter.searchKey"></el-input>
     </div>
     <el-divider></el-divider>
@@ -249,7 +249,9 @@ export default {
       },
       hrCode: "",
       userInfo: {},
-      filter: { searchKey: "", searchField: ["nameChinese", "staffNo"] },
+      filter: { searchKey: "", searchField: ["nameChinese", "staffNo", "position", "dateOfJoining", "dateOfLeaving",
+       "salary", "taxableItemsAmount", "claimAmount", "totalAmount", "SIAmount", "HCAmount", "grossPay",
+        "specialDeductionAmount", "taxableWages", "taxAmount", "notTaxableAmount", "adjAmount", "reallyAmount", "typeTxt"] },
       multipleSelection: [],//多选项目
       approvePayrollSlip_right: false, //审批工资单权限
       deletePayrollSlip_right: false, //删除工资单权限
@@ -266,7 +268,7 @@ export default {
         reqParams:{
             isReq:false,
             url:"/server/api/v1/payroll/staff/staffPayrollList",
-            data:{pageSize:8,BUCode:this.BUCode,year: parseInt(this.seachMsg.year),month: parseInt(this.seachMsg.month),insuredType: this.seachMsg.insuredType,payrollTimesType:this.seachMsg.payrollTimesType }
+            data:{pageSize:8,BUCode:this.BUCode,year: parseInt(this.seachMsg.year),month: parseInt(this.seachMsg.month),payrollTimesType:this.seachMsg.payrollTimesType }
           }
         }
     },
@@ -296,7 +298,7 @@ export default {
   mounted() {
     this.monthList = monthList();
     this.payrollTimesTypes = payrollTimesTypes();
-    this.insuredTypes = insuredTypes();
+    // this.insuredTypes = insuredTypes();
     this.userInfo = this.$toolFn.curUser;
     let access = this.userInfo.access;
     if (access.payrollMain.length > 0) {
@@ -329,7 +331,7 @@ export default {
           this.BUCode = this.$toolFn.sessionGet("staffPayrollListSearch").BUCode || this.BUCode;
           this.seachMsg.year = this.$toolFn.sessionGet("staffPayrollListSearch").year || this.seachMsg.year;
           this.seachMsg.month = this.$toolFn.sessionGet("staffPayrollListSearch").month || this.seachMsg.month;
-          this.seachMsg.insuredType = this.$toolFn.sessionGet("staffPayrollListSearch").insuredType || this.seachMsg.insuredType;
+          //this.seachMsg.insuredType = this.$toolFn.sessionGet("staffPayrollListSearch").insuredType || this.seachMsg.insuredType;
           this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
       }
       this.getRegionBU();
@@ -347,7 +349,7 @@ export default {
       if (regionBUs && regionBUs.length > 0) {
         this.regionBUlist = regionBUs;
         this.BUCode = this.BUCode != '' ? this.BUCode : this.regionBUlist[0].code;
-        this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.BUCode === this.BUCode })[0].locationType;
+        this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.code === this.BUCode })[0].locationType;
         //this.getData(this.seachMsg.BUCode,parseInt(this.seachMsg.year),parseInt(this.seachMsg.month));
       }
     },
@@ -367,8 +369,8 @@ export default {
       this.seachMsg.BUCode = val;
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
       this.$toolFn.sessionSet("staffPayrollList_multipleSelection",'');
-      this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.BUCode === val})[0].locationType;
-      this.insuredTypes = insuredTypes().filter(f=>{return f.val === this.buSelectedLocationType});
+      this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.code === val})[0].locationType;
+      // this.insuredTypes = insuredTypes().filter(f=>{return f.val === this.buSelectedLocationType});
       this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },
@@ -476,7 +478,6 @@ export default {
         }
         Promise.all(promiseList).then(all => {
           this.$message.success("删除成功！");
-          console.log(all);
           this.reload();
         });
       });
@@ -587,7 +588,7 @@ export default {
       handler: function(newVal) {
         if (newVal && newVal !=""){
           this.pageInfo.reqParams.isReq = true;
-          this.$refs.pageInfo.getData(this.pageInfo);
+          // this.$refs.pageInfo.getData(this.pageInfo);
         }
       }
     },
