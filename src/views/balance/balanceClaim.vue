@@ -7,7 +7,14 @@
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
       <el-table-column sortable prop="nameChinese" label="申请人"></el-table-column>
       <el-table-column sortable prop="deptName" label="部门"></el-table-column>
-      <el-table-column sortable prop="createTime" label="创建日期"></el-table-column>
+      <el-table-column sortable prop="createTime" label="创建日期">
+        <template slot-scope="scope">
+          <div class="showTip"  v-show="scope.row.showTip" >
+            <i class="el-icon-alarm-clock"></i><span style="padding-left:10px">{{ scope.row.createTime }}</span>
+          </div>
+          <span v-show="!scope.row.showTip">{{ scope.row.createTime }}</span>
+      </template>
+      </el-table-column>
       <el-table-column sortable prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column sortable prop="totalAmount" label="结算金额"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
@@ -67,9 +74,11 @@ export default {
       return {filter:this.filter};
     },
     tableData(){
+      const monthNow = new Date().getMonth();
       return this.pageList.map(item => {
         item.createTime = this.$toolFn.timeFormat(item.createTime);
         item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
+        item.showTip = monthNow - new Date(item.createTime).getMonth() >= 1 ? true : false
         return item;
       });
     }
@@ -119,6 +128,9 @@ export default {
 .title-h5 {
   font-size: 22px;
   font-weight: 500;
+}
+.showTip{
+  color: #ff0000;
 }
 </style>
 

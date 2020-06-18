@@ -1,11 +1,3 @@
-<!--
- * @Author: your name
- * @Date: 2019-07-21 14:51:54
- * @LastEditTime: 2020-04-25 16:54:37
- * @LastEditors: your name
- * @Description: In User Settings Edit
- * @FilePath: \hr-system\src\App.vue
- -->
 <template>
   <div id="app">
     <router-view v-if='isRouterAlive'></router-view>
