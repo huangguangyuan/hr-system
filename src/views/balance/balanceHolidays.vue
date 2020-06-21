@@ -66,7 +66,7 @@ export default {
     },
     tableData(){
       return this.pageList.map(item => {
-        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.createTime = this.$toolFn.timeFormat(item.createTime,'yyyy-MM-dd hh:mm');
         item.isBalanceTxt = item.isBalance == 1?'是':'否';
         item.isWithpayTxt = item.isWithpay == 1?'是':'否';
         return item;
