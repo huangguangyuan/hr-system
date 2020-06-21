@@ -74,11 +74,13 @@ export default {
       return {filter:this.filter};
     },
     tableData(){
-      const monthNow = new Date().getMonth();
+      const timestamp = Date.parse(new Date());
       return this.pageList.map(item => {
+        item.showTip = timestamp - Date.parse(new Date(item.createTime)) >= 2592000000
         item.createTime = this.$toolFn.timeFormat(item.createTime,'yyyy-MM-dd hh:mm');
         item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
-        item.showTip = monthNow - new Date(item.createTime).getMonth() >= 1 ? true : false
+
+        
         return item;
       });
     }
