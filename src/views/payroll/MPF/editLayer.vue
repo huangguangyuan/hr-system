@@ -24,7 +24,7 @@
         <el-input v-model="ruleForm.serviceProviderName"></el-input>
       </el-form-item>
 
-      <el-form-item label="mpfVoluntarily：" prop="mpfVoluntarily">
+      <el-form-item label="MPF自愿缴纳：" prop="mpfVoluntarily">
         <el-input v-model="ruleForm.mpfVoluntarily" oninput="value=value.replace(/[^\d.]/g,'')"></el-input>
       </el-form-item>
 

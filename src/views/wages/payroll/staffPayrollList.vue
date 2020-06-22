@@ -34,7 +34,7 @@
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-if="seachMsg.insuredType==1" v-loading="isShowLoading" :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
+    <el-table v-if="buSelectedLocationType==1" v-loading="isShowLoading" :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
       <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
       <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
       <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
@@ -63,11 +63,6 @@
             icon="el-icon-view"
             @click.stop="openFun(scope.$index, scope.row)"
           >详 细</el-button>
-          <!-- <el-button
-            size="mini"
-            icon="el-icon-tickets"
-            @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
-          >全年工资单</el-button> -->
           <el-button
             size="mini"
             icon="el-icon-document-add"
@@ -96,7 +91,7 @@
       </el-table-column>
     </el-table>
     
-    <el-table v-if="seachMsg.insuredType==2" v-loading="isShowLoading" :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
+    <el-table v-if="buSelectedLocationType==2" v-loading="isShowLoading" :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
       <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
       <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
       <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
@@ -127,6 +122,11 @@
           >多次出粮</el-button>
           <el-button
             size="mini"
+            icon="el-icon-more-outline"
+            @click.stop="openPayrollTimes(scope.$index, scope.row)"
+          >调整MPF</el-button>
+          <el-button
+            size="mini"
             icon="el-icon-document-add"
             @click.stop="adjAmountFun(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
@@ -149,11 +149,6 @@
             @click.stop="deleteFun(scope.$index, scope.row)"
             v-if="fun_right && deletePayrollSlip_right && scope.row.typeId != 1"
           >删 除</el-button>
-          <!-- <el-button
-            size="mini"
-            icon="el-icon-tickets"
-            @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
-          >全年工资单</el-button> -->
         </template>
       </el-table-column>
     </el-table>

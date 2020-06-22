@@ -70,18 +70,18 @@
       </ul>
       <el-divider v-if="tableData.SISchemeDetail">{{tableData.SISchemeDetail.name}}</el-divider>
       <el-table :data="schemeSIList" stripe v-if="tableData.SISchemeDetail">
-        <el-table-column prop="id" label="id"></el-table-column>
+        <!-- <el-table-column prop="id" label="id"></el-table-column> -->
         <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
-        <el-table-column prop="baseLower" label="基数下线"></el-table-column>
+        <el-table-column prop="baseLower" label="基数下限"></el-table-column>
         <el-table-column prop="paymentRatio" label="缴纳比例"></el-table-column>
         <el-table-column prop="typeIdTxt" label="类 型"></el-table-column>
         <el-table-column prop="paymentIdTxt" label="缴纳对象"></el-table-column>
       </el-table>
       <el-divider v-if="tableData.HCSchemeDetail">{{tableData.HCSchemeDetail.name}}</el-divider>
       <el-table v-if="tableData.HCSchemeDetail" :data="schemeHCList" stripe>
-        <el-table-column prop="id" label="id"></el-table-column>
+        <!-- <el-table-column prop="id" label="id"></el-table-column> -->
         <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
-        <el-table-column prop="baseLower" label="基数下线"></el-table-column>
+        <el-table-column prop="baseLower" label="基数下限"></el-table-column>
         <el-table-column prop="paymentRatio" label="缴纳比例"></el-table-column>
         <el-table-column prop="paymentIdTxt" label="缴纳对象"></el-table-column>
       </el-table>
