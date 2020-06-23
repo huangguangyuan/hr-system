@@ -122,8 +122,8 @@
           >多次出粮</el-button>
           <el-button
             size="mini"
-            icon="el-icon-more-outline"
-            @click.stop="openPayrollTimes(scope.$index, scope.row)"
+            icon="el-icon-s-operation"
+            @click.stop="openSetMPFKey(scope.$index, scope.row)"
           >调整MPF</el-button>
           <el-button
             size="mini"
@@ -191,19 +191,19 @@
         v-on:listenIsShowMask="listenIsShowMask"
       ></bu-payroll-confirm>
     </el-dialog>
-    <!-- 全年工资单 -->
-    <!-- <el-dialog
-      title="全年工资单"
-      :visible.sync="isShowPayrollYear"
+    <!-- MPF缴纳编辑 -->
+    <el-dialog
+      title="MPF缴纳编辑"
+      :visible.sync="isShowMPFEdit"
       :close-on-click-modal="false"
       width="80%"
     >
-      <staff-payroll-year
-        v-if="isShowPayrollYear"
+      <payrollTimEditMPF
+        v-if="isShowMPFEdit"
         :curInfo="curInfo"
         v-on:listenIsShowMask="listenIsShowMask"
-      ></staff-payroll-year>
-    </el-dialog> -->
+      ></payrollTimEditMPF>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -212,11 +212,12 @@ import staffPayrollConfirm from "./staffPayrollConfirm.vue";
 import buPayrollConfirm from "./buPayrollConfirm.vue";
 import staffPayrollYear from "./staffPayrollYear.vue";
 import adjAmountEdit from "./adjAmountEdit.vue";
+import payrollTimEditMPF from "./payrollTimEditMPF.vue";
 import {monthList,payrollTimesTypes,insuredTypes,payrollListTypeTxt} from "@/lib/staticData.js";
 import pageInfo from "@/components/pageInfo.vue";
 export default {
   components: {
-    staffPayrollDetail,staffPayrollConfirm,buPayrollConfirm,staffPayrollYear,adjAmountEdit,pageInfo
+    staffPayrollDetail,staffPayrollConfirm,buPayrollConfirm,staffPayrollYear,adjAmountEdit,payrollTimEditMPF,pageInfo
   },
   name: "staffPayrollList",
   inject: ["reload"],
@@ -233,8 +234,8 @@ export default {
       isShowAddAccess: false, //是否显示新增页面
       isShowConfirm: false, //是否显示确认工资单
       isShowbuConfirm: false, //是否显示单位确认工资
-      isShowPayrollYear: false, //是否显示全年工资单
       isShowAdjAmountRemarks: false, //是否显示调整金额
+      isShowMPFEdit: false, //是否显示全年工资单
       BUCode:'',
       seachMsg: {
         year: "", //年份
@@ -412,6 +413,14 @@ export default {
         payrollMainInfo: res
       });
     },
+    /**
+     * @description: 打开编辑MPF缴纳窗口
+     */    
+    openSetMPFKey(index, res) {
+      this.curInfo = res;
+      this.curInfo.hrCode = this.hrCode
+      this.isShowMPFEdit = true;
+    },
     // 打开详细页面
     openFun(index, res) {
       this.isShowAddAccess = true;
@@ -542,22 +551,13 @@ export default {
       };
       this.isShowbuConfirm = true;
     },
-    // // 获取全年工资信息
-    // staffPayrollYearFun(index, res) {
-    //   this.curInfo = {
-    //     code: res.staffCode,
-    //     year: this.seachMsg.year,
-    //     isShowYear: true
-    //   };
-    //   this.isShowPayrollYear = true;
-    // },
     // 接收子组件发送信息
     listenIsShowMask() {
       this.isShowAddAccess = false;
       this.isShowConfirm = false;
       this.isShowbuConfirm = false;
-      this.isShowPayrollYear = false;
       this.isShowAdjAmountRemarks = false;
+      this.isShowMPFEdit = false;
     },
     searchFun(list, search) {
       let newList = [];

@@ -1,16 +1,23 @@
 
 <template>
   <div class="editLayer">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="680px">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px">
       <el-form-item label="MPF缴纳方式：" prop="MPFType">
-        <el-radio v-model="MPFType" label="1">系统计算</el-radio>
-        <el-radio v-model="MPFType" label="2">手动输入</el-radio>
+        <el-radio v-model="ruleForm.MPFType" label="1">系统计算</el-radio>
+        <el-radio v-model="ruleForm.MPFType" label="2">手动输入</el-radio>
       </el-form-item>
-      <el-form-item label="强制部分：" prop="MPFAmountForce">
-        <el-input v-model="ruleForm.adjAmount"></el-input>
+        <el-form-item label="明细：" v-if="ruleForm.MPFType==='1'">
+          <el-table v-if="curInfo.MPFList && curInfo.MPFList.length > 0" :data="curInfo.MPFList" stripe border show-summary>
+            <el-table-column prop="paymentTxt" label="类 型"></el-table-column>
+            <el-table-column prop="payment" label="金额(元)"></el-table-column>
+          </el-table>
+        </el-form-item>
+
+      <el-form-item label="强制部分：" prop="MPFAmountForce" v-if="ruleForm.MPFType==='2'">
+        <el-input v-model="ruleForm.MPFAmountForce" type="number"></el-input>
       </el-form-item>
-      <el-form-item label="个人自愿：" prop="MPFAmountFree">
-        <el-input v-model="ruleForm.adjAmount"></el-input>
+      <el-form-item label="个人自愿：" prop="MPFAmountFree" v-if="ruleForm.MPFType==='2'">
+        <el-input v-model="ruleForm.MPFAmountFree" type="number"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
@@ -27,62 +34,56 @@ export default {
   data() {
     return {
       ruleForm: {
-        id:'',
+        code:'',
         MPFType:'1',
-        MPFAmountForce:'',
-        MPFAmountFree:''
+        MPFAmountForce:'0',
+        MPFAmountFree:'0'
       },
       rules: {
-        typeId: [
-          { required: true, message: "请选择工资单状态", trigger: "blur" }
+        MPFType: [
+          { required: true, message: "请选择MPF缴纳方式", trigger: "blur" }
         ]
       },
       isShow: true, //是否显示
     };
   },
   mounted() {
-    this.ruleForm.id = this.curInfo.id;
-    this.getItem();
+    this.ruleForm.code = this.curInfo.code;
   },
   methods: {
     /**
      * @description: 获取详细信息
      */
-    getItem() {
-      var reqUrl = "/server/api/v1/payroll/staff/payrollTimesItem";
-      var data = {
-        id: this.curInfo.id
-      };
-      this.$myApi.http.post(reqUrl, data).then(res => {
-        if (res.data.code == 0) {
-          this.ruleForm.id = res.data.data.id;
-          this.ruleForm.typeId = res.data.data.typeId.toString();
-          this.ruleForm.payDay = res.data.data.payDay;
-          this.ruleForm.remarks = res.data.data.remarks;
-        }
-      });
-    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (this.ruleForm.typeId == 2 && (!this.ruleForm.remarks || this.ruleForm.remarks == '')){
-             this.$message.error("请填写退回备注");
-             return;
+          if (this.ruleForm.MPFType === '2'){
+            if (this.ruleForm.MPFAmountForce === ''){
+              this.$message.error("请输入强制缴纳费用");
+              return;
+            }
+            if (this.ruleForm.MPFAmountFree === ''){
+              this.$message.error("请输入自愿缴纳费用");
+              return;
+            }
           }
-          this.approveFun();
+          this.updateMPF();
         } else {
           return false;
         }
       });
     },
     // 审批
-    approveFun() {
-      var reqUrl = "/server/api/v1/payroll/staff/payrollTimesUpdate";
+    updateMPF() {
+      var reqUrl = "/server/api/v1/payroll/staff/updateStaffPayroll";
       var data = {
-        id:this.ruleForm.id,
-        typeId:parseInt(this.ruleForm.typeId),
-        payDay:this.ruleForm.payDay,
-        remarks:this.ruleForm.remarks
+        MPFCalc:true,
+        hrCode:this.curInfo.hrCode,
+        staffCode:this.curInfo.staffCode,
+        code:this.ruleForm.code,
+        MPFType:parseInt(this.ruleForm.MPFType),
+        MPFAmountForce:this.ruleForm.MPFAmountForce,
+        MPFAmountFree:this.ruleForm.MPFAmountFree
       };
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
