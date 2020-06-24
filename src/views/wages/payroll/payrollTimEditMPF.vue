@@ -6,7 +6,7 @@
         <el-radio v-model="ruleForm.MPFType" label="1">系统计算</el-radio>
         <el-radio v-model="ruleForm.MPFType" label="2">手动输入</el-radio>
       </el-form-item>
-        <el-form-item label="明细：" v-if="ruleForm.MPFType==='1'">
+        <el-form-item label="明细：" v-if="ruleForm.MPFType==='1' && this.curInfo.MPFType.toString() === '1'">
           <el-table v-if="curInfo.MPFList && curInfo.MPFList.length > 0" :data="curInfo.MPFList" stripe border show-summary>
             <el-table-column prop="paymentTxt" label="类 型"></el-table-column>
             <el-table-column prop="payment" label="金额(元)"></el-table-column>
@@ -49,6 +49,18 @@ export default {
   },
   mounted() {
     this.ruleForm.code = this.curInfo.code;
+    this.ruleForm.MPFType = this.curInfo.MPFType.toString();
+    if (this.ruleForm.MPFType ==='2'){
+      for (let index = 0; index < this.curInfo.MPFList.length; index++) {
+        const element = this.curInfo.MPFList[index];
+        if (element.paymentTxt === "个人"){
+          this.ruleForm.MPFAmountForce = element.payment.toString()
+        }else if (element.paymentTxt === "个人自愿"){
+          this.ruleForm.MPFAmountFree = element.payment.toString()
+        }
+      }
+    }
+
   },
   methods: {
     /**
@@ -67,7 +79,7 @@ export default {
               return;
             }
           }
-          this.updateMPF();
+          // this.updateMPF();
         } else {
           return false;
         }

@@ -7,7 +7,7 @@
           <div class="collapse-btn" @click="collapseFun">
             <i class="el-icon-menu"></i>
           </div>
-          <p>后台管理系统</p>
+          <p>Payroll Service System</p>
         </div>
         <div class="right">
           <el-badge is-dot class="item" v-if="false">

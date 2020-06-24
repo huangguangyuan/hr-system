@@ -12,7 +12,7 @@ module.exports =  {
         loginBtn: '登 录'
       },
     AdminLogin: {
-        title: '后台管理系统',
+        title: 'Payroll Service System',
         user: '账 号：',
         userTip:'请输入用户账号',
         pass: '密 码：',

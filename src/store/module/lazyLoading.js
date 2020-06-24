@@ -169,11 +169,11 @@ const dynamicRouter = [
         name: 'staffMain',
         component: resolve => require(['@/views/staff/staffMain.vue'], resolve),
     },
-    // 员工申请
+    // 员工信息
     {
-        path: '/applyMain',
-        name: 'applyMain',
-        component: resolve => require(['@/views/staffApply/applyMain.vue'], resolve),
+        path: '/staffInfo',
+        name: 'staffInfo',
+        component: resolve => require(['@/views/staff/staffInfo/staffInfo.vue'], resolve),
     },
     // 每月工资清单
     {

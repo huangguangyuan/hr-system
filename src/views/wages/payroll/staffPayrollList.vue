@@ -81,6 +81,12 @@
             @click.stop="rebuildStaffPayroll(scope.$index, scope.row)"
             v-if="fun_right && genPayrollSlip_right && scope.row.typeId == 2"
           >重新生成工资单</el-button>
+          <!-- <el-button
+            size="mini"
+            icon="el-icon-document-add"
+            @click.stop="openShowPayrollUpdate(scope.$index, scope.row)"
+            v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
+          >重算薪资</el-button> -->
           <el-button
             size="mini"
             icon="el-icon-delete"
@@ -119,12 +125,20 @@
             size="mini"
             icon="el-icon-more-outline"
             @click.stop="openPayrollTimes(scope.$index, scope.row)"
+            v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >多次出粮</el-button>
           <el-button
             size="mini"
             icon="el-icon-s-operation"
             @click.stop="openSetMPFKey(scope.$index, scope.row)"
+            v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >调整MPF</el-button>
+          <!-- <el-button
+            size="mini"
+            icon="el-icon-document-add"
+            @click.stop="openShowPayrollUpdate(scope.$index, scope.row)"
+            v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
+          >重算薪资</el-button> -->
           <el-button
             size="mini"
             icon="el-icon-document-add"
@@ -204,6 +218,19 @@
         v-on:listenIsShowMask="listenIsShowMask"
       ></payrollTimEditMPF>
     </el-dialog>
+    <!-- 重算薪资窗口 -->
+    <el-dialog
+      title="重算薪资窗口"
+      :visible.sync="isShowPayrollUpdate"
+      :close-on-click-modal="false"
+      width="80%"
+    >
+      <payrollUpdate
+        v-if="isShowPayrollUpdate"
+        :curInfo="curInfo"
+        v-on:listenIsShowMask="listenIsShowMask"
+      ></payrollUpdate>
+    </el-dialog>    
   </div>
 </template>
 <script>
@@ -213,11 +240,12 @@ import buPayrollConfirm from "./buPayrollConfirm.vue";
 import staffPayrollYear from "./staffPayrollYear.vue";
 import adjAmountEdit from "./adjAmountEdit.vue";
 import payrollTimEditMPF from "./payrollTimEditMPF.vue";
+import payrollUpdate from "./payrollUpdate.vue";
 import {monthList,payrollTimesTypes,insuredTypes,payrollListTypeTxt} from "@/lib/staticData.js";
 import pageInfo from "@/components/pageInfo.vue";
 export default {
   components: {
-    staffPayrollDetail,staffPayrollConfirm,buPayrollConfirm,staffPayrollYear,adjAmountEdit,payrollTimEditMPF,pageInfo
+    staffPayrollDetail,staffPayrollConfirm,buPayrollConfirm,staffPayrollYear,adjAmountEdit,payrollTimEditMPF,payrollUpdate,pageInfo
   },
   name: "staffPayrollList",
   inject: ["reload"],
@@ -235,7 +263,8 @@ export default {
       isShowConfirm: false, //是否显示确认工资单
       isShowbuConfirm: false, //是否显示单位确认工资
       isShowAdjAmountRemarks: false, //是否显示调整金额
-      isShowMPFEdit: false, //是否显示全年工资单
+      isShowMPFEdit: false, //是否显示mpf调整窗口
+      isShowPayrollUpdate: false, //是否显示重算薪资窗口
       BUCode:'',
       seachMsg: {
         year: "", //年份
@@ -420,6 +449,14 @@ export default {
       this.curInfo = res;
       this.curInfo.hrCode = this.hrCode
       this.isShowMPFEdit = true;
+    },
+    /**
+     * @description: 打开重新薪资窗口
+     */    
+    openShowPayrollUpdate(index, res) {
+      this.curInfo = res;
+      this.curInfo.hrCode = this.hrCode
+      this.isShowPayrollUpdate = true;
     },
     // 打开详细页面
     openFun(index, res) {
