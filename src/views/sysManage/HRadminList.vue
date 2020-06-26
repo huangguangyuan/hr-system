@@ -14,7 +14,7 @@
       <el-table-column sortable prop="levExtendTxt" label="扩展权限"></el-table-column>
       
       <el-table-column sortable prop="serveIdTxt" label="服务归属"></el-table-column>
-      <el-table-column sortable prop="account" label="账号"></el-table-column>
+      <el-table-column sortable prop="account" label="帐号"></el-table-column>
       <!-- <el-table-column prop="mobile" label="手机"></el-table-column> -->
       <el-table-column sortable prop="isStatus" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="480px">

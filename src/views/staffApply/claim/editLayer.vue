@@ -18,7 +18,7 @@
         <el-form-item label="报销日期" :prop="'details.'+index+'.claimDate'" :rules="{required: true, message: '报销日期不能为空', trigger: 'blur'}">
          <el-date-picker v-model="domain.claimDate" value-format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
-        <el-form-item label="报销项目名称" :prop="'details.'+index+'.title'" :rules="{required: true, message: '报销项目名称不能为空', trigger: 'blur'}">
+        <el-form-item label="报销内容名称" :prop="'details.'+index+'.title'" :rules="{required: true, message: '报销内容名称不能为空', trigger: 'blur'}">
           <el-input v-model="domain.title"></el-input>
         </el-form-item>
         <el-form-item label="报销金额" :prop="'details.'+index+'.amount'" :rules="{required: true, message: '报销金额不能为空', trigger: 'blur'}">
@@ -35,7 +35,7 @@
           <el-checkbox v-for="approve in approveOfficerList" :label="approve.code" :key="approve.code" >{{approve.name}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="结算人员：">
+      <el-form-item label="结算人员：" v-show="false">
         <el-checkbox-group v-model="balanceOfficer">
           <el-checkbox v-for="balance in balanceOfficerList" :label="balance.code" :key="balance.code" >{{balance.name}}</el-checkbox>
         </el-checkbox-group>
@@ -50,7 +50,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
-        <el-button @click="addDomain">新增报销项目</el-button>
+        <el-button @click="addDomain">新增报销内容</el-button>
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>
@@ -147,7 +147,7 @@ export default {
     async getBUClaimType() {
        this.claimTypeList = await this.$myApi.getBUClaimType();
     },
-    // 添加报销项目
+    // 添加报销内容
     addDomain() {
       this.ruleForm.details.push({
         title: "",
@@ -158,7 +158,7 @@ export default {
         key: Date.now()
       });
     },
-    // 删除报销项目
+    // 删除报销内容
     removeDomain(item){
         if (this.ruleForm.details.length == 1){
           return;

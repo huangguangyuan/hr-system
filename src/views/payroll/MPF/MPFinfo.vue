@@ -15,7 +15,7 @@
       <el-divider>基础信息</el-divider>
       <ul class="infoList">
         <li>
-          <span>MPF账号：</span>
+          <span>MPF帐号：</span>
           <span>{{tableData.account}}</span>
         </li>
         <li>

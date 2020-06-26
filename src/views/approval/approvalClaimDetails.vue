@@ -113,7 +113,7 @@ export default {
       if (this.claimItem.fileSrc && this.claimItem.fileSrc != ''){
         this.fileList = this.claimItem.fileSrc.split(',');
       }
-      this.claimItem.createTime = this.$toolFn.timeFormat(this.claimItem.createTime);
+      this.claimItem.createTime = this.$toolFn.timeFormat(this.claimItem.createTime,"yyyy-MM-dd hh:mm");
       this.tableData = this.claimItem.details;
       // 审批流程
       this.approveHisList = this.claimItem.approveHis.map(item => {

@@ -88,12 +88,13 @@ export default {
         return item;
       })
       this.holidayItem = this.curInfo;
+      this.holidayItem.creatorTime = this.$toolFn.timeFormat(this.holidayItem.creatorTime,"yyyy-MM-dd hh:mm");;
       if (this.holidayItem.fileSrc && this.holidayItem.fileSrc != ''){
         this.fileList = this.holidayItem.fileSrc.split(',');
       }
       this.tableData = this.curInfo.details.map(item => {
-        item.startDate = this.$toolFn.timeFormat(item.startDate);
-        item.endDate = this.$toolFn.timeFormat(item.endDate);
+        item.startDate = this.$toolFn.timeFormat(item.startDate,"yyyy-MM-dd hh:mm");
+        item.endDate = this.$toolFn.timeFormat(item.endDate,"yyyy-MM-dd hh:mm");
         return item;
       });
       this.step = this.curInfo.status > 5?5:this.curInfo.status;

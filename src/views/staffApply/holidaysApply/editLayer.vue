@@ -8,15 +8,15 @@
           range-separator="至"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
-          value-format="yyyy-MM-dd HH:mm:ss"
+          value-format="yyyy-MM-dd hh:mm:ss"
         ></el-date-picker>
       </el-form-item> -->
-      <el-form-item label="请假开始时间" prop="startDate">
+      <el-form-item label="开始时间" prop="startDate">
         <el-date-picker
           v-model="ruleForm.startDate"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择开始日期"
+          placeholder="请选择假期开始日期"
         ></el-date-picker>
       <el-select v-model="ruleForm.startTime" placeholder="请选择时间" style="width:200px;padding-left:10px">
         <el-option key="am"
@@ -29,12 +29,12 @@
         </el-option>
       </el-select>
       </el-form-item>
-      <el-form-item label="请假结束时间" prop="startDate">
+      <el-form-item label="结束时间" prop="endDate">
         <el-date-picker
           v-model="ruleForm.endDate"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择结束日期"
+          placeholder="请选择假期结束日期"
         ></el-date-picker>
       <el-select v-model="ruleForm.endTime" placeholder="请选择时间" style="width:200px;padding-left:10px">
         <el-option key="am"
@@ -73,7 +73,7 @@
           <el-checkbox v-for="approve in approveOfficerList" :label="approve.code" :key="approve.code" >{{approve.name}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="结算人员：" >
+      <el-form-item label="结算人员："  v-show="false">
         <el-checkbox-group v-model="balanceOfficer">
           <el-checkbox v-for="balance in balanceOfficerList" :label="balance.code" :key="balance.code" >{{balance.name}}</el-checkbox>
         </el-checkbox-group>
@@ -134,8 +134,11 @@ export default {
       fileList: [],
       holidayTypes: [], //请假类型
       rules: {
-        applyTime: [
-          { required: true, message: "请选择请假时间", trigger: "blur" }
+        startDate: [
+          { required: true, message: "请选择请假开始时间", trigger: "blur" }
+        ],
+        endDate: [
+          { required: true, message: "请选择请假结束时间", trigger: "blur" }
         ],
         days: [{ required: true, message: "请填写请假天数", trigger: "blur" }],
         typeId: [
@@ -200,21 +203,31 @@ export default {
           this.balanceOfficer = this.balanceOfficerList.map(m => m.code);
           this.noticeOfficerList = res.data.data.noticeOfficerList;
           this.noticeOfficer = this.noticeOfficerList.map(m => m.code);
-          for (let index = 0; index < this.approveOfficerList.length; index++) {
-            const element = this.approveOfficerList[index];
-            if (this.noticeOfficer.indexOf(element.code) < 0){
-              this.noticeOfficerList.push(element);
-              this.noticeOfficer.push(element.code);
-            }
-          }
-          for (let index = 0; index < this.balanceOfficerList.length; index++) {
-            const element = this.balanceOfficerList[index];
-            if (this.noticeOfficer.indexOf(element.code) < 0){
-              this.noticeOfficerList.push(element);
-              this.noticeOfficer.push(element.code);
-            }
-          }
+
+          // console.log(this.noticeOfficer)
+          // for (let index = 0; index < this.approveOfficerList.length; index++) {
+          //   const element = this.approveOfficerList[index];
+          //   // if (this.noticeOfficer.indexOf(element.code) < 0){
+          //   //   this.noticeOfficerList.push(element);
+          //   //   this.noticeOfficer.push(element.code);
+          //   // }
+          // }
+          // for (let index = 0; index < this.balanceOfficerList.length; index++) {
+          //   const element = this.balanceOfficerList[index];
+          //   // if (this.noticeOfficer.indexOf(element.code) < 0){
+          //   //   this.noticeOfficerList.push(element);
+          //   //   this.noticeOfficer.push(element.code);
+          //   // }
+          // }
           this.noticeOfficer = [];
+          for (let index = 0; index < this.noticeOfficerList.length; index++) {
+            const element = this.noticeOfficerList[index];
+            if (element.lev === 611){// 如果是人事文员，默认勾选
+              this.noticeOfficer.push(element.code);
+            }
+            
+          }
+           
         }
       });
     },

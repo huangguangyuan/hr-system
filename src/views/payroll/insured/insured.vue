@@ -20,7 +20,7 @@
           <span>{{tableData.id}}</span>
         </li> -->
         <li>
-          <span>社保账号：</span>
+          <span>社保帐号：</span>
           <span>{{tableData.SIAccount}}</span>
         </li>
         <li>
@@ -36,7 +36,7 @@
           <span>{{tableData.SIBase}}</span>
         </li>
         <li>
-          <span>公积金账号：</span>
+          <span>公积金帐号：</span>
           <span>{{tableData.HCAccount}}</span>
         </li>
         <li>

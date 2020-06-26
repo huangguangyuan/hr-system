@@ -21,7 +21,7 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id" border>
       <el-table-column sortable prop="name" label="名称"></el-table-column>
-      <el-table-column prop="account" label="账号"></el-table-column>
+      <el-table-column prop="account" label="帐号"></el-table-column>
       <el-table-column prop="mobile" label="手机"></el-table-column>
       <el-table-column prop="email" label="邮箱"></el-table-column>
       <el-table-column sortable prop="levTxt" label="类型"></el-table-column>
@@ -39,7 +39,7 @@
             icon="el-icon-plus"
             @click="addAccount(scope.$index, scope.row)"
             v-if='!scope.row.superCode'
-          >添加子账号</el-button>
+          >添加子帐号</el-button>
           <!-- <el-button size="mini" icon="el-icon-plus" @click="addRole(scope.$index, scope.row)">添加角色</el-button> -->
           <el-button
             size="mini"

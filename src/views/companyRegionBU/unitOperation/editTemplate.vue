@@ -10,7 +10,7 @@
       <el-form-item label="名称：" prop="name" v-if="isShowItem">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="账号：" prop="account" v-if="isShowItem">
+      <el-form-item label="帐号：" prop="account" v-if="isShowItem">
         <el-input v-model="ruleForm.account"></el-input>
       </el-form-item>
       <el-form-item label="密码：" prop="password" v-if="isShowItem">
@@ -152,7 +152,7 @@ export default {
           { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
         account: [
-          { required: true, message: "请输入账号", trigger: "blur" },
+          { required: true, message: "请输入帐号", trigger: "blur" },
           { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],

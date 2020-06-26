@@ -1,7 +1,7 @@
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px">
-      <el-form-item label="MPF账号：" prop="account">
+      <el-form-item label="MPF帐号：" prop="account">
         <el-input v-model.number="ruleForm.account"></el-input>
       </el-form-item>
 
@@ -55,7 +55,7 @@ export default {
     return {
       ruleForm: {
         staffCode: "", //员工代码
-        account: "", //MPF账号
+        account: "", //MPF帐号
         schemeCode: "", //MPF缴费方案
         serviceProviderName: "Manulife - Manulife Global Select (MPF) Scheme", //服务商名称
         contributionDate: "", //缴纳日期
@@ -67,7 +67,7 @@ export default {
       schemeMPFList: [], //香港MPF方案列表
       rules: {
         account: [
-          { required: true, message: "请输入MPF账号", trigger: "blur" }
+          { required: true, message: "请输入MPF帐号", trigger: "blur" }
         ],
         schemeCode: [
           {required: true,message: "请选择MPF缴费方案", trigger: "change"}

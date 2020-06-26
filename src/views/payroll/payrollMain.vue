@@ -30,6 +30,7 @@ export default {
     };
   },
   mounted() {
+    
     this.userInfo = this.$toolFn.curUser;
       if (this.userInfo.roleTypeId == 2){
         if (this.userInfo.access.payrollMain.length > 0){

@@ -19,7 +19,7 @@
             <el-form-item label="名称：">
               <span>{{ props.row.name }}</span>
             </el-form-item>
-            <el-form-item label="账号：">
+            <el-form-item label="帐号：">
               <span>{{ props.row.account }}</span>
             </el-form-item>
             <el-form-item label="所属公司：">
@@ -69,7 +69,7 @@
           ></el-image>
         </template>
       </el-table-column>
-      <el-table-column prop="account" label="账号"></el-table-column>
+      <el-table-column prop="account" label="帐号"></el-table-column>
       <el-table-column prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="350px">
         <template slot-scope="scope">

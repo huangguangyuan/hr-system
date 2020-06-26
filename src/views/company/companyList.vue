@@ -9,7 +9,7 @@
     <!-- 列表内容 -->
     <el-table v-loading='isShowLoading' :data="tableData" stripe row-key="id" border>
       <el-table-column sortable prop="name" label="名称"></el-table-column>
-      <el-table-column sortable prop="account" label="账号"></el-table-column>
+      <el-table-column sortable prop="account" label="帐号"></el-table-column>
       <el-table-column sortable prop="contactName" label="联系人"></el-table-column>
       <el-table-column sortable prop="contactTel" label="联系人手机"></el-table-column>
       <el-table-column sortable prop="contactEmail" label="联系人邮箱"></el-table-column>

@@ -1,23 +1,91 @@
 <template>
   <div class="staffInfo">
-    <el-row :gutter="20" v-if='isContent'>
-      <el-col :span="7">
-        <div class="grid-content">应税及社保月份：<span>{{tableData.forMonthTxt}}</span></div>
-        <!-- 0表示与当前出粮月份一致，其他为对应增减。例如（1：下月社保，-2上上月社保） -->
-      </el-col>
-      <el-col :span="7">
-        <div class="grid-content">计粮周期起始日：<span>{{tableData.startDate}}号</span></div>
-      </el-col>
-      <el-col :span="7">
-        <div class="grid-content">计粮周期截止日：<span>{{tableData.endDateTxt}}</span></div>
-      </el-col>
-      <el-col :span="7">
-        <div class="grid-content">薪水发放日：<span>{{tableData.payDayTxt}}</span></div>
-      </el-col>      
-      <el-col :span="21">
-        <div class="grid-content">备注：<span>{{tableData.remarks}}</span></div>
-      </el-col>
-    </el-row>
+    <ul class="msgList" v-if="isContent">
+      <li>
+          <span class="title">中文名</span>：
+          <span class="val">{{tableData.nameChinese}}</span>
+        </li>
+      <li>
+          <span class="title">英文名</span>：
+          <span class="val">{{tableData.nameEnglish}}</span>
+        </li>
+      <li>
+          <span class="title">性别</span>：
+          <span class="val">{{tableData.gender}}</span>
+        </li>
+      <li>
+          <span class="title">员工别名</span>：
+          <span class="val">{{tableData.staffAlias}}</span>
+        </li>
+      <li>
+          <span class="title">员工编号</span>：
+          <span class="val">{{tableData.staffNo}}</span>
+        </li>      
+      <li>
+          <span class="title">电话</span>：
+          <span class="val">{{tableData.mobile}}</span>
+        </li>
+      <li>
+          <span class="title">户口所在地</span>：
+          <span class="val">{{tableData.hukouLoction}}</span>
+        </li>
+      <li>
+          <span class="title">文化程度</span>：
+          <span class="val">{{tableData.cultureLevel}}</span>
+        </li>
+      <li>
+          <span class="title">紧急联系人</span>：
+          <span class="val">{{tableData.emergencyContact}}</span>
+        </li>
+      <li>
+          <span class="title">档案所在单位</span>：
+          <span class="val">{{tableData.fileUnit}}</span>
+        </li>
+      <li>
+          <span class="title">职位</span>：
+          <span class="val">{{tableData.position}}</span>
+        </li>
+      <li>
+          <span class="title">身份证号码</span>：
+          <span class="val">{{tableData.IDNo}}</span>
+        </li>
+      <li>
+          <span class="title">地址</span>：
+          <span class="val">{{tableData.address}}</span>
+        </li>
+      <li>
+          <span class="title">出生地</span>：
+          <span class="val">{{tableData.dateOfPlace}}</span>
+        </li>
+      <li>
+          <span class="title">民族</span>：
+          <span class="val">{{tableData.ethnic}}</span>
+        </li>
+      <li>
+          <span class="title">银行帐号</span>：
+          <span class="val">{{tableData.bankAccountNo}}</span>
+        </li>
+      <li>
+          <span class="title">银行名称</span>：
+          <span class="val">{{tableData.bankName}}</span>
+        </li>
+       <li>
+          <span class="title">银行账户名称</span>：
+          <span class="val">{{tableData.bankAccountName}}</span>
+        </li>
+       <li>
+          <span class="title">社保养老账户</span>：
+          <span class="val">{{tableData.SIAccount}}</span>
+        </li>
+       <li>
+          <span class="title">住房公积金账户</span>：
+          <span class="val">{{tableData.HCAccount}}</span>
+        </li>
+       <li>
+          <span class="title">基本医疗保险卡号</span>：
+          <span class="val">{{tableData.medicalSchemeAccount}}</span>
+        </li>
+    </ul>
     <div class="noContent" v-else>
       暂无数据
     </div>
@@ -42,7 +110,8 @@ export default {
       var reqUrl = "/server/api/v1/staff/getByCode";
       this.$myApi.http.post(reqUrl, {code:this.$toolFn.curUser.userCode}).then(res => {
         if (res.data.code == 0) {
-          console.log(res.data)
+          this.tableData = res.data.data;
+          this.isContent = true;
         }
       });
     }
@@ -52,51 +121,44 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.grid-content {
-  padding: 10px 20px;
-  background-color: #d3dce6;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #909399;
-  span{
+.staffInfo{
+  width: 90%;
+  margin: 15px auto;
+  .grid-content {
+    padding: 10px 20px;
+    background-color: #d3dce6;
+    margin-bottom: 15px;
+    border-radius: 8px;
     font-size: 14px;
-    font-weight: bold;
-    color: #666;
+    color: #909399;
+    span{
+      font-size: 14px;
+      font-weight: bold;
+      color: #666;
+    }
+  }
+  .noContent{
+    line-height: 200px;text-align: center;color: #d3dce6;
   }
 }
-.selectCityCode {
-  width: 220px;
-  margin-right: 10px;
-}
-.noContent{
-  line-height: 200px;text-align: center;color: #d3dce6;
-}
-.pageInfo {
-  margin-top: 20px;
+.msgList {
+  margin: 20px auto 0;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  p {
+  li {
+    padding: 15px 10px;
     font-size: 14px;
-    margin-right: 20px;
+    width: 48%;
+    box-sizing: border-box;
+    list-style: none;
+    .title {
+      color: #99a9bf;
+      display: inline-block;
+      min-width: 120px;
+      text-align: left;
+    }
+    border-bottom: 1px #99a9bf dashed;
   }
-}
-.search-wrap {
-  margin: 20px auto;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  .el-input-group {
-    width: 500px;
-  }
-}
-.input-with-select .el-input-group__prepend {
-  background-color: #fff;
-}
-.addBtn-wrap {
-  margin: 10px auto 30px;
-  display: flex;
-  justify-content: flex-start;
 }
 </style>

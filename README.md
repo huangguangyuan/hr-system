@@ -1,4 +1,4 @@
-# system-hr
+# PSS-Admin
 
 ## Project setup
 ```

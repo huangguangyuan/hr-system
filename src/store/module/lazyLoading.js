@@ -167,18 +167,36 @@ const dynamicRouter = [
     {
         path: '/staffMain',
         name: 'staffMain',
+        meta: {
+            title: 'PSS-Staff'
+        },
         component: resolve => require(['@/views/staff/staffMain.vue'], resolve),
+    },
+    // 员工申请
+    {
+        path: '/applyMain',
+        name: 'applyMain',
+        meta: {
+            title: 'PSS-Staff'
+        },
+        component: resolve => require(['@/views/staffApply/applyMain.vue'], resolve),
     },
     // 员工信息
     {
         path: '/staffInfo',
         name: 'staffInfo',
+        meta: {
+            title: 'PSS-Staff'
+        },
         component: resolve => require(['@/views/staff/staffInfo/staffInfo.vue'], resolve),
     },
     // 每月工资清单
     {
         path: '/staffPayrollSlip',
         name: 'staffPayrollSlip',
+        meta: {
+            title: 'PSS-Staff'
+        },
         component: resolve => require(['@/views/wages/payroll/staffPayrollSlip.vue'], resolve),
     },
     // 编辑全年工资清单

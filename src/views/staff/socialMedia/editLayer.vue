@@ -4,7 +4,7 @@
       <el-form-item label="媒体名称：" prop="media">
         <el-input v-model="ruleForm.media"></el-input>
       </el-form-item>
-      <el-form-item label="媒体账号：" prop="account">
+      <el-form-item label="媒体帐号：" prop="account">
         <el-input v-model="ruleForm.account"></el-input>
       </el-form-item>
       <el-form-item label="备 注：">
@@ -38,7 +38,7 @@ export default {
           { required: true, message: "请输入媒体名称：", trigger: "blur" }
         ],
         account: [
-          { required: true, message: "请输入媒体账号：", trigger: "blur" }
+          { required: true, message: "请输入媒体帐号：", trigger: "blur" }
         ]
       },
       userRight:false,

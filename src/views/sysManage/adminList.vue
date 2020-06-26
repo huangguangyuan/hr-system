@@ -14,7 +14,7 @@
     <!-- 列表内容 -->
     <el-table v-loading='isShowLoading' :data="tableData" stripe row-key="id" border>
       <el-table-column sortable prop="name" label="名称"></el-table-column>
-      <el-table-column sortable prop="account" label="账号"></el-table-column>
+      <el-table-column sortable prop="account" label="帐号"></el-table-column>
       <el-table-column sortable prop="mobile" label="手机"></el-table-column>
       <el-table-column sortable prop="email" label="邮箱"></el-table-column>
       <el-table-column sortable prop="isStatus" label="状态"></el-table-column>

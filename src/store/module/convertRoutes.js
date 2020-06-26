@@ -1,3 +1,4 @@
+
 import {lazy} from './lazyLoading'
 /**
  * 拼接动态路由
@@ -14,6 +15,7 @@ function toRoutes(routerList,routeHideList, sysMenuList) {
                 var routeNode = {
                     name: sysMenuNode.name,
                     path: '/' + code,
+                    meta:sysMenuNode.meta,
                     component: lazy(code),
                     children:[]
                 };
