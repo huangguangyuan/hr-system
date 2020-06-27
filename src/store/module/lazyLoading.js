@@ -10,7 +10,7 @@ function getComponetByPath(path) {
     for (var i = 0; i < dynamicRouter.length; i++) {
         var route = dynamicRouter[i];
         if (route.path == path) {
-            return route.component;
+            return route;
         }
     }
 }

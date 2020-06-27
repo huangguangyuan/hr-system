@@ -135,7 +135,7 @@ export default {
       holidayTypes: [], //请假类型
       rules: {
         startDate: [
-          { required: true, message: "请选择请假开始时间", trigger: "blur" }
+          { required: true, message: "请选择请假开始日期", trigger: "blur" }
         ],
         endDate: [
           { required: true, message: "请选择请假结束时间", trigger: "blur" }

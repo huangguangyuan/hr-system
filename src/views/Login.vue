@@ -47,8 +47,10 @@ export default {
     return {
       rediredUrl:'',
       formLabelAlign: {
-        user: "testHrAdmin01",
-        pass: "000000"
+        // user: "testHrAdmin01",
+        // pass: "000000"
+        user: "",
+        pass: ""
       },
       rules: {
         user: [{ required: true, message: this.$t('Login.userTip'), trigger: "blur" }],

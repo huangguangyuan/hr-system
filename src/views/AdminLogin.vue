@@ -46,8 +46,10 @@ export default {
   data() {
     return {
       formLabelAlign: {
-        user: "admin",
-        pass: "000000"
+        // user: "admin",
+        // pass: "000000"
+        user: "",
+        pass: ""
       },
       rules: {
         user: [{ required: true, message: this.$t('AdminLogin.userTip'), trigger: "blur" }],
