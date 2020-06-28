@@ -34,7 +34,7 @@
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-if="seachMsg.insuredType==1" v-loading="isShowLoading" :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
+    <el-table v-if="buSelectedLocationType==1" v-loading="isShowLoading" :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
       <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
       <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
       <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
@@ -63,11 +63,6 @@
             icon="el-icon-view"
             @click.stop="openFun(scope.$index, scope.row)"
           >详 细</el-button>
-          <!-- <el-button
-            size="mini"
-            icon="el-icon-tickets"
-            @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
-          >全年工资单</el-button> -->
           <el-button
             size="mini"
             icon="el-icon-document-add"
@@ -86,6 +81,12 @@
             @click.stop="rebuildStaffPayroll(scope.$index, scope.row)"
             v-if="fun_right && genPayrollSlip_right && scope.row.typeId == 2"
           >重新生成工资单</el-button>
+          <!-- <el-button
+            size="mini"
+            icon="el-icon-document-add"
+            @click.stop="openShowPayrollUpdate(scope.$index, scope.row)"
+            v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
+          >重算薪资</el-button> -->
           <el-button
             size="mini"
             icon="el-icon-delete"
@@ -96,7 +97,7 @@
       </el-table-column>
     </el-table>
     
-    <el-table v-if="seachMsg.insuredType==2" v-loading="isShowLoading" :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
+    <el-table v-if="buSelectedLocationType==2" v-loading="isShowLoading" :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
       <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
       <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
       <el-table-column prop="nameChinese" label="姓名" width="100" fixed></el-table-column>
@@ -124,7 +125,20 @@
             size="mini"
             icon="el-icon-more-outline"
             @click.stop="openPayrollTimes(scope.$index, scope.row)"
+            v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >多次出粮</el-button>
+          <el-button
+            size="mini"
+            icon="el-icon-s-operation"
+            @click.stop="openSetMPFKey(scope.$index, scope.row)"
+            v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
+          >调整MPF</el-button>
+          <!-- <el-button
+            size="mini"
+            icon="el-icon-document-add"
+            @click.stop="openShowPayrollUpdate(scope.$index, scope.row)"
+            v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
+          >重算薪资</el-button> -->
           <el-button
             size="mini"
             icon="el-icon-document-add"
@@ -149,11 +163,6 @@
             @click.stop="deleteFun(scope.$index, scope.row)"
             v-if="fun_right && deletePayrollSlip_right && scope.row.typeId != 1"
           >删 除</el-button>
-          <!-- <el-button
-            size="mini"
-            icon="el-icon-tickets"
-            @click.stop="staffPayrollYearFun(scope.$index, scope.row)"
-          >全年工资单</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -196,19 +205,32 @@
         v-on:listenIsShowMask="listenIsShowMask"
       ></bu-payroll-confirm>
     </el-dialog>
-    <!-- 全年工资单 -->
-    <!-- <el-dialog
-      title="全年工资单"
-      :visible.sync="isShowPayrollYear"
+    <!-- MPF缴纳编辑 -->
+    <el-dialog
+      title="MPF缴纳编辑"
+      :visible.sync="isShowMPFEdit"
       :close-on-click-modal="false"
       width="80%"
     >
-      <staff-payroll-year
-        v-if="isShowPayrollYear"
+      <payrollTimEditMPF
+        v-if="isShowMPFEdit"
         :curInfo="curInfo"
         v-on:listenIsShowMask="listenIsShowMask"
-      ></staff-payroll-year>
-    </el-dialog> -->
+      ></payrollTimEditMPF>
+    </el-dialog>
+    <!-- 重算薪资窗口 -->
+    <el-dialog
+      title="重算薪资窗口"
+      :visible.sync="isShowPayrollUpdate"
+      :close-on-click-modal="false"
+      width="80%"
+    >
+      <payrollUpdate
+        v-if="isShowPayrollUpdate"
+        :curInfo="curInfo"
+        v-on:listenIsShowMask="listenIsShowMask"
+      ></payrollUpdate>
+    </el-dialog>    
   </div>
 </template>
 <script>
@@ -217,11 +239,13 @@ import staffPayrollConfirm from "./staffPayrollConfirm.vue";
 import buPayrollConfirm from "./buPayrollConfirm.vue";
 import staffPayrollYear from "./staffPayrollYear.vue";
 import adjAmountEdit from "./adjAmountEdit.vue";
+import payrollTimEditMPF from "./payrollTimEditMPF.vue";
+import payrollUpdate from "./payrollUpdate.vue";
 import {monthList,payrollTimesTypes,insuredTypes,payrollListTypeTxt} from "@/lib/staticData.js";
 import pageInfo from "@/components/pageInfo.vue";
 export default {
   components: {
-    staffPayrollDetail,staffPayrollConfirm,buPayrollConfirm,staffPayrollYear,adjAmountEdit,pageInfo
+    staffPayrollDetail,staffPayrollConfirm,buPayrollConfirm,staffPayrollYear,adjAmountEdit,payrollTimEditMPF,payrollUpdate,pageInfo
   },
   name: "staffPayrollList",
   inject: ["reload"],
@@ -238,8 +262,9 @@ export default {
       isShowAddAccess: false, //是否显示新增页面
       isShowConfirm: false, //是否显示确认工资单
       isShowbuConfirm: false, //是否显示单位确认工资
-      isShowPayrollYear: false, //是否显示全年工资单
       isShowAdjAmountRemarks: false, //是否显示调整金额
+      isShowMPFEdit: false, //是否显示mpf调整窗口
+      isShowPayrollUpdate: false, //是否显示重算薪资窗口
       BUCode:'',
       seachMsg: {
         year: "", //年份
@@ -417,6 +442,22 @@ export default {
         payrollMainInfo: res
       });
     },
+    /**
+     * @description: 打开编辑MPF缴纳窗口
+     */    
+    openSetMPFKey(index, res) {
+      this.curInfo = res;
+      this.curInfo.hrCode = this.hrCode
+      this.isShowMPFEdit = true;
+    },
+    /**
+     * @description: 打开重新薪资窗口
+     */    
+    openShowPayrollUpdate(index, res) {
+      this.curInfo = res;
+      this.curInfo.hrCode = this.hrCode
+      this.isShowPayrollUpdate = true;
+    },
     // 打开详细页面
     openFun(index, res) {
       this.isShowAddAccess = true;
@@ -547,22 +588,13 @@ export default {
       };
       this.isShowbuConfirm = true;
     },
-    // // 获取全年工资信息
-    // staffPayrollYearFun(index, res) {
-    //   this.curInfo = {
-    //     code: res.staffCode,
-    //     year: this.seachMsg.year,
-    //     isShowYear: true
-    //   };
-    //   this.isShowPayrollYear = true;
-    // },
     // 接收子组件发送信息
     listenIsShowMask() {
       this.isShowAddAccess = false;
       this.isShowConfirm = false;
       this.isShowbuConfirm = false;
-      this.isShowPayrollYear = false;
       this.isShowAdjAmountRemarks = false;
+      this.isShowMPFEdit = false;
     },
     searchFun(list, search) {
       let newList = [];

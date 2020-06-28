@@ -7,7 +7,14 @@
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
       <el-table-column sortable prop="nameChinese" label="申请人"></el-table-column>
       <el-table-column sortable prop="deptName" label="部门"></el-table-column>
-      <el-table-column sortable prop="createTime" label="创建日期" width="200"></el-table-column>
+      <el-table-column sortable prop="createTime" label="创建日期" width="200">
+        <template slot-scope="scope">
+          <div class="showTip"  v-show="scope.row.showTip" >
+            <i class="el-icon-alarm-clock"></i><span style="padding-left:10px">{{ scope.row.createTime }}</span>
+          </div>
+          <span v-show="!scope.row.showTip">{{ scope.row.createTime }}</span>
+      </template>
+      </el-table-column>
       <el-table-column sortable prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column sortable prop="totalDay" label="请假天数"></el-table-column>
       <el-table-column sortable prop="totalAmount" label="应扣金额"></el-table-column>
@@ -65,8 +72,10 @@ export default {
       return {filter:this.filter};
     },
     tableData(){
+      const timestamp = Date.parse(new Date());
       return this.pageList.map(item => {
-        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.showTip = timestamp - Date.parse(new Date(item.createTime)) >= 2592000000
+        item.createTime = this.$toolFn.timeFormat(item.createTime,'yyyy-MM-dd hh:mm');
         item.isBalanceTxt = item.isBalance == 1?'是':'否';
         item.isWithpayTxt = item.isWithpay == 1?'是':'否';
         return item;
@@ -116,6 +125,9 @@ export default {
 </script>
 <style scoped lang="scss">
 .title-h5{font-size: 22px;font-weight: 500;}
+.showTip{
+  color: #ff0000;
+}
 </style>
 
 

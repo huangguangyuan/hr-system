@@ -162,7 +162,7 @@
       <el-table-column label="操作" width="500px">
         <template slot-scope="scope">
           <!-- 编辑账户 -->
-          <el-button v-if="userRight" size="mini" icon="el-icon-edit" @click="modifyAccountFun(scope.row.code)">编辑账号</el-button>
+          <el-button v-if="userRight" size="mini" icon="el-icon-edit" @click="modifyAccountFun(scope.row.code)">编辑帐号</el-button>
           <!-- 编辑 -->
           <el-button v-if="userRight" size="mini" icon="el-icon-edit" @click="modifyFun(scope.$index, scope.row)">编辑</el-button>
           <!-- 是否在职 -->
@@ -216,7 +216,7 @@
         <el-button type="primary" @click='changeState'>确 定</el-button>
       </div>
     </el-dialog>
-    <!-- 编辑账号 -->
+    <!-- 编辑帐号 -->
     <el-dialog title="账户信息" :visible.sync="isShowAccountState">
       <el-form label-width="170px" size="mini">
       <el-form-item label="登录账户" prop="account" >
@@ -262,7 +262,7 @@ export default {
       isShowLoading: false, //是否显示loading页
       isShowAddAccess: false, //是否显示新增页面
       isShowState: false, //是否显示状态
-      isShowAccountState:false,//是否显示账号信息
+      isShowAccountState:false,//是否显示帐号信息
       avatarDefault:require("@/assets/images/avatar.png"), //默认头像
       accountInfo:{},
       HRadminList:[],//管理员列表
@@ -357,7 +357,7 @@ export default {
       this.curInfo.type = "modify";
       this.isShowAddAccess = true;
     },
-    //提交账号修改
+    //提交帐号修改
     subAccount() {
       var reqUrl = '/server/api/v1/staff/account/update';
       var data = {
@@ -376,7 +376,7 @@ export default {
         }
       })
     },    
-    //编辑账号
+    //编辑帐号
     modifyAccountFun(code) {
       var reqUrl = '/server/api/v1/staff/account';
       var data = {

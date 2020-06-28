@@ -48,7 +48,7 @@ export default {
       },
       rules: {
         account: [
-          { required: true, message: "请输入账号名", trigger: "blur" },
+          { required: true, message: "请输入帐号名", trigger: "blur" },
           { min: 3, max: 15, message: "长度在 3 到 15 个字符", trigger: "blur" }
         ],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
@@ -124,7 +124,7 @@ export default {
         }
       })
     },
-    // 新增客户管理员子账号
+    // 新增客户管理员子帐号
     addCustomerFn(){
       var reqUrl = '/server/api/v1/admin/client/childrenAdd';
       var data = {

@@ -123,6 +123,7 @@ export default {
       var regionBUs = await this.$myApi.regionBUs({ isCache: true });
       if (regionBUs && regionBUs.length > 0) {
         this.regionBUlist = regionBUs;
+        this.buSelectedLocationType = this.regionBUlist.find(f=>{return f.code === this.BUCodeSelected }).locationType;
       }
     },
     // 打开详细页面
@@ -139,7 +140,10 @@ export default {
       handler: function(newVal,oldVal) {
         this.pageInfo.reqParams.isReq = true;
         this.$refs.pageInfo.getData(this.pageInfo);
-        this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.code === newVal })[0].locationType;
+        if (this.regionBUlist.length > 0){
+          this.buSelectedLocationType = this.regionBUlist.find(f=>{return f.code === newVal }).locationType;
+        }
+        
       }
     },
     "filter.searchKey":{

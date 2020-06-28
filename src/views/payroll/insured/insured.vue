@@ -20,7 +20,7 @@
           <span>{{tableData.id}}</span>
         </li> -->
         <li>
-          <span>社保账号：</span>
+          <span>社保帐号：</span>
           <span>{{tableData.SIAccount}}</span>
         </li>
         <li>
@@ -36,7 +36,7 @@
           <span>{{tableData.SIBase}}</span>
         </li>
         <li>
-          <span>公积金账号：</span>
+          <span>公积金帐号：</span>
           <span>{{tableData.HCAccount}}</span>
         </li>
         <li>
@@ -70,18 +70,18 @@
       </ul>
       <el-divider v-if="tableData.SISchemeDetail">{{tableData.SISchemeDetail.name}}</el-divider>
       <el-table :data="schemeSIList" stripe v-if="tableData.SISchemeDetail">
-        <el-table-column prop="id" label="id"></el-table-column>
+        <!-- <el-table-column prop="id" label="id"></el-table-column> -->
         <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
-        <el-table-column prop="baseLower" label="基数下线"></el-table-column>
+        <el-table-column prop="baseLower" label="基数下限"></el-table-column>
         <el-table-column prop="paymentRatio" label="缴纳比例"></el-table-column>
         <el-table-column prop="typeIdTxt" label="类 型"></el-table-column>
         <el-table-column prop="paymentIdTxt" label="缴纳对象"></el-table-column>
       </el-table>
       <el-divider v-if="tableData.HCSchemeDetail">{{tableData.HCSchemeDetail.name}}</el-divider>
       <el-table v-if="tableData.HCSchemeDetail" :data="schemeHCList" stripe>
-        <el-table-column prop="id" label="id"></el-table-column>
+        <!-- <el-table-column prop="id" label="id"></el-table-column> -->
         <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
-        <el-table-column prop="baseLower" label="基数下线"></el-table-column>
+        <el-table-column prop="baseLower" label="基数下限"></el-table-column>
         <el-table-column prop="paymentRatio" label="缴纳比例"></el-table-column>
         <el-table-column prop="paymentIdTxt" label="缴纳对象"></el-table-column>
       </el-table>

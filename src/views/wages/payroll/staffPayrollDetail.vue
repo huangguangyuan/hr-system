@@ -34,11 +34,14 @@
       </el-col>
       <el-col :span="8" v-if="MPFList && MPFList.length > 0">
         <el-card shadow="always">MPF应扣总额：-{{details.detail.MPFAmount}}</el-card>
+      </el-col>
+      <el-col :span="8" v-if="specialDeductionList && specialDeductionList.length > 0">
+        <el-card shadow="always">专项附加扣除：-{{details.detail.specialDeductionAmount}}</el-card>
       </el-col>      
       <el-col :span="8" v-if="details.grossPay && details.grossPay != 0">
         <el-card shadow="always">税前金额：{{details.grossPay}}</el-card>
       </el-col>
-      <el-col :span="8" v-if="details.taxableWages && details.taxableWages != 0">
+      <el-col :span="8">
         <el-card shadow="always">应税金额：{{details.taxableWages}}</el-card>
       </el-col>
       <el-col :span="8" v-if="details.taxAmount && details.taxAmount != 0">

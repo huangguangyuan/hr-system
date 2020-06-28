@@ -122,7 +122,7 @@ export default {
       if (this.holidayItem.fileSrc && this.holidayItem.fileSrc != ''){
         this.fileList = this.holidayItem.fileSrc.split(',');
       }
-      this.holidayItem.createTime = this.$toolFn.timeFormat(this.holidayItem.createTime);
+      this.holidayItem.createTime = this.$toolFn.timeFormat(this.holidayItem.createTime,"yyyy-MM-dd hh:mm");
       this.holidayItem.isWithpayTxt = this.holidayItem.isWithpay == 1?'是':'否';
       this.tableData = this.holidayItem.details.map(item => {
         item.startDate = this.$toolFn.timeFormat(item.startDate);

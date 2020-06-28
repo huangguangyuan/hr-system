@@ -1,3 +1,4 @@
+
 import {lazy} from './lazyLoading'
 /**
  * 拼接动态路由
@@ -11,10 +12,12 @@ function toRoutes(routerList,routeHideList, sysMenuList) {
             var sysMenuNode = sysMenuList[i];
             if (sysMenuNode.isMenu == 1) {
                 var code=sysMenuNode.rightCode;
+                var sysRouter = lazy(code);
                 var routeNode = {
                     name: sysMenuNode.name,
                     path: '/' + code,
-                    component: lazy(code),
+                    meta:sysRouter.meta,
+                    component: sysRouter.component,
                     children:[]
                 };
                 //子节点存在

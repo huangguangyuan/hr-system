@@ -15,7 +15,7 @@
       <el-divider>基础信息</el-divider>
       <ul class="infoList">
         <li>
-          <span>MPF账号：</span>
+          <span>MPF帐号：</span>
           <span>{{tableData.account}}</span>
         </li>
         <li>
@@ -27,9 +27,9 @@
           <span>{{tableData.serviceProviderName}}</span>
         </li>
         <li>
-          <span>缴纳信息：</span>
+          <span>自愿缴纳：</span>
           <span>{{tableData.mpfVoluntarily > 1?tableData.mpfVoluntarily + " 港元":tableData.mpfVoluntarily * 100 + " %"}}</span>
-        </li>        
+        </li>
         <li>
           <span>缴纳日期：</span>
           <span>{{tableData.contributionDate}}</span>
@@ -45,9 +45,9 @@
       </ul>
       <el-divider>{{tableData.MPFSchemeDetail.name}}</el-divider>
       <el-table :data="schemeMPFList" stripe>
-        <el-table-column prop="id" label="id"></el-table-column>
+        <!-- <el-table-column prop="id" label="id"></el-table-column> -->
         <el-table-column prop="baseUpper" label="基数上限"></el-table-column>
-        <el-table-column prop="baseLower" label="基数下线"></el-table-column>
+        <el-table-column prop="baseLower" label="基数下限"></el-table-column>
         <el-table-column prop="paymentRatio" label="缴纳比例"></el-table-column>
         <el-table-column prop="paymentIdTxt" label="缴纳对象"></el-table-column>
       </el-table>

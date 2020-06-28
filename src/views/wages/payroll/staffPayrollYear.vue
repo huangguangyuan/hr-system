@@ -89,23 +89,24 @@
       </el-table-column>
       <el-table-column prop="month" label="月份" ></el-table-column>
       <el-table-column prop="totalAmount" label="税前金额"></el-table-column>
-      <el-table-column prop="totalAmountSum" label="累计税前金额"></el-table-column>
+      <!-- <el-table-column prop="totalAmountSum" label="累计税前金额"></el-table-column> -->
       <el-table-column prop="SHAmount" label="专项扣除"></el-table-column>
-      <el-table-column prop="SHAmountSum" label="累计专项扣除"></el-table-column>
-      <!-- <el-table-column prop="specialDeductionAmount" label="专项附加"></el-table-column>
-      <el-table-column prop="specialDeductionAmountSum" label="累计专项附加"></el-table-column> -->
+      <!-- <el-table-column prop="SHAmountSum" label="累计专项扣除"></el-table-column> -->
+      <el-table-column prop="grossPay" label="税前工资"></el-table-column>
+      <el-table-column prop="specialDeductionAmount" label="专项附加"></el-table-column>
+      <!-- <el-table-column prop="specialDeductionAmountSum" label="累计专项附加"></el-table-column> -->
       <!-- <el-table-column prop="taxThreshold" label="起征点"></el-table-column>
       <el-table-column prop="taxThresholdSum" label="累计起征点"></el-table-column>      -->
       <el-table-column prop="taxableWages" label="应税金额"></el-table-column>
-      <el-table-column prop="taxableWagesSum" label="累计应税金额"></el-table-column> 
+      <!-- <el-table-column prop="taxableWagesSum" label="累计应税金额"></el-table-column>  -->
       <!-- <el-table-column prop="buName" label="所在单位"></el-table-column> -->
       <!-- <el-table-column prop="salary" label="基础工资"></el-table-column> -->
-      <!-- <el-table-column prop="claimAmount" label="报销金额"></el-table-column> -->
-      <!-- <el-table-column prop="taxableWages" label="应税金额"></el-table-column> -->
+      <el-table-column prop="claimAmount" label="报销金额"></el-table-column>
+      <el-table-column prop="taxableWages" label="应税金额"></el-table-column>
       <el-table-column prop="taxAmount" label="个人所得税"></el-table-column>
-      <el-table-column prop="taxAmountSum" label="累计个人所得税"></el-table-column>
+      <!-- <el-table-column prop="taxAmountSum" label="累计个人所得税"></el-table-column> -->
       <el-table-column prop="netAmount" label="税后工资"></el-table-column>
-      <el-table-column prop="netAmountSum" label="累计税后工资"></el-table-column>
+      <!-- <el-table-column prop="netAmountSum" label="累计税后工资"></el-table-column> -->
       <el-table-column prop="reallyAmount" label="实发工资"></el-table-column>
       <el-table-column prop="reallyAmountSum" label="累计实发工资"></el-table-column>
     </el-table>
@@ -165,7 +166,7 @@ export default {
         if(item.specialDeductionList){
           item.specialDeductionList.map(nodes => {
             nodes.statusTxt = nodes.status == 1 ? "生效" : "未生效";
-            item.typeIdTxt = deductionTypeTxt(item.typeId);
+            nodes.typeIdTxt = deductionTypeTxt(nodes.typeId);
             return nodes;
           });
         }

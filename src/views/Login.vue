@@ -45,9 +45,12 @@ export default {
   name: "login",
   data() {
     return {
+      rediredUrl:'',
       formLabelAlign: {
-        user: "testHrAdmin01",
-        pass: "000000"
+        // user: "testHrAdmin01",
+        // pass: "000000"
+        user: "",
+        pass: ""
       },
       rules: {
         user: [{ required: true, message: this.$t('Login.userTip'), trigger: "blur" }],
@@ -55,6 +58,9 @@ export default {
       },
       temporaryData: sidebarInfo
     };
+  },
+  mounted(){
+    this.rediredUrl = this.$toolFn.getQueryString('redirect')
   },
   created () {
     /**
@@ -100,7 +106,6 @@ export default {
             navTabs: []
           });
           this.$toolFn.localSet("userInfo", res.data.data.data);
-          
           var sidebar = res.data.data.data.menuList.map(item => {
             item.id = item.id.toString();
             return item;
@@ -113,7 +118,11 @@ export default {
               if (userInfo.roleTypeId == 1){
                 this.$router.replace({ path: "/applyMain" });
               }else{
-                this.$router.replace({ path: "/home" });
+                if (this.rediredUrl && this.rediredUrl !==''){
+                  this.$router.replace({ path: this.rediredUrl });
+                }else{
+                  this.$router.replace({ path: "/home" });
+                }
               }
             })
         } else {

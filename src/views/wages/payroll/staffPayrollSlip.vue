@@ -1,5 +1,5 @@
 <template>
-  <div class="staffPayrollSlip wrap">
+  <div class="staffPayrollSlip wrap"  id="monthPayroll">
     <!-- 搜索 -->
     <div class="search-wrap">
       <el-date-picker
@@ -183,8 +183,10 @@
   </div>
 </template>
 <script>
+
 import staffPayrollYear from "./staffPayrollYear.vue";
 import {monthList} from "@/lib/staticData.js";
+import {createPdf,createImgToPrint} from '@/lib/htmlToPDF'
 export default {
   name: "staffPayrollSlip",
   inject: ["reload"],
@@ -273,21 +275,31 @@ export default {
     },
     // 打印
     doPrint() {
-      var bdhtml = window.document.body.innerHTML;
-      var sprnstr = "<!--startprint-->";
-      var eprnstr = "<!--endprint-->";
-      var prnhtml = bdhtml.substr(bdhtml.indexOf(sprnstr) + 17);
-      prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr));
-      window.document.body.innerHTML = prnhtml;
-      window.print();
-      window.document.body.innerHTML=bdhtml; 
+      // printJS({
+      //   printable: 'monthPayroll',// 标签元素id
+      //   type: 'html',
+      //   header: '这是标题'})
+      // var bdhtml = window.document.body.innerHTML;
+      // var sprnstr = "<!--startprint-->";
+      // var eprnstr = "<!--endprint-->";
+      // var prnhtml = bdhtml.substr(bdhtml.indexOf(sprnstr) + 17);
+      // prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr));
+      // window.document.body.innerHTML = prnhtml;
+      // console.log(prnhtml)
+      // window.print();
+      // window.document.body.innerHTML = bdhtml; 
+      var data = {
+        title:this.tableData.name.val,
+        bdhtml: document.querySelector('#monthPayrollData')
+      }
+      createImgToPrint(data);
     },
     creatPdf() {
       var data = {
         title:this.tableData.name.val,
         bdhtml: document.querySelector('#monthPayrollData')
       }
-      this.getPdf(data);
+      createPdf(data);
     }
   },
   computed: {},

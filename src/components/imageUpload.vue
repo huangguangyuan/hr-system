@@ -1,3 +1,4 @@
+
 <template>
     <el-upload
       class="image-uploader"
@@ -8,6 +9,7 @@
     >
       <el-image v-if="imageSrc != ''" :src="activeImage == ''?imageSrc:activeImage" class="image-uploader-cover" fit="cover"></el-image>
       <i v-else class="el-icon-plus image-uploader-icon"></i>
+      <div slot="tip" class="el-upload__tip">上传文件格式为：'.jpg','.png','.gif'，附件最大容量10M</div>
     </el-upload>
 </template>
 <script>

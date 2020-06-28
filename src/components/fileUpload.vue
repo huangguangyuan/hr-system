@@ -13,11 +13,10 @@
           :on-exceed="handleExceed"
           :before-upload="beforeAvatarUpload"
           :data="dataFiles"
-          :on-progress="onProgress"
 
         >
           <el-button plain>点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">上传文件格式为：'.jpg','.png','.gif','.csv','.csv','.xlsx','.xls','.docx','.doc','.pdf'</div>
+          <div slot="tip" class="el-upload__tip">上传文件格式为：'.jpg','.png','.gif','.csv','.csv','.xlsx','.xls','.docx','.doc','.pdf'，附件最大容量10M</div>
         </el-upload>
       </el-form-item>
 </template>
@@ -39,8 +38,6 @@ export default {
     this.fileList = this.fileUpload_props.fileList;
   },
   methods:{
-      onProgress(event, file, fileList){
-      },
       handlePreview(file){
         this.$toolFn.openWindown(file.url);
         // let a = document.createElement('a')

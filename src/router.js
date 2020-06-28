@@ -1,3 +1,4 @@
+
 import Vue from 'vue'
 import Router from 'vue-router'
 
@@ -27,6 +28,4 @@ let routers = new Router({
     },
   ]
 });
-
-
 export default routers;

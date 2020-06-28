@@ -64,7 +64,7 @@ export default {
     },
     tableData(){
       return this.pageList.map(item => {
-        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.createTime = this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd hh:mm");
         item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
         return item;
       });

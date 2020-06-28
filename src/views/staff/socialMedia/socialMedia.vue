@@ -8,7 +8,7 @@
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="media" label="媒体名称"></el-table-column>
-      <el-table-column prop="account" label="媒体账号"></el-table-column>
+      <el-table-column prop="account" label="媒体帐号"></el-table-column>
       <el-table-column prop="remarks" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px" v-if="userRight">
         <template slot-scope="scope">

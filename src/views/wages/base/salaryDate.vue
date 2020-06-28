@@ -53,7 +53,7 @@
       <el-divider  v-if="staffInsuredInfoMPF">MPF数据</el-divider>
       <el-row :gutter="12" v-if="staffInsuredInfoMPF">
         <el-col :span="8">
-          <el-card shadow="always">社保账号：{{staffInsuredInfoMPF.account}}</el-card>
+          <el-card shadow="always">社保帐号：{{staffInsuredInfoMPF.account}}</el-card>
         </el-col>
         <el-col :span="8">
           <el-card shadow="always">缴纳信息：{{staffInsuredInfoMPF.mpfVoluntarily > 1?staffInsuredInfoMPF.mpfVoluntarily + " 港元":staffInsuredInfoMPF.mpfVoluntarily * 100 + " %"}}</el-card>
@@ -159,7 +159,7 @@ export default {
           this.msg.expensesClaimList.map(item => {
             item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
             item.balanceMonTxt= item.balanceMon + "月";
-            item.createTime = this.$toolFn.timeFormat(item.createTime);
+            item.createTime = this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd hh:mm");
             return item;
           });
           if(this.msg.payrollSpecialDeductionList){
@@ -179,7 +179,7 @@ export default {
                 return child.typeId == item.detailTypeId;
             })[0].val;
             item.balanceMonTxt= item.balanceMon + "月";
-            item.createTime = this.$toolFn.timeFormat(item.createTime);
+            item.createTime = this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd hh:mm");
             item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
             
           });

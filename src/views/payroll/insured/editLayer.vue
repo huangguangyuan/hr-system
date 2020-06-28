@@ -1,7 +1,7 @@
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px">
-      <el-form-item label="社保账号：" prop="SIAccount">
+      <el-form-item label="社保帐号：" prop="SIAccount">
         <el-input v-model="ruleForm.SIAccount"></el-input>
       </el-form-item>
       <el-form-item label="该地社保首次购买社保：" prop="SICityFirst">
@@ -85,7 +85,7 @@ export default {
     return {
       ruleForm: {
         staffCode: "", //员工代码
-        SIAccount: "", //社保账号
+        SIAccount: "", //社保帐号
         SICityFirst: "", //该地社保首次购买社保
         SISchemeCode: "", //社保缴费方案Code
         SIBase: "", //社保基数
@@ -103,7 +103,7 @@ export default {
       schemeHCList: [], //公积金方案列表
       rules: {
         SIAccount: [
-          { required: true, message: "请输入社保账号", trigger: "blur" }
+          { required: true, message: "请输入社保帐号", trigger: "blur" }
         ],
         SICityFirst: [
           {

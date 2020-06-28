@@ -93,7 +93,7 @@ export default {
       }
       // 审批流程
       this.approveHisList = this.curInfo.approveHis.map(item => {
-        item.createTime = this.$toolFn.timeFormat(item.createTime);
+        item.createTime = this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd hh:mm");
         item.finishFlagTxt = item.finishFlag == 0?'否':'是';
         item.typeIdTxt = approveHisTypeTxt(item.typeId);
         if (item.typeId == 100){
