@@ -124,20 +124,20 @@ export default {
           this.balanceOfficer = this.balanceOfficerList.map(m => m.code);
           this.noticeOfficerList = res.data.data.noticeOfficerList;
           this.noticeOfficer = this.noticeOfficerList.map(m => m.code);
-          for (let index = 0; index < this.approveOfficerList.length; index++) {
-            const element = this.approveOfficerList[index];
-            if (this.noticeOfficer.indexOf(element.code) < 0){
-              this.noticeOfficerList.push(element);
-              this.noticeOfficer.push(element.code);
-            }
-          }
-          for (let index = 0; index < this.balanceOfficerList.length; index++) {
-            const element = this.balanceOfficerList[index];
-            if (this.noticeOfficer.indexOf(element.code) < 0){
-              this.noticeOfficerList.push(element);
-              this.noticeOfficer.push(element.code);
-            }
-          }
+          // for (let index = 0; index < this.approveOfficerList.length; index++) {
+          //   const element = this.approveOfficerList[index];
+          //   if (this.noticeOfficer.indexOf(element.code) < 0){
+          //     this.noticeOfficerList.push(element);
+          //     this.noticeOfficer.push(element.code);
+          //   }
+          // }
+          // for (let index = 0; index < this.balanceOfficerList.length; index++) {
+          //   const element = this.balanceOfficerList[index];
+          //   if (this.noticeOfficer.indexOf(element.code) < 0){
+          //     this.noticeOfficerList.push(element);
+          //     this.noticeOfficer.push(element.code);
+          //   }
+          // }
           this.noticeOfficer = [];
 
         }

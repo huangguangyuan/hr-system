@@ -232,7 +232,7 @@
           <el-radio label="2">自定义日期结算</el-radio>
         </el-radio-group>
       </el-form-item> -->
-      <el-form-item label="年假清空日期：" prop="annualLeaveWriteOffDate" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
+      <el-form-item label="年假清空日期：" prop="annualLeaveWriteOffDate" >
           <el-date-picker
             v-model="ruleForm.annualLeaveWriteOffDate"
             type="date"
@@ -241,10 +241,10 @@
             value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
-      <el-form-item label="年假清空后可保留天数：" prop="annualLeaveRetain" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
+      <el-form-item label="年假清空后可保留天数：" prop="annualLeaveRetain" >
         <el-input v-model="ruleForm.annualLeaveRetain"></el-input>
       </el-form-item>
-      <el-form-item label="可保留天数清空日期：" prop="annualLeaveRetainClearDate" v-if="ruleForm.annualLeaveWriteOffMethod == 2">
+      <el-form-item label="可保留天数清空日期：" prop="annualLeaveRetainClearDate" >
           <el-date-picker
             v-model="ruleForm.annualLeaveRetainClearDate"
             type="date"
@@ -389,7 +389,9 @@ export default {
         fringeBeneiftLimit:"",
         annualLeave:0,
         annualLeaveRetain:0,
-        companyPhone:""
+        companyPhone:"",
+        annualLeaveRetainClearDate:'',
+        annualLeaveWriteOffDate:''
       }, //表单信息
       avatarSrc: "", //头像路径
       IDPositiveSrc: "", //身份证正面
@@ -567,7 +569,7 @@ export default {
         this.IDCopy_props.imageSrc = this.ruleForm.IDCopy;
         this.IDCopyBack_props.imageSrc = this.ruleForm.IDCopyBack;
         this.getDepartment(this.ruleForm.BUCode);
-        this.getAnnualLeave(this.curInfo.BUCode);
+        // this.getAnnualLeave(this.curInfo.BUCode);
       }
     },
     
@@ -644,15 +646,15 @@ export default {
         hrCode: this.ruleForm.hrCode,
         staffNo: this.ruleForm.staffNo,
       };
-      if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveWriteOffDate == ""){
+      if (this.ruleForm.annualLeaveWriteOffDate == ""){
         this.$message.error("年假清空日期不能为空");
         return false;
       }
-      if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveRetain == undefined){
+      if (this.ruleForm.annualLeaveRetain == undefined){
         this.$message.error("请填写年假清空后可保留天数");
         return false;
       }
-      if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveRetainClearDate == ""){
+      if (this.ruleForm.annualLeaveRetainClearDate == ""){
         this.$message.error("请填写可保留天数清空日期");
         return false;
       }
@@ -732,15 +734,15 @@ export default {
         departmentCode:this.ruleForm.departmentCode,
         workStatus: parseInt(this.ruleForm.workStatus)
       };
-      if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveWriteOffDate == ""){
+      if (this.ruleForm.annualLeaveWriteOffDate == ""){
         this.$message.error("年假结算日期不能为空");
         return false;
       }
-      if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveRetain == undefined){
+      if (this.ruleForm.annualLeaveRetain == undefined){
         this.$message.error("请填写年假清空后可保留天数");
         return false;
       }
-      if (this.ruleForm.annualLeaveWriteOffMethod == 2 && this.ruleForm.annualLeaveRetainClearDate == ""){
+      if (this.ruleForm.annualLeaveRetainClearDate == ""){
         this.$message.error("请填写可保留天数清空日期");
         return false;
       }
@@ -769,7 +771,7 @@ export default {
     handleChange(val) {
       this.getDepartment(val[2]);
       this.getHRadminList(val[2]);
-      this.getAnnualLeave(val[2]);
+      // this.getAnnualLeave(val[2]);
     },
     // 获取部门列表
     getDepartment(val) {
@@ -819,7 +821,6 @@ export default {
           }
         });
       }
-
     },
     // 获取HR管理员列表
     getHRadminList(val){

@@ -16,8 +16,8 @@ function toRoutes(routerList,routeHideList, sysMenuList) {
                 var routeNode = {
                     name: sysMenuNode.name,
                     path: '/' + code,
-                    meta:sysRouter.meta,
-                    component: sysRouter.component,
+                    meta:sysRouter ? sysRouter.meta : {},
+                    component: sysRouter ? sysRouter.component : {},
                     children:[]
                 };
                 //子节点存在
