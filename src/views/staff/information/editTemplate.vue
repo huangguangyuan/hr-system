@@ -602,7 +602,7 @@ export default {
         nameEnglish: this.ruleForm.nameEnglish,
         gender: this.ruleForm.gender,
         photo: this.ruleForm.photo,
-        dateOfBirth: this.ruleForm.dateOfBirth,
+        dateOfBirth: this.ruleForm.dateOfBirth  || ' ',
         address: this.ruleForm.address,
         mobile: this.ruleForm.mobile,
         mobileCountryCode: this.ruleForm.mobileCountryCode,
