@@ -1,6 +1,7 @@
 <template>
   <div class="leaves">
     <div class="addBtn-wrap" v-if="userRight">
+      <el-button type="primary" @click="getBUAnnualLeaveToStaff">配置年假</el-button>
       <el-button type="primary" @click="addFun">添 加</el-button>
       <el-button type="danger" @click='handleDeleteAll'>删除所有</el-button>
     </div>
@@ -9,6 +10,15 @@
       <el-table-column sortable prop="applyDate" label="变动日期"></el-table-column>
       <el-table-column prop="applyDay" label="变动天数"></el-table-column>
       <el-table-column prop="remarks" label="内容"></el-table-column>
+      <el-table-column label="操作" fixed="right" width="200px">
+        <template slot-scope="scope">
+          <el-button 
+            size="mini"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.$index, scope.row)"
+          >删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 分页编码 -->
     <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
@@ -116,7 +126,45 @@ export default {
               }
             });
         })
-    }
+    },
+    /**
+     * @description: 删除一条
+     */    
+    handleDelete(index, res) {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提 示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          this.$myApi.http.post("/server/api/v1/staff/holidaysApply/staffLeaves/deleteLeave", { id: Number.parseInt(res.id)}).then(res => {
+              if (res.data.code == 0){
+                this.reload();
+                this.$message.success("删除成功！");
+              }else{
+                this.$message.error("删除失败，请联系管理员。");
+              }
+            });
+        })
+    },
+    /**
+     * @description: 删除一条
+     */    
+    getBUAnnualLeaveToStaff() {
+      this.$confirm("是否将单位年假配置应用到员工?", "提 示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          this.$myApi.http.post("/server/api/v1/staff/holidaysApply/staffLeaves/getBUAnnualLeaveToStaff", { staffCode:this.staffInfo.code}).then(res => {
+              if (res.data.code == 0){
+                this.reload();
+                this.$message.success("配置成功！");
+              }else{
+                this.$message.error("配置失败，请联系管理员。");
+              }
+            });
+        })
+    },
   }
 };
 </script>
