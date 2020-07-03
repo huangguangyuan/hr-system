@@ -81,12 +81,12 @@
             @click.stop="rebuildStaffPayroll(scope.$index, scope.row)"
             v-if="fun_right && genPayrollSlip_right && scope.row.typeId == 2"
           >重新生成工资单</el-button>
-          <!-- <el-button
+          <el-button
             size="mini"
             icon="el-icon-document-add"
             @click.stop="openShowPayrollUpdate(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
-          >重算薪资</el-button> -->
+          >重算薪资</el-button>
           <el-button
             size="mini"
             icon="el-icon-delete"
@@ -133,12 +133,12 @@
             @click.stop="openSetMPFKey(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >调整MPF</el-button>
-          <!-- <el-button
+          <el-button
             size="mini"
             icon="el-icon-document-add"
             @click.stop="openShowPayrollUpdate(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
-          >重算薪资</el-button> -->
+          >重算薪资</el-button>
           <el-button
             size="mini"
             icon="el-icon-document-add"
@@ -595,6 +595,7 @@ export default {
       this.isShowbuConfirm = false;
       this.isShowAdjAmountRemarks = false;
       this.isShowMPFEdit = false;
+      this.isShowPayrollUpdate = false;
     },
     searchFun(list, search) {
       let newList = [];
