@@ -18,6 +18,9 @@ let routers = new Router({
     {
       path: '/hr',
       name: 'login',
+      meta: {
+        title: 'PSS-Staff'
+      },
       component: resolve => require(['@/views/Login.vue'], resolve),
     },
     // 404

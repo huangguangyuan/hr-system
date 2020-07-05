@@ -351,12 +351,12 @@ export default {
     InitializationFun() {
       var date = new Date();
       this.seachMsg.year = date.getFullYear().toString();
-      this.seachMsg.month = (date.getMonth() + 1).toString();
+      // this.seachMsg.month = (date.getMonth() + 1).toString();
       if (this.$toolFn.sessionGet("staffPayrollListSearch")) {
           this.BUCode = this.$toolFn.sessionGet("staffPayrollListSearch").BUCode || this.BUCode;
           this.seachMsg.year = this.$toolFn.sessionGet("staffPayrollListSearch").year || this.seachMsg.year;
-          this.seachMsg.month = this.$toolFn.sessionGet("staffPayrollListSearch").month || this.seachMsg.month;
-          //this.seachMsg.insuredType = this.$toolFn.sessionGet("staffPayrollListSearch").insuredType || this.seachMsg.insuredType;
+          // this.seachMsg.month = this.$toolFn.sessionGet("staffPayrollListSearch").month || this.seachMsg.month;
+          // this.seachMsg.insuredType = this.$toolFn.sessionGet("staffPayrollListSearch").insuredType || this.seachMsg.insuredType;
           this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
       }
       this.getRegionBU();

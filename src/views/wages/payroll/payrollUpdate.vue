@@ -68,12 +68,12 @@ export default {
       data.hrCode = this.curInfo.hrCode;
       data.code = this.ruleForm.code;
       this.$myApi.http.post(reqUrl, data).then(res => {
-        if (res.code === 0) {
+        if (res.data.code === 0) {
           this.reload();
-          if (res.data.msg != ""){
+          if (res.data.msg){
             this.$message.error(res.data.msg);
           }else{
-            this.$message.success("操作成功" + res.data.msg);
+            this.$message.success("操作成功");
           }
         } else {
           this.$message.error(res.data.msg);
