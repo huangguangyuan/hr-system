@@ -102,7 +102,7 @@
             <template slot="header">{{item.name}}</template>
             <template slot-scope="scope">{{scope.row.buClaimsItems[index].val}}</template>
           </el-table-column>
-          <el-table-column sortable prop="claimAmount" label="不应税报销合计" width="150"></el-table-column>
+          <!-- <el-table-column sortable prop="claimAmount" label="不应税报销合计" width="150"></el-table-column> -->
           <el-table-column  v-for="(item,index) in dataList[0].notTaxableItems" :key="index" width="160">
             <template slot="header">{{item.name}}</template>
             <template slot-scope="scope">{{scope.row.notTaxableItems[index].val}}</template>
@@ -113,6 +113,7 @@
         <el-table-column sortable prop="adjAmount" label="调整金额" width="120"></el-table-column>
         <el-table-column sortable prop="SIAmount" label="社保扣除" width="120"></el-table-column>
         <el-table-column sortable prop="HCAmount" label="公积金扣除" width="130"></el-table-column>
+        <el-table-column sortable prop="claimAmount" label="报销合计" width="150"></el-table-column>
         <el-table-column sortable prop="remarks" label="备注" width="250"></el-table-column>
       </el-table>
     </div>

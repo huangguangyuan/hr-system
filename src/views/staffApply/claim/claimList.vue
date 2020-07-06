@@ -7,7 +7,9 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
       <el-table-column sortable prop="createTime" label="申请时间"></el-table-column>
-      <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column sortable prop="typeIdTxt" label="报销类型"></el-table-column>
+      <el-table-column sortable prop="claimDate" label="报销日期"></el-table-column>
+      <!-- <el-table-column sortable prop="statusTxt" label="状态"></el-table-column> -->
       <el-table-column sortable prop="totalAmount" label="结算金额"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
@@ -50,6 +52,7 @@ export default {
   data() {
     return {
       //tableData: [],
+      claimTypes:[],
       pageList:[],
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
@@ -65,14 +68,22 @@ export default {
     tableData(){
       return this.pageList.map(item => {
         item.createTime = this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd hh:mm");
+        item.claimDate = this.$toolFn.timeFormat(item.details[0].claimDate,"yyyy-MM-dd");
         item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
+        item.typeIdTxt = this.claimTypes.find(child => {
+          return child.id == item.details[0].typeId;
+        }).name;
         return item;
       });
     }
   },
   mounted() {
+    this.init()
   },
   methods: {
+    async init(){
+      this.claimTypes = await this.$myApi.getBUClaimType();
+    },
     // 接收子组件发送信息
     listenIsShowMask(res) {
       this.isShowAddAccess = false;
@@ -102,7 +113,6 @@ export default {
               }else{
                 this.$message.error(res.data.msg);
               }
-              
             });
         })
     },

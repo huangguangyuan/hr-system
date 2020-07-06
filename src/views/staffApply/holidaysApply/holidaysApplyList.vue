@@ -7,8 +7,10 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
       <el-table-column sortable prop="createTime" label="申请时间" width="200"></el-table-column>
-      <el-table-column sortable prop="totalDay" label="请假天数"></el-table-column>
-      <el-table-column sortable prop="totalAmount" label="扣除金额"></el-table-column>
+      <el-table-column sortable prop="typeIdTxt" label="假期类型" width="150"></el-table-column>
+      <el-table-column sortable prop="startDate" label="开始时间" width="200"></el-table-column>
+      <el-table-column sortable prop="endDate" label="结束时间" width="200"></el-table-column>
+      <el-table-column sortable prop="totalDay" label="请假天数" width="120"></el-table-column>
       <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300px">
@@ -52,6 +54,7 @@ export default {
   props: ["staffCode_props"],
   data() {
     return {
+      holidayTypes:[],
       pageList:[],
       curInfo: {},
       isShowAddAccess: false, //是否显示新增权限页面
@@ -69,13 +72,22 @@ export default {
         item.createTime = this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd hh:mm");
         item.isBalanceTxt = item.isBalance == 1?'是':'否';
         item.isWithpayTxt = item.isWithpay == 1?'是':'否';
+        item.startDate = this.$toolFn.timeFormat(item.details[0].startDate,"yyyy-MM-dd hh:mm");
+        item.endDate = this.$toolFn.timeFormat(item.details[0].endDate,"yyyy-MM-dd hh:mm");
+        item.typeIdTxt = this.holidayTypes.find(child => {
+          return child.typeId == item.details[0].typeId;
+        }).val;
         return item;
       });
     }
   },
   mounted() {
+    this.init()
   },
   methods: {
+    async init(){
+      this.holidayTypes = await this.$myApi.getHolidaysTypeId();
+    },
     // 接收子组件发送信息
     listenIsShowMask(res) {
       this.isShowAddAccess = false;

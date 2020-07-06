@@ -2,9 +2,9 @@
   <div class="editLayer">
     <el-form :model="ruleForm" ref="ruleForm" label-width="110px">
       <div v-for="(domain,index) in ruleForm.details" :key="domain.key" class="fromBlock">
-        <div class="deleteBtn">
+        <!-- <div class="deleteBtn">
             <i class="el-icon-error" @click="removeDomain(domain)"></i>
-        </div>
+        </div> -->
         <el-form-item label="报销类型" :prop="'details.'+index+'.typeId'" :rules="{required: true, message: '请选择报销类型', trigger: 'change'}">
           <el-select v-model="domain.typeId" placeholder="请选择报销类型">
             <el-option
@@ -50,7 +50,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
-        <el-button @click="addDomain">新增报销内容</el-button>
+        <!-- <el-button @click="addDomain">新增报销内容</el-button> -->
         <el-button @click="cancelFn">取 消</el-button>
       </el-form-item>
     </el-form>

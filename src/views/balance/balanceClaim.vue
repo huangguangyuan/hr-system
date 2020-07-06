@@ -5,9 +5,9 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
-      <el-table-column sortable prop="nameChinese" label="申请人"></el-table-column>
-      <el-table-column sortable prop="deptName" label="部门"></el-table-column>
-      <el-table-column sortable prop="createTime" label="创建日期">
+      <el-table-column sortable prop="nameChinese" label="申请人" width="150"></el-table-column>
+      <el-table-column sortable prop="deptName" label="部门" width="150"></el-table-column>
+      <el-table-column sortable prop="createTime" label="创建日期" width="200">
         <template slot-scope="scope">
           <div class="showTip"  v-show="scope.row.showTip" >
             <i class="el-icon-alarm-clock"></i><span style="padding-left:10px">{{ scope.row.createTime }}</span>
@@ -15,7 +15,9 @@
           <span v-show="!scope.row.showTip">{{ scope.row.createTime }}</span>
       </template>
       </el-table-column>
-      <el-table-column sortable prop="isBalanceTxt" label="是否结算"></el-table-column>
+      <el-table-column sortable prop="typeTxt" label="报销类型" width="150"></el-table-column>
+      <el-table-column sortable prop="totalAmount" label="结算金额"  width="200"></el-table-column>
+      <el-table-column sortable prop="isBalanceTxt" label="是否结算" width="200"></el-table-column>
       <el-table-column sortable prop="totalAmount" label="结算金额"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
@@ -43,6 +45,7 @@
 import balanceClaimDetails from "./balanceClaimDetails.vue";
 import pageInfo from "@/components/pageInfo.vue";
 import busAndSearch from "@/components/busAndSearch.vue";
+import {approveHisTypeTxt} from "@/lib/staticData.js";
 export default {
   components: {
     balanceClaimDetails,pageInfo,busAndSearch
@@ -52,6 +55,7 @@ export default {
   data() {
     return {
       isShow:false,
+      claimTypes:[],
       pageList:[],
       curInfo: {},
       isShowDetails: false, //是否显示表单详情
@@ -79,18 +83,23 @@ export default {
         item.showTip = timestamp - Date.parse(new Date(item.createTime)) >= 2592000000
         item.createTime = this.$toolFn.timeFormat(item.createTime,'yyyy-MM-dd hh:mm');
         item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
-
-        
+        item.typeIdTxt = this.claimTypes.find(child => {
+          return child.id == item.typeId;
+        }).name;
         return item;
       });
     }
   },
   mounted() {
-    if (this.$toolFn.curUser.access.approvalClaim.length > 0){
-      this.isShow = true;
-    }
+    this.init()
   },
   methods: {
+    async init(){
+      this.claimTypes = await this.$myApi.getBUClaimType();
+      if (this.$toolFn.curUser.access.approvalClaim.length > 0){
+        this.isShow = true;
+      }
+    },
     approveTxt(item){//显示文字并判断是否有权限结算
       item.canBalance = false;
       var str = "";

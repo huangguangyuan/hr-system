@@ -125,8 +125,8 @@ export default {
       this.holidayItem.createTime = this.$toolFn.timeFormat(this.holidayItem.createTime,"yyyy-MM-dd hh:mm");
       this.holidayItem.isWithpayTxt = this.holidayItem.isWithpay == 1?'是':'否';
       this.tableData = this.holidayItem.details.map(item => {
-        item.startDate = this.$toolFn.timeFormat(item.startDate);
-        item.endDate = this.$toolFn.timeFormat(item.endDate);
+        item.startDate = this.$toolFn.timeFormat(item.startDate,"yyyy-MM-dd hh:mm");
+        item.endDate = this.$toolFn.timeFormat(item.endDate,"yyyy-MM-dd hh:mm");
         item.typeIdTxt = this.holidayTypes.filter(child => {
               return child.typeId == item.typeId;
           })[0].val;

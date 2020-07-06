@@ -5,16 +5,17 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id" >
-      <el-table-column sortable prop="nameChinese" label="申请人"></el-table-column>
-      <el-table-column sortable prop="deptName" label="部门"></el-table-column>
-      <el-table-column sortable prop="createTime" label="创建日期"></el-table-column>
-      <el-table-column sortable prop="isBalanceTxt" label="是否结算"></el-table-column>
+      <el-table-column sortable prop="nameChinese" label="申请人" width="150"></el-table-column>
+      <el-table-column sortable prop="deptName" label="部门" width="150"></el-table-column>
+      <el-table-column sortable prop="createTime" label="创建日期" width="150"></el-table-column>
+      <el-table-column sortable prop="typeIdTxt" label="报销类型" width="150"></el-table-column>
       <el-table-column sortable prop="totalAmount" label="结算金额"></el-table-column>
+      <el-table-column sortable prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column prop="nextStepTip" label="下一步提示"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
-      <el-table-column sortable prop="approveOfficerNameArr" label="审批人员" v-if="userInfo.lev ==301"></el-table-column>
-      <el-table-column sortable prop="balanceOfficerNameArr" label="结算人员" v-if="userInfo.lev ==301"></el-table-column>
-      <el-table-column sortable prop="noticeOfficerNameArr" label="已抄送" v-if="userInfo.lev ==301"></el-table-column>
+      <el-table-column sortable prop="approveOfficerNameArr" width="200" label="审批人员" v-if="userInfo.lev ==301"></el-table-column>
+      <el-table-column sortable prop="balanceOfficerNameArr" width="200" label="结算人员" v-if="userInfo.lev ==301"></el-table-column>
+      <el-table-column sortable prop="noticeOfficerNameArr" width="200" label="已抄送" v-if="userInfo.lev ==301"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-info" @click="handleDetails(scope.$index, scope.row)" >查看{{approveTxt(scope.row)}}</el-button>
@@ -41,6 +42,7 @@ export default {
   data() {
     return {
       isShow:false,
+      claimTypes:[],
       pageList:[],
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
@@ -67,18 +69,25 @@ export default {
       return this.pageList.map(item => {
         item.createTime = this.$toolFn.timeFormat(item.createTime,'yyyy-MM-dd hh:mm');
         item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
+        item.typeIdTxt = this.claimTypes.find(child => {
+          return child.id == item.typeId;
+        }).name;
         return item;
       });
     }
   },
   mounted() {
-    this.userInfo = this.$toolFn.curUser;
-    this.approvalClaim = this.$toolFn.curUser.access.approvalClaim || [];
-    if (this.approvalClaim.length > 0){
-      this.isShow = true;
-    }
+    this.init()
   },
   methods: {
+    async init(){
+      this.userInfo = this.$toolFn.curUser;
+      this.claimTypes = await this.$myApi.getBUClaimType();
+      this.approvalClaim = this.$toolFn.curUser.access.approvalClaim || [];
+      if (this.approvalClaim.length > 0){
+        this.isShow = true;
+      }
+    },
     approveTxt(item){//显示文字并判断是否有权限审批
       //item.canApprove = false;
       var str = "";
