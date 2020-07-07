@@ -282,6 +282,12 @@ const dynamicRouter = [
         name: 'buPayrollSummary',
         component: resolve => require(['@/views/wages/summary/buPayrollSummary.vue'], resolve),
     },
+    //  假期汇总
+    {
+        path: '/buLeavesSummary',
+        name: 'buLeavesSummary',
+        component: resolve => require(['@/views/wages/summary/buLeavesSummary.vue'], resolve),
+    },
 ]
 
 export { lazy }

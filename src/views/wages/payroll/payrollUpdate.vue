@@ -54,7 +54,6 @@ export default {
             const element = this.ruleForm.updateItems[index];
             postData[element] = true;
           }
-          console.log(postData);
           this.updateMPF(postData);
         } else {
           return false;
