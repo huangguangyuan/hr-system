@@ -77,8 +77,8 @@ export default {
       this.pageInfo.reqParams.data.staffCode = this.userInfo.staffCode;
     }
     this.pageInfo.reqParams.isReq = true;
-    this.$refs.pageInfo.getData(this.pageInfo);
-    //this.getData(this.staffCode);
+    // this.$refs.pageInfo.getData(this.pageInfo);
+    // this.getData(this.staffCode);
   },
   methods: {
     // 接收子组件发送信息
