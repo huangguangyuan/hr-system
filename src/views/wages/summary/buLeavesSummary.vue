@@ -91,11 +91,13 @@
             <el-table-column sortable prop="annual.taken" label="请假天数" width="120"></el-table-column>
             <el-table-column sortable prop="annual.total" label="累计" width="90"></el-table-column>
             <el-table-column sortable prop="annual.bal" label="结余" width="90"></el-table-column>
+            <el-table-column sortable prop="annual.remarks" label="备注" width="150"></el-table-column>
           </el-table-column>
           <el-table-column label="病假">
-            <el-table-column sortable prop="sick.taken" label="请假天数" width="120"></el-table-column>
+              <el-table-column sortable prop="sick.taken" label="请假天数" width="120"></el-table-column>
               <el-table-column sortable prop="sick.total" label="病假" width="90"></el-table-column>
               <el-table-column sortable prop="sick.bal" label="结余" width="90"></el-table-column>
+              <el-table-column sortable prop="sick.remarks" label="备注" width="150"></el-table-column>
           </el-table-column>
           <el-table-column sortable prop="noPay.taken" label="无薪假" width="90"></el-table-column>
           <el-table-column sortable prop="noPay.remarks" label="备注" width="200"></el-table-column>
@@ -118,7 +120,7 @@ export default {
   },
   name: "buLeavesSummary",
   inject: ["reload"],
-  data() {
+  data() {d
     return {
       showType:1,
       dataList: [],

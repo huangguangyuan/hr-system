@@ -43,6 +43,20 @@
       </el-table>
     </div>
     <br />
+    <el-divider content-position="left">相关人员</el-divider>
+    <div class="view-detail" v-if="isShow" >
+      <el-row :gutter="12">
+        <el-col :span="24">
+          <el-card shadow="always" v-show="holidayItem.balanceOfficerNameArr != ''">审批人员：{{holidayItem.balanceOfficerNameArr}}</el-card>
+        </el-col>
+        <el-col :span="24">
+          <el-card shadow="always" v-show="holidayItem.balanceOfficerNameArr != ''">结算人员：{{holidayItem.balanceOfficerNameArr}}</el-card>
+        </el-col>
+        <el-col :span="24">
+          <el-card shadow="always" v-show="holidayItem.noticeOfficerNameArr != ''">抄送人员：{{holidayItem.noticeOfficerNameArr}}</el-card>
+        </el-col>
+      </el-row>
+    </div><br />
     <el-divider content-position="left">审批流程</el-divider>
     <el-timeline :reverse="true">
       <el-timeline-item v-for='(item,key) in approveHisList' :key='key' placement="top">
