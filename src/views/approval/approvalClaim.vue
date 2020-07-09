@@ -5,14 +5,22 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id" >
-      <el-table-column sortable prop="nameChinese" label="申请人" width="150"></el-table-column>
+      <el-table-column sortable prop="nameChinese" label="申请人" width="150">
+        <template slot-scope="scope">
+          <span :class="typeColor(scope.row.status)">{{scope.row.nameChinese}}</span>
+        </template>
+      </el-table-column>
       <el-table-column sortable prop="deptName" label="部门" width="150"></el-table-column>
       <el-table-column sortable prop="createTime" label="创建日期" width="150"></el-table-column>
       <el-table-column sortable prop="typeIdTxt" label="报销类型" width="150"></el-table-column>
-      <el-table-column sortable prop="totalAmount" label="结算金额"></el-table-column>
-      <el-table-column sortable prop="isBalanceTxt" label="是否结算"></el-table-column>
-      <el-table-column prop="nextStepTip" label="下一步提示"></el-table-column>
-      <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
+      <el-table-column sortable prop="totalAmount" label="结算金额"  width="120"></el-table-column>
+      <el-table-column sortable prop="isBalanceTxt" label="是否结算" width="120"></el-table-column>
+      <el-table-column prop="nextStepTip" label="下一步提示" width="150"></el-table-column>
+      <el-table-column sortable prop="statusTxt" label="状态" width="120">
+        <template slot-scope="scope">
+          <span :class="typeColor(scope.row.status)">{{scope.row.statusTxt}}</span>
+        </template>
+      </el-table-column>
       <el-table-column sortable prop="approveOfficerNameArr" width="200" label="审批人员" v-if="userInfo.lev ==301"></el-table-column>
       <el-table-column sortable prop="balanceOfficerNameArr" width="200" label="结算人员" v-if="userInfo.lev ==301"></el-table-column>
       <el-table-column sortable prop="noticeOfficerNameArr" width="200" label="已抄送" v-if="userInfo.lev ==301"></el-table-column>
@@ -109,6 +117,14 @@ export default {
       this.curInfo = res;
       this.curInfo.hrCode = this.$toolFn.curUser.userCode;
     },
+    typeColor(typeId){//1新建，2已审批，11已结算
+      if (typeId === 1){
+        return "tip1"
+      }else  if (typeId === 2){
+        return "tip2"
+      }
+      return "tip3"
+    }
   },
   watch: {
     BUCodeSelected: {
@@ -127,6 +143,14 @@ export default {
 </script>
 <style scoped lang="scss">
 .title-h5{font-size: 22px;font-weight: 500;}
+  .tip1{
+    color: red;
+  }
+  .tip2{
+    color:sienna;
+  }
+  .tip3{
+  }
 </style>
 
 
