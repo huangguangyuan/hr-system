@@ -57,6 +57,7 @@
 </template>
 <script>
 import imageUpload from "@/components/imageUpload.vue";
+import md5 from "js-md5";
 export default {
   components: {
     imageUpload
@@ -132,7 +133,6 @@ export default {
     this.isShow = true;
   },
   methods: {
-    
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -153,6 +153,7 @@ export default {
     addFun() {
       var reqUrl = "/server/api/v1/company/regionAdd";
       var data = this.ruleForm;
+      data.password = md5(this.ruleForm.password);
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
