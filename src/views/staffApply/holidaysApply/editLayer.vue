@@ -265,18 +265,21 @@ export default {
       // 计算出小时数
       const leave1 = date_d%(24*3600*1000) //计算天数后剩余的毫秒数
       const hours = Math.floor(leave1/(3600*1000))
-      for (var i = 1; i < days + 1; i++) {
-          var time = new Date(date_s.getYear(), date_s.getMonth(), date_s.getDate() + i);
-          if (time.getDay() == 0 || time.getDay() == 6) {
-              weekday++;
-          }
-      }
+      // for (var i = 1; i < days + 1; i++) {
+      //     var time = new Date(date_s.getYear(), date_s.getMonth(), date_s.getDate() + i);
+      //     if (time.getDay() == 0 || time.getDay() == 6) {
+      //         weekday++;
+      //     }
+      // }
+      console.log(hours)
       if (hours >= 8){// 超过8小时判断为1天，否则0.5天
         days++;
       }else{
         days = days + 0.5
       }
-      return days - weekday;
+      console.log(days)
+      // return days - weekday;
+      return days;
     },
     // 新增
     addFun() {
@@ -300,6 +303,8 @@ export default {
         this.$message.error("请检查请假日期区间");
         return;
       }else{
+        console.log(days)
+        console.log(this.ruleForm.days)
         if (days < this.ruleForm.days){
           this.$message.error("请检查请假天数是否超出");
           return;

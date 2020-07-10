@@ -81,12 +81,12 @@
             @click.stop="rebuildStaffPayroll(scope.$index, scope.row)"
             v-if="fun_right && genPayrollSlip_right && scope.row.typeId == 2"
           >重新生成工资单</el-button>
-          <!-- <el-button
+          <el-button
             size="mini"
             icon="el-icon-document-add"
             @click.stop="openShowPayrollUpdate(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
-          >重算薪资</el-button> -->
+          >重算薪资</el-button>
           <el-button
             size="mini"
             icon="el-icon-delete"
@@ -133,12 +133,12 @@
             @click.stop="openSetMPFKey(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >调整MPF</el-button>
-          <!-- <el-button
+          <el-button
             size="mini"
             icon="el-icon-document-add"
             @click.stop="openShowPayrollUpdate(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
-          >重算薪资</el-button> -->
+          >重算薪资</el-button>
           <el-button
             size="mini"
             icon="el-icon-document-add"
@@ -351,12 +351,12 @@ export default {
     InitializationFun() {
       var date = new Date();
       this.seachMsg.year = date.getFullYear().toString();
-      this.seachMsg.month = (date.getMonth() + 1).toString();
+      // this.seachMsg.month = (date.getMonth() + 1).toString();
       if (this.$toolFn.sessionGet("staffPayrollListSearch")) {
           this.BUCode = this.$toolFn.sessionGet("staffPayrollListSearch").BUCode || this.BUCode;
           this.seachMsg.year = this.$toolFn.sessionGet("staffPayrollListSearch").year || this.seachMsg.year;
-          this.seachMsg.month = this.$toolFn.sessionGet("staffPayrollListSearch").month || this.seachMsg.month;
-          //this.seachMsg.insuredType = this.$toolFn.sessionGet("staffPayrollListSearch").insuredType || this.seachMsg.insuredType;
+          // this.seachMsg.month = this.$toolFn.sessionGet("staffPayrollListSearch").month || this.seachMsg.month;
+          // this.seachMsg.insuredType = this.$toolFn.sessionGet("staffPayrollListSearch").insuredType || this.seachMsg.insuredType;
           this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
       }
       this.getRegionBU();
@@ -595,6 +595,7 @@ export default {
       this.isShowbuConfirm = false;
       this.isShowAdjAmountRemarks = false;
       this.isShowMPFEdit = false;
+      this.isShowPayrollUpdate = false;
     },
     searchFun(list, search) {
       let newList = [];

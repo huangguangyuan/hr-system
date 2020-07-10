@@ -1,5 +1,5 @@
 <template>
-  <div class="staffPayrollSummary wrap">
+  <div class="buLeavesSummary wrap">
     <!-- 搜索 -->
     <div class="search-wrap">
       <el-select v-model="companyCode" placeholder="请选择公司" @change="changeCompanyCode" style="width:200px;" class="selectItem">
@@ -40,81 +40,73 @@
         format="yyyy"
         @change="onSelectYear"
       ></el-date-picker>
-      <el-select
-        multiple collapse-tags
+      <!-- <el-date-picker
+        v-if="staffCodeArr.length === 1"
         class="selectItem"
-        style="width:200px;"
-        v-model="searchMonthArr"
-        placeholder="请选择月份"
-        @change="onSelectMonth"
-      >
-        <el-checkbox v-model="monthSelectAlllChecked" @change='onSelectMonthAll'>全选</el-checkbox>
-        <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val.toString()"></el-option>
-
-      </el-select>
+        v-model="searchDate"
+        placeholder="请选择日期"
+        type="daterange"
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期">
+    </el-date-picker> -->
       <el-button type="primary" @click="onSearchSummary">确定</el-button>
       <el-button type="primary" @click="onFlash" plain>复位</el-button>
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <div>
-      <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0" height="585" >
-          <!-- <el-table-column sortable prop="idNum" label="序号" width="100" fixed></el-table-column> -->
+      <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 1" height="585" >
           <el-table-column sortable prop="staffNo" label="员工编号" width="120" fixed></el-table-column>
           <el-table-column prop="nameChinese" label="第一姓名" width="120" fixed></el-table-column>
           <el-table-column sortable prop="position" label="员工职位" width="120" fixed></el-table-column>
           <el-table-column sortable prop="dateOfJoining" label="入职日期" width="120" fixed></el-table-column>
           <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="120" fixed></el-table-column>
-          <el-table-column sortable prop="salary" label="基本工资" width="120" fixed></el-table-column>
-        <el-table-column label="出粮年月">
-          <el-table-column sortable prop="year" label="年份" width="120"></el-table-column>
-          <el-table-column sortable label="月份" width="120">
-            <template slot-scope="scope">{{scope.row.monthSet.toString().indexOf(',')>=0 ? scope.row.monthSet.toString().split(',').sort((a,b)=>{return a - b}).join(',') : scope.row.monthSet}}</template>
+          <el-table-column label="年假">
+            <el-table-column sortable prop="annual.adjust" label="调整" width="90"></el-table-column>
+            <el-table-column sortable prop="annual.annualYear" label="年假" width="90"></el-table-column>
+            <el-table-column sortable prop="annual.total" label="总数" width="90"></el-table-column>
+            <el-table-column sortable prop="annual.taken" label="请假天数" width="120"></el-table-column>
+            <el-table-column sortable prop="annual.bal" label="结余" width="90"></el-table-column>
           </el-table-column>
-        </el-table-column>
-        <el-table-column label="公司信息">
-          <!-- <el-table-column sortable prop="companyName" label="公司" width="120" ></el-table-column> -->
-          <el-table-column sortable prop="regionName" label="区域" width="120" ></el-table-column>
-          <el-table-column sortable prop="buName" label="单位" width="120" ></el-table-column>
-          <el-table-column sortable prop="departmentName" label="部门" width="120" ></el-table-column>
-        </el-table-column>
-        <el-table-column label="税前收入">
-          <el-table-column sortable prop="grossPay" label="税前工资" width="120"></el-table-column>
-          <el-table-column  v-for="(item,index) in dataList[0].taxableItems" :key="index" width="160">
-            <template slot="header">{{item.name}}</template>
-            <template slot-scope="scope">{{scope.row.taxableItems[index].val}}</template>
+          <el-table-column label="病假">
+              <el-table-column sortable prop="sick.sickYear" label="病假" width="90"></el-table-column>
+              <el-table-column sortable prop="sick.taken" label="请假天数" width="120"></el-table-column>
+              <el-table-column sortable prop="sick.bal" label="结余" width="90"></el-table-column>
           </el-table-column>
-          <el-table-column sortable prop="taxableItemsAmount" label="应税费用" width="120"></el-table-column>
-          <el-table-column sortable prop="taxableWages" label="应税收入合计" width="140"></el-table-column>
-        </el-table-column>
-        <el-table-column label="扣除金额">
-          <el-table-column sortable prop="SHAmount" label="社保扣除/公积金" width="160"></el-table-column>
-          <el-table-column sortable prop="specialDeductionAmount" label="专项附加扣除" width="140"></el-table-column>
-          <!-- <el-table-column sortable label="个税调整" width="130"></el-table-column> -->
-          <el-table-column sortable prop="taxAmount" label="应缴个税" width="130"></el-table-column>
-        </el-table-column>
-          <el-table-column sortable prop="netAmount" label="未含报销的税后收入" width="190"></el-table-column>
-        <!-- <el-table-column sortable prop="totalAmount" label="收入总额" width="100"></el-table-column> -->
-        <!-- <el-table-column sortable prop="threshold" label="个税起征点扣除" width="160"></el-table-column> -->
-        <!-- <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column> -->
-        <el-table-column label="不应税收入">
-          <el-table-column  v-for="(item,index) in dataList[0].buClaimsItems" :key="index" width="160">
-            <template slot="header">{{item.name}}</template>
-            <template slot-scope="scope">{{scope.row.buClaimsItems[index].val}}</template>
+          <el-table-column sortable prop="noPay.taken" label="无薪假" width="90"></el-table-column>
+          <el-table-column sortable prop="maternity.taken" label="产假/陪产假" width="150"></el-table-column>
+          <el-table-column sortable prop="marriage.taken" label="婚假" width="90"></el-table-column>
+          <el-table-column sortable prop="special.taken" label="特别假" width="90"></el-table-column>
+      </el-table>
+      <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 2" height="585" >
+          <el-table-column sortable prop="staffNo" label="员工编号" width="120" fixed></el-table-column>
+          <el-table-column prop="nameChinese" label="第一姓名" width="120" fixed></el-table-column>
+          <el-table-column sortable prop="position" label="员工职位" width="120" fixed></el-table-column>
+          <el-table-column sortable prop="applyDate" label="生效时间" width="120" fixed></el-table-column>
+          <el-table-column sortable prop="createTime" label="申请日期" width="120" fixed></el-table-column>
+          <el-table-column sortable prop="startDate" label="开始时间" width="120" fixed></el-table-column>
+          <el-table-column sortable prop="endDate" label="结束时间" width="120" fixed></el-table-column>
+          <el-table-column label="年假">
+            <el-table-column sortable prop="annual.taken" label="请假天数" width="120"></el-table-column>
+            <el-table-column sortable prop="annual.total" label="累计" width="90"></el-table-column>
+            <el-table-column sortable prop="annual.bal" label="结余" width="90"></el-table-column>
+            <el-table-column sortable prop="annual.remarks" label="备注" width="150"></el-table-column>
           </el-table-column>
-          <!-- <el-table-column sortable prop="claimAmount" label="不应税报销合计" width="150"></el-table-column> -->
-          <el-table-column  v-for="(item,index) in dataList[0].notTaxableItems" :key="index" width="160">
-            <template slot="header">{{item.name}}</template>
-            <template slot-scope="scope">{{scope.row.notTaxableItems[index].val}}</template>
+          <el-table-column label="病假">
+              <el-table-column sortable prop="sick.taken" label="请假天数" width="120"></el-table-column>
+              <el-table-column sortable prop="sick.total" label="病假" width="90"></el-table-column>
+              <el-table-column sortable prop="sick.bal" label="结余" width="90"></el-table-column>
+              <el-table-column sortable prop="sick.remarks" label="备注" width="150"></el-table-column>
           </el-table-column>
-          <el-table-column sortable prop="notTaxableAmount" label="不应税收入合计" width="150"></el-table-column>
-        </el-table-column>
-        <el-table-column sortable prop="reallyAmount" label="税后工资" width="120"></el-table-column>
-        <el-table-column sortable prop="adjAmount" label="调整金额" width="120"></el-table-column>
-        <el-table-column sortable prop="SIAmount" label="社保扣除" width="120"></el-table-column>
-        <el-table-column sortable prop="HCAmount" label="公积金扣除" width="130"></el-table-column>
-        <el-table-column sortable prop="claimAmount" label="报销合计" width="150"></el-table-column>
-        <el-table-column sortable prop="remarks" label="备注" width="250"></el-table-column>
+          <el-table-column sortable prop="noPay.taken" label="无薪假" width="90"></el-table-column>
+          <el-table-column sortable prop="noPay.remarks" label="备注" width="200"></el-table-column>
+          <el-table-column sortable prop="maternity.taken" label="产假/陪产假" width="150"></el-table-column>
+          <el-table-column sortable prop="maternity.remarks" label="备注" width="200"></el-table-column>
+          <el-table-column sortable prop="marriage.taken" label="婚假" width="90"></el-table-column>
+          <el-table-column sortable prop="marriage.remarks" label="备注" width="200"></el-table-column>
+          <el-table-column sortable prop="special.taken" label="特别假" width="90"></el-table-column>
+          <el-table-column sortable prop="special.remarks" label="备注" width="200"></el-table-column>
       </el-table>
     </div>
   </div>
@@ -126,10 +118,11 @@ export default {
   components: {
     pageInfo
   },
-  name: "staffPayrollSummary",
+  name: "buLeavesSummary",
   inject: ["reload"],
-  data() {
+  data() {d
     return {
+      showType:1,
       dataList: [],
       curInfo: {}, //当前内容
       isShowLoading: false, //是否显示loading页
@@ -148,8 +141,8 @@ export default {
       staffCodeArr:[],//选中员工代号
       staffList:[],//可选择员工列表
       staffListLoading:false,
-      searchMonthArr:[],
-      searchYear:0,
+      searchDate:[],
+      searchYear:'',
       monthSelectAlllChecked: false,// 月份是否全选
       filter:{searchKey:'',searchField:['nameChinese','staffNo']},
       monthList:[]
@@ -164,27 +157,27 @@ export default {
       this.monthList = monthList();
       this.getCompanyList();
       var date = new Date();
-      let staffPayrollSummaryData = this.$toolFn.sessionGet("staffPayrollSummaryData");// 获取暂存数据
-      if (staffPayrollSummaryData){
-      // this.companyCode = staffPayrollSummaryData.companyCode;
-        this.regionCode = staffPayrollSummaryData.regionCode;
+      let buLeavesSummaryData = this.$toolFn.sessionGet("buLeavesSummaryData");// 获取暂存数据
+      if (buLeavesSummaryData){
+      // this.companyCode = buLeavesSummaryData.companyCode;
+        this.regionCode = buLeavesSummaryData.regionCode;
         if (this.regionCode && this.regionCode !== ''){
           await this.changeRegionCode(this.regionCode);
         }
-        this.BUCode = staffPayrollSummaryData.BUCode;
+        this.BUCode = buLeavesSummaryData.BUCode;
         if (this.BUCode && this.BUCode !== ''){
           await this.onSelectBU(this.BUCode);
         }
-        this.departmentSelectAlllChecked = staffPayrollSummaryData.departmentSelectAlllChecked;
-        this.departmentCodeArr = staffPayrollSummaryData.departmentCodeArr;
+        this.departmentSelectAlllChecked = buLeavesSummaryData.departmentSelectAlllChecked;
+        this.departmentCodeArr = buLeavesSummaryData.departmentCodeArr;
         if (this.departmentCodeArr && this.departmentCodeArr.length > 0){
           await this.onSelectDepartment(this.departmentCodeArr);
         }        
-        this.staffSelectAlllChecked = staffPayrollSummaryData.staffSelectAlllChecked;
-        this.staffCodeArr = staffPayrollSummaryData.staffCodeArr;
-        this.monthSelectAlllChecked = staffPayrollSummaryData.monthSelectAlllChecked;
-        this.searchMonthArr = staffPayrollSummaryData.searchMonthArr;
-        this.searchYear = staffPayrollSummaryData.searchYear;
+        this.staffSelectAlllChecked = buLeavesSummaryData.staffSelectAlllChecked;
+        this.staffCodeArr = buLeavesSummaryData.staffCodeArr;
+        this.monthSelectAlllChecked = buLeavesSummaryData.monthSelectAlllChecked;
+        this.searchMonthArr = buLeavesSummaryData.searchMonthArr;
+        this.searchYear = buLeavesSummaryData.searchYear;
       }
       const year = date.getFullYear();
       const month = date.getMonth() + 1;
@@ -202,11 +195,7 @@ export default {
      * @description: 查询工资汇总
      */
     async onSearchSummary(){
-      let matchMonth = '1,2,3,4,5,6,7,8,9,10,11,12';
-      if (matchMonth.indexOf(this.searchMonthArr.sort().join(',')) < 0){
-        this.$message.error("请确保月份是连续的");
-        return;
-      }
+      this.dataList = [];
       if (this.regionCode === ''){
         this.$message.error("请选择区域");
         return;
@@ -224,11 +213,6 @@ export default {
         this.$message.error("请至少选择一个员工");
         return;
       }
-      if (this.searchMonthArr.length === 0){
-        this.$message.error("请至少选择一个月份");
-        return;
-      }
-
       let postData = {
         BUCode:this.BUCode,
         searchYear:Number.parseInt(this.searchYear),
@@ -239,10 +223,7 @@ export default {
       if (!this.staffSelectAlllChecked){
         postData.staffCodeArr = this.staffCodeArr
       }
-      if (!this.monthSelectAlllChecked){
-        postData.searchMonthArr = this.searchMonthArr.map(Number)
-      }
-      this.$toolFn.sessionSet("staffPayrollSummaryData",
+      this.$toolFn.sessionSet("buLeavesSummaryData",
       {
         regionCode:this.regionCode,
         BUCode:this.BUCode,
@@ -250,14 +231,20 @@ export default {
         departmentCodeArr:this.departmentCodeArr,
         staffSelectAlllChecked:this.staffSelectAlllChecked,
         staffCodeArr:this.staffCodeArr,
-        monthSelectAlllChecked:this.monthSelectAlllChecked,
-        searchMonthArr:this.searchMonthArr,
-        searchYear:this.searchYear
+        searchDate:this.searchDate
       });
-      this.dataList = await this.$myApi.post('/server/api/v1/payroll/staff/staffPayrollSummaryV2',postData);
+      
+      if(this.staffCodeArr.length > 1){
+        this.showType = 1;
+        this.dataList = await this.$myApi.post('/server/api/v1/payroll/staff/buLeavesSummary',postData);
+      }else {
+        this.showType = 2;
+        this.dataList = await this.$myApi.post('/server/api/v1/payroll/staff/staffLeavesSummary',postData);
+      }
+      
     },
     async onFlash(){
-      this.$toolFn.sessionSet("staffPayrollSummaryData",
+      this.$toolFn.sessionSet("buLeavesSummaryData",
       {
         regionCode:"",
         BUCode:"",
@@ -265,9 +252,7 @@ export default {
         departmentCodeArr:"",
         staffSelectAlllChecked:"",
         staffCodeArr:"",
-        monthSelectAlllChecked:"",
-        searchMonthArr:"",
-        searchYear:""
+        searchDate:[],
       });
       this.reload();
     },

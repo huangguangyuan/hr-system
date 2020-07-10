@@ -27,6 +27,20 @@
       </el-table>
     </div>
     <br />
+    <el-divider content-position="left">相关人员</el-divider>
+    <div class="view-detail" v-if="isShow" >
+      <el-row :gutter="12">
+        <el-col :span="24" v-show="claimItem.approveOfficerNameArr != ''">
+          <el-card shadow="always">审批人员：{{claimItem.approveOfficerNameArr}}</el-card>
+        </el-col>
+        <el-col :span="24" v-show="claimItem.balanceOfficerNameArr != ''">
+          <el-card shadow="always">结算人员：{{claimItem.balanceOfficerNameArr}}</el-card>
+        </el-col>
+        <el-col :span="24" v-show="claimItem.noticeOfficerNameArr != ''">
+          <el-card shadow="always">抄送人员：{{claimItem.noticeOfficerNameArr}}</el-card>
+        </el-col>
+      </el-row>
+    </div><br />
     <el-divider content-position="left" >审批流程</el-divider>
     <el-timeline :reverse="true">
       <el-timeline-item

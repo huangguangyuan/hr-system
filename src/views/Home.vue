@@ -175,16 +175,13 @@ export default {
           });
           this.$toolFn.localSet("userInfo", res.data.data.data);
           this.$toolFn.curUserFn();
-          var sidebar = res.data.data.data.roles[0].menuList.map(item => {
+          var sidebar = res.data.data.data.menuList.map(item => {
             item.id = item.id.toString();
             return item;
           });
-          this.$store
-            .dispatch("add_Routes", sidebar)
-            .then(res => {
+          this.$store.dispatch("add_Routes", sidebar).then(res => {
               return this.$store.dispatch("getAccessData_Fun", sidebar);
-            })
-            .then(res => {
+            }).then(res => {
               var userInfo = this.$toolFn.localGet("userInfo");
               this.userInfo = userInfo;
               this.reload();
@@ -193,7 +190,7 @@ export default {
               } else {
                 this.$router.push({ path: "/home" });
               }
-            });
+          });
         }
       });
     },
@@ -230,9 +227,7 @@ export default {
         reqUrl = "/server/api/v1/hrSys/logout";
         returnUrl = "/hr";
       }
-      this.$myApi.http
-        .post(reqUrl)
-        .then(res => {
+      this.$myApi.http.post(reqUrl).then(res => {
           if (res.data.code == 0) {
             this.$toolFn.localRemove("userInfo");
             this.$router.replace({

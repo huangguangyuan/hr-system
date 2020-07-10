@@ -4,7 +4,7 @@ module.exports =  {
       language: '语言'
     },
     Login: {
-        title: 'HR人事及薪酬登录系统',
+        title: 'Payroll Service System',
         user: '账 号：',
         userTip:'请输入用户帐号',
         pass: '密 码：',

@@ -43,6 +43,20 @@
       </el-table>
     </div>
     <br />
+    <el-divider content-position="left">相关人员</el-divider>
+    <div class="view-detail" v-if="isShow" >
+      <el-row :gutter="12">
+        <el-col :span="24">
+          <el-card shadow="always" v-show="holidayItem.balanceOfficerNameArr != ''">审批人员：{{holidayItem.balanceOfficerNameArr}}</el-card>
+        </el-col>
+        <el-col :span="24">
+          <el-card shadow="always" v-show="holidayItem.balanceOfficerNameArr != ''">结算人员：{{holidayItem.balanceOfficerNameArr}}</el-card>
+        </el-col>
+        <el-col :span="24">
+          <el-card shadow="always" v-show="holidayItem.noticeOfficerNameArr != ''">抄送人员：{{holidayItem.noticeOfficerNameArr}}</el-card>
+        </el-col>
+      </el-row>
+    </div><br />
     <el-divider content-position="left">审批流程</el-divider>
     <el-timeline :reverse="true">
       <el-timeline-item v-for='(item,key) in approveHisList' :key='key' placement="top">
@@ -125,8 +139,8 @@ export default {
       this.holidayItem.createTime = this.$toolFn.timeFormat(this.holidayItem.createTime,"yyyy-MM-dd hh:mm");
       this.holidayItem.isWithpayTxt = this.holidayItem.isWithpay == 1?'是':'否';
       this.tableData = this.holidayItem.details.map(item => {
-        item.startDate = this.$toolFn.timeFormat(item.startDate);
-        item.endDate = this.$toolFn.timeFormat(item.endDate);
+        item.startDate = this.$toolFn.timeFormat(item.startDate,"yyyy-MM-dd hh:mm");
+        item.endDate = this.$toolFn.timeFormat(item.endDate,"yyyy-MM-dd hh:mm");
         item.typeIdTxt = this.holidayTypes.filter(child => {
               return child.typeId == item.typeId;
           })[0].val;

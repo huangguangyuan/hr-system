@@ -5,7 +5,7 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
-      <el-table-column sortable prop="nameChinese" label="申请人"></el-table-column>
+      <el-table-column sortable prop="nameChinese" label="申请人" width="150"></el-table-column>
       <el-table-column sortable prop="deptName" label="部门"></el-table-column>
       <el-table-column sortable prop="createTime" label="创建日期" width="200">
         <template slot-scope="scope">
@@ -15,10 +15,12 @@
           <span v-show="!scope.row.showTip">{{ scope.row.createTime }}</span>
       </template>
       </el-table-column>
-      <el-table-column sortable prop="isBalanceTxt" label="是否结算"></el-table-column>
-      <el-table-column sortable prop="totalDay" label="请假天数"></el-table-column>
-      <el-table-column sortable prop="totalAmount" label="应扣金额"></el-table-column>
-      <el-table-column sortable prop="isWithpayTxt" label="是否带薪"></el-table-column>
+      <el-table-column sortable prop="startDate" label="开始时间" width="200"></el-table-column>
+      <el-table-column sortable prop="endDate" label="结束时间" width="200"></el-table-column>
+      <el-table-column sortable prop="totalDay" label="请假天数" width="120"></el-table-column>
+      <!-- <el-table-column sortable prop="totalAmount" label="应扣金额"></el-table-column> -->
+      <el-table-column sortable prop="isWithpayTxt" label="是否带薪" width="120"></el-table-column>
+      <el-table-column sortable prop="isBalanceTxt" label="是否结算" width="120"></el-table-column>
       <el-table-column sortable prop="statusTxt" label="状态"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
@@ -50,6 +52,7 @@ export default {
   data() {
     return {
       isShow:false,
+      holidayTypes:[],
       pageList:[],
       curInfo: {},
       isShowDetails:false,//是否显示表单详情
@@ -78,16 +81,25 @@ export default {
         item.createTime = this.$toolFn.timeFormat(item.createTime,'yyyy-MM-dd hh:mm');
         item.isBalanceTxt = item.isBalance == 1?'是':'否';
         item.isWithpayTxt = item.isWithpay == 1?'是':'否';
+        item.startDate = this.$toolFn.timeFormat(item.startDate,"yyyy-MM-dd hh:mm");
+        item.endDate = this.$toolFn.timeFormat(item.endDate,"yyyy-MM-dd hh:mm");
+        item.typeIdTxt = this.holidayTypes.find(child => {
+          return child.typeId == item.typeId;
+        }).val;
         return item;
       });
     }
   },
   mounted() {
+    this.init();
     if (this.$toolFn.curUser.access.approvalClaim.length > 0){
       this.isShow = true;
     }
   },
   methods: {
+    async init(){
+      this.holidayTypes = await this.$myApi.getHolidaysTypeId();
+    },
     approveTxt(item){//显示文字并判断是否有权限结算
       item.canBalance = false;
       var str = "";

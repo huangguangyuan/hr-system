@@ -182,6 +182,7 @@ export default {
   mounted() {
     if (this.curInfo.type == "modify") {
       this.ruleForm = this.curInfo;
+      this.ruleForm.locationType = this.ruleForm.locationType.toString();
       this.imageUpload_props.imageSrc = this.ruleForm.logo;
       this.isShowItem = false;
       this.logoSrc = this.ruleForm.logo;
@@ -242,7 +243,7 @@ export default {
       var data = {
         id: this.ruleForm.id,
         location: this.ruleForm.location,
-        locationType: this.ruleForm.locationType,
+        locationType: this.ruleForm.locationType.toString(),
         address: this.ruleForm.address,
         logo: this.ruleForm.logo,
         remarks: this.ruleForm.remarks,

@@ -79,7 +79,7 @@ export default {
               return;
             }
           }
-          // this.updateMPF();
+          this.updateMPF();
         } else {
           return false;
         }

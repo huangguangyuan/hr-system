@@ -226,6 +226,8 @@ export default {
     },
     // 设置
     handleSetting(index, res){
+      console.log(11111)
+      console.log(res)
       this.$store.commit({
         type: "getBUInfo",
         BUInfo: res,

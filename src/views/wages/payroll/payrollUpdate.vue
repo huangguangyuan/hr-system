@@ -3,6 +3,7 @@
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px">
       <el-form-item label="更新项目：" prop="updateItems">
           <el-checkbox-group v-model="ruleForm.updateItems">
+            <el-checkbox label="salaryCalc" value ="salaryCalc">重算基本工资</el-checkbox>
           <el-checkbox label="taxableItemsCalc" value ="taxableItemsCalc">重算应税项目</el-checkbox>
           <el-checkbox label="notTaxableItemsCalc" value ="notTaxableItemsCalc">重算非应税项目</el-checkbox>
           <el-checkbox label="specialDeductionCalc" value ="specialDeductionCalc">重算专项附加扣除</el-checkbox>
@@ -53,7 +54,7 @@ export default {
             const element = this.ruleForm.updateItems[index];
             postData[element] = true;
           }
-          // this.updateMPF(postData);
+          this.updateMPF(postData);
         } else {
           return false;
         }
@@ -66,12 +67,12 @@ export default {
       data.hrCode = this.curInfo.hrCode;
       data.code = this.ruleForm.code;
       this.$myApi.http.post(reqUrl, data).then(res => {
-        if (res.code === 0) {
+        if (res.data.code === 0) {
           this.reload();
-          if (res.data.msg != ""){
+          if (res.data.msg){
             this.$message.error(res.data.msg);
           }else{
-            this.$message.success("操作成功" + res.data.msg);
+            this.$message.success("操作成功");
           }
         } else {
           this.$message.error(res.data.msg);
