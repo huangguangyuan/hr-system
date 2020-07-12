@@ -58,7 +58,7 @@
     <div>
       <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 1" height="585" >
           <el-table-column sortable prop="staffNo" label="员工编号" width="120" fixed></el-table-column>
-          <el-table-column prop="nameChinese" label="第一姓名" width="120" fixed></el-table-column>
+          <el-table-column prop="nameChinese" label="第一姓名" width="200" fixed></el-table-column>
           <el-table-column sortable prop="position" label="员工职位" width="120" fixed></el-table-column>
           <el-table-column sortable prop="dateOfJoining" label="入职日期" width="120" fixed></el-table-column>
           <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="120" fixed></el-table-column>
@@ -120,7 +120,7 @@ export default {
   },
   name: "buLeavesSummary",
   inject: ["reload"],
-  data() {d
+  data() {
     return {
       showType:1,
       dataList: [],
