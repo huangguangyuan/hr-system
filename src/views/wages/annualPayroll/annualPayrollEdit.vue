@@ -32,7 +32,7 @@
         <el-option
           v-for="item in staffs"
           :key="item.code"
-          :label="item.nameChinese + (item.staffAlias != '' ? '(' + item.staffAlias + ' )': '')"
+          :label="item.nameChinese + (item.staffAlias && item.staffAlias != '' ? '(' + item.staffAlias + ' )': '')"
           :value="item.code">
         </el-option>
       </el-select>

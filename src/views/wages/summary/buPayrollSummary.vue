@@ -335,7 +335,7 @@ export default {
       this.departmentList = [];
       if (buDepartments && buDepartments.length > 0){
         for (let index = 0; index < buDepartments.length; index++) {
-          this.departmentList.push({name:buDepartments[index].name,code:buDepartments[index].code});
+          this.departmentList.push({name:buDepartments[index].name ,code:buDepartments[index].code});
         }
       }
       this.departmentListLoading = false;
@@ -359,7 +359,7 @@ export default {
         var data = {departmentCode:this.departmentCodeArr};
         let departmentStaffs = await this.$myApi.post(reqUrl,data);
         for (let index = 0; index < departmentStaffs.length; index++) {
-          this.staffList.push({name:departmentStaffs[index].nameChinese,code:departmentStaffs[index].code});
+          this.staffList.push({name:departmentStaffs[index].nameChinese + (departmentStaffs[index].staffAlias && departmentStaffs[index].staffAlias != '' ? '(' + departmentStaffs[index].staffAlias + ' )': ''),code:departmentStaffs[index].code});
         }
         this.staffListLoading = false;
       }

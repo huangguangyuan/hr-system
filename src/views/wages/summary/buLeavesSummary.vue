@@ -27,7 +27,7 @@
           <el-checkbox v-model="departmentSelectAlllChecked" @change='onSelectDepartmentAll'>全选</el-checkbox>
           <el-option v-for='(item,index) in departmentList' :key='index' :label="item.name" :value="item.code"></el-option>
       </el-select>
-      <el-select multiple collapse-tags v-model="staffCodeArr" placeholder="请选择员工" style="width:200px;" class="selectItem" :loading="staffListLoading" loading-text="加载中，请稍后" @change="onSelectStaff">
+      <el-select multiple collapse-tags v-model="staffCodeArr" placeholder="请选择员工" style="width:240px;" class="selectItem" :loading="staffListLoading" loading-text="加载中，请稍后" @change="onSelectStaff">
           <el-checkbox v-model="staffSelectAlllChecked" @change='onSelectStaffAll'>全选</el-checkbox>
           <el-option v-for='(item,index) in staffList' :key='index' :label="item.name" :value="item.code"></el-option>
       </el-select>
@@ -344,7 +344,7 @@ export default {
         var data = {departmentCode:this.departmentCodeArr};
         let departmentStaffs = await this.$myApi.post(reqUrl,data);
         for (let index = 0; index < departmentStaffs.length; index++) {
-          this.staffList.push({name:departmentStaffs[index].nameChinese,code:departmentStaffs[index].code});
+          this.staffList.push({name:departmentStaffs[index].nameChinese  + (departmentStaffs[index].staffAlias && departmentStaffs[index].staffAlias != '' ? '(' + departmentStaffs[index].staffAlias + ' )': ''),code:departmentStaffs[index].code});
         }
         this.staffListLoading = false;
       }
@@ -451,7 +451,7 @@ export default {
     -ms-flex-pack: justify;
   .selectItem {
     display: flex;
-    min-width: 200px;
+    min-width: 250px;
     align-items: center;
     font-size: 14px;
     color: rgb(237, 137, 55);
