@@ -31,8 +31,12 @@
         </li>
       <li>
           <span class="title">文化程度</span>：
-          <span class="val">{{tableData.cultureLevel}}</span>
+          <span class="val">{{tableData.cultureLevelTxt}}</span>
         </li>
+      <li>
+          <span class="title">政治面貌</span>：
+          <span class="val">{{tableData.politicalBackgroundListTxt}}</span>
+        </li>        
       <li>
           <span class="title">紧急联系人</span>：
           <span class="val">{{tableData.emergencyContact}}</span>
@@ -92,6 +96,8 @@
   </div>
 </template>
 <script>
+
+import {cultureLevelList,politicalBackgroundList} from "@/lib/staticData.js";
 export default {
   name: "staffInfo",
   inject: ["reload"],
@@ -110,8 +116,13 @@ export default {
       var reqUrl = "/server/api/v1/staff/getByCode";
       this.$myApi.http.post(reqUrl, {code:this.$toolFn.curUser.userCode}).then(res => {
         if (res.data.code == 0) {
-          this.tableData = res.data.data;
-          this.isContent = true;
+          this.tableData = res.data.data
+          let cultureLevelItem = cultureLevelList().find(f=>{return f.val === this.tableData.cultureLevel });
+          let politicalBackgroundListItem = politicalBackgroundList().find(f=>{return f.val === this.tableData.politicalBackground });
+          this.tableData.cultureLevelTxt = cultureLevelItem?cultureLevelItem.txt:this.tableData.cultureLevel
+          this.tableData.politicalBackgroundListTxt = politicalBackgroundListItem?politicalBackgroundListItem.txt:this.tableData.politicalBackground
+          
+          this.isContent = true
         }
       });
     }
