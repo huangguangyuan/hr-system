@@ -21,7 +21,7 @@
         <el-card shadow="always">应税项目总额：{{details.detail.taxableItemsAmount}}</el-card>
       </el-col>
       <el-col :span="8" v-if="holidayList && holidayList.length > 0">
-        <el-card shadow="always">请假应扣总额：-{{details.detail.claimAmount}}</el-card>
+        <el-card shadow="always">请假应扣总额：-{{details.detail.holidayAmount}}</el-card>
       </el-col>
       <el-col :span="8" >
         <el-card shadow="always">收入总额：{{details.totalAmount}}</el-card>
@@ -71,21 +71,9 @@
       <el-table-column prop="name" label="项目名称"></el-table-column>
       <el-table-column prop="amount" label="金额(元)"></el-table-column>
     </el-table>
-    <el-divider v-if="notTaxableItemsList && notTaxableItemsList.length > 0">非应税项目清单</el-divider>
-    <el-table  v-if="notTaxableItemsList && notTaxableItemsList.length > 0" :data="notTaxableItemsList" stripe border show-summary>
-      <el-table-column prop="name" label="项目名称"></el-table-column>
-      <el-table-column prop="amount" label="金额(元)"></el-table-column>
-    </el-table>
-    <el-divider v-if="claimList && claimList.length > 0">报销清单</el-divider>
-    <el-table v-if="claimList && claimList.length > 0" :data="claimList" stripe border show-summary>
-      <el-table-column prop="balanceMon" label="结算月份"></el-table-column>
-      <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
-      <el-table-column prop="totalAmount" label="报销金额(元)"></el-table-column>
-    </el-table>
     <el-divider v-if="holidayList && holidayList.length > 0">请假清单</el-divider>
     <el-table v-if="holidayList && holidayList.length > 0"  :data="holidayList" stripe border show-summary>
       <el-table-column prop="balanceMon" label="结算月份"></el-table-column>
-      <el-table-column prop="isBalanceTxt" label="是否结算"></el-table-column>
       <el-table-column prop="typeIdTxt" label="请假类型"></el-table-column>
       <el-table-column prop="totalDay" label="请假天数"></el-table-column>
       <el-table-column prop="totalAmount" label="扣除金额(元)"></el-table-column>
@@ -113,6 +101,17 @@
       <el-table-column prop="paymentTxt" label="类 型"></el-table-column>
       <!-- <el-table-column prop="typeTxt" label="类 型"></el-table-column> -->
       <el-table-column prop="payment" label="金额(元)"></el-table-column>
+    </el-table>
+    <el-divider v-if="notTaxableItemsList && notTaxableItemsList.length > 0">非应税项目清单</el-divider>
+    <el-table  v-if="notTaxableItemsList && notTaxableItemsList.length > 0" :data="notTaxableItemsList" stripe border show-summary>
+      <el-table-column prop="name" label="项目名称"></el-table-column>
+      <el-table-column prop="amount" label="金额(元)"></el-table-column>
+    </el-table>
+    <el-divider v-if="claimList && claimList.length > 0">报销清单</el-divider>
+    <el-table v-if="claimList && claimList.length > 0" :data="claimList" stripe border show-summary>
+      <el-table-column prop="balanceMon" label="结算月份"></el-table-column>
+      <el-table-column prop="title" label="项目名称"></el-table-column>
+      <el-table-column prop="totalAmount" label="报销金额(元)"></el-table-column>
     </el-table>
     <el-divider v-if="details.adjAmount && details.adjAmount != 0">调整项目</el-divider>
       <el-row :gutter="12" v-if="details.adjAmount && details.adjAmount != 0">
@@ -191,10 +190,12 @@ export default {
             });
           }
           if (this.details.detail.holidayList){
+            console.log(this.holidayTypes)
+            console.log(this.details.detail.holidayList)
             this.holidayList = this.details.detail.holidayList.map(item => {
-              nodes.typeIdTxt = this.holidayTypes.filter(child => {
-                  return child.typeId == item.details[0].typeId;
-              })[0].val;
+              item.typeIdTxt = this.holidayTypes.find(child => {
+                  return child.typeId === item.detailTypeId.toString();
+              }).val;
               item.isBalanceTxt = item.isBalance == 1 ? "已结算" : "未结算";
               return item;
             });
