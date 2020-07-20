@@ -165,8 +165,6 @@
   </div>
 </template>
 <script>
-import { setInterval } from "timers";
-import { all } from 'q';
 export default {
   name: "calculator",
   inject: ["reload"],
@@ -218,9 +216,7 @@ export default {
       incomeSum:0,
       deductSum:0,
       addDeductSum:0,
-      accumulateSum:0,
-      deductSum:0,
-      deductSum:0,
+      accumulateSum:0
     };
   },
   mounted() {
@@ -233,9 +229,6 @@ export default {
     }
   },
   methods: {
-    changeRow(index){
-      //this.changeRowIndex = index;
-    },
     //专项扣除
     deductFn(index, res) {
       
