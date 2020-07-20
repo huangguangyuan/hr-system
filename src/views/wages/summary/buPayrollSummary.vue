@@ -23,6 +23,8 @@
           :value="item.code"
         ></el-option>
       </el-select>
+    </div>
+    <div class="search-wrap">
       <el-select multiple collapse-tags v-model="departmentCodeArr" placeholder="请选择部门" style="width:200px;" class="selectItem" :loading="departmentListLoading" loading-text="加载中，请稍后" @change="onSelectDepartment">
           <el-checkbox v-model="departmentSelectAlllChecked" @change='onSelectDepartmentAll'>全选</el-checkbox>
           <el-option v-for='(item,index) in departmentList' :key='index' :label="item.name" :value="item.code"></el-option>
@@ -58,7 +60,7 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <div>
-      <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0" >
+      <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0"  height="585">
           <!-- <el-table-column sortable prop="idNum" label="序号" width="100" fixed></el-table-column> -->
           <el-table-column sortable prop="staffNo" label="员工编号" width="120" fixed></el-table-column>
           <el-table-column prop="nameChinese" label="第一姓名" width="200" fixed></el-table-column>
@@ -74,9 +76,9 @@
         </el-table-column>
         <el-table-column label="公司信息">
           <!-- <el-table-column sortable prop="companyName" label="公司" width="120" ></el-table-column> -->
-          <el-table-column sortable prop="regionName" label="区域" width="120" ></el-table-column>
-          <el-table-column sortable prop="buName" label="单位" width="120" ></el-table-column>
-          <el-table-column sortable prop="departmentName" label="部门" width="120" ></el-table-column>
+          <el-table-column sortable prop="regionName" label="区域" width="150" ></el-table-column>
+          <el-table-column sortable prop="buName" label="单位" width="150" ></el-table-column>
+          <el-table-column sortable prop="departmentName" label="部门" width="150" ></el-table-column>
         </el-table-column>
         <el-table-column label="税前收入">
           <el-table-column sortable prop="grossPay" label="税前工资" width="120"></el-table-column>
@@ -98,12 +100,12 @@
         <!-- <el-table-column sortable prop="threshold" label="个税起征点扣除" width="160"></el-table-column> -->
         <!-- <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column> -->
         <el-table-column label="不应税收入">
-          <el-table-column  v-for="(item,index) in dataList[0].buClaimsItems" :key="index" width="160">
+          <el-table-column  v-for="(item,index) in dataList[0].buClaimsItems" :key="'claim'+index" width="160" v-show="false">
             <template slot="header">{{item.name}}</template>
             <template slot-scope="scope">{{scope.row.buClaimsItems[index].val}}</template>
           </el-table-column>
           <!-- <el-table-column sortable prop="claimAmount" label="不应税报销合计" width="150"></el-table-column> -->
-          <el-table-column  v-for="(item,index) in dataList[0].notTaxableItems" :key="index" width="160">
+          <el-table-column  v-for="(item,index) in dataList[0].notTaxableItems" :key="'notTaxableItem'+index" width="160">
             <template slot="header">{{item.name}}</template>
             <template slot-scope="scope">{{scope.row.notTaxableItems[index].val}}</template>
           </el-table-column>
@@ -466,7 +468,7 @@ export default {
     -ms-flex-pack: justify;
   .selectItem {
     display: flex;
-    min-width: 200px;
+    min-width: 250px;
     align-items: center;
     font-size: 14px;
     color: rgb(237, 137, 55);

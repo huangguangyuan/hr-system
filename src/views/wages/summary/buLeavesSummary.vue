@@ -49,6 +49,7 @@
     <!-- 列表内容 -->
     <div>
       <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 1" height="585" >
+          <!-- <el-table-column sortable prop="departmentName" label="部门" width="150" fixed></el-table-column> -->
           <el-table-column sortable prop="staffNo" label="员工编号" width="150" fixed></el-table-column>
           <el-table-column prop="nameChinese" label="第一姓名" width="200" fixed></el-table-column>
           <el-table-column sortable prop="position" label="员工职位" width="120" fixed></el-table-column>

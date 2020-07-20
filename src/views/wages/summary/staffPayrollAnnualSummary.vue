@@ -88,7 +88,7 @@ export default {
   methods: {
     // 获取单位列表
     async getRegionBU() {
-      var regionBUs = await this.$myApi.regionBUs({isCache:true});
+      var regionBUs = await this.$myApi.regionBUs({isCache:false});
       if (regionBUs && regionBUs.length > 0) {
           this.regionBUlist = regionBUs;
           this.seachMsg.BUCode = this.$toolFn.sessionGet("annualPayrollEdit")? this.$toolFn.sessionGet("annualPayrollEdit").BUCode : this.regionBUlist[0].code;
