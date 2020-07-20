@@ -47,11 +47,11 @@
     <div class="view-detail" v-if="isShow" >
       <el-row :gutter="12">
         <el-col :span="24">
-          <el-card shadow="always" v-show="holidayItem.balanceOfficerNameArr != ''">审批人员：{{holidayItem.balanceOfficerNameArr}}</el-card>
+          <el-card shadow="always" v-show="holidayItem.approveOfficerNameArr != ''">审批人员：{{holidayItem.approveOfficerNameArr}}</el-card>
         </el-col>
-        <el-col :span="24">
+        <!-- <el-col :span="24">
           <el-card shadow="always" v-show="holidayItem.balanceOfficerNameArr != ''">结算人员：{{holidayItem.balanceOfficerNameArr}}</el-card>
-        </el-col>
+        </el-col> -->
         <el-col :span="24">
           <el-card shadow="always" v-show="holidayItem.noticeOfficerNameArr != ''">抄送人员：{{holidayItem.noticeOfficerNameArr}}</el-card>
         </el-col>

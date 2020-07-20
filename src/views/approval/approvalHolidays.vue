@@ -5,14 +5,14 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
-      <el-table-column sortable prop="nameChinese" label="申请人" width="150">
+      <el-table-column sortable prop="nameChinese" label="申请人" width="200">
         <template slot-scope="scope">
           <span :class="typeColor(scope.row.status)">{{scope.row.nameChinese}}</span>
         </template>
       </el-table-column>
-      <el-table-column sortable prop="deptName" label="部门"></el-table-column>
+      <el-table-column sortable prop="deptName" label="部门" width="150"></el-table-column>
       <el-table-column sortable prop="createTime" label="创建日期" width="150"></el-table-column>
-      <el-table-column sortable prop="typeIdTxt" label="假期类型" width="150"></el-table-column>
+      <el-table-column sortable prop="typeIdTxt" label="假期类型" width="100"></el-table-column>
       <el-table-column sortable prop="startDate" label="开始时间" width="200"></el-table-column>
       <el-table-column sortable prop="endDate" label="结束时间" width="200"></el-table-column>
       <el-table-column sortable prop="totalDay" label="请假天数" width="120"></el-table-column>
@@ -25,9 +25,9 @@
           <span :class="typeColor(scope.row.status)">{{scope.row.statusTxt}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300" sortable prop="approveOfficerNameArr" label="审批人员" v-if="userInfo.lev ==301"></el-table-column>
+      <!-- <el-table-column width="300" sortable prop="approveOfficerNameArr" label="审批人员" v-if="userInfo.lev ==301"></el-table-column>
       <el-table-column width="300" sortable prop="balanceOfficerNameArr" label="结算人员" v-if="userInfo.lev ==301"></el-table-column>
-      <el-table-column width="300" sortable prop="noticeOfficerNameArr" label="已抄送" v-if="userInfo.lev ==301"></el-table-column>
+      <el-table-column width="300" sortable prop="noticeOfficerNameArr" label="已抄送" v-if="userInfo.lev ==301"></el-table-column> -->
       <el-table-column label="操作" fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button

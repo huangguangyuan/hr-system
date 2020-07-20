@@ -5,7 +5,7 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id" >
-      <el-table-column sortable prop="nameChinese" label="申请人" width="150">
+      <el-table-column sortable prop="nameChinese" label="申请人" width="200">
         <template slot-scope="scope">
           <span :class="typeColor(scope.row.status)">{{scope.row.nameChinese}}</span>
         </template>
@@ -21,9 +21,9 @@
           <span :class="typeColor(scope.row.status)">{{scope.row.statusTxt}}</span>
         </template>
       </el-table-column>
-      <el-table-column sortable prop="approveOfficerNameArr" width="200" label="审批人员" v-if="userInfo.lev ==301"></el-table-column>
+      <!-- <el-table-column sortable prop="approveOfficerNameArr" width="200" label="审批人员" v-if="userInfo.lev ==301"></el-table-column>
       <el-table-column sortable prop="balanceOfficerNameArr" width="200" label="结算人员" v-if="userInfo.lev ==301"></el-table-column>
-      <el-table-column sortable prop="noticeOfficerNameArr" width="200" label="已抄送" v-if="userInfo.lev ==301"></el-table-column>
+      <el-table-column sortable prop="noticeOfficerNameArr" width="200" label="已抄送" v-if="userInfo.lev ==301"></el-table-column> -->
       <el-table-column label="操作" fixed="right" width="200px">
         <template slot-scope="scope">
           <el-button size="mini" icon="el-icon-info" @click="handleDetails(scope.$index, scope.row)" >查看{{approveTxt(scope.row)}}</el-button>
@@ -77,9 +77,10 @@ export default {
       return this.pageList.map(item => {
         item.createTime = this.$toolFn.timeFormat(item.createTime,'yyyy-MM-dd hh:mm');
         item.isBalanceTxt = item.isBalance == 1?'已结算':'未结算';
-        item.typeIdTxt = this.claimTypes.find(child => {
+        let claimType = this.claimTypes.find(child => {
           return child.id == item.typeId;
-        }).name;
+        })
+        item.typeIdTxt = claimType ? claimType.name:"暂无";
         return item;
       });
     }
@@ -90,7 +91,7 @@ export default {
   methods: {
     async init(){
       this.userInfo = this.$toolFn.curUser;
-      this.claimTypes = await this.$myApi.getBUClaimType();
+      
       this.approvalClaim = this.$toolFn.curUser.access.approvalClaim || [];
       if (this.approvalClaim.length > 0){
         this.isShow = true;
@@ -128,8 +129,9 @@ export default {
   },
   watch: {
     BUCodeSelected: {
-      handler: function(newVal) {
+       handler: async function(newVal) {
         this.pageInfo.reqParams.isReq = true;
+        this.claimTypes = await this.$myApi.getBUClaimType({isCache:false,BUCode:newVal});
         this.$refs.pageInfo.getData(this.pageInfo);
       }
     },

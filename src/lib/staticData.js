@@ -8,10 +8,19 @@ export function payrollTimesTypes(){
 export function insuredTypes(){
   return [{val:1,txt:'中国社保'},{val:2,txt:'香港MPF'}]
 }
-//月份
+// 月份
 export function monthList(){
   return [{val:1,txt:'1月'},{val:2,txt:'2月'},{val:3,txt:'3月'},{val:4,txt:'4月'},{val:5,txt:'5月'},{val:6,txt:'6月'},{val:7,txt:'7月'},{val:8,txt:'8月'},{val:9,txt:'9月'},
   {val:10,txt:'10月'},{val:11,txt:'11月'},{val:12,txt:'12月'}]
+}
+// 文化程度
+export function cultureLevelList(){
+  return [{val:"61",txt:'博士'},{val:"51",txt:'硕士/MBA/EMBA'},{val:"41",txt:'本科'},{val:"31",txt:'大专/高职'},{val:"21",txt:'高中/中专/中技'},{val:"11",txt:'初中'},{val:"10",txt:'小学'},{val:"999",txt:'其他'}]
+}
+
+// 政治面貌
+export function politicalBackgroundList(){
+  return [{val:"1",txt:'群众'},{val:"2",txt:'党员'},{val:"3",txt:'预备党员'},{val:"4",txt:'民主党派'},{val:"5",txt:'团员'},{val:"6",txt:'其他'}]
 }
 
 /**
@@ -232,4 +241,3 @@ export function fileUnitMoveTxt(fileUnitMove){
       return "未知";
   }
 }
-

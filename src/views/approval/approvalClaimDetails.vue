@@ -33,9 +33,9 @@
         <el-col :span="24" v-show="claimItem.approveOfficerNameArr != ''">
           <el-card shadow="always">审批人员：{{claimItem.approveOfficerNameArr}}</el-card>
         </el-col>
-        <el-col :span="24" v-show="claimItem.balanceOfficerNameArr != ''">
+        <!-- <el-col :span="24" v-show="claimItem.balanceOfficerNameArr != ''">
           <el-card shadow="always">结算人员：{{claimItem.balanceOfficerNameArr}}</el-card>
-        </el-col>
+        </el-col> -->
         <el-col :span="24" v-show="claimItem.noticeOfficerNameArr != ''">
           <el-card shadow="always">抄送人员：{{claimItem.noticeOfficerNameArr}}</el-card>
         </el-col>

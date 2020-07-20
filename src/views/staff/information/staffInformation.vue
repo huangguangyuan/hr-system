@@ -58,10 +58,10 @@
               <span>{{ props.row.ethnic }}</span>
             </el-form-item>
             <el-form-item label="政治面貌：">
-              <span>{{ props.row.politicalBackground }}</span>
+              <span>{{ props.row.politicalBackgroundTxt }}</span>
             </el-form-item>
             <el-form-item label="文化程度：">
-              <span>{{ props.row.cultureLevel }}</span>
+              <span>{{ props.row.cultureLevelTxt }}</span>
             </el-form-item>
             <el-form-item label="户口性质：">
               <span>{{ props.row.hukouTypeTxt }}</span>
@@ -112,7 +112,7 @@
               <span>{{ props.row.payrollTypeTxt }}</span>
             </el-form-item>
             <el-form-item label="约满酬金：">
-              <span>{{ props.row.gratuity }}</span>
+              <span>{{ props.row.gratuity === 'Y'?'是':'否' }}</span>
             </el-form-item>
             <el-form-item label="医疗计划：">
               <span>{{ props.row.medicalScheme }}</span>
@@ -244,7 +244,7 @@ import editTemplate from "./editTemplate.vue";
 import md5 from "js-md5";
 import pageInfo from "@/components/pageInfo.vue";
 import busAndSearch from "@/components/busAndSearch.vue";
-import {genderTxt,workStatusTxt,hukouTypeTxt,martialStatusTxt,permanentOrContractTxt,annualLeaveWriteOffMethodTxt,payrollTypeTxt,fileUnitMoveTxt} from "@/lib/staticData.js";
+import {genderTxt,workStatusTxt,hukouTypeTxt,martialStatusTxt,permanentOrContractTxt,annualLeaveWriteOffMethodTxt,payrollTypeTxt,fileUnitMoveTxt,cultureLevelList,politicalBackgroundList} from "@/lib/staticData.js";
 export default {
   components: {
     editTemplate,pageInfo,busAndSearch
@@ -300,6 +300,10 @@ export default {
         item.dateOfLeaving = this.$toolFn.timeFormat(item.dateOfLeaving,"yyyy-MM-dd")
         item.annualLeaveWriteOffDate = this.$toolFn.timeFormat(item.annualLeaveWriteOffDate,"yyyy-MM-dd")
         item.annualLeaveRetainClearDate = this.$toolFn.timeFormat(item.annualLeaveRetainClearDate,"yyyy-MM-dd")
+        let cultureLevelItem = cultureLevelList().find(f=>{return f.val === item.cultureLevel });
+        let politicalBackgroundItem = politicalBackgroundList().find(f=>{return f.val === item.politicalBackground });
+        item.cultureLevelTxt = cultureLevelItem?cultureLevelItem.txt:item.cultureLevel
+        item.politicalBackgroundTxt = politicalBackgroundItem?politicalBackgroundItem.txt:item.politicalBackground
         return item;
       });
     }

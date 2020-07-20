@@ -23,11 +23,13 @@
           :value="item.code"
         ></el-option>
       </el-select>
+    </div>
+    <div class="search-wrap">
       <el-select multiple collapse-tags v-model="departmentCodeArr" placeholder="请选择部门" style="width:200px;" class="selectItem" :loading="departmentListLoading" loading-text="加载中，请稍后" @change="onSelectDepartment">
           <el-checkbox v-model="departmentSelectAlllChecked" @change='onSelectDepartmentAll'>全选</el-checkbox>
           <el-option v-for='(item,index) in departmentList' :key='index' :label="item.name" :value="item.code"></el-option>
       </el-select>
-      <el-select multiple collapse-tags v-model="staffCodeArr" placeholder="请选择员工" style="width:200px;" class="selectItem" :loading="staffListLoading" loading-text="加载中，请稍后" @change="onSelectStaff">
+      <el-select multiple collapse-tags v-model="staffCodeArr" placeholder="请选择员工" style="width:240px;" class="selectItem" :loading="staffListLoading" loading-text="加载中，请稍后" @change="onSelectStaff">
           <el-checkbox v-model="staffSelectAlllChecked" @change='onSelectStaffAll'>全选</el-checkbox>
           <el-option v-for='(item,index) in staffList' :key='index' :label="item.name" :value="item.code"></el-option>
       </el-select>
@@ -40,16 +42,6 @@
         format="yyyy"
         @change="onSelectYear"
       ></el-date-picker>
-      <!-- <el-date-picker
-        v-if="staffCodeArr.length === 1"
-        class="selectItem"
-        v-model="searchDate"
-        placeholder="请选择日期"
-        type="daterange"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期">
-    </el-date-picker> -->
       <el-button type="primary" @click="onSearchSummary">确定</el-button>
       <el-button type="primary" @click="onFlash" plain>复位</el-button>
     </div>
@@ -57,46 +49,62 @@
     <!-- 列表内容 -->
     <div>
       <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 1" height="585" >
-          <el-table-column sortable prop="staffNo" label="员工编号" width="120" fixed></el-table-column>
-          <el-table-column prop="nameChinese" label="第一姓名" width="120" fixed></el-table-column>
+          <el-table-column sortable prop="staffNo" label="员工编号" width="150" fixed></el-table-column>
+          <el-table-column prop="nameChinese" label="第一姓名" width="200" fixed></el-table-column>
           <el-table-column sortable prop="position" label="员工职位" width="120" fixed></el-table-column>
           <el-table-column sortable prop="dateOfJoining" label="入职日期" width="120" fixed></el-table-column>
           <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="120" fixed></el-table-column>
           <el-table-column label="年假">
             <el-table-column sortable prop="annual.adjust" label="调整" width="90"></el-table-column>
             <el-table-column sortable prop="annual.annualYear" label="年假" width="90"></el-table-column>
-            <el-table-column sortable prop="annual.total" label="总数" width="90"></el-table-column>
+            <el-table-column sortable prop="annual.total" label="总数" width="90" ></el-table-column>
             <el-table-column sortable prop="annual.taken" label="请假天数" width="120"></el-table-column>
-            <el-table-column sortable prop="annual.bal" label="结余" width="90"></el-table-column>
+            <el-table-column sortable prop="annual.remarks" label="备注" width="150"></el-table-column>
+            <el-table-column sortable prop="annual.bal" label="结余" width="90" >
+              <template slot-scope="scope" >
+                <span style="color: #ff0000">{{scope.row.annual.bal}}</span>
+              </template>
+            </el-table-column>
           </el-table-column>
           <el-table-column label="病假">
               <el-table-column sortable prop="sick.sickYear" label="病假" width="90"></el-table-column>
               <el-table-column sortable prop="sick.taken" label="请假天数" width="120"></el-table-column>
-              <el-table-column sortable prop="sick.bal" label="结余" width="90"></el-table-column>
+              <el-table-column sortable label="结余" width="90">
+                <template slot-scope="scope" >
+                  <span style="color: #ff0000">{{scope.row.sick.bal}}</span>
+                </template>
+              </el-table-column>
           </el-table-column>
           <el-table-column sortable prop="noPay.taken" label="无薪假" width="90"></el-table-column>
           <el-table-column sortable prop="maternity.taken" label="产假/陪产假" width="150"></el-table-column>
           <el-table-column sortable prop="marriage.taken" label="婚假" width="90"></el-table-column>
           <el-table-column sortable prop="special.taken" label="特别假" width="90"></el-table-column>
       </el-table>
-      <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 2" height="585" >
-          <el-table-column sortable prop="staffNo" label="员工编号" width="120" fixed></el-table-column>
-          <el-table-column prop="nameChinese" label="第一姓名" width="120" fixed></el-table-column>
-          <el-table-column sortable prop="position" label="员工职位" width="120" fixed></el-table-column>
-          <el-table-column sortable prop="applyDate" label="生效时间" width="120" fixed></el-table-column>
-          <el-table-column sortable prop="createTime" label="申请日期" width="120" fixed></el-table-column>
-          <el-table-column sortable prop="startDate" label="开始时间" width="120" fixed></el-table-column>
-          <el-table-column sortable prop="endDate" label="结束时间" width="120" fixed></el-table-column>
+      <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 2" height="585"  >
+          <!-- <el-table-column sortable prop="staffNo" label="员工编号" width="120" fixed></el-table-column> -->
+          <el-table-column prop="nameChinese" label="第一姓名" width="200" fixed></el-table-column>
+          <!-- <el-table-column sortable prop="position" label="员工职位" width="120" fixed></el-table-column> -->
+          <el-table-column sortable prop="applyDate" label="生效时间" width="150" fixed></el-table-column>
+          <el-table-column sortable prop="createTime" label="申请日期" width="150" fixed></el-table-column>
+          <el-table-column sortable prop="startDate" label="开始时间" width="150" fixed></el-table-column>
+          <el-table-column sortable prop="endDate" label="结束时间" width="150" fixed></el-table-column>
           <el-table-column label="年假">
             <el-table-column sortable prop="annual.taken" label="请假天数" width="120"></el-table-column>
             <el-table-column sortable prop="annual.total" label="累计" width="90"></el-table-column>
-            <el-table-column sortable prop="annual.bal" label="结余" width="90"></el-table-column>
-            <el-table-column sortable prop="annual.remarks" label="备注" width="150"></el-table-column>
-          </el-table-column>
+            <el-table-column sortable prop="annual.bal" label="结余" width="90" class="bg-set01">
+                <template slot-scope="scope" >
+                  <span style="color: #ff0000">{{scope.row.annual.bal}}</span>
+                </template>
+            </el-table-column>
+y          </el-table-column>
           <el-table-column label="病假">
               <el-table-column sortable prop="sick.taken" label="请假天数" width="120"></el-table-column>
-              <el-table-column sortable prop="sick.total" label="病假" width="90"></el-table-column>
-              <el-table-column sortable prop="sick.bal" label="结余" width="90"></el-table-column>
+              <el-table-column sortable prop="sick.total" label="累计" width="90" ></el-table-column>
+              <el-table-column sortable prop="sick.bal" label="结余" width="90">
+                <template slot-scope="scope" >
+                  <span style="color: #ff0000">{{scope.row.sick.bal}}</span>
+                </template>
+              </el-table-column>
               <el-table-column sortable prop="sick.remarks" label="备注" width="150"></el-table-column>
           </el-table-column>
           <el-table-column sortable prop="noPay.taken" label="无薪假" width="90"></el-table-column>
@@ -120,7 +128,7 @@ export default {
   },
   name: "buLeavesSummary",
   inject: ["reload"],
-  data() {d
+  data() {
     return {
       showType:1,
       dataList: [],
@@ -344,7 +352,7 @@ export default {
         var data = {departmentCode:this.departmentCodeArr};
         let departmentStaffs = await this.$myApi.post(reqUrl,data);
         for (let index = 0; index < departmentStaffs.length; index++) {
-          this.staffList.push({name:departmentStaffs[index].nameChinese,code:departmentStaffs[index].code});
+          this.staffList.push({name:departmentStaffs[index].nameChinese  + (departmentStaffs[index].staffAlias && departmentStaffs[index].staffAlias != '' ? '(' + departmentStaffs[index].staffAlias + ' )': ''),code:departmentStaffs[index].code});
         }
         this.staffListLoading = false;
       }
@@ -451,7 +459,7 @@ export default {
     -ms-flex-pack: justify;
   .selectItem {
     display: flex;
-    min-width: 200px;
+    min-width: 250px;
     align-items: center;
     font-size: 14px;
     color: rgb(237, 137, 55);
@@ -486,6 +494,12 @@ export default {
 }
 .el-table /deep/ .cell{
   text-align: center;
+}
+
+/deep/ .el-table__body .el-table__row:last-child{
+  background: #F5F7FA !important;
+  font-size: 14px;
+  border: 0;
 }
 </style>
 
