@@ -144,13 +144,11 @@ export default {
   },
   methods:{
     dayTip(data){
-      alert(data);
     },
     goLink(path){
       this.$router.replace({ path: path});
     },
     getInfo(){
-      
       this.$myApi.http.post("/server/api/v1/baseInfo/hrHome", {}).then(res => {
         if (res.data.code == 0) {
           this.info = res.data.data;

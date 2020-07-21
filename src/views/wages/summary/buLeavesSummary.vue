@@ -48,7 +48,7 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <div>
-      <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 1" height="585" >
+      <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 1" height="520" >
           <!-- <el-table-column sortable prop="departmentName" label="部门" width="150" fixed></el-table-column> -->
           <el-table-column sortable prop="staffNo" label="员工编号" width="150" fixed></el-table-column>
           <el-table-column prop="nameChinese" label="第一姓名" width="200" fixed></el-table-column>
@@ -97,7 +97,8 @@
                   <span style="color: #ff0000">{{scope.row.annual.bal}}</span>
                 </template>
             </el-table-column>
-y          </el-table-column>
+            <el-table-column sortable prop="annual.remarks" label="备注" width="150"></el-table-column>
+          </el-table-column>
           <el-table-column label="病假">
               <el-table-column sortable prop="sick.taken" label="请假天数" width="120"></el-table-column>
               <el-table-column sortable prop="sick.total" label="累计" width="90" ></el-table-column>
