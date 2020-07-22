@@ -95,7 +95,6 @@ export default {
   },
   methods: {
     async init(){
-      this.claimTypes = await this.$myApi.getBUClaimType();
       if (this.$toolFn.curUser.access.approvalClaim.length > 0){
         this.isShow = true;
       }
@@ -122,8 +121,9 @@ export default {
   },
   watch: {
     BUCodeSelected: {
-      handler: function(newVal) {
+      handler: async function(newVal) {
         this.pageInfo.reqParams.isReq = true;
+        this.claimTypes = await this.$myApi.getBUClaimType({isCache:false,BUCode:newVal});
         this.$refs.pageInfo.getData(this.pageInfo);
       }
     },

@@ -80,11 +80,11 @@ export default {
   methods: {
     async init(){
       this.claimItem = await this.$myApi.staffClaim({claimCode:this.curInfo.code});
-      this.claimTypes = await this.$myApi.getClaimTypeId();
+      this.claimTypes = await this.$myApi.getBUClaimType({isCache:false,BUCode:this.claimItem.BUCode});
       this.claimItem.details.map(item => {
-        item.typeIdTxt = this.claimTypes.filter(child => {
-          return child.typeId == item.typeId;
-        })[0].val;
+        item.typeIdTxt = this.claimTypes.find(child => {
+          return child.id == item.typeId;
+        }).name;
         return item;
       });
       this.tableData = this.claimItem.details;
