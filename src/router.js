@@ -1,4 +1,3 @@
-
 import Vue from 'vue'
 import Router from 'vue-router'
 
@@ -23,6 +22,18 @@ let routers = new Router({
       },
       component: resolve => require(['@/views/Login.vue'], resolve),
     },
+    // 修改密码
+    {
+      path: '/editPassword/:code',
+      name: 'editPassword',
+      component: resolve => require(['@/views/EditPassword.vue'], resolve),
+    },
+    // 认证用户名和邮箱
+    {
+      path: '/accountEmail',
+      name: 'accountEmail',
+      component: resolve => require(['@/views/AccountEmail.vue'], resolve),
+    },    
     // 404
     {
       path: '*',
