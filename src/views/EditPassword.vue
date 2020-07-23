@@ -33,7 +33,7 @@ export default {
   name: "login",
   data() {
     return {
-      code:this.$route.params,
+      code:this.$route.params.code,
       rediredUrl:'',
       formLabelAlign: {
         // user: "testHrAdmin01",
@@ -75,22 +75,25 @@ export default {
     },
     // 登录
     editPassword() {
-      var reqUrl = "/open/api/v1/hrSys/login";
-      if (data.pass1 !== data.pass2){
+      var reqUrl = "/open/api/v1/updatePasswordByLink";
+      if (this.formLabelAlign.pass1 !== this.formLabelAlign.pass2){
         this.$message.error('两次密码输入不一致');
         return;
       }
       var data = {
         code: this.code,
-        pass1: md5(this.formLabelAlign.pass1),
-        pass2: md5(this.formLabelAlign.pass2)
+        password: md5(this.formLabelAlign.pass1)
       };
-      if (data.pass1 !== data.pass2){
-        this.$message.error('两次密码输入不一致');
-        return;
-      }
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
+          this.$message.info("密码修改成功，请重新登录系统");
+          var returnUrl = "/";
+          if (res.data.data.roleTypeId === 1 || res.data.data.roleTypeId === 2){
+            returnUrl = "/hr";
+          }
+          this.$router.replace({
+              path: returnUrl // 到登录页重新获取token
+            });
         } else {
           this.$message.error(res.data.msg);
         }
@@ -142,6 +145,7 @@ export default {
       outline: none;
     }
   }
+  
 }
 </style>
 

@@ -28,6 +28,7 @@
         <el-form-item :label="$t('AdminLogin.pass')" prop="pass">
           <el-input prefix-icon="el-icon-setting" v-model="formLabelAlign.pass" show-password></el-input>
         </el-form-item>
+        <div class="forget"><span @click="goLink()">忘记密码</span></div>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">{{$t('AdminLogin.loginBtn')}}</el-button>
           <!-- <el-button type="danger">注 册</el-button> -->
@@ -71,6 +72,9 @@ export default {
     }
   },
   methods: {
+    goLink(){
+      this.$router.push({path:'/accountEmail'})
+    },
     handleCommand(command) {
       this.$i18n.locale = command;
       Cookies.set("language", command, { expires: 7 });
@@ -190,6 +194,14 @@ export default {
     input {
       outline: none;
     }
+  }
+  .forget{
+    font-size: 14px;
+    text-align:right;
+    color: #606266;
+    cursor: pointer;
+    padding-right: 10px;
+    
   }
 }
 </style>

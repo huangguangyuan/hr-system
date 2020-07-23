@@ -197,6 +197,7 @@ export default {
     text-align:right;
     color: #606266;
     cursor: pointer;
+    padding-right: 10px;
     
   }
 }

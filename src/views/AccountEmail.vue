@@ -26,7 +26,7 @@
       <div class="showTip" v-if="showType === 2">
         <div class="show-text">
           <div class="icon"><i class="el-icon-alarm-clock"></i></div><div class="text"><span>邮件已经发送</span><br />
-        您的密码修改链接已经发送到邮箱，请尽快操作，谢谢<br /></div> </div>
+        您的密码修改链接已经发送到邮箱，请尽快修改，谢谢<br /></div> </div>
       </div>
     </div>
   </div>
@@ -41,8 +41,8 @@ export default {
       showType:1,
       rediredUrl:'',
       formLabelAlign: {
-        user: "teststaff",
-        email: "80223120@qq.com"
+        user: "",
+        email: ""
       },
       rules: {
         user: [{ required: true, message: '请输入账户', trigger: "blur" }],
