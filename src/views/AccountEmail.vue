@@ -42,7 +42,8 @@ export default {
       rediredUrl:'',
       formLabelAlign: {
         user: "",
-        email: ""
+        email: "" 
+        
       },
       rules: {
         user: [{ required: true, message: '请输入账户', trigger: "blur" }],

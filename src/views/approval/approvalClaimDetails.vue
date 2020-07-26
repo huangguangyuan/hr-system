@@ -147,9 +147,9 @@ export default {
     },
     openFile(item){
         let a = document.createElement('a')
-          a.href = item;
-          a.target = '_blank';
-          a.click();
+        a.href = item;
+        a.target = '_blank';
+        a.click();
     },
     
     submitForm(formName) {

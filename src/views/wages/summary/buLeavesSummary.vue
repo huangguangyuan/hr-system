@@ -43,6 +43,7 @@
         @change="onSelectYear"
       ></el-date-picker>
       <el-button type="primary" @click="onSearchSummary">确定</el-button>
+      <el-button type="primary" @click="onExplorSummary" v-if="false">导出文件</el-button>
       <el-button type="primary" @click="onFlash" plain>复位</el-button>
     </div>
     <el-divider></el-divider>
@@ -76,15 +77,13 @@
                 </template>
               </el-table-column>
           </el-table-column>
-          <el-table-column sortable prop="noPay.taken" label="年假" width="90"></el-table-column>
+          <el-table-column sortable prop="noPay.taken" label="事假" width="90"></el-table-column>
           <el-table-column sortable prop="maternity.taken" label="产假/陪产假" width="150"></el-table-column>
           <el-table-column sortable prop="marriage.taken" label="婚假" width="90"></el-table-column>
           <el-table-column sortable prop="special.taken" label="特别假" width="90"></el-table-column>
       </el-table>
       <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 2" height="585"  >
-          <!-- <el-table-column sortable prop="staffNo" label="员工编号" width="120" fixed></el-table-column> -->
           <el-table-column prop="nameChinese" label="第一姓名" width="200" fixed></el-table-column>
-          <!-- <el-table-column sortable prop="position" label="员工职位" width="120" fixed></el-table-column> -->
           <el-table-column sortable prop="applyDate" label="生效时间" width="150" fixed></el-table-column>
           <el-table-column sortable prop="createTime" label="申请日期" width="150" fixed></el-table-column>
           <el-table-column sortable prop="startDate" label="开始时间" width="150" fixed></el-table-column>
@@ -109,7 +108,7 @@
               </el-table-column>
               <el-table-column sortable prop="sick.remarks" label="备注" width="150"></el-table-column>
           </el-table-column>
-          <el-table-column sortable prop="noPay.taken" label="年假" width="90"></el-table-column>
+          <el-table-column sortable prop="noPay.taken" label="事假" width="90"></el-table-column>
           <el-table-column sortable prop="noPay.remarks" label="备注" width="200"></el-table-column>
           <el-table-column sortable prop="maternity.taken" label="产假/陪产假" width="150"></el-table-column>
           <el-table-column sortable prop="maternity.remarks" label="备注" width="200"></el-table-column>
@@ -252,6 +251,52 @@ export default {
         this.dataList = await this.$myApi.post('/server/api/v1/payroll/staff/staffLeavesSummary',postData);
       }
       
+    },
+     /**
+     * @description: 导出假期汇总
+     */
+    async onExplorSummary(){
+      if (this.regionCode === ''){
+        this.$message.error("请选择区域");
+        return;
+      }
+
+      if (this.BUCode === ''){
+        this.$message.error("请选择单位");
+        return;
+      }
+      if (this.departmentCodeArr.length === 0){
+        this.$message.error("请至少选择一个部门");
+        return;
+      }
+      if (this.staffCodeArr.length === 0){
+        this.$message.error("请至少选择一个员工");
+        return;
+      }
+      let postData = {
+        BUCode:this.BUCode,
+        searchYear:Number.parseInt(this.searchYear),
+      }
+      if (!this.departmentSelectAlllChecked){
+        postData.departmentCodeArr = this.departmentCodeArr
+      }
+      if (!this.staffSelectAlllChecked){
+        postData.staffCodeArr = this.staffCodeArr
+      }
+      postData.isExport = true;
+      this.$message.success("正在生成中，请稍后...");
+      let file = "";
+      if(this.staffCodeArr.length > 1){
+        file = await this.$myApi.post('/server/api/v1/payroll/staff/buLeavesSummary',postData);
+      }else {
+        file = await this.$myApi.post('/server/api/v1/payroll/staff/staffLeavesSummary',postData);
+      }
+      if (file !== ""){
+        let a = document.createElement('a')
+        a.href = file
+        a.target = '_blank'
+        a.click()
+      }
     },
     async onFlash(){
       this.$toolFn.sessionSet("buLeavesSummaryData",

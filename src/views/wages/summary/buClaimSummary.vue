@@ -43,6 +43,7 @@
         @change="onSelectYear"
       ></el-date-picker>
       <el-button type="primary" @click="onSearchSummary">确定</el-button>
+      <el-button type="primary" @click="onExplorSummary" v-show="false">导出文件</el-button>
       <el-button type="primary" @click="onFlash" plain>复位</el-button>
     </div>
     <el-divider></el-divider>
@@ -58,6 +59,7 @@
           </el-table-column>
       </el-table>
       <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 2" >
+        <el-table-column sortable prop="nameChinese" label="第一姓名" width="150" fixed></el-table-column>
         <el-table-column sortable prop="claimDate" label="申请日期" width="150" fixed></el-table-column>
           <el-table-column sortable  v-for="(item,index) in dataList[0].buClaimsItems" :key="index" width="160">
             <template slot="header">{{item.name}}</template>
@@ -176,9 +178,7 @@ export default {
       if (!this.departmentSelectAlllChecked){
         postData.departmentCodeArr = this.departmentCodeArr
       }
-      if (!this.staffSelectAlllChecked){
-        postData.staffCodeArr = this.staffCodeArr
-      }
+      postData.staffCodeArr = this.staffCodeArr;
       this.$toolFn.sessionSet("buClaimSummaryData",
       {
         regionCode:this.regionCode,
@@ -196,6 +196,50 @@ export default {
       }else {
         this.showType = 2;
         this.dataList = await this.$myApi.post('/server/api/v1/payroll/staff/staffClaimSummary',postData);
+      }
+    },
+         /**
+     * @description: 导出报销汇总
+     */
+    async onExplorSummary(){
+      if (this.regionCode === ''){
+        this.$message.error("请选择区域");
+        return;
+      }
+
+      if (this.BUCode === ''){
+        this.$message.error("请选择单位");
+        return;
+      }
+      if (this.departmentCodeArr.length === 0){
+        this.$message.error("请至少选择一个部门");
+        return;
+      }
+      if (this.staffCodeArr.length === 0){
+        this.$message.error("请至少选择一个员工");
+        return;
+      }
+      let postData = {
+        BUCode:this.BUCode,
+        searchYear:Number.parseInt(this.searchYear),
+      }
+      if (!this.departmentSelectAlllChecked){
+        postData.departmentCodeArr = this.departmentCodeArr
+      }
+      postData.staffCodeArr = this.staffCodeArr
+      postData.isExport = true;
+      this.$message.success("正在生成中，请稍后...");
+      let file = "";
+      if(this.staffCodeArr.length > 1){
+        file = await this.$myApi.post('/server/api/v1/payroll/staff/buClaimSummary',postData);
+      }else {
+        file = await this.$myApi.post('/server/api/v1/payroll/staff/staffClaimSummary',postData);
+      }
+      if (file !== ""){
+        let a = document.createElement('a')
+        a.href = file
+        a.target = '_blank'
+        a.click()
       }
     },
     async onFlash(){

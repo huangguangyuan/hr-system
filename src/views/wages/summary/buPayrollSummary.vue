@@ -55,6 +55,7 @@
 
       </el-select>
       <el-button type="primary" @click="onSearchSummary">确定</el-button>
+      <el-button type="primary" @click="onExplorSummary" v-show="false">导出文件</el-button>
       <el-button type="primary" @click="onFlash" plain>复位</el-button>
     </div>
     <el-divider></el-divider>
@@ -243,7 +244,7 @@ export default {
       }
       if (!this.monthSelectAlllChecked){
         postData.searchMonthArr = this.searchMonthArr.map(Number)
-      }
+      } 
       this.$toolFn.sessionSet("staffPayrollSummaryData",
       {
         regionCode:this.regionCode,
@@ -255,9 +256,62 @@ export default {
         monthSelectAlllChecked:this.monthSelectAlllChecked,
         searchMonthArr:this.searchMonthArr,
         searchYear:this.searchYear
+        
       });
       this.dataList = await this.$myApi.post('/server/api/v1/payroll/staff/staffPayrollSummaryV2',postData);
     },
+     /**
+     * @description: 导出工资汇总
+     */
+    async onExplorSummary(){
+      let matchMonth = '1,2,3,4,5,6,7,8,9,10,11,12';
+      if (matchMonth.indexOf(this.searchMonthArr.sort().join(',')) < 0){
+        this.$message.error("请确保月份是连续的");
+        return;
+      }
+      if (this.regionCode === ''){
+        this.$message.error("请选择区域");
+        return;
+      }
+
+      if (this.BUCode === ''){
+        this.$message.error("请选择单位");
+        return;
+      }
+      if (this.departmentCodeArr.length === 0){
+        this.$message.error("请至少选择一个部门");
+        return;
+      }
+      if (this.staffCodeArr.length === 0){
+        this.$message.error("请至少选择一个员工");
+        return;
+      }
+      if (this.searchMonthArr.length === 0){
+        this.$message.error("请至少选择一个月份");
+        return;
+      }
+
+      let postData = {
+        BUCode:this.BUCode,
+        searchYear:Number.parseInt(this.searchYear),
+      }
+      if (!this.departmentSelectAlllChecked){
+        postData.departmentCodeArr = this.departmentCodeArr
+      }
+      if (!this.staffSelectAlllChecked){
+        postData.staffCodeArr = this.staffCodeArr
+      }
+      if (!this.monthSelectAlllChecked){
+        postData.searchMonthArr = this.searchMonthArr.map(Number)
+      }
+      postData.isExport = true;
+      this.$message.success("正在生成中，请稍后...");
+      let file = await this.$myApi.post('/server/api/v1/payroll/staff/staffPayrollSummaryV2',postData);
+      let a = document.createElement('a')
+      a.href = file
+      a.target = '_blank'
+      a.click()
+    },    
     async onFlash(){
       this.$toolFn.sessionSet("staffPayrollSummaryData",
       {
