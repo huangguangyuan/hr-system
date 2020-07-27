@@ -43,7 +43,7 @@
       <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="100"></el-table-column>
       <el-table-column sortable prop="salary" label="基本工资" width="100"></el-table-column>
       <el-table-column sortable prop="taxableItemsAmount" label="应税项目总额" width="140"></el-table-column>
-      <el-table-column sortable prop="claimAmount" label="请假应扣总额" width="140"></el-table-column>
+      <el-table-column sortable prop="holidayAmount" label="请假应扣总额" width="140"></el-table-column>
       <el-table-column sortable prop="totalAmount" label="收入总额" width="100"></el-table-column>
       <el-table-column sortable prop="SIAmount" label="社保扣除" width="100"></el-table-column>
       <el-table-column sortable prop="HCAmount" label="公积金扣除" width="130"></el-table-column>
@@ -52,6 +52,7 @@
       <el-table-column sortable prop="threshold" label="个税起征点扣除" width="160"></el-table-column>
       <el-table-column sortable prop="taxableWages" label="应税金额" width="100"></el-table-column>
       <el-table-column sortable prop="taxAmount" label="个人所得税" width="130"></el-table-column>
+      <el-table-column sortable prop="claimAmount" label="报销总额" width="140"></el-table-column>
       <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column>
       <el-table-column sortable prop="adjAmount" label="调整金额" width="100"></el-table-column>
       <el-table-column sortable prop="reallyAmount" label="实发金额" width="100"></el-table-column>
@@ -106,10 +107,11 @@
       <el-table-column sortable prop="dateOfLeaving" label="离职日期" width="100"></el-table-column>
       <el-table-column sortable prop="salary" label="基本工资" width="100"></el-table-column>
       <el-table-column sortable prop="taxableItemsAmount" label="应税项目总额" width="140"></el-table-column>
-      <el-table-column sortable prop="claimAmount" label="请假应扣总额" width="140"></el-table-column>
       <el-table-column sortable prop="totalAmount" label="收入总额" width="100"></el-table-column>
       <el-table-column sortable prop="MPFAmount" label="MPF扣除" width="120"></el-table-column>
+      <el-table-column sortable prop="holidayAmount" label="请假应扣除" width="120"></el-table-column>
       <el-table-column sortable prop="grossPay" label="税前金额" width="100"></el-table-column>
+      <el-table-column sortable prop="claimAmount" label="报销总额" width="140"></el-table-column>
       <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column>
       <el-table-column sortable prop="adjAmount" label="调整金额" width="100"></el-table-column>
       <el-table-column sortable prop="reallyAmount" label="实发金额" width="100"></el-table-column>
@@ -344,6 +346,10 @@ export default {
       this.deletePayrollSlip_right = true;
     }
     this.multipleSelection = this.$toolFn.sessionGet("staffPayrollList_multipleSelection");
+    console.log(this.buSelectedLocationType)
+    if (this.buSelectedLocationType === 1){
+      this.seachMsg.payrollTimesType = 1
+    }
     this.InitializationFun();
   },
   methods: {
@@ -357,7 +363,7 @@ export default {
           this.seachMsg.year = this.$toolFn.sessionGet("staffPayrollListSearch").year || this.seachMsg.year;
           // this.seachMsg.month = this.$toolFn.sessionGet("staffPayrollListSearch").month || this.seachMsg.month;
           // this.seachMsg.insuredType = this.$toolFn.sessionGet("staffPayrollListSearch").insuredType || this.seachMsg.insuredType;
-          this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
+          // this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
       }
       this.getRegionBU();
     },

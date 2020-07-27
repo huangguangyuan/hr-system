@@ -1,11 +1,12 @@
+
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px">
       <el-form-item label="更新项目：" prop="updateItems">
           <el-checkbox-group v-model="ruleForm.updateItems">
-            <el-checkbox label="salaryCalc" value ="salaryCalc">重算基本工资</el-checkbox>
+          <el-checkbox label="salaryCalc" value ="salaryCalc">重算基本工资</el-checkbox>
           <el-checkbox label="taxableItemsCalc" value ="taxableItemsCalc">重算应税项目</el-checkbox>
-          <el-checkbox label="notTaxableItemsCalc" value ="notTaxableItemsCalc">重算非应税项目</el-checkbox>
+          <el-checkbox label="notTaxableItemsCalc" value ="notTaxableItemsCalc">重算非应税项目</el-checkbox><br />
           <el-checkbox label="specialDeductionCalc" value ="specialDeductionCalc">重算专项附加扣除</el-checkbox>
           <el-checkbox label="SICalc" value ="SICalc">重算社保</el-checkbox>
           <el-checkbox label="HCCalc" value ="HCCalc">重算公积金</el-checkbox>
