@@ -186,9 +186,9 @@ export default {
               this.userInfo = userInfo;
               this.reload();
               if (userInfo.roleTypeId == 1) {
-                this.$router.push({ path: "/applyMain" });
+                this.$router.replace({ path: "/applyMain" });
               } else {
-                this.$router.push({ path: "/home" });
+                this.$router.replace({ path: "/home" });
               }
           });
         }
