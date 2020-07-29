@@ -116,7 +116,7 @@
       <el-table-column sortable prop="adjAmount" label="调整金额" width="100"></el-table-column>
       <el-table-column sortable prop="reallyAmount" label="实发金额" width="100"></el-table-column>
       <el-table-column sortable prop="typeTxt" label="工资单状态" width="130"></el-table-column>
-      <el-table-column label="操作" width="650">
+      <el-table-column label="操作" width="750">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -346,7 +346,6 @@ export default {
       this.deletePayrollSlip_right = true;
     }
     this.multipleSelection = this.$toolFn.sessionGet("staffPayrollList_multipleSelection");
-    console.log(this.buSelectedLocationType)
     if (this.buSelectedLocationType === 1){
       this.seachMsg.payrollTimesType = 1
     }
@@ -361,9 +360,11 @@ export default {
       if (this.$toolFn.sessionGet("staffPayrollListSearch")) {
           this.BUCode = this.$toolFn.sessionGet("staffPayrollListSearch").BUCode || this.BUCode;
           this.seachMsg.year = this.$toolFn.sessionGet("staffPayrollListSearch").year || this.seachMsg.year;
-          // this.seachMsg.month = this.$toolFn.sessionGet("staffPayrollListSearch").month || this.seachMsg.month;
+          this.seachMsg.month = this.$toolFn.sessionGet("staffPayrollListSearch").month || this.seachMsg.month;
           // this.seachMsg.insuredType = this.$toolFn.sessionGet("staffPayrollListSearch").insuredType || this.seachMsg.insuredType;
-          // this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
+          if (this.buSelectedLocationType === 2){
+            this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
+          }
       }
       this.getRegionBU();
     },
@@ -381,6 +382,9 @@ export default {
         this.regionBUlist = regionBUs;
         this.BUCode = this.BUCode != '' ? this.BUCode : this.regionBUlist[0].code;
         this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.code === this.BUCode })[0].locationType;
+        if (this.buSelectedLocationType === 2){
+            this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
+        }
         //this.getData(this.seachMsg.BUCode,parseInt(this.seachMsg.year),parseInt(this.seachMsg.month));
       }
     },
@@ -397,13 +401,15 @@ export default {
     // 获取单位BUCode
     selectFun(val) {
       this.BUCode = val;
+      this.seachMsg = {};
       this.seachMsg.BUCode = val;
+      this.seachMsg.year = date.getFullYear().toString();
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
       this.$toolFn.sessionSet("staffPayrollList_multipleSelection",'');
       this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.code === val})[0].locationType;
       // this.insuredTypes = insuredTypes().filter(f=>{return f.val === this.buSelectedLocationType});
       this.pageInfo.reqParams.isReq = true;
-      this.$refs.pageInfo.getData(this.pageInfo);
+      // this.$refs.pageInfo.getData(this.pageInfo);
     },
     // 选择年份
     selectYear(val) {
@@ -411,7 +417,7 @@ export default {
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
       this.$toolFn.sessionSet("staffPayrollList_multipleSelection",'');
       this.pageInfo.reqParams.isReq = true;
-      this.$refs.pageInfo.getData(this.pageInfo);
+      // this.$refs.pageInfo.getData(this.pageInfo);
     },
     // 选择月份
     selectMonth(val) {
@@ -460,9 +466,10 @@ export default {
      * @description: 打开重新薪资窗口
      */    
     openShowPayrollUpdate(index, res) {
-      this.curInfo = res;
+      this.curInfo = res
       this.curInfo.hrCode = this.hrCode
-      this.isShowPayrollUpdate = true;
+      this.curInfo.buSelectedLocationType = this.buSelectedLocationType
+      this.isShowPayrollUpdate = true
     },
     // 打开详细页面
     openFun(index, res) {

@@ -1,4 +1,3 @@
-
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px">
@@ -7,9 +6,10 @@
           <el-checkbox label="salaryCalc" value ="salaryCalc">重算基本工资</el-checkbox>
           <el-checkbox label="taxableItemsCalc" value ="taxableItemsCalc">重算应税项目</el-checkbox>
           <el-checkbox label="notTaxableItemsCalc" value ="notTaxableItemsCalc">重算非应税项目</el-checkbox><br />
-          <el-checkbox label="specialDeductionCalc" value ="specialDeductionCalc">重算专项附加扣除</el-checkbox>
-          <el-checkbox label="SICalc" value ="SICalc">重算社保</el-checkbox>
-          <el-checkbox label="HCCalc" value ="HCCalc">重算公积金</el-checkbox>
+          <el-checkbox label="specialDeductionCalc" value ="specialDeductionCalc" v-if="buSelectedLocationType===1">重算专项附加扣除</el-checkbox>
+          <el-checkbox label="SICalc" value ="SICalc" v-if="buSelectedLocationType===1">重算社保</el-checkbox>
+          <el-checkbox label="HCCalc" value ="HCCalc" v-if="buSelectedLocationType===1">重算公积金</el-checkbox>
+          <el-checkbox label="MPFCalc" value ="MPFCalc" v-if="buSelectedLocationType===2 && payrollTimesType ===1">重算MPF</el-checkbox>
           <el-checkbox label="processCalc" value ="processCalc">只重算计薪流程</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
@@ -28,6 +28,8 @@ export default {
   data() {
     return {
       ruleForm: {
+        buSelectedLocationType:1,// 单位的区域
+        payrollTimesType:1,// 出粮方式，1单次，2多次出粮
         code:'',
         updateItems:[],
       },
@@ -39,9 +41,11 @@ export default {
       isShow: true, //是否显示
     };
   },
-  mounted() {
-    this.ruleForm.code = this.curInfo.code;
-
+  beforeMount() {
+    console.log(this.curInfo)
+    this.payrollTimesType = this.curInfo.payrollTimesType
+    this.buSelectedLocationType = this.curInfo.buSelectedLocationType
+    this.ruleForm.code = this.curInfo.code
   },
   methods: {
     /**
