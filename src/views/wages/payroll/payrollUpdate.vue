@@ -9,6 +9,7 @@
           <el-checkbox label="specialDeductionCalc" value ="specialDeductionCalc" v-if="buSelectedLocationType===1">重算专项附加扣除</el-checkbox>
           <el-checkbox label="SICalc" value ="SICalc" v-if="buSelectedLocationType===1">重算社保</el-checkbox>
           <el-checkbox label="HCCalc" value ="HCCalc" v-if="buSelectedLocationType===1">重算公积金</el-checkbox>
+          <el-checkbox label="MPFCalc" value ="MPFCalc" v-if="buSelectedLocationType===2">重算MPF</el-checkbox>
           <el-checkbox label="MPFCalc" value ="MPFCalc" v-if="buSelectedLocationType===2 && payrollTimesType ===1">重算MPF</el-checkbox>
           <el-checkbox label="processCalc" value ="processCalc">只重算计薪流程</el-checkbox>
         </el-checkbox-group>

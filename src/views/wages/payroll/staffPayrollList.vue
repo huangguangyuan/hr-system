@@ -13,7 +13,7 @@
     </div>
     <div class="search-wrap">
       <!-- 选择单位 -->
-      <el-select v-model="BUCode" slot="prepend" placeholder="请选择" style="width:200px;" @change="selectFun" class="selectItem">
+      <el-select v-model="BUCode" slot="prepend" placeholder="请选择" style="width:200px;" @change="selectBU" class="selectItem">
         <el-option v-for="(item,index) in regionBUlist" :key="index" :label="item.name" :value="item.code"></el-option>
       </el-select>
       <!-- 选择年份 -->
@@ -22,10 +22,6 @@
       <el-select style="width:200px;" v-model="seachMsg.month" placeholder="请选择月份" @change="selectMonth" class="selectItem">
         <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val"></el-option>
       </el-select>
-      <!-- 选择强制缴纳类型 -->
-      <!-- <el-select style="width:200px;" v-model="seachMsg.insuredType" placeholder="请选择强制缴纳类型" @change="selectInsuredType" class="selectItem">
-         <el-option v-for="(item,key) in insuredTypes" :key="key" :label="item.txt" :value="item.val"></el-option>
-      </el-select> -->
       <!-- 选择出粮方式 -->
       <el-select style="width:200px;" v-if="buSelectedLocationType === 2" v-model="seachMsg.payrollTimesType" placeholder="选择出粮方式" @change="selectPayrollTimesType" class="selectItem">
          <el-option v-for="(item,key) in payrollTimesTypes" :key="key" :label="item.txt" :value="item.val"></el-option>
@@ -34,7 +30,7 @@
     </div>
     <el-divider></el-divider>
     <!-- 列表内容 -->
-    <el-table v-if="buSelectedLocationType==1" v-loading="isShowLoading" :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
+    <el-table v-if="!isShowLoading && buSelectedLocationType === 1"  :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
       <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
       <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
       <el-table-column prop="nameChinese" label="姓名" width="150" fixed></el-table-column>
@@ -98,7 +94,7 @@
       </el-table-column>
     </el-table>
     
-    <el-table v-if="buSelectedLocationType==2" v-loading="isShowLoading" :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
+    <el-table v-if="!isShowLoading && buSelectedLocationType === 2"  :data="tableData" stripe ref="multipleTable" @selection-change="handleSelectionChange" :row-key="getRowKeys" heigth="200" @row-click="openRowFun">
       <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
       <el-table-column sortable prop="staffNo" label="员工编号" width="100"></el-table-column>
       <el-table-column prop="nameChinese" label="姓名" width="150" fixed></el-table-column>
@@ -254,6 +250,7 @@ export default {
   data() {
     return {
       isShow: false,
+      showList:false,
       payrollTimesTypes:[],
       insuredTypes:[],
       pageList:[],
@@ -269,6 +266,7 @@ export default {
       isShowPayrollUpdate: false, //是否显示重算薪资窗口
       BUCode:'',
       seachMsg: {
+        BUCode:"",
         year: "", //年份
         month: "", //月份
         insuredType:1,//缴纳类型1中国社保，2香港MPF
@@ -300,6 +298,7 @@ export default {
         }
     },
     tableData(){
+      this.showList = true;
       return this.pageList.map(item => {
         item.typeTxt = payrollListTypeTxt(item.typeId);
         item.dateOfJoining = this.$toolFn.timeFormat(item.dateOfJoining,"yyyy-MM-dd");
@@ -322,7 +321,7 @@ export default {
       });
     }
   },
-  mounted() {
+  beforeMount() {
     this.monthList = monthList();
     this.payrollTimesTypes = payrollTimesTypes();
     // this.insuredTypes = insuredTypes();
@@ -356,15 +355,10 @@ export default {
     InitializationFun() {
       var date = new Date();
       this.seachMsg.year = date.getFullYear().toString();
-      // this.seachMsg.month = (date.getMonth() + 1).toString();
       if (this.$toolFn.sessionGet("staffPayrollListSearch")) {
           this.BUCode = this.$toolFn.sessionGet("staffPayrollListSearch").BUCode || this.BUCode;
           this.seachMsg.year = this.$toolFn.sessionGet("staffPayrollListSearch").year || this.seachMsg.year;
           this.seachMsg.month = this.$toolFn.sessionGet("staffPayrollListSearch").month || this.seachMsg.month;
-          // this.seachMsg.insuredType = this.$toolFn.sessionGet("staffPayrollListSearch").insuredType || this.seachMsg.insuredType;
-          if (this.buSelectedLocationType === 2){
-            this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
-          }
       }
       this.getRegionBU();
     },
@@ -385,7 +379,8 @@ export default {
         if (this.buSelectedLocationType === 2){
             this.seachMsg.payrollTimesType = this.$toolFn.sessionGet("staffPayrollListSearch").payrollTimesType || this.seachMsg.payrollTimesType;
         }
-        //this.getData(this.seachMsg.BUCode,parseInt(this.seachMsg.year),parseInt(this.seachMsg.month));
+        this.pageInfo.reqParams.isReq = true;
+        this.$refs.pageInfo.getData(this.pageInfo);
       }
     },
     //0未审核1通过2有疑问，需重新审查
@@ -399,17 +394,19 @@ export default {
       return r;
     },
     // 获取单位BUCode
-    selectFun(val) {
+    selectBU(val) {
       this.BUCode = val;
-      this.seachMsg = {};
       this.seachMsg.BUCode = val;
-      this.seachMsg.year = date.getFullYear().toString();
+      this.seachMsg.payrollTimesType = 1;
+      this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.code === val})[0].locationType;
+      if (this.buSelectedLocationType === 2){
+        this.seachMsg.payrollTimesType = 1;
+      }
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
       this.$toolFn.sessionSet("staffPayrollList_multipleSelection",'');
-      this.buSelectedLocationType = this.regionBUlist.filter(f=>{return f.code === val})[0].locationType;
-      // this.insuredTypes = insuredTypes().filter(f=>{return f.val === this.buSelectedLocationType});
       this.pageInfo.reqParams.isReq = true;
-      // this.$refs.pageInfo.getData(this.pageInfo);
+      this.$refs.pageInfo.getData(this.pageInfo);
+      
     },
     // 选择年份
     selectYear(val) {
@@ -417,7 +414,7 @@ export default {
       this.$toolFn.sessionSet("staffPayrollListSearch", this.seachMsg);
       this.$toolFn.sessionSet("staffPayrollList_multipleSelection",'');
       this.pageInfo.reqParams.isReq = true;
-      // this.$refs.pageInfo.getData(this.pageInfo);
+      this.$refs.pageInfo.getData(this.pageInfo);
     },
     // 选择月份
     selectMonth(val) {
@@ -634,6 +631,8 @@ export default {
       handler: function(newVal) {
         if (newVal && newVal !=""){
           this.pageInfo.reqParams.isReq = true;
+          console.log(this.seachMsg.payrollTimesType);
+          this.pageInfo.reqParams.data.payrollTimesType = this.seachMsg.payrollTimesType;
           // this.$refs.pageInfo.getData(this.pageInfo);
         }
       }
