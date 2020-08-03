@@ -43,7 +43,7 @@
         @change="onSelectYear"
       ></el-date-picker>
       <el-button type="primary" @click="onSearchSummary">确定</el-button>
-      <el-button type="primary" @click="onExplorSummary" v-if="false">导出文件</el-button>
+      <el-button type="primary" @click="onExplorSummary">导出文件</el-button>
       <el-button type="primary" @click="onFlash" plain>复位</el-button>
     </div>
     <el-divider></el-divider>

@@ -72,11 +72,13 @@ export default {
         item.createTime = this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd hh:mm");
         item.isBalanceTxt = item.isBalance == 1?'是':'否';
         item.isWithpayTxt = item.isWithpay == 1?'是':'否';
-        item.startDate = this.$toolFn.timeFormat(item.details[0].startDate,"yyyy-MM-dd hh:mm");
-        item.endDate = this.$toolFn.timeFormat(item.details[0].endDate,"yyyy-MM-dd hh:mm");
-        item.typeIdTxt = this.holidayTypes.find(child => {
-          return child.typeId == item.details[0].typeId;
-        }).val;
+        if (item.details && item.details.length > 0){
+          item.startDate = this.$toolFn.timeFormat(item.details[0].startDate,"yyyy-MM-dd hh:mm");
+          item.endDate = this.$toolFn.timeFormat(item.details[0].endDate,"yyyy-MM-dd hh:mm");
+          item.typeIdTxt = this.holidayTypes.find(child => {
+            return child.typeId == item.details[0].typeId;
+          }).val;
+        }
         return item;
       });
     }

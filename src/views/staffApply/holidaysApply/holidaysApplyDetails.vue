@@ -81,22 +81,27 @@ export default {
     },
     async init(){
       this.holidayTypes = await this.$myApi.getHolidaysTypeId();
-      this.curInfo.details.map(item => {
-        item.typeIdTxt = this.holidayTypes.filter(child => {
-            return child.typeId == item.typeId;
-        })[0].val;
-        return item;
-      })
+      if (this.curInfo.details){
+        this.curInfo.details.map(item => {
+          item.typeIdTxt = this.holidayTypes.filter(child => {
+              return child.typeId == item.typeId;
+          })[0].val;
+          return item;
+        })
+      }
+
       this.holidayItem = this.curInfo;
       this.holidayItem.creatorTime = this.$toolFn.timeFormat(this.holidayItem.creatorTime,"yyyy-MM-dd hh:mm");;
       if (this.holidayItem.fileSrc && this.holidayItem.fileSrc != ''){
         this.fileList = this.holidayItem.fileSrc.split(',');
       }
-      this.tableData = this.curInfo.details.map(item => {
-        item.startDate = this.$toolFn.timeFormat(item.startDate,"yyyy-MM-dd hh:mm");
-        item.endDate = this.$toolFn.timeFormat(item.endDate,"yyyy-MM-dd hh:mm");
-        return item;
-      });
+      if (this.curInfo.details){
+        this.tableData = this.curInfo.details.map(item => {
+          item.startDate = this.$toolFn.timeFormat(item.startDate,"yyyy-MM-dd hh:mm");
+          item.endDate = this.$toolFn.timeFormat(item.endDate,"yyyy-MM-dd hh:mm");
+          return item;
+        });
+      }
       this.step = this.curInfo.status > 5?5:this.curInfo.status;
       if(this.curInfo.status == 999){
         this.step = 0;
