@@ -81,7 +81,7 @@ let toolFn = {
                     break;
                 }
               }else{
-                if (list[i][key].toString().includes(search.searchKey)){
+                if (list[i][key].toString().toLowerCase().includes(search.searchKey.toLowerCase())){
                     newList.push(list[i]);
                     break;
                   }
