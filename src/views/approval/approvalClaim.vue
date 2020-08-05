@@ -56,7 +56,7 @@ export default {
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
       BUCodeSelected: "", //单位code
-      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip','totalAmount','deptName']},
+      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip','totalAmount']},
       userInfo:{}
     };
   },

@@ -274,9 +274,7 @@ export default {
       },
       hrCode: "",
       userInfo: {},
-      filter: { searchKey: "", searchField: ["nameChinese", "staffNo", "position", "dateOfJoining", "dateOfLeaving",
-       "salary", "taxableItemsAmount", "claimAmount", "totalAmount", "SIAmount", "HCAmount", "grossPay",
-        "specialDeductionAmount", "taxableWages", "taxAmount", "notTaxableAmount", "adjAmount", "reallyAmount", "typeTxt"] },
+      filter: { searchKey: "", searchField: ["nameChinese", "staffNo", "position", "typeTxt"] },
       multipleSelection: [],//多选项目
       approvePayrollSlip_right: false, //审批工资单权限
       deletePayrollSlip_right: false, //删除工资单权限
