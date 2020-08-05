@@ -56,7 +56,7 @@ export default {
       isShowDetails:false,//是否显示表单详情
       isShowLoading: false, //是否显示loading页
       BUCodeSelected: "", //单位code
-      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip','totalAmount','deptName']},
+      filter:{searchKey:'',searchField:['nameChinese','createTime','nextStepTip','totalAmount']},
       userInfo:{}
     };
   },
@@ -109,7 +109,7 @@ export default {
       return str;
     },
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowDetails = false;
     },
     // 查看详情
@@ -136,7 +136,7 @@ export default {
       }
     },
     "filter.searchKey":{
-      handler: function(newVal) {
+      handler: function() {
         this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
       }
     }

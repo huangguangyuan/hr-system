@@ -104,7 +104,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-          this.$myApi.http.post("/server/api/v1/bu/insuredScheme/si/delete", { id: res.id }).then(res => {
+          this.$myApi.http.post("/server/api/v1/bu/insuredScheme/si/delete", { id: res.id }).then(() => {
               this.$refs.pageInfo.getData(this.pageInfo);
               this.$message.success("删除成功");
             });

@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2019-07-21 14:51:54
+ * @LastEditTime: 2020-08-05 22:20:54
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \hr-system\src\views\rbac\proHRrole.vue
+-->
 <template>
   <div class="wrap proHRrole">
     <!-- 头部内容 -->
@@ -76,10 +84,6 @@ export default {
     // 获取当前页数
     curChange(val) {
       this.curPage = val;
-    },
-    // 删除
-    handleDelete(index,res){
-
     }
   }
 };

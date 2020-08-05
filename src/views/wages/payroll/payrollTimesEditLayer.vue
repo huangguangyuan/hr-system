@@ -25,7 +25,7 @@
   </div>
 </template>
 <script>
-import {payrollListTypeTxt} from "@/lib/staticData.js";
+import {} from "@/lib/staticData.js";
 import payrollTimesMonthInfo from "./payrollTimesMonthInfo.vue";
 export default {
   components: {

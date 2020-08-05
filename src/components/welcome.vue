@@ -143,13 +143,13 @@ export default {
     this.getInfo();
   },
   methods:{
-    dayTip(data){
+    dayTip(){
     },
     goLink(path){
       this.$router.replace({ path: path});
     },
     getInfo(){
-      this.$myApi.http.post("/server/api/v1/baseInfo/hrHome", {}).then(res => {
+      this.$myApi.http.post("/server/api/v1/baseInfo/hrHome", {}).then((res) => {
         if (res.data.code == 0) {
           this.info = res.data.data;
           this.info.show = true;

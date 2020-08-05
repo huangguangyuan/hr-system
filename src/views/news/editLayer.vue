@@ -66,7 +66,6 @@
   </div>
 </template>
 <script>
-let id = 0;
 export default {
   name: "editLayer",
   inject: ["reload"],
@@ -119,7 +118,7 @@ export default {
         }
       }else{
         if (this.ruleForm.userRight){
-          var res = await this.getCompanys();
+          // var res = await this.getCompanys();
           this.companyList = res.data.data;
         }
       }

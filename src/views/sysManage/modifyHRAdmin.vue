@@ -64,7 +64,6 @@
   </div>
 </template>
 <script>
-import md5 from "js-md5";
 export default {
   name: "modifyAdmin",
   inject: ["reload"],
@@ -223,9 +222,7 @@ export default {
       if (this.ruleForm.levExtend.length > 0){
         data.levExtend = this.ruleForm.levExtend.join(",");
       }
-      this.$myApi.http
-        .post(reqUrl, data)
-        .then(res => {
+      this.$myApi.http.post(reqUrl, data).then(() => {
           this.reload();
         })
         .catch(err => {

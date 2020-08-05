@@ -120,7 +120,7 @@ export default {
       });
     },
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowAddAccess = false;
       this.isShowAddChild = false;
     },
@@ -172,7 +172,7 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          this.$myApi.http.post("/server/api/v1/buDepartment/delete", { id: res.id }).then(res => {
+          this.$myApi.http.post("/server/api/v1/buDepartment/delete", { id: res.id }).then(() => {
               this.reload();
               this.$message.success('删除成功！');
             });
@@ -181,13 +181,13 @@ export default {
   },
   watch: {
     BUCodeSelected: {
-      handler: function(newVal) {
+      handler: function() {
             this.pageInfo.reqParams.isReq = true;
             this.$refs.pageInfo.getData(this.pageInfo);
       }
     },
     "filter.searchKey":{
-      handler: function(newVal) {
+      handler: function() {
         this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
       }
     }

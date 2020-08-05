@@ -115,9 +115,9 @@ export default {
             return item;
           });
           
-          this.$store.dispatch("add_Routes", sidebar).then(res => {
+          this.$store.dispatch("add_Routes", sidebar).then(() => {
               return this.$store.dispatch('getAccessData_Fun',sidebar)
-            }).then(res => {
+            }).then(() => {
               var userInfo = this.$toolFn.localGet("userInfo");
               if (userInfo.roleTypeId == 1){
                 this.$router.replace({ path: "/applyMain" });

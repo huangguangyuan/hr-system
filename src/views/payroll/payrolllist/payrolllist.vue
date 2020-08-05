@@ -137,7 +137,7 @@ export default {
   },
   watch: {
     BUCodeSelected: {
-      handler: function(newVal,oldVal) {
+      handler: function(newVal) {
         this.pageInfo.reqParams.isReq = true;
         this.$refs.pageInfo.getData(this.pageInfo);
         if (this.regionBUlist.length > 0){
@@ -147,7 +147,7 @@ export default {
       }
     },
     "filter.searchKey":{
-      handler: function(newVal) {
+      handler: function() {
         this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
       }
     }

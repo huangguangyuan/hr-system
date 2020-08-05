@@ -266,7 +266,7 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          this.$myApi.http.post("/server/api/v1/projectRole/delete", { id: res.id }).then(res => {
+          this.$myApi.http.post("/server/api/v1/projectRole/delete", { id: res.id }).then(() => {
               this.$message({ message: "删除成功！" });
               this.reload();
             });

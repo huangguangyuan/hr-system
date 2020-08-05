@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-07-19 16:06:48
- * @LastEditTime: 2020-07-21 15:53:09
+ * @LastEditTime: 2020-08-05 22:45:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \hr-system\vue.config.js
@@ -35,8 +35,6 @@ module.exports = {
             }
         });
     },
-    runtimeCompiler: false,
-    productionSourceMap: true,
     crossorigin:undefined,
     css:{
         modules:false,

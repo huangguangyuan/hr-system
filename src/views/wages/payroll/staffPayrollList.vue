@@ -235,15 +235,14 @@
 import staffPayrollDetail from "./staffPayrollDetail.vue";
 import staffPayrollConfirm from "./staffPayrollConfirm.vue";
 import buPayrollConfirm from "./buPayrollConfirm.vue";
-import staffPayrollYear from "./staffPayrollYear.vue";
 import adjAmountEdit from "./adjAmountEdit.vue";
 import payrollTimEditMPF from "./payrollTimEditMPF.vue";
 import payrollUpdate from "./payrollUpdate.vue";
-import {monthList,payrollTimesTypes,insuredTypes,payrollListTypeTxt} from "@/lib/staticData.js";
+import {monthList,payrollTimesTypes,payrollListTypeTxt} from "@/lib/staticData.js";
 import pageInfo from "@/components/pageInfo.vue";
 export default {
   components: {
-    staffPayrollDetail,staffPayrollConfirm,buPayrollConfirm,staffPayrollYear,adjAmountEdit,payrollTimEditMPF,payrollUpdate,pageInfo
+    staffPayrollDetail,staffPayrollConfirm,buPayrollConfirm,adjAmountEdit,payrollTimEditMPF,payrollUpdate,pageInfo
   },
   name: "staffPayrollList",
   inject: ["reload"],
@@ -274,9 +273,7 @@ export default {
       },
       hrCode: "",
       userInfo: {},
-      filter: { searchKey: "", searchField: ["nameChinese", "staffNo", "position", "dateOfJoining", "dateOfLeaving",
-       "salary", "taxableItemsAmount", "claimAmount", "totalAmount", "SIAmount", "HCAmount", "grossPay",
-        "specialDeductionAmount", "taxableWages", "taxAmount", "notTaxableAmount", "adjAmount", "reallyAmount", "typeTxt"] },
+      filter: { searchKey: "", searchField: ["nameChinese", "staffNo", "position", "typeTxt"] },
       multipleSelection: [],//多选项目
       approvePayrollSlip_right: false, //审批工资单权限
       deletePayrollSlip_right: false, //删除工资单权限
@@ -440,7 +437,7 @@ export default {
       this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
     },
-    openRowFun(row, event) {
+    openRowFun(row) {
       this.openFun(0, row);
     },
     // 打开多次出粮页面
@@ -527,7 +524,7 @@ export default {
             )
           );
         }
-        Promise.all(promiseList).then(all => {
+        Promise.all(promiseList).then(() => {
           this.$message.success("删除成功！");
           this.reload();
         });
@@ -638,7 +635,7 @@ export default {
       }
     },
     "filter.searchKey":{
-      handler: function(newVal) {
+      handler: function() {
         this.$refs.pageInfo.searchKey(this.filter);
       }
     }

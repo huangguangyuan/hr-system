@@ -331,7 +331,6 @@ export default {
   computed: {
     // 计算个税
     monthlyTax() {
-      
       let grossAmtSum = 0;//累计应税收入
       let taxRateAmtSum = 0;//累计纳税金额
       let fixedDeductNoUsedSum = 0;//累计起征点结余
@@ -340,7 +339,6 @@ export default {
       this.deductSum = 0;//社保累计
       this.addDeductSum = 0;//附加扣除累计
       this.fixedDeductSum = 0;//累计起征点
-      
       //this.grossAmtSum = 0;//累计应税金额
       //let grossAmtSumNotCur = 0;//累计纳税金额不包当前月纳税
       for (var i = 0; i < this.dataList.length; i++) {
@@ -375,7 +373,6 @@ export default {
             this.dataList[i].income - this.dataList[i].deduct,
             this.dataList[i].iit
           );
-
           taxRateAmtSum += parseFloat(this.dataList[i].iit);
           this.incomeSum += parseFloat(this.dataList[i].income);
           this.deductSum += parseFloat(this.dataList[i].deduct);

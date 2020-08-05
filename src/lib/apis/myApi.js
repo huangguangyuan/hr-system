@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-09-05 00:02:26
- * @LastEditTime: 2020-07-17 19:37:55
+ * @LastEditTime: 2020-08-05 22:17:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \hr-system\src\lib\apis\myApi.js
@@ -58,7 +58,7 @@
             }));
     }
 
-    function requestGet(url,pararm){
+    function requestGet(url){
         return Promise.resolve(
             request.get(url).then(res => {
                 return res.data;

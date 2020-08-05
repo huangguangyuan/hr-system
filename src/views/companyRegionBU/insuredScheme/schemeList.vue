@@ -141,7 +141,7 @@ export default {
   },
   methods: {
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowEdit = false;
       this.isShowSchemeSI = false;
       this.isShowSchemeHC = false;

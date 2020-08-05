@@ -116,7 +116,7 @@ export default {
         });
     },
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowEdit = false;
     }
   },

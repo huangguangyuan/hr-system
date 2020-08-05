@@ -110,14 +110,6 @@ export default {
     };
   },
   methods:{
-    getInfo(res){
-      
-      this.$myApi.http.post(reqUrl, {}).then(res => {
-        if (res.data.code == 0) {
-          this.$message.error(res.data.msg);
-        }
-      });
-    }
   }
 };
 </script>

@@ -71,10 +71,8 @@
 </template>
 <script>
 import {monthList} from "@/lib/staticData.js";
-import pageInfo from "@/components/pageInfo.vue";
 export default {
   components: {
-    pageInfo
   },
   name: "buLeavesSummary",
   inject: ["reload"],

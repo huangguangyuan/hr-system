@@ -37,7 +37,7 @@ let addRoutes = {
     },
     actions: {
         add_Routes({ commit }, routeParam) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 commit('add_Routes', routeParam);
                 resolve();
             })
