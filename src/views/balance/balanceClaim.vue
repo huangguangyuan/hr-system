@@ -5,7 +5,7 @@
     <el-divider></el-divider>
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe row-key="id">
-      <el-table-column sortable prop="nameChinese" label="申请人" width="150"></el-table-column>
+      <el-table-column sortable prop="nameChinese" label="申请人" width="200"></el-table-column>
       <el-table-column sortable prop="deptName" label="部门" width="150"></el-table-column>
       <el-table-column sortable prop="createTime" label="创建日期" width="200">
         <template slot-scope="scope">

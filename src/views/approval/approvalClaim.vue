@@ -16,7 +16,7 @@
       <el-table-column sortable prop="totalAmount" label="结算金额"  width="120"></el-table-column>
       <el-table-column sortable prop="isBalanceTxt" label="是否结算" width="120"></el-table-column>
       <el-table-column prop="nextStepTip" label="下一步提示" width="150"></el-table-column>
-      <el-table-column sortable prop="statusTxt" label="状态" width="120">
+      <el-table-column sortable prop="statusTxt" label="状态" width="200">
         <template slot-scope="scope">
           <span :class="typeColor(scope.row.status)">{{scope.row.statusTxt}}</span>
         </template>

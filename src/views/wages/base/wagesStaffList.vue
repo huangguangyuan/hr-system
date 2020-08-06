@@ -33,7 +33,7 @@
       <el-table-column type="selection" width="55" :reserve-selection="true">
       </el-table-column>
       <el-table-column prop="staffNo" label="员工编号"></el-table-column>
-      <el-table-column prop="nameChinese" label="名称"></el-table-column>
+      <el-table-column prop="nameChinese" label="名称" width="200"></el-table-column>
       <el-table-column label="头像">
         <template slot-scope="scope">
           <el-image

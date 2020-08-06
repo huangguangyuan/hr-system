@@ -59,7 +59,7 @@
     </div><br />
     <el-divider content-position="left">审批流程</el-divider>
     <el-timeline :reverse="true">
-      <el-timeline-item v-for='(item,key) in approveHisList' :key='key' placement="top">
+      <el-timeline-item v-for='(item,key) in approveHisList' :key='key' placement="top" :timestamp="item.creatorTime">
         <el-card class="my-card">
           <p>操作员：{{item.operatorUser.name}}{{item.operatorUser.roleName?" ( "+item.operatorUser.roleName+" ) ":""}}</p>
           <p>操作行为：{{item.operatorUser.tip}}</p>
