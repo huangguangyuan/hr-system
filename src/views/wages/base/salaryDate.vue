@@ -125,7 +125,7 @@ export default {
     };
   },
   beforeMount() {
-    this.circleUrl = this.staffInfo.photo || require("@/assets/images/avatar.png");;
+    this.circleUrl = this.staffInfo.photo || require("@/assets/images/avatar.png");
     this.getData();
   },
   methods: {

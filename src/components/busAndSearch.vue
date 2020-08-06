@@ -27,11 +27,12 @@ export default {
   },
   methods:{
     setParam(p){
-      this.filter = this.busAndSearch_props.filter;
-      this.BUCodeOptionsShow = this.busAndSearch_props.BUCodeOptionsShow != undefined ? this.busAndSearch_props.BUCodeOptionsShow : this.BUCodeOptionsShow;
-      this.searchKeyInpShow = this.busAndSearch_props.searchKeyInpShow != undefined ? this.busAndSearch_props.searchKeyInpShow : this.searchKeyInpShow;
+      p = p || this.busAndSearch_props
+      this.filter = p.filter;
+      this.BUCodeOptionsShow = p.BUCodeOptionsShow != undefined ? p.BUCodeOptionsShow : this.BUCodeOptionsShow;
+      this.searchKeyInpShow = p.searchKeyInpShow != undefined ? p.searchKeyInpShow : this.searchKeyInpShow;
       //获取输入bucode或缓存
-      this.BUCodeSelected = (this.busAndSearch_props.BUCodeSelected && this.busAndSearch_props.BUCodeSelected != '') ? this.busAndSearch_props.BUCodeSelected :this.$toolFn.sessionGet('BUCodeSelected');
+      this.BUCodeSelected = (p.BUCodeSelected && p.BUCodeSelected != '') ? p.BUCodeSelected :this.$toolFn.sessionGet('BUCodeSelected');
     },
     async init(p){
       if (p){this.setParam(p);}

@@ -76,7 +76,7 @@ export default {
     };
   },
   mounted() {
-    this.circleUrl = this.staffInfo.photo?this.staffInfo.photo:require("@/assets/images/avatar.png");;
+    this.circleUrl = this.staffInfo.photo?this.staffInfo.photo:require("@/assets/images/avatar.png");
     this.activeName = this.$toolFn.sessionGet('staffNavActive')?this.$toolFn.sessionGet('staffNavActive'):'education';
   },
   methods: {
@@ -87,7 +87,7 @@ export default {
         isShowDetails:false
       })
     },
-    handleClick(tab, event) {
+    handleClick(tab) {
       this.$toolFn.sessionSet('staffNavActive',tab.name);
     }
   },

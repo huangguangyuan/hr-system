@@ -90,7 +90,7 @@ export default {
       });
     },
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowEdit = false;
     },
     // 添加报销项目模板
@@ -129,7 +129,7 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          this.$myApi.http.post("/server/api/v1/bu/claimDelete", { code: res.code }).then(res => {
+          this.$myApi.http.post("/server/api/v1/bu/claimDelete", { code: res.code }).then(() => {
               this.reload();
               this.$message.success("删除成功！");
             });

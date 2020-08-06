@@ -115,7 +115,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$myApi.http.post("/server/api/v1/staff/salaryItem/delete", { id: res.id }).then(res => {
+          this.$myApi.http.post("/server/api/v1/staff/salaryItem/delete", { id: res.id }).then(() => {
               this.reload();
               this.$message.success("删除成功");
             });
@@ -128,7 +128,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-          this.$myApi.http.post("/server/api/v1/staff/salaryItem/deleteByStaffCode", { staffCode: this.payrollInfo.code }).then(res => {
+          this.$myApi.http.post("/server/api/v1/staff/salaryItem/deleteByStaffCode", { staffCode: this.payrollInfo.code }).then(() => {
               this.reload();
               this.$message.success("删除成功");
             });
@@ -142,7 +142,7 @@ export default {
         staffCode:res.staffCode,
         status:res.status
       }
-      this.$myApi.http.post(reqUrl,data).then(res => {})
+      this.$myApi.http.post(reqUrl,data).then(() => {})
     },
     // 监听子组件返回信息
     listenIsShowMask(res) {

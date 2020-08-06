@@ -92,7 +92,7 @@ export default {
       });
     },
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowEdit = false;
     },
     // 添加薪资应税模板
@@ -130,7 +130,7 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          this.$myApi.http.post("/server/api/v1/bu/salaryItemDelete", { code: res.code }).then(res => {
+          this.$myApi.http.post("/server/api/v1/bu/salaryItemDelete", { code: res.code }).then(() => {
               this.reload();
               this.$message.success("删除成功！");
             });

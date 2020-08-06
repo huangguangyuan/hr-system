@@ -124,7 +124,7 @@ export default {
     }
     if (this.userInfo.access.payrollMain.indexOf(2) >= 0){
       this.genPayrollSlip_right = true;
-    };
+    }
     this.multipleSelection = this.$toolFn.sessionGet("wagesStaffList_multipleSelection");
     this.InitializationFun();
   },
@@ -234,13 +234,12 @@ export default {
       this.curInfo.typeId = 1;
     },
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowAddAccess = false;
     }
   },
   computed: {
     queryTableDate() {
-      
       let tableData = this.tableData;
       if (this.filter.searchKey != ""){
         tableData = this.$toolFn.searchFun(tableData,this.filter);

@@ -218,7 +218,7 @@ export default {
             id: res.id,
             status: status
           };
-          this.$myApi.http.post("/server/api/v1/company/regionBUUpdate", data).then(res => {
+          this.$myApi.http.post("/server/api/v1/company/regionBUUpdate", data).then(() => {
               this.reload();
               this.$message.success("操作成功");
             });

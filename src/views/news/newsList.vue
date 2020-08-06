@@ -145,7 +145,7 @@ export default {
           type: "warning"
         })
         .then(() => {
-          this.$myApi.http.post("/server/api/v1/info/buInfoDelete", { id: res.id }).then(res => {
+          this.$myApi.http.post("/server/api/v1/info/buInfoDelete", { id: res.id }).then(()  => {
               this.reload();
               this.$message.success("删除成功！");
             });

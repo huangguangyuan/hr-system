@@ -195,7 +195,7 @@ export default {
       this.curPage = val;
     },
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowAddAccess = false;
       this.isShowModifyAccess = false;
       this.isShowAddChildAccess = false;
@@ -248,7 +248,7 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          this.$myApi.http.post("/server/api/v1/projectAccess/delete", { id: res.id }).then(res => {
+          this.$myApi.http.post("/server/api/v1/projectAccess/delete", { id: res.id }).then(() => {
               this.reload();
               this.$message.success('删除成功！');
             });

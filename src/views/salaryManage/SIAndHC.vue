@@ -44,7 +44,7 @@
   </div>
 </template>
 <script>
-import {SITxt,paymentIdTxt,householdIdTxt} from "@/lib/staticData.js";
+import {SITxt,paymentIdTxt} from "@/lib/staticData.js";
 export default {
   name: "SItemplate",
   inject: ["reload"],

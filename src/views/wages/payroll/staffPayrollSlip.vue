@@ -217,7 +217,6 @@ export default {
           this.staffCode = this.userInfo.staffCode;
       }
       this.curInfo.code = this.staffCode;
-      var myDate = new Date();
       var date = new Date();
       this.seachMsg = {year: date.getFullYear().toString(),month: (date.getMonth()+1).toString()};
       // if (this.$toolFn.sessionGet("staffPayrollSlip")) {

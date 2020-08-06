@@ -91,7 +91,7 @@ export default {
       }
 
       this.holidayItem = this.curInfo;
-      this.holidayItem.creatorTime = this.$toolFn.timeFormat(this.holidayItem.creatorTime,"yyyy-MM-dd hh:mm");;
+      this.holidayItem.creatorTime = this.$toolFn.timeFormat(this.holidayItem.creatorTime,"yyyy-MM-dd hh:mm");
       if (this.holidayItem.fileSrc && this.holidayItem.fileSrc != ''){
         this.fileList = this.holidayItem.fileSrc.split(',');
       }

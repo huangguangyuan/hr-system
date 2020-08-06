@@ -131,7 +131,7 @@ export default {
               id:res.id,
               status:status
             }
-          this.$myApi.http.post("/server/api/v1/company/companyUpdate", data).then(res => {
+          this.$myApi.http.post("/server/api/v1/company/companyUpdate", data).then(() => {
               this.reload();
               this.$message.success("操作成功");
             });
@@ -157,7 +157,7 @@ export default {
   },
    watch: {
     "filter.searchKey":{
-      handler: function(newVal) {
+      handler: function() {
         this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
       }
     }

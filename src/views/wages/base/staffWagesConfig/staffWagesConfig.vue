@@ -82,7 +82,7 @@ export default {
     }
     this.circleUrl = this.staffInfo.photo
       ? this.staffInfo.photo
-      : require("@/assets/images/avatar.png");;
+      : require("@/assets/images/avatar.png");
     this.activeName = this.$toolFn.sessionGet("staffNavActive")
       ? this.$toolFn.sessionGet("staffNavActive")
       : "education";
@@ -137,7 +137,7 @@ export default {
       this.isShowAddAccess = true;
     },
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowAddAccess = false;
     }
   },

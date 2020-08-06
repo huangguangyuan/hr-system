@@ -96,7 +96,7 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          this.$myApi.http.post("/server/api/v1/city/delete", { id: res.id }).then(res => {
+          this.$myApi.http.post("/server/api/v1/city/delete", { id: res.id }).then(() => {
               this.reload();
             });
         })
@@ -104,7 +104,7 @@ export default {
   },
    watch: {
     "filter.searchKey":{
-      handler: function(newVal) {
+      handler: function() {
         this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
       }
     }

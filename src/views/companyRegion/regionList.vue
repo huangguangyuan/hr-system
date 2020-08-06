@@ -153,7 +153,7 @@ export default {
                 id:res.id,
                 status:status
             }
-          this.$myApi.http.post("/server/api/v1/company/regionUpdate", data).then(res => {
+          this.$myApi.http.post("/server/api/v1/company/regionUpdate", data).then(() => {
               this.reload();
               this.$message.success("操作成功");
             });
@@ -179,7 +179,7 @@ export default {
   },
   watch: {
     companyCode: {
-      handler: function(newVal) {
+      handler: function() {
           this.pageInfo.reqParams.isReq = true;
           this.$refs.pageInfo.getData(this.pageInfo);
       }

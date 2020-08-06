@@ -109,7 +109,7 @@ export default {
       return str;
     },
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowDetails = false;
     },
     // 查看详情
@@ -136,7 +136,7 @@ export default {
       }
     },
     "filter.searchKey":{
-      handler: function(newVal) {
+      handler: function() {
         this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
       }
     }
