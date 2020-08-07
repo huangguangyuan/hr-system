@@ -149,6 +149,7 @@
       </el-table-column>
       <el-table-column sortable prop="staffNo" label="员工编号"></el-table-column>
       <el-table-column sortable prop="nameChinese" label="名称"></el-table-column>
+      <el-table-column sortable prop="staffAlias" label="别名"></el-table-column>
       <el-table-column label="头像">
         <template slot-scope="scope">
           <el-image
@@ -268,7 +269,7 @@ export default {
       HRadminList:[],//管理员列表
       userRight:false,
       userInfo:{},
-      filter:{searchKey:'',searchField:['account','staffNo','nameChinese','nameEnglish','staffAlias','position','genderTxt',
+      filter:{searchKey:'',searchField:['account','staffNo','nameChinese','staffAlias','nameEnglish','staffAlias','position','genderTxt',
       'dateOfBirth','address','mobile','email','IDNo','ethnic','politicalBackground','hukouTypeTxt','martialStatusTxt','emergencyContact','SIAccount','medicalSchemeAccoun','HCAccount','SIAccount']}
     };
   },

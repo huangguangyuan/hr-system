@@ -2,7 +2,7 @@
   <div class="payrolllist">
     <!-- 头部内容 -->
     <div class="my-top">
-      <span>员工基本信息</span>
+      <span>员工薪酬信息</span>
     </div>
     <el-divider></el-divider>
     <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCodeSelected" ref="busAndSearch"></bus-and-search>
@@ -10,6 +10,7 @@
     <el-table v-loading="isShowLoading" :data="tableData" stripe>
       <el-table-column sortable prop="staffNo" label="员工编号"></el-table-column>
       <el-table-column sortable prop="nameChinese" label="名称"></el-table-column>
+      <el-table-column sortable prop="staffAlias" label="别名"></el-table-column>
       <el-table-column label="头像">
         <template slot-scope="scope">
           <el-image
@@ -84,7 +85,7 @@ export default {
       isShowAddAccess: false, //是否显示新增页面
       isShowState: false, //是否显示状态
       avatarDefault:require("@/assets/images/avatar.png"), //默认头像
-      filter:{searchKey:'',searchField:['account','staffNo','nameChinese','nameEnglish']}
+      filter:{searchKey:'',searchField:['account','staffNo','nameChinese','nameEnglish','staffAlias']}
     };
   },
   computed:{
