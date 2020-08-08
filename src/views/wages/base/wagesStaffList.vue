@@ -2,7 +2,7 @@
   <div class="wagesStaffList">
     <!-- 头部内容 -->
     <div class="my-top">
-      <span>员工基本信息</span>
+      <span>员工薪酬信息</span>
     </div>
     <el-divider></el-divider>
     <div class="addBtn-wrap" >
@@ -34,6 +34,7 @@
       </el-table-column>
       <el-table-column prop="staffNo" label="员工编号"></el-table-column>
       <el-table-column prop="nameChinese" label="名称" width="200"></el-table-column>
+      <el-table-column prop="staffAlias" label="别名"></el-table-column>
       <el-table-column label="头像">
         <template slot-scope="scope">
           <el-image
