@@ -6,8 +6,12 @@
       <el-form-item label="金额：" prop="totalAmount">
         <el-input v-model="ruleForm.totalAmount" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
       </el-form-item>
-      <el-form-item label="金额：" prop="totalAmount">
+      <el-form-item label="MPF强制：" prop="MPFAmount">
         <el-input v-model="ruleForm.totalAmount" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
+      </el-form-item>
+      <el-form-item label="MPF自愿：" prop="MPFAmountSelf">
+        <el-input v-model="ruleForm.MPFAmountSelf" v-if="ruleForm.isInsured===true" oninput="value=value.replace(/[^\d.]/g,'')" style="width:153px;padding-right:15px"></el-input>
+        <el-checkbox v-model="ruleForm.isInsured" >缴纳</el-checkbox> 
       </el-form-item>
       <el-form-item label="出粮日期：" prop="payDay">
         <el-date-picker
@@ -38,6 +42,13 @@ export default {
   inject: ["reload"],
   props: ["curInfo"],
   data() {
+    const checkMPFAmountSelf = (rule, value, callback) => {
+      callback(new Error('请填写MPF自愿金额'))
+      console.log(value)
+      if (value === '') {
+        callback(new Error('请填写MPF自愿金额'))
+      }
+    }
     return {
       isLoding:true,
       details:{},
@@ -59,6 +70,9 @@ export default {
         MPFAmount: [
           { required: true, message: "请输入MPF金额", trigger: "blur" }
         ],
+        MPFAmountSelf: [
+          { required: true, trigger: 'blur', validator: checkMPFAmountSelf }
+        ],        
         payDay: [
           { required: true, message: "请选择出粮日期", trigger: "change" }
         ]

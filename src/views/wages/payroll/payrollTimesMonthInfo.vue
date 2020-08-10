@@ -1,12 +1,12 @@
 <template>
-  <div class="editLayer" v-if="isLoading">
+  <div class="editLayer" v-if="!isLoading">
     <el-divider>月工资单信息</el-divider>
     <el-row :gutter="12">
       <el-col :span="8" >
-        <el-card class="showWarning" shadow="always">状态：{{details.typeTxt}}</el-card>
+        <el-card class="showWarning" shadow="always">状态：{{details.payroll.typeTxt}}</el-card>
       </el-col>
       <el-col :span="16" v-if="details.payroll.remarks != '' && details.payroll.typeId == 2" >
-        <el-card class="showWarning" shadow="always">备注：{{details.remarks}}</el-card>
+        <el-card class="showWarning" shadow="always">备注：{{details.payroll.remarks}}</el-card>
       </el-col>
       <el-col :span="8">
         <el-card shadow="always">年份：{{details.payroll.year}}</el-card>
@@ -36,7 +36,6 @@
   </div>
 </template>
 <script>
-import {payrollListTypeTxt} from "@/lib/staticData.js";
 export default {
   name: "payrollTimesMonthInfo",
   inject: ["reload"],
@@ -56,7 +55,6 @@ export default {
       this.payrollTimesSummary();
     },
     payrollTimesSummary() {
-      
       var reqUrl = "/server/api/v1/payroll/staff/payrollTimesSummary";
       var data = {
         payrollCode:this.curInfo.payrollMainInfo.code
@@ -65,6 +63,7 @@ export default {
         if (res.data.code == 0) {
           this.details = res.data.data;
           this.details.payroll = this.curInfo.payrollMainInfo;
+          this.isLoading = false;
         }
       });
     },

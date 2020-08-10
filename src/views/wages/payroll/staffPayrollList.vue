@@ -352,6 +352,7 @@ export default {
     InitializationFun() {
       var date = new Date();
       this.seachMsg.year = date.getFullYear().toString();
+      this.seachMsg.month = (date.getMonth()+1);
       if (this.$toolFn.sessionGet("staffPayrollListSearch")) {
           this.BUCode = this.$toolFn.sessionGet("staffPayrollListSearch").BUCode || this.BUCode;
           this.seachMsg.year = this.$toolFn.sessionGet("staffPayrollListSearch").year || this.seachMsg.year;
