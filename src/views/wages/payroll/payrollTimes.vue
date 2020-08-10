@@ -13,15 +13,17 @@
       <el-table-column prop="reallyAmount" label="实际金额"></el-table-column>
       <el-table-column prop="totalAmount" label="出粮金额"></el-table-column>
       <el-table-column prop="adjAmount" label="调整金额"></el-table-column>
-      <el-table-column prop="isInsuredTxt" label="包含缴纳"></el-table-column>
+      <el-table-column prop="MPFAmout" label="MPF强制缴纳"></el-table-column>
+      <el-table-column prop="MPFAmoutSelf" label="MPF自愿缴纳"></el-table-column>
       <el-table-column prop="payDay" label="出粮日期"></el-table-column>
       <el-table-column prop="typeTxt" label="状态"></el-table-column>
       <el-table-column label="操作" width="450px">
         <template slot-scope="scope">
-          <el-button size="mini" icon="el-icon-view" @click="openDetailFun(scope.$index, scope.row)">查看详细</el-button>
-          <el-button v-show="[1,3].indexOf(scope.row.typeId)<0" size="mini" icon="el-icon-document-add" @click="adjAmountFun(scope.$index, scope.row)">调整金额</el-button>
-          <el-button v-show="scope.row.typeId != 3" size="mini" icon="el-icon-edit" @click="confirmFun(scope.$index, scope.row)">粮单确认</el-button>
-          <el-button v-show="[1,3].indexOf(scope.row.typeId)<0" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button v-show="[1,3].indexOf(scope.row.typeId) >= 0" size="mini" icon="el-icon-view" @click="openDetailFun(scope.$index, scope.row)">查看详细</el-button>
+          <el-button v-show="[0].indexOf(scope.row.typeId) >= 0" size="mini" icon="el-icon-document-add" @click="editFun(scope.$index, scope.row)">编辑粮单</el-button>
+          <el-button v-show="scope.row.typeId !== 3" size="mini" icon="el-icon-edit" @click="confirmFun(scope.$index, scope.row)">粮单确认</el-button>
+          <el-button v-show="[1,3].indexOf(scope.row.typeId) >= 0" size="mini" icon="el-icon-document-add" @click="adjAmountFun(scope.$index, scope.row)">调整金额</el-button>
+          <el-button v-show="[1,3].indexOf(scope.row.typeId) <= 0" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -31,7 +33,7 @@
       <payroll-times-detail v-if="isShowDetail" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></payroll-times-detail>
     </el-dialog>
     <!-- 新增 -->
-    <el-dialog title="新增出粮项目" :visible.sync="isShowEditLayer" :close-on-click-modal="false" width="55%">
+    <el-dialog title="出粮项目" :visible.sync="isShowEditLayer" :close-on-click-modal="false" width="55%">
       <edit-layer v-on:listenIsShowMask="listenIsShowMask" :curInfo="curInfo" v-if="isShowEditLayer"></edit-layer>
     </el-dialog>
     <!-- 确认工资单 -->
@@ -103,8 +105,17 @@ export default {
      */
     addFun() {
       this.isShowEditLayer = true;
-      this.curInfo = this.payrollMainInfo;
+      this.curInfo.payrollMainInfo = this.payrollMainInfo;
       this.curInfo.type = "add";
+    },
+    /**
+     * @description: 编辑
+     */
+    editFun(index, res) {
+      this.isShowEditLayer = true;
+      this.curInfo = res;
+      this.curInfo.payrollMainInfo = this.payrollMainInfo;
+      this.curInfo.type = "edit";
     },
     /**
      * @description: 详情

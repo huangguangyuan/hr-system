@@ -6,6 +6,9 @@
       <el-form-item label="金额：" prop="totalAmount">
         <el-input v-model="ruleForm.totalAmount" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
       </el-form-item>
+      <el-form-item label="金额：" prop="totalAmount">
+        <el-input v-model="ruleForm.totalAmount" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
+      </el-form-item>
       <el-form-item label="出粮日期：" prop="payDay">
         <el-date-picker
           v-model="ruleForm.payDay"
@@ -41,7 +44,10 @@ export default {
       ruleForm: {
         id:"",
         payrollCode: "",
-        totalAmount: "",
+        totalAmount: 0,
+        isInsured:0,
+        MPFAmountSelf:0,
+        MPFAmount:0,
         payDay: "",
         remarks: ""
       }, //表单信息
@@ -49,6 +55,9 @@ export default {
       rules: {
         totalAmount: [
           { required: true, message: "请输入金额", trigger: "blur" }
+        ],
+        MPFAmount: [
+          { required: true, message: "请输入MPF金额", trigger: "blur" }
         ],
         payDay: [
           { required: true, message: "请选择出粮日期", trigger: "change" }
@@ -64,7 +73,7 @@ export default {
     initializeFun() {
       this.details = this.curInfo;
       this.details.reallyAmountSum = 0;
-      this.ruleForm.payrollCode = this.curInfo.payrollCode;
+      this.ruleForm.id = this.curInfo.id;
       if (this.curInfo.type == "modify") {
         this.ruleForm.id = this.curInfo.id;
         this.getItemFun();
@@ -86,7 +95,9 @@ export default {
         }
       });
     },
-    // 新增
+    /**
+     * @description: 获取详情
+     */
     getItemFun() {
       var reqUrl = "/server/api/v1/payroll/staff/payrollTimesItem";
       var data = {
@@ -95,9 +106,10 @@ export default {
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.ruleForm.totalAmount = res.data.totalAmount;
-          this.ruleForm.payDay = res.data.payDay.toString();
+          this.ruleForm.MPFAmount = res.data.MPFAmount;
+          this.ruleForm.MPFAmountSelf = res.data.MPFAmountSelf;
+          this.ruleForm.payDay = res.data.payDay;
           this.ruleForm.remarks = res.data.remarks;
-          this.details.reallyAmountSum = res.data.summary.reallyAmountSum;
           this.isLoding = false;
         }
       });
@@ -109,6 +121,8 @@ export default {
         payrollCode: this.ruleForm.payrollCode,
         totalAmount: Number.parseFloat(this.ruleForm.totalAmount),
         payDay: this.ruleForm.payDay,
+        MPFAmount: this.ruleForm.MPFAmount,
+        MPFAmountSelf: this.ruleForm.MPFAmountSelf,
         remarks: this.ruleForm.remarks
       };
       this.$myApi.http.post(reqUrl, data).then(res => {
@@ -125,7 +139,9 @@ export default {
       var reqUrl = "/server/api/v1/payroll/staff/payrollTimesUpdate";
       var data = {
         id:this.curInfo.id,
-        totalAmount: this.ruleForm.totalAmount,
+        totalAmount: Number.parseFloat(this.ruleForm.totalAmount),
+        MPFAmount: this.ruleForm.MPFAmount,
+        MPFAmountSelf: this.ruleForm.MPFAmountSelf,
         payDay: this.ruleForm.payDay,
         remarks: this.ruleForm.remarks
       };

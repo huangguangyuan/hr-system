@@ -125,12 +125,12 @@
             @click.stop="openPayrollTimes(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
           >多次出粮</el-button>
-          <el-button
+          <!-- <el-button
             size="mini"
             icon="el-icon-s-operation"
             @click.stop="openSetMPFKey(scope.$index, scope.row)"
             v-if="fun_right && approvePayrollSlip_right && scope.row.typeId != 1"
-          >调整MPF</el-button>
+          >调整MPF</el-button> -->
           <el-button
             size="mini"
             icon="el-icon-document-add"
