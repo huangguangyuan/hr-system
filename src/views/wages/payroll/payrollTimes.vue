@@ -13,8 +13,8 @@
       <el-table-column prop="reallyAmount" label="实际金额"></el-table-column>
       <el-table-column prop="totalAmount" label="出粮金额"></el-table-column>
       <el-table-column prop="adjAmount" label="调整金额"></el-table-column>
-      <el-table-column prop="MPFAmout" label="MPF强制缴纳"></el-table-column>
-      <el-table-column prop="MPFAmoutSelf" label="MPF自愿缴纳"></el-table-column>
+      <el-table-column prop="MPFAmount" label="MPF强制缴纳"></el-table-column>
+      <el-table-column prop="MPFAmountSelf" label="MPF自愿缴纳"></el-table-column>
       <el-table-column prop="payDay" label="出粮日期"></el-table-column>
       <el-table-column prop="typeTxt" label="状态"></el-table-column>
       <el-table-column label="操作" width="450px">
@@ -66,6 +66,7 @@ export default {
       isShowConfirm:false,
       isShowAdjAmount:false,
       pageList: [],
+      staffPayrollInfo:{},
       curInfo: {}, //当前内容
       isShowLoading: false, //是否显示loading页
     };
@@ -98,14 +99,21 @@ export default {
     }
   },
   mounted() {
+    this.getStaffPayrollInfo();
   },
   methods: {
+    getStaffPayrollInfo(){
+      this.$myApi.http.post("/server/api/v1/payroll/staff/staffPayrollInfo", { staffCode: this.payrollMainInfo.staffCode }).then(res => {
+        this.staffPayrollInfo = res.data.data;
+      });
+    },
     /**
      * @description: 新增
      */
     addFun() {
       this.isShowEditLayer = true;
       this.curInfo.payrollMainInfo = this.payrollMainInfo;
+      this.curInfo.staffPayrollInfo = this.staffPayrollInfo;
       this.curInfo.type = "add";
     },
     /**
@@ -115,6 +123,7 @@ export default {
       this.isShowEditLayer = true;
       this.curInfo = res;
       this.curInfo.payrollMainInfo = this.payrollMainInfo;
+      this.curInfo.staffPayrollInfo = this.staffPayrollInfo;
       this.curInfo.type = "modify";
     },
     /**

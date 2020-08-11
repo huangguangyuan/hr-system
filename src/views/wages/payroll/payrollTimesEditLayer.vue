@@ -7,7 +7,7 @@
         <el-input v-model="ruleForm.totalAmount" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
       </el-form-item>
       <el-form-item label="MPF强制：" prop="MPFAmount">
-        <el-input v-model="ruleForm.totalAmount" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
+        <el-input v-model="ruleForm.MPFAmount" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
       </el-form-item>
       <el-form-item label="MPF自愿：" prop="MPFAmountSelf">
         <el-input v-model="ruleForm.MPFAmountSelf" v-if="ruleForm.isInsured===true" oninput="value=value.replace(/[^\d.]/g,'')" style="width:153px;padding-right:15px"></el-input>
@@ -45,6 +45,8 @@ export default {
     const checkMPFAmountSelf = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请填写MPF自愿金额'))
+      }else{
+        callback()
       }
     }
     return {
@@ -84,7 +86,7 @@ export default {
     // 初始化
     initializeFun() {
       this.details = this.curInfo;
-      this.details.reallyAmountSum = 0;
+      console.log(this.curInfo.staffPayrollInfo.staffInsuredInfoMPF)
       this.ruleForm.id = this.curInfo.id;
       if (this.curInfo.type == "modify") {
         this.ruleForm.id = this.curInfo.id;
@@ -133,10 +135,11 @@ export default {
       var data = {
         payrollCode: this.ruleForm.payrollCode,
         totalAmount: Number.parseFloat(this.ruleForm.totalAmount),
-        payDay: this.ruleForm.payDay,
+        payDay: this.$toolFn.timeFormat(this.ruleForm.payDay,'yyyy-MM-dd'),
         MPFAmount: this.ruleForm.MPFAmount,
         MPFAmountSelf: this.ruleForm.MPFAmountSelf,
-        remarks: this.ruleForm.remarks
+        remarks: this.ruleForm.remarks,
+        isInsured : this.ruleForm.isInsured ? 1 : 0
       };
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
@@ -155,7 +158,8 @@ export default {
         totalAmount: Number.parseFloat(this.ruleForm.totalAmount),
         MPFAmount: this.ruleForm.MPFAmount,
         MPFAmountSelf: this.ruleForm.MPFAmountSelf,
-        payDay: this.ruleForm.payDay,
+        isInsured : this.ruleForm.isInsured ? 1 : 0,
+        payDay: this.$toolFn.timeFormat(this.ruleForm.payDay,'yyyy-MM-dd'),
         remarks: this.ruleForm.remarks
       };
       this.$myApi.http.post(reqUrl, data).then(res => {
