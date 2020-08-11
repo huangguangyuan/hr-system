@@ -1,5 +1,5 @@
 <template>
-  <div class="editLayer" v-if="isLoding">
+  <div class="editLayer" v-if="!isLoding">
     <payroll-times-month-info :curInfo="curInfo"></payroll-times-month-info>
     <el-divider>本次出粮信息</el-divider>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
@@ -43,8 +43,6 @@ export default {
   props: ["curInfo"],
   data() {
     const checkMPFAmountSelf = (rule, value, callback) => {
-      callback(new Error('请填写MPF自愿金额'))
-      console.log(value)
       if (value === '') {
         callback(new Error('请填写MPF自愿金额'))
       }
@@ -118,13 +116,14 @@ export default {
         id: this.ruleForm.id
       };
       this.$myApi.http.post(reqUrl, data).then(res => {
+        this.isLoding = false;
         if (res.data.code == 0) {
-          this.ruleForm.totalAmount = res.data.totalAmount;
-          this.ruleForm.MPFAmount = res.data.MPFAmount;
-          this.ruleForm.MPFAmountSelf = res.data.MPFAmountSelf;
-          this.ruleForm.payDay = res.data.payDay;
-          this.ruleForm.remarks = res.data.remarks;
-          this.isLoding = false;
+          this.ruleForm.totalAmount = res.data.data.totalAmount;
+          this.ruleForm.MPFAmount = res.data.data.MPFAmount;
+          this.ruleForm.MPFAmountSelf = res.data.data.MPFAmountSelf;
+          this.ruleForm.payDay = res.data.data.payDay;
+          this.ruleForm.remarks = res.data.data.remarks;
+          this.ruleForm.isInsured = res.data.data.isInsured === 1 ? true : false;
         }
       });
     },

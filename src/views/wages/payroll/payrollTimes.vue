@@ -115,7 +115,7 @@ export default {
       this.isShowEditLayer = true;
       this.curInfo = res;
       this.curInfo.payrollMainInfo = this.payrollMainInfo;
-      this.curInfo.type = "edit";
+      this.curInfo.type = "modify";
     },
     /**
      * @description: 详情
