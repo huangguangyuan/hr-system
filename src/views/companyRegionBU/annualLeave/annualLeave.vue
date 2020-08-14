@@ -44,8 +44,6 @@ export default {
     };
   },
   mounted() {
-    console.log(111111111111)
-    console.log(this.BUInfo)
     this.annualLeaveByBUCode(this.BUInfo.code);
   },
   methods: {

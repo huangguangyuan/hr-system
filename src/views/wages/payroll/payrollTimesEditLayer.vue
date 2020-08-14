@@ -10,7 +10,7 @@
         <el-input v-model="ruleForm.MPFAmount" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
       </el-form-item>
       <el-form-item label="MPF自愿：" prop="MPFAmountSelf">
-        <el-input v-model="ruleForm.MPFAmountSelf" v-if="ruleForm.isInsured===true" oninput="value=value.replace(/[^\d.]/g,'')" style="width:153px;padding-right:15px"></el-input>
+        <el-input v-model="ruleForm.MPFAmountSelf" v-if="ruleForm.isInsured === true" oninput="value=value.replace(/[^\d.]/g,'')" style="width:153px;padding-right:15px"></el-input>
         <el-checkbox v-model="ruleForm.isInsured" >缴纳</el-checkbox> 
       </el-form-item>
       <el-form-item label="出粮日期：" prop="payDay">
@@ -52,6 +52,7 @@ export default {
     return {
       isLoding:true,
       details:{},
+      staffInsuredInfoMPF:{},
       ruleForm: {
         id:"",
         payrollCode: "",
@@ -86,7 +87,7 @@ export default {
     // 初始化
     initializeFun() {
       this.details = this.curInfo;
-      console.log(this.curInfo.staffPayrollInfo.staffInsuredInfoMPF)
+      this.staffInsuredInfoMPF = this.curInfo.staffPayrollInfo.staffInsuredInfoMPF;
       this.ruleForm.id = this.curInfo.id;
       if (this.curInfo.type == "modify") {
         this.ruleForm.id = this.curInfo.id;
@@ -137,10 +138,13 @@ export default {
         totalAmount: Number.parseFloat(this.ruleForm.totalAmount),
         payDay: this.$toolFn.timeFormat(this.ruleForm.payDay,'yyyy-MM-dd'),
         MPFAmount: this.ruleForm.MPFAmount,
-        MPFAmountSelf: this.ruleForm.MPFAmountSelf,
+        // MPFAmountSelf: this.ruleForm.MPFAmountSelf,
         remarks: this.ruleForm.remarks,
         isInsured : this.ruleForm.isInsured ? 1 : 0
       };
+      if (this.ruleForm.isInsured){
+        data.MPFAmountSelf = this.ruleForm.MPFAmountSelf;
+      }
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
@@ -157,11 +161,14 @@ export default {
         id:this.curInfo.id,
         totalAmount: Number.parseFloat(this.ruleForm.totalAmount),
         MPFAmount: this.ruleForm.MPFAmount,
-        MPFAmountSelf: this.ruleForm.MPFAmountSelf,
+        // MPFAmountSelf: this.ruleForm.MPFAmountSelf,
         isInsured : this.ruleForm.isInsured ? 1 : 0,
         payDay: this.$toolFn.timeFormat(this.ruleForm.payDay,'yyyy-MM-dd'),
         remarks: this.ruleForm.remarks
       };
+      if (this.ruleForm.isInsured){
+        data.MPFAmountSelf = this.ruleForm.MPFAmountSelf;
+      }
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
@@ -174,7 +181,39 @@ export default {
     // 取消
     cancelFn() {
       this.$emit("listenIsShowMask", false);
+    },
+    /**
+     * @description: 计算MPF
+     */
+    calMPF(amt) {
+      let modelList = this.staffInsuredInfoMPF.MPFSchemeDetail.schemeMPFList;
+      let payment = 0.00;
+      for (let i = 0; i < modelList.length; i++) {
+        const model = modelList[i];
+        let paymentRatio = Number.parseFloat(amt * model.paymentRatio) ;
+        if (paymentRatio <= Number.parseFloat(model.baseLower)){
+          payment = 0;
+        }else if (paymentRatio >= Number.parseFloat(model.baseUpper)){
+          payment = model.baseUpper;
+        }else{
+          payment = paymentRatio;
+        }
+        payment = Number.parseFloat(payment.toFixed(2));
+      }
+      return payment;
     }
+  },
+  watch:{
+    "ruleForm.totalAmount":{
+      handler: function(newVal) {
+        this.ruleForm.MPFAmount = this.calMPF(newVal);
+        if (this.ruleForm.isInsured){
+          this.ruleForm.MPFAmountSelf = this.staffInsuredInfoMPF.mpfVoluntarily > 1 ?
+          this.staffInsuredInfoMPF.mpfVoluntarily : newVal * this.staffInsuredInfoMPF.mpfVoluntarily;
+        }
+
+      }
+    },
   }
 };
 </script>
