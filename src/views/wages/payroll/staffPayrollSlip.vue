@@ -184,7 +184,7 @@
 </template>
 <script>
 
-import staffPayrollYear from "./staffPayrollYear.vue";
+import staffPayrollYear from "./staffPayrollSlipList.vue";
 import {monthList} from "@/lib/staticData.js";
 import {createPdf,createImgToPrint} from '@/lib/htmlToPDF'
 export default {
