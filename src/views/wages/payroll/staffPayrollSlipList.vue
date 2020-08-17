@@ -17,146 +17,141 @@
     <el-table v-loading="isShowLoading" :data="tableData" stripe>
       <el-table-column type="expand">
         <template slot-scope="props">
-          <div class="table-wrap">
-            <div class="monthPayroll">
-              <!--startprint-->
-              <div id="monthPayrollData" class="monthPayrollData">
-                <br >
-                <el-divider content-position="left">个人信息</el-divider>
-                <ul class="msgList">
-                  <li v-if="props.payrollSlip.buName">
-                    <span class="title">{{props.payrollSlip.buName.title}}</span>：
-                    <span class="val">{{props.payrollSlip.buName.val}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.insuredCity">
-                    <span class="title">{{props.payrollSlip.insuredCity.title}}</span>：
-                    <span class="val">{{props.payrollSlip.insuredCity.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.name">
-                    <span class="title">{{props.payrollSlip.name.title}}</span>：
-                    <span class="val">{{props.payrollSlip.name.val}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.bankName">
-                    <span class="title">{{props.payrollSlip.bankName.title}}</span>：
-                    <span class="val">{{props.payrollSlip.bankName.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.IDNo">
-                    <span class="title">{{props.payrollSlip.IDNo.title}}</span>：
-                    <span class="val">{{props.payrollSlip.IDNo.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.bankAccountNo">
-                    <span class="title">{{props.payrollSlip.bankAccountNo.title}}</span>：
-                    <span class="val">{{props.payrollSlip.bankAccountNo.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.departmentName">
-                    <span class="title">{{props.payrollSlip.departmentName.title}}</span>：
-                    <span class="val">{{props.payrollSlip.departmentName.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.payDay">
-                    <span class="title">{{props.payrollSlip.payDay.title}}</span>：
-                    <span class="val">{{props.payrollSlip.payDay.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.position">
-                    <span class="title">{{props.payrollSlip.position.title}}</span>：
-                    <span class="val">{{props.payrollSlip.position.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.payrollPeriod">
-                    <span class="title">{{props.payrollSlip.payrollPeriod.title}}</span>：
-                    <span class="val">{{props.payrollSlip.payrollPeriod.val}}</span>
-                  </li> 
-                  <li v-if="props.payrollSlip.remarks">
-                    <span class="title">{{props.payrollSlip.remarks.title}}</span>：
-                    <span class="val">{{props.payrollSlip.remarks.val || '暂无'}}</span>
-                  </li>
-                </ul>
-                <br >
-                <el-divider v-if="props.payrollSlip" content-position="left">薪资构成</el-divider>
-                <ul class="msgList" v-if="props.payrollSlip">
-                  <li v-if="props.payrollSlip.totalAmount">
-                    <span class="title">{{props.payrollSlip.totalAmount.title}}</span>：
-                    <span class="val">{{props.payrollSlip.totalAmount.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.grossPay">
-                    <span class="title">{{props.payrollSlip.grossPay.title}}</span>：
-                    <span class="val">{{props.payrollSlip.grossPay.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.holiday">
-                    <span class="title">{{props.payrollSlip.holiday.title}}</span>：
-                    <span class="val">{{props.payrollSlip.holiday.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.SI">
-                    <span class="title">{{props.payrollSlip.SI.title}}</span>：
-                    <span class="val">{{props.payrollSlip.SI.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.taxableWages">
-                    <span class="title">{{props.payrollSlip.taxableWages.title}}</span>：
-                    <span class="val">{{props.payrollSlip.taxableWages.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.HC">
-                    <span class="title">{{props.payrollSlip.HC.title}}</span>：
-                    <span class="val">{{props.payrollSlip.HC.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.taxAmount">
-                    <span class="title">{{props.payrollSlip.taxAmount.title}}</span>：
-                    <span class="val">{{props.payrollSlip.taxAmount.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.specialDeduction">
-                    <span class="title">{{props.payrollSlip.specialDeduction.title}}</span>：
-                    <span class="val">{{props.payrollSlip.specialDeduction.val || '暂无'}}</span>
-                  </li>
-                  <li v-if="props.payrollSlip.reallyAmount">
-                    <span class="title">{{props.payrollSlip.reallyAmount.title}}</span>：
-                    <span class="val">{{props.payrollSlip.reallyAmount.val || '暂无'}}</span>
-                  </li>
-                </ul>
-                <div class="table-wrap" v-if="props.payrollSlip">
-                  <div class="table-item">
-                    <el-divider>收入列表</el-divider>
-                    <el-table
-                      v-if="props.payrollSlip.staffSalaryItemTaxableList"
-                      :data="props.payrollSlip.staffSalaryItemTaxableList"
-                      stripe
-                      border
-                      show-summary
-                    >
-                      <el-table-column prop="title" label="名 称"></el-table-column>
-                      <el-table-column prop="val" label="金 额"></el-table-column>
-                    </el-table>
-                  </div>
-                  <div class="table-item" v-if="props.payrollSlip.SIList" >
-                    <el-divider>社保/公积金明细</el-divider>
-                    <el-table :data="props.payrollSlip.SIList.val" stripe border show-summary>
-                      <!-- <el-table-column prop="paymentTxt" label="支付对象"></el-table-column> -->
-                      <el-table-column prop="typeTxt" label="类型"></el-table-column>
-                      <el-table-column prop="payment" label="金 额"></el-table-column>
-                    </el-table>
-                  </div>
-                  <div class="table-item" v-if="props.payrollSlip.MPFList" >
-                    <el-divider>MPF明细</el-divider>
-                    <el-table :data="props.payrollSlip.MPFList.val" stripe border show-summary>
-                      <!-- <el-table-column prop="paymentTxt" label="支付对象"></el-table-column> -->
-                      <el-table-column prop="paymentTxt" label="类 型"></el-table-column>
-                      <el-table-column prop="payment" label="金 额"></el-table-column>
-                    </el-table>
-                  </div>
-                  <div class="table-item">
-                    <el-divider>不应税项目列表</el-divider>
-                    <el-table v-if="props.payrollSlip.staffSalaryItemNotTaxableList"
-                      :data="props.payrollSlip.staffSalaryItemNotTaxableList"
-                      stripe border show-summary>
-                      <el-table-column prop="title" label="名 称"></el-table-column>
-                      <el-table-column prop="val" label="金 额"></el-table-column>
-                    </el-table>
-                  </div>
+          <div class="monthPayroll">
+            <div id="monthPayrollData" class="monthPayrollData">
+              <br >
+              <el-divider content-position="left">个人信息</el-divider>
+              <ul class="msgList">
+                <li v-if="props.row.payrollSlip.buName">
+                  <span class="title">{{props.row.payrollSlip.buName.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.buName.val}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.insuredCity">
+                  <span class="title">{{props.row.payrollSlip.insuredCity.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.insuredCity.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.name">
+                  <span class="title">{{props.row.payrollSlip.name.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.name.val}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.bankName">
+                  <span class="title">{{props.row.payrollSlip.bankName.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.bankName.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.IDNo">
+                  <span class="title">{{props.row.payrollSlip.IDNo.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.IDNo.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.bankAccountNo">
+                  <span class="title">{{props.row.payrollSlip.bankAccountNo.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.bankAccountNo.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.departmentName">
+                  <span class="title">{{props.row.payrollSlip.departmentName.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.departmentName.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.payDay">
+                  <span class="title">{{props.row.payrollSlip.payDay.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.payDay.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.position">
+                  <span class="title">{{props.row.payrollSlip.position.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.position.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.payrollPeriod">
+                  <span class="title">{{props.row.payrollSlip.payrollPeriod.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.payrollPeriod.val}}</span>
+                </li> 
+                <li v-if="props.row.payrollSlip.remarks">
+                  <span class="title">{{props.row.payrollSlip.remarks.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.remarks.val || '暂无'}}</span>
+                </li>
+              </ul>
+              <br >
+              <el-divider v-if="props.row.payrollSlip" content-position="left">薪资构成</el-divider>
+              <ul class="msgList" v-if="props.row.payrollSlip">
+                <li v-if="props.row.payrollSlip.totalAmount">
+                  <span class="title">{{props.row.payrollSlip.totalAmount.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.totalAmount.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.grossPay">
+                  <span class="title">{{props.row.payrollSlip.grossPay.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.grossPay.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.holiday">
+                  <span class="title">{{props.row.payrollSlip.holiday.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.holiday.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.SI">
+                  <span class="title">{{props.row.payrollSlip.SI.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.SI.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.taxableWages">
+                  <span class="title">{{props.row.payrollSlip.taxableWages.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.taxableWages.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.HC">
+                  <span class="title">{{props.row.payrollSlip.HC.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.HC.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.taxAmount">
+                  <span class="title">{{props.row.payrollSlip.taxAmount.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.taxAmount.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.specialDeduction">
+                  <span class="title">{{props.row.payrollSlip.specialDeduction.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.specialDeduction.val || '暂无'}}</span>
+                </li>
+                <li v-if="props.row.payrollSlip.reallyAmount">
+                  <span class="title">{{props.row.payrollSlip.reallyAmount.title}}</span>：
+                  <span class="val">{{props.row.payrollSlip.reallyAmount.val || '暂无'}}</span>
+                </li>
+              </ul>
+              <div class="table-wrap" v-if="props.row.payrollSlip">
+                <div class="table-item">
+                  <el-divider>收入列表</el-divider>
+                  <el-table
+                    v-if="props.row.payrollSlip.staffSalaryItemTaxableList"
+                    :data="props.row.payrollSlip.staffSalaryItemTaxableList"
+                    stripe
+                    border
+                    show-summary
+                  >
+                    <el-table-column prop="title" label="名 称"></el-table-column>
+                    <el-table-column prop="val" label="金 额"></el-table-column>
+                  </el-table>
                 </div>
-                <!--endprint-->
-                <br />
+                <div class="table-item" v-if="props.row.payrollSlip.SIList" >
+                  <el-divider>社保/公积金明细</el-divider>
+                  <el-table :data="props.row.payrollSlip.SIList.val" stripe border show-summary>
+                    <!-- <el-table-column prop="paymentTxt" label="支付对象"></el-table-column> -->
+                    <el-table-column prop="typeTxt" label="类型"></el-table-column>
+                    <el-table-column prop="payment" label="金 额"></el-table-column>
+                  </el-table>
+                </div>
+                <div class="table-item" v-if="props.row.payrollSlip.MPFList" >
+                  <el-divider>MPF明细</el-divider>
+                  <el-table :data="props.row.payrollSlip.MPFList.val" stripe border show-summary>
+                    <el-table-column prop="paymentTxt" label="类 型"></el-table-column>
+                    <el-table-column prop="payment" label="金 额"></el-table-column>
+                  </el-table>
+                </div>
+                <div class="table-item">
+                  <el-divider>不应税项目列表</el-divider>
+                  <el-table v-if="props.row.payrollSlip.staffSalaryItemNotTaxableList"
+                    :data="props.row.payrollSlip.staffSalaryItemNotTaxableList"
+                    stripe border show-summary>
+                    <el-table-column prop="title" label="名 称"></el-table-column>
+                    <el-table-column prop="val" label="金 额"></el-table-column>
+                  </el-table>
+                </div>
               </div>
-              <!-- <div class="btnSet">
-                  <el-button type="primary" class="printBtn" @click='doPrint'>打 印</el-button>
-                  <el-button type="primary" class="printBtn" @click='creatPdf'>下 载</el-button>
-              </div> -->
+              <br />
             </div>
+            <div class="btnSet">
+                <el-button type="primary" class="printBtn" @click='doPrint(props.row.payrollSlip)'>打 印</el-button>
+                <el-button type="primary" class="printBtn" @click='creatPdf(props.row.payrollSlip)'>下 载</el-button>
+              </div>
           </div>
         </template>
       </el-table-column>
@@ -269,6 +264,21 @@ export default {
       this.$toolFn.sessionSet("staffPayrollYear", parseInt(val));
       this.pageInfo.reqParams.isReq = true;
       this.$refs.pageInfo.getData(this.pageInfo);
+    },
+    // 打印
+    doPrint(row) {
+      var data = {
+        title:row.name.val,
+        bdhtml: document.querySelector('#monthPayrollData')
+      }
+      createImgToPrint(data);
+    },
+    creatPdf(row) {
+      var data = {
+        title:row.name.val,
+        bdhtml: document.querySelector('#monthPayrollData')
+      }
+      createPdf(data);
     }
   }
 };
@@ -325,6 +335,42 @@ export default {
   align-items: flex-start;
   .table-item {
     width: 48%;
+  }
+}
+.msgList {
+  margin: 20px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  li {
+    padding: 15px 10px;
+    font-size: 14px;
+    width: 48%;
+    box-sizing: border-box;
+    list-style: none;
+    .title {
+      color: #99a9bf;
+      display: inline-block;
+      width: 100px;
+      text-align: left;
+    }
+    border-bottom: 1px #99a9bf dashed;
+  }
+}
+.table-wrap {
+  display: flex;
+  margin: 30px auto 0;
+  justify-content: space-around;
+  .table-item {
+    width: 32%;
+  }
+}
+.btnSet{
+  text-align:center;
+  margin: 30px;
+  .printBtn {
+    display:inline-block;
+    margin: 20px;
   }
 }
 </style>

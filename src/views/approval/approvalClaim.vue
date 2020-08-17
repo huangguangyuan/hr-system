@@ -1,6 +1,11 @@
 <template>
   <div class="approvalClaim wrap" v-if="isShow">
-    <h5 class="title-h5">报销列表</h5>
+    <h5 class="title-h5">报销列表       
+      <el-radio-group  v-model="groupType" class="groupType-checkbox">
+        <el-radio-button  label="1" key="1">进行中</el-radio-button>
+        <el-radio-button  label="0" key="0">已完成</el-radio-button>
+      </el-radio-group >
+    </h5>
     <bus-and-search :busAndSearch_props="busAndSearch" :BUCodeSelected.sync="BUCodeSelected" ref="busAndSearch"></bus-and-search>
     <el-divider></el-divider>
     <!-- 列表内容 -->
@@ -50,6 +55,7 @@ export default {
   data() {
     return {
       isShow:false,
+      groupType:"1",
       claimTypes:[],
       pageList:[],
       curInfo: {},
@@ -66,7 +72,7 @@ export default {
         reqParams:{
             isReq:false,
             url:"/server/api/v1/staff/claim/hrSysClaimList",
-            data:{ hrCode: this.$toolFn.curUser.userCode,BUCode:this.BUCodeSelected }
+            data:{ hrCode: this.$toolFn.curUser.userCode,BUCode:this.BUCodeSelected,groupType:this.groupType  }
           }
         }
     },
@@ -135,6 +141,12 @@ export default {
         this.$refs.pageInfo.getData(this.pageInfo);
       }
     },
+    groupType: {
+      handler: function() {
+        this.pageInfo.reqParams.isReq = true;
+        this.$refs.pageInfo.getData(this.pageInfo);
+      }
+    },
     "filter.searchKey":{
       handler: function() {
         this.$refs.pageInfo.searchKey(this.busAndSearch.filter);
@@ -152,6 +164,11 @@ export default {
     color:sienna;
   }
   .tip3{
+  }
+  .groupType-checkbox{
+    display: inline-block;
+    padding-left: 15px;
+    vertical-align: super;
   }
 </style>
 
