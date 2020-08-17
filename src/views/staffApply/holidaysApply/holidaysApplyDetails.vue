@@ -46,7 +46,7 @@
           <p>操作行为：{{item.operatorUser.tip}}</p>
           <p>状态：{{item.typeIdTxt}}</p>
           <!-- <p>是否完结：{{item.finishFlagTxt}}</p> -->
-          <p v-if="item.remarks != ''">备注：{{item.remarks}}</p>
+          <p v-show="item.remarks != ''">备注：{{item.remarks}}</p>
         </el-card>
       </el-timeline-item>
     </el-timeline>

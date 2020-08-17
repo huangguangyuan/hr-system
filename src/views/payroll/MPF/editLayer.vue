@@ -148,6 +148,10 @@ export default {
         status: parseInt(this.ruleForm.status),
         remarks: this.ruleForm.remarks
       };
+      if (data.mpfVoluntarily > 1500){
+        this.$message.error("自愿缴纳金额不能大于 1500 ");
+        return;
+      }
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();

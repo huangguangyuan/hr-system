@@ -11,7 +11,7 @@
         <el-date-picker
           v-model="ruleForm.startDate"
           type="date"
-          format='yyyy-MM-dd'
+          format='yyyy-MM'
           value-format="yyyy-MM-dd"
           placeholder="入学日期"
         ></el-date-picker>
@@ -20,8 +20,9 @@
         <el-date-picker
           v-model="ruleForm.endDate"
           type="date"
-          :format="('2100-01-01' == ruleForm.endDate?'至今':'yyyy-MM-dd')"
+          :format="('2100-01-01' == ruleForm.endDate?'至今':'yyyy-MM')"
           :picker-options="pickerOptions"
+          value-format="yyyy-MM-dd"
           placeholder="结业日期"
         ></el-date-picker>
       </el-form-item>

@@ -43,7 +43,7 @@
       <el-table-column sortable prop="totalAmount" label="收入总额" width="100"></el-table-column>
       <el-table-column sortable prop="SIAmount" label="社保扣除" width="100"></el-table-column>
       <el-table-column sortable prop="HCAmount" label="公积金扣除" width="130"></el-table-column>
-      <el-table-column sortable prop="grossPay" label="税前金额" width="100"></el-table-column>
+      <el-table-column sortable prop="grossPay" label="整个税前收入的总和" width="150"></el-table-column>
       <el-table-column sortable prop="specialDeductionAmount" label="专项附加扣除" width="140"></el-table-column>
       <el-table-column sortable prop="threshold" label="个税起征点扣除" width="160"></el-table-column>
       <el-table-column sortable prop="taxableWages" label="应税金额" width="100"></el-table-column>
@@ -106,7 +106,7 @@
       <el-table-column sortable prop="totalAmount" label="收入总额" width="100"></el-table-column>
       <el-table-column sortable prop="MPFAmount" label="MPF扣除" width="120"></el-table-column>
       <el-table-column sortable prop="holidayAmount" label="请假应扣除" width="120"></el-table-column>
-      <el-table-column sortable prop="grossPay" label="税前金额" width="100"></el-table-column>
+      <el-table-column sortable prop="grossPay" label="整个税前收入的总和" width="150"></el-table-column>
       <el-table-column sortable prop="claimAmount" label="报销总额" width="140"></el-table-column>
       <el-table-column sortable prop="notTaxableAmount" label="不应税金额" width="130"></el-table-column>
       <el-table-column sortable prop="adjAmount" label="调整金额" width="100"></el-table-column>

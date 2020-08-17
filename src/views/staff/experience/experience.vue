@@ -26,7 +26,7 @@
     </el-table>
     <!-- 分页编码 -->
     <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
-    <!-- 添加学历 -->
+    <!-- 添加经历 -->
     <el-dialog :title="this.curInfo.type=='modify'?'修改工作经历':'增加工作经历'" :visible.sync="isShowAddAccess" :close-on-click-modal="false">
       <editLayer :userRight_props="userRight" v-if="isShowAddAccess" :curInfo="curInfo" v-on:listenIsShowMask="listenIsShowMask"></editLayer>
     </el-dialog>
@@ -65,8 +65,8 @@ export default {
     },
     tableData(){
       return this.pageList.map(item => {
-        item.startDate = this.$toolFn.timeFormat(item.startDate,"yyyy-MM-dd")
-        item.endDateTxt = item.endDate = this.$toolFn.timeFormat(item.endDate,"yyyy-MM-dd")
+        item.startDate = this.$toolFn.timeFormat(item.startDate,"yyyy-MM")
+        item.endDateTxt = item.endDate = this.$toolFn.timeFormat(item.endDate,"yyyy-MM")
         if (item.endDate == "2100-01-01"){
           item.endDateTxt = "至今";
         }

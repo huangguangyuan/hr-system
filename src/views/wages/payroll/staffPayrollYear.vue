@@ -102,7 +102,7 @@
       <!-- <el-table-column prop="buName" label="所在单位"></el-table-column> -->
       <!-- <el-table-column prop="salary" label="基础工资"></el-table-column> -->
       <el-table-column prop="claimAmount" label="报销金额"></el-table-column>
-      <el-table-column prop="taxableWages" label="应税金额"></el-table-column>
+      <!-- <el-table-column prop="taxableWages" label="应税金额"></el-table-column> -->
       <el-table-column prop="taxAmount" label="个人所得税"></el-table-column>
       <!-- <el-table-column prop="taxAmountSum" label="累计个人所得税"></el-table-column> -->
       <el-table-column prop="netAmount" label="税后工资"></el-table-column>
