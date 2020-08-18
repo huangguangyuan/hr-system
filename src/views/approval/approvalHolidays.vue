@@ -20,6 +20,8 @@
       <el-table-column sortable prop="typeIdTxt" label="假期类型" width="100"></el-table-column>
       <el-table-column sortable prop="startDate" label="开始时间" width="200"></el-table-column>
       <el-table-column sortable prop="endDate" label="结束时间" width="200"></el-table-column>
+      <el-table-column sortable prop="willLeave" label="即将休假天数" width="150"></el-table-column>
+      <el-table-column sortable prop="remainsLeaves" label="剩余天数" width="120"></el-table-column>
       <el-table-column sortable prop="totalDay" label="请假天数" width="120"></el-table-column>
       <!-- <el-table-column sortable prop="totalAmount" label="应扣金额"></el-table-column> -->
       <el-table-column sortable prop="isWithpayTxt" label="是否带薪" width="120"></el-table-column>
