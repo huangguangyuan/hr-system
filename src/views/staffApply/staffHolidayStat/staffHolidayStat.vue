@@ -43,15 +43,15 @@
       <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     </div>
     <div v-if="holidayTypeSelected === '999'">
-      <el-table v-loading="isShowLoading" :data="willLeaves" stripe>
-        <el-table-column prop="totalDay" label="天数"></el-table-column>
+      <el-table v-loading="isShowLoading" :data="willLeaves">
+        <el-table-column prop="" label=""></el-table-column>
+        <el-table-column prop="totalDay" label="假期天数"></el-table-column>
         <el-table-column prop="startDate" label="开始日期"></el-table-column>
-        <el-table-column prop="endDate" label="结算日期"></el-table-column>
+        <el-table-column prop="endDate" label="结束日期"></el-table-column>
         <el-table-column prop="typeIdTxt" label="类型"></el-table-column>
         <el-table-column prop="remarks" label="备注"></el-table-column>
       </el-table>
     </div>
-
   </div>
 </template>
 <script>

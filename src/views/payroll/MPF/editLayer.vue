@@ -25,7 +25,7 @@
       </el-form-item>
 
       <el-form-item label="MPF自愿缴纳：" prop="mpfVoluntarily">
-        <el-input v-model="ruleForm.mpfVoluntarily" oninput="value=value.replace(/[^\d.]/g,'')"></el-input>
+        <el-input v-model="ruleForm.mpfVoluntarily" type="number"></el-input>
       </el-form-item>
 
       <el-form-item label="是否生效：" prop="status">
@@ -151,6 +151,11 @@ export default {
       if (data.mpfVoluntarily > 1500){
         this.$message.error("自愿缴纳金额不能大于 1500 ");
         return;
+      }else{
+          if (data.mpfVoluntarily.toString().includes('.')){
+            this.$message.error("自愿缴纳金额只能是整数");
+            return;
+          }
       }
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
@@ -174,6 +179,15 @@ export default {
         status: parseInt(this.ruleForm.status),
         remarks: this.ruleForm.remarks
       };
+      if (data.mpfVoluntarily > 1500){
+        this.$message.error("自愿缴纳金额不能大于 1500 ");
+        return;
+      }else{
+          if (data.mpfVoluntarily.toString().includes('.')){
+            this.$message.error("自愿缴纳金额只能是整数");
+            return;
+          }
+      }
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();

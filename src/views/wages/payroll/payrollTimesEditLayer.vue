@@ -89,6 +89,7 @@ export default {
       this.details = this.curInfo;
       this.staffInsuredInfoMPF = this.curInfo.staffPayrollInfo.staffInsuredInfoMPF;
       this.ruleForm.id = this.curInfo.id;
+      this.ruleForm.MPFAmountSelf = this.staffInsuredInfoMPF.mpfVoluntarily;
       if (this.curInfo.type == "modify") {
         this.ruleForm.id = this.curInfo.id;
         this.getItemFun();
@@ -160,14 +161,14 @@ export default {
       var data = {
         id:this.curInfo.id,
         totalAmount: Number.parseFloat(this.ruleForm.totalAmount),
-        MPFAmount: this.ruleForm.MPFAmount,
+        MPFAmount:  Number.parseFloat(this.ruleForm.MPFAmount),
         // MPFAmountSelf: this.ruleForm.MPFAmountSelf,
         isInsured : this.ruleForm.isInsured ? 1 : 0,
         payDay: this.$toolFn.timeFormat(this.ruleForm.payDay,'yyyy-MM-dd'),
         remarks: this.ruleForm.remarks
       };
       if (this.ruleForm.isInsured){
-        data.MPFAmountSelf = this.ruleForm.MPFAmountSelf;
+        data.MPFAmountSelf =  Number.parseFloat(this.ruleForm.MPFAmountSelf)
       }
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
@@ -207,11 +208,6 @@ export default {
     "ruleForm.totalAmount":{
       handler: function(newVal) {
         this.ruleForm.MPFAmount = this.calMPF(newVal);
-        if (this.ruleForm.isInsured){
-          this.ruleForm.MPFAmountSelf = this.staffInsuredInfoMPF.mpfVoluntarily > 1 ?
-          this.staffInsuredInfoMPF.mpfVoluntarily : newVal * this.staffInsuredInfoMPF.mpfVoluntarily;
-        }
-
       }
     },
   }
