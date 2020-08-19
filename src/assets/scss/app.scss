@@ -56,6 +56,13 @@ strong,span,i{font-style:normal;}
 
 // 重置elementUI
 .el-select-dropdown__wrap{margin-bottom: 0px!important;}
+.el-table {color: #2b2929;}
+.el-table thead{
+	color: #707070;
+}
+.el-input__inner{
+	color: #202020 !important;
+}
 .el-table-filter__wrap{margin-right: 0px!important;margin-bottom: 0px!important;}
 .el-scrollbar__wrap{overflow: visible;overflow-x: hidden;box-sizing: border-box;}
 .el-menu{border-right: 0 !important;}

@@ -12,7 +12,7 @@
     </div>
     <br />
     <!-- 列表内容 -->
-    <div v-if="holidayTypeSelected !== '999'">
+    <div v-show="holidayTypeSelected !== '999'">
       <el-table v-loading="isShowLoading" :data="tableData" stripe show-summary sum-text="合计" >
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -42,14 +42,14 @@
       </el-table>
       <page-info :pageInfo_props="pageInfo" :pageList.sync="pageList" :isShowLoading.sync="isShowLoading"  ref="pageInfo"></page-info>
     </div>
-    <div v-if="holidayTypeSelected === '999'">
+    <div v-show="holidayTypeSelected === '999'">
       <el-table v-loading="isShowLoading" :data="willLeaves">
-        <el-table-column prop="" label=""></el-table-column>
+        <el-table-column prop="createTime" label="申请时间"></el-table-column>
         <el-table-column prop="totalDay" label="假期天数"></el-table-column>
         <el-table-column prop="startDate" label="开始日期"></el-table-column>
         <el-table-column prop="endDate" label="结束日期"></el-table-column>
         <el-table-column prop="typeIdTxt" label="类型"></el-table-column>
-        <el-table-column prop="remarks" label="备注"></el-table-column>
+        <el-table-column prop="isWithpayTxt" label="是否带薪"></el-table-column>
       </el-table>
     </div>
   </div>
@@ -107,6 +107,8 @@ export default {
           if (res.data.code === 0) {
             this.isShowLoading = false
             this.willLeaves = res.data.data.map(item => {
+                item.createTime = this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd");
+                item.isWithpayTxt = item.isWithpay == 1?'是':'否';
                 item.startDate = this.$toolFn.timeFormat(item.startDate,"yyyy-MM-dd")
                 item.endDate = this.$toolFn.timeFormat(item.endDate,"yyyy-MM-dd")
                 let holidaysType = this.holidaysTypeList.find(f=>{ return f.typeId.toString() === item.typeId.toString()})
@@ -128,7 +130,7 @@ export default {
       var reqUrl = "/server/api/v1/staff/holidaysApply/getHolidaysApplyTypeId";
       this.$myApi.http.post(reqUrl, {}).then(res => {
         if (res.data.code == 0) {
-          this.holidaysTypeList = [...[{val:'即将休假',typeId:'999'}],...res.data.data];
+          this.holidaysTypeList = [...[{val:'将会休假',typeId:'999'}],...res.data.data];
           this.holidayTypeSelected = this.holidaysTypeList[0].typeId;
           this.changeType(this.holidayTypeSelected);
           // this.pageInfo.reqParams.isReq = true;
@@ -137,7 +139,7 @@ export default {
       });
     },
     // 接收子组件发送信息
-    listenIsShowMask(res) {
+    listenIsShowMask() {
       this.isShowAddAccess = false;
       this.isShowDetails = false;
     },
