@@ -20,14 +20,16 @@
       <el-table-column sortable prop="typeIdTxt" label="假期类型" width="100"></el-table-column>
       <el-table-column sortable prop="startDate" label="开始时间" width="200"></el-table-column>
       <el-table-column sortable prop="endDate" label="结束时间" width="200"></el-table-column>
-      <el-table-column sortable prop="willLeave" label="即将休假天数" width="150"></el-table-column>
-      <el-table-column sortable prop="remainsLeaves" label="剩余天数" width="120"></el-table-column>
+      
+      
       <el-table-column sortable prop="totalDay" label="请假天数" width="120"></el-table-column>
       <!-- <el-table-column sortable prop="totalAmount" label="应扣金额"></el-table-column> -->
       <el-table-column sortable prop="isWithpayTxt" label="是否带薪" width="120"></el-table-column>
       <el-table-column sortable prop="isBalanceTxt" label="是否结算" width="120"></el-table-column>
-      <el-table-column prop="nextStepTip" label="下一步提示" width="120"></el-table-column>
-      <el-table-column sortable prop="statusTxt" label="状态" width="200">
+      <!-- <el-table-column sortable prop="remainsLeaves" v-if="groupType === '1'" label="剩余假期天数 " width="150"></el-table-column>
+      <el-table-column sortable prop="willLeave" v-if="groupType === '1'" label="将会休假天数" width="150"></el-table-column> -->
+      <el-table-column prop="nextStepTip" v-if="groupType === '1'" label="下一步提示" width="120"></el-table-column>
+      <el-table-column prop="statusTxt"  label="状态" width="200">
         <template slot-scope="scope">
           <span :class="typeColor(scope.row.status)">{{scope.row.statusTxt}}</span>
         </template>

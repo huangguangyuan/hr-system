@@ -224,7 +224,7 @@ export default {
           this.details.payrollTimesAmt = payrollTimesAmt;
           this.details.typeTxt = payrollListTypeTxt(this.details.typeId);
           this.details.netAmount = parseFloat(this.details.grossPay - this.details.taxAmount).toFixed(2);
-          this.details.reallyAmount = parseFloat(parseFloat(this.details.netAmount) + parseFloat(this.details.notTaxableAmount) + parseFloat(this.arrSum(this.claimList,'totalAmount')) + this.details.adjAmount).toFixed(2);
+          this.details.reallyAmount = parseFloat(parseFloat(this.details.netAmount) + parseFloat(this.details.notTaxableAmount) + this.details.adjAmount).toFixed(2);
         }
       });
     }
