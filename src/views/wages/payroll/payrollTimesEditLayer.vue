@@ -1,5 +1,5 @@
 <template>
-  <div class="editLayer" v-if="!isLoding">
+  <div class="editLayer" v-if="!isLoading">
     <payroll-times-month-info :curInfo="curInfo"></payroll-times-month-info>
     <el-divider>本次出粮信息</el-divider>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
@@ -50,8 +50,10 @@ export default {
       }
     }
     return {
-      isLoding:true,
+      isLoading:true,
+      balanceAmount:0, // 剩余发放金额
       details:{},
+      payrollTimesSummary:{},
       staffInsuredInfoMPF:{},
       ruleForm: {
         id:"",
@@ -87,12 +89,16 @@ export default {
     // 初始化
     initializeFun() {
       this.details = this.curInfo;
+      this.details.payroll = this.curInfo.payrollMainInfo;
       this.staffInsuredInfoMPF = this.curInfo.staffPayrollInfo.staffInsuredInfoMPF;
       this.ruleForm.id = this.curInfo.id;
       this.ruleForm.MPFAmountSelf = this.staffInsuredInfoMPF.mpfVoluntarily;
+      this.payrollTimesSummaryFn();
       if (this.curInfo.type == "modify") {
         this.ruleForm.id = this.curInfo.id;
         this.getItemFun();
+      }else{
+        this.isLoading = false;
       }
     },
     submitForm(formName) {
@@ -120,7 +126,7 @@ export default {
         id: this.ruleForm.id
       };
       this.$myApi.http.post(reqUrl, data).then(res => {
-        this.isLoding = false;
+        this.isLoading = false;
         if (res.data.code == 0) {
           this.ruleForm.totalAmount = res.data.data.totalAmount;
           this.ruleForm.MPFAmount = res.data.data.MPFAmount;
@@ -152,6 +158,18 @@ export default {
           this.$message.success("新增成功");
         } else {
           this.$message.error(res.data.msg);
+        }
+      });
+    },
+    payrollTimesSummaryFn() {
+      var reqUrl = "/server/api/v1/payroll/staff/payrollTimesSummary";
+      var data = {
+        payrollCode:this.curInfo.payrollMainInfo.code
+      };
+      this.$myApi.http.post(reqUrl, data).then(res => {
+        if (res.data.code == 0) {
+          this.payrollTimesSummary = res.data.data;
+          this.balanceAmount = this.details.payroll.totalAmount - this.payrollTimesSummary.MPFAmountSum - this.payrollTimesSummary.MPFAmountSelfSum - this.payrollTimesSummary.totalAmountSum
         }
       });
     },
