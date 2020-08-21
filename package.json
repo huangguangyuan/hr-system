@@ -9,6 +9,7 @@
     "analyz": "vue-cli-service build --report"
   },
   "dependencies": {
+    "core-js": "^2.6.11",
     "element-resize-detector": "^1.1.15",
     "element-ui": "^2.12.0",
     "html2canvas": "^1.0.0-rc.5",
