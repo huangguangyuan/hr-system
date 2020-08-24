@@ -27,7 +27,7 @@
         <el-card shadow="always">自愿MPF缴纳总额：{{details.MPFAmountSelfSum}}</el-card>
       </el-col>
       <el-col :span="8">
-        <el-card shadow="always">多次出粮总金额：{{details.totalAmountSum}}</el-card>
+        <el-card shadow="always">已出粮总金额：{{details.totalAmountSum}}</el-card>
       </el-col>
       <el-col :span="8">
         <el-card shadow="always">剩余出粮总金额：{{details.payroll.totalAmount - details.MPFAmountSum - details.MPFAmountSelfSum - details.totalAmountSum}}</el-card>

@@ -4,13 +4,13 @@
     <el-divider>本次出粮信息</el-divider>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
       <el-form-item label="金额：" prop="totalAmount">
-        <el-input v-model="ruleForm.totalAmount" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
+        <el-input v-model="ruleForm.totalAmount"  type="number" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
       </el-form-item>
       <el-form-item label="MPF强制：" prop="MPFAmount">
-        <el-input v-model="ruleForm.MPFAmount" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
+        <el-input v-model="ruleForm.MPFAmount"  type="number" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
       </el-form-item>
       <el-form-item label="MPF自愿：" prop="MPFAmountSelf">
-        <el-input v-model="ruleForm.MPFAmountSelf" v-if="ruleForm.isInsured === true" oninput="value=value.replace(/[^\d.]/g,'')" style="width:153px;padding-right:15px"></el-input>
+        <el-input v-model="ruleForm.MPFAmountSelf" type="number" v-if="ruleForm.isInsured === true" oninput="value=value.replace(/[^\d.]/g,'')" style="width:153px;padding-right:15px"></el-input>
         <el-checkbox v-model="ruleForm.isInsured" >缴纳</el-checkbox> 
       </el-form-item>
       <el-form-item label="出粮日期：" prop="payDay">
@@ -145,13 +145,22 @@ export default {
         totalAmount: Number.parseFloat(this.ruleForm.totalAmount),
         payDay: this.$toolFn.timeFormat(this.ruleForm.payDay,'yyyy-MM-dd'),
         MPFAmount: this.ruleForm.MPFAmount,
-        // MPFAmountSelf: this.ruleForm.MPFAmountSelf,
+        MPFAmountSelf: 0,
         remarks: this.ruleForm.remarks,
         isInsured : this.ruleForm.isInsured ? 1 : 0
       };
-      if (this.ruleForm.isInsured){
+      if (data.isInsured === 1){
+        if (this.payrollTimesSummary.MPFAmountSelfSum > 0){
+          this.$message.error("自愿缴纳已经缴纳");
+          return;
+        }
         data.MPFAmountSelf = this.ruleForm.MPFAmountSelf;
       }
+      if (this.balanceAmount - data.totalAmount - data.MPFAmount - data.MPFAmountSelf < 0){
+        this.$message.error("出粮金额大于剩余出粮金额");
+        return;
+      }
+
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.reload();
@@ -161,6 +170,9 @@ export default {
         }
       });
     },
+    /**
+     * @description: 多次出粮汇总数据
+     */
     payrollTimesSummaryFn() {
       var reqUrl = "/server/api/v1/payroll/staff/payrollTimesSummary";
       var data = {
