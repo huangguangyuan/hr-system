@@ -84,7 +84,7 @@
       </el-table>
       <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 2" height="585"  >
           <el-table-column prop="nameChinese" label="第一姓名" width="200" fixed></el-table-column>
-          <el-table-column sortable prop="applyDate" label="生效时间" width="150" fixed></el-table-column>
+          <!-- <el-table-column sortable prop="applyDate" label="生效时间" width="150" fixed></el-table-column> -->
           <el-table-column sortable prop="createTime" label="申请日期" width="150" fixed></el-table-column>
           <el-table-column sortable prop="startDate" label="开始时间" width="150" fixed></el-table-column>
           <el-table-column sortable prop="endDate" label="结束时间" width="150" fixed></el-table-column>

@@ -88,11 +88,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="month" label="月份" ></el-table-column>
-      <el-table-column prop="totalAmount" label="税前金额"></el-table-column>
+      <el-table-column prop="totalAmount" label="收入总额"></el-table-column>
       <!-- <el-table-column prop="totalAmountSum" label="累计税前金额"></el-table-column> -->
       <el-table-column prop="SHAmount" label="专项扣除"></el-table-column>
       <!-- <el-table-column prop="SHAmountSum" label="累计专项扣除"></el-table-column> -->
-      <el-table-column prop="grossPay" label="税前工资"></el-table-column>
+      <!-- <el-table-column prop="grossPay" label="税前工资"></el-table-column> -->
       <el-table-column prop="specialDeductionAmount" label="专项附加"></el-table-column>
       <!-- <el-table-column prop="specialDeductionAmountSum" label="累计专项附加"></el-table-column> -->
       <!-- <el-table-column prop="taxThreshold" label="起征点"></el-table-column>

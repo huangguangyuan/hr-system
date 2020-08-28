@@ -42,6 +42,17 @@
         format="yyyy"
         @change="onSelectYear"
       ></el-date-picker>
+      <el-select
+        multiple collapse-tags
+        class="selectItem"
+        style="width:200px;"
+        v-model="searchMonthArr"
+        placeholder="请选择月份"
+        @change="onSelectMonth"
+      >
+        <el-checkbox v-model="monthSelectAlllChecked" @change='onSelectMonthAll'>全选</el-checkbox>
+        <el-option v-for="(item,key) in monthList" :key="key" :label="item.txt" :value="item.val.toString()"></el-option>
+      </el-select>
       <el-button type="primary" @click="onSearchSummary">确定</el-button>
       <el-button type="primary" @click="onExplorSummary">导出文件</el-button>
       <el-button type="primary" @click="onFlash" plain>复位</el-button>
@@ -169,8 +180,17 @@ export default {
         this.$message.error("请至少选择一个员工");
         return;
       }
+      if (this.searchYear === ''){
+        this.$message.error("请选择年份");
+        return;
+      }
+      if (this.searchMonthArr.length === 0){
+        this.$message.error("请至少选择一个月份");
+        return;
+      }
       let postData = {
         BUCode:this.BUCode,
+        searchMonthArr:this.searchMonthArr,
         searchYear:Number.parseInt(this.searchYear),
       }
       if (!this.departmentSelectAlllChecked){
@@ -185,6 +205,8 @@ export default {
         departmentCodeArr:this.departmentCodeArr,
         staffSelectAlllChecked:this.staffSelectAlllChecked,
         staffCodeArr:this.staffCodeArr,
+        searchMonthArr:this.searchMonthArr,
+        searchYear:this.searchYear,
         searchDate:this.searchDate
       });
       
@@ -217,9 +239,18 @@ export default {
         this.$message.error("请至少选择一个员工");
         return;
       }
+      if (this.searchYear === ''){
+        this.$message.error("请选择年份");
+        return;
+      }
+      if (this.searchMonthArr.length === 0){
+        this.$message.error("请至少选择一个月份");
+        return;
+      }
       let postData = {
         BUCode:this.BUCode,
         searchYear:Number.parseInt(this.searchYear),
+        searchMonthArr:this.searchMonthArr,
       }
       if (!this.departmentSelectAlllChecked){
         postData.departmentCodeArr = this.departmentCodeArr

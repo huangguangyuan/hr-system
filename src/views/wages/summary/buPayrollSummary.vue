@@ -82,7 +82,7 @@
           <el-table-column sortable prop="departmentName" label="部门" width="150" ></el-table-column>
         </el-table-column>
         <el-table-column label="税前收入">
-          <el-table-column sortable prop="grossPay" label="税前工资" width="120"></el-table-column>
+          <el-table-column sortable prop="totalAmount" label="税前工资" width="120"></el-table-column>
           <el-table-column  v-for="(item,index) in dataList[0].taxableItems" :key="index" width="160">
             <template slot="header">{{item.name}}</template>
             <template slot-scope="scope">{{scope.row.taxableItems[index].val}}</template>

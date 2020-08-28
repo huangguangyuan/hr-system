@@ -25,9 +25,9 @@
       <el-table-column sortable prop="totalDay" label="请假天数" width="120"></el-table-column>
       <!-- <el-table-column sortable prop="totalAmount" label="应扣金额"></el-table-column> -->
       <el-table-column sortable prop="isWithpayTxt" label="是否带薪" width="120"></el-table-column>
-      <el-table-column sortable prop="isBalanceTxt" label="是否结算" width="120"></el-table-column>
-      <!-- <el-table-column sortable prop="remainsLeaves" v-if="groupType === '1'" label="剩余假期天数 " width="150"></el-table-column>
-      <el-table-column sortable prop="willLeave" v-if="groupType === '1'" label="将会休假天数" width="150"></el-table-column> -->
+      <el-table-column sortable prop="isBalanceTxt" v-if="groupType === '1'" label="是否结算" width="120"></el-table-column>
+      <el-table-column sortable prop="remainsLeaves" v-if="groupType === '1'" label="剩余假期天数 " width="150"></el-table-column>
+      <el-table-column sortable prop="willLeave" v-if="groupType === '1'" label="将会休假天数" width="150"></el-table-column>
       <el-table-column prop="nextStepTip" v-if="groupType === '1'" label="下一步提示" width="120"></el-table-column>
       <el-table-column prop="statusTxt"  label="状态" width="200">
         <template slot-scope="scope">
