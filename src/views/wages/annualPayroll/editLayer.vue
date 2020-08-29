@@ -1,7 +1,7 @@
 <template>
   <div class="editLayer">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="220px">
-      <el-form-item label="税前金额：" prop="taxableWages">
+      <el-form-item label="应税总金额：" prop="taxableWages">
         <el-input v-model="ruleForm.taxableWages" oninput = "value=value.replace(/[^\d.]/g,'')"></el-input>
       </el-form-item>      
       <el-form-item label="个人所得税：" prop="taxAmount">
@@ -36,7 +36,7 @@ export default {
       fileList: [],
       rules: {
         taxableWages: [
-          { required: true, message: "请输入税前金额", trigger: "blur" }
+          { required: true, message: "请输入应税总金额", trigger: "blur" }
         ],
         taxAmount: [
           { required: true, message: "请输入个人所得税", trigger: "blur" }

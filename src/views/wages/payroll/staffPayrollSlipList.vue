@@ -165,7 +165,7 @@
       <!-- <el-table-column prop="specialDeductionAmountSum" label="累计专项附加"></el-table-column> -->
       <!-- <el-table-column prop="taxThreshold" label="起征点"></el-table-column>
       <el-table-column prop="taxThresholdSum" label="累计起征点"></el-table-column>      -->
-      <el-table-column prop="taxableWages" label="应税金额"></el-table-column>
+      <el-table-column prop="taxableWages" label="应税总金额"></el-table-column>
       <!-- <el-table-column prop="taxableWagesSum" label="累计应税金额"></el-table-column>  -->
       <!-- <el-table-column prop="buName" label="所在单位"></el-table-column> -->
       <!-- <el-table-column prop="salary" label="基础工资"></el-table-column> -->

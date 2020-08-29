@@ -88,7 +88,7 @@
             <template slot-scope="scope">{{scope.row.taxableItems[index].val}}</template>
           </el-table-column>
           <el-table-column sortable prop="taxableItemsAmount" label="应税费用" width="120"></el-table-column>
-          <el-table-column sortable prop="taxableWages" label="应税收入合计" width="140"></el-table-column>
+          <el-table-column sortable prop="taxableWages" label="应税总金额" width="140"></el-table-column>
         </el-table-column>
         <el-table-column label="扣除金额">
           <el-table-column sortable prop="SHAmount" label="社保扣除/公积金" width="160"></el-table-column>

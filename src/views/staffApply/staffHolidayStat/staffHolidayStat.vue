@@ -14,7 +14,7 @@
     <!-- 列表内容 -->
     <div v-show="holidayTypeSelected !== '999'">
       <el-table v-loading="isShowLoading" :data="tableData" stripe show-summary sum-text="合计" >
-        <el-table-column type="expand">
+        <!-- <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="table-expand">
               <el-form-item label="开始日期" v-if="props.row.startTime">
@@ -34,9 +34,15 @@
               </el-form-item>            
             </el-form>
           </template>
+        </el-table-column> -->
+        <el-table-column prop="createTime" label="申请时间">
+          <template slot-scope="props">
+            <span>{{props.row.createTime || props.row.applyDate }}</span>
+          </template>
         </el-table-column>
-        <el-table-column prop="applyDate" label="日期"></el-table-column>
-        <el-table-column prop="applyDay" label="天数"></el-table-column>
+        <el-table-column prop="applyDay" label="假期天数"></el-table-column>
+        <el-table-column prop="startDate" label="开始日期"></el-table-column>
+        <el-table-column prop="endDate" label="结束日期"></el-table-column> 
         <el-table-column prop="hisTypeIdTxt" label="类型"></el-table-column>
         <el-table-column prop="remarks" label="备注"></el-table-column>
       </el-table>
@@ -84,8 +90,10 @@ export default {
       return this.pageList.map(item => {
           item.applyDate = this.$toolFn.timeFormat(item.applyDate,"yyyy-MM-dd");
           item.isWithpayTxt = item.isWithpay == 1?'是':'否';
-          item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':'员工发起';
-          item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null
+          item.hisTypeIdTxt = item.hisTypeId == 2?'系统结算':item.hisTypeId == 3?'管理员录入':'员工发起';
+          item.createTime = item.createTime? this.$toolFn.timeFormat(item.createTime,"yyyy-MM-dd"):null;
+          item.startDate = item.startDate? this.$toolFn.timeFormat(item.startDate,"yyyy-MM-dd"):null
+          item.endDate = item.endDate? this.$toolFn.timeFormat(item.endDate,"yyyy-MM-dd"):null
           return item;
       });
     },
