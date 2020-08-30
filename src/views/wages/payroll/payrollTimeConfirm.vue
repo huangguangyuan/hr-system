@@ -8,7 +8,7 @@
       <el-form-item label="工资单状态：" prop="typeId">
         <el-radio-group v-model="ruleForm.typeId">
           <el-radio label="1">通过</el-radio>
-          <el-radio label="3">已出粮</el-radio>
+          <!-- <el-radio label="3">已出粮</el-radio> -->
           <el-radio label="2">退回</el-radio>
         </el-radio-group>
       </el-form-item>
@@ -60,7 +60,7 @@ export default {
         if (res.data.code == 0) {
           this.ruleForm.id = res.data.data.id;
           this.ruleForm.typeId = res.data.data.typeId.toString();
-          this.ruleForm.payDay = res.data.data.payDay;
+          this.ruleForm.payDay = this.$toolFn.timeFormat(res.data.data.payDay);
           this.ruleForm.remarks = res.data.data.remarks;
         }
       });

@@ -20,8 +20,8 @@
       <el-table-column label="操作" width="450px">
         <template slot-scope="scope">
           <el-button v-show="[1,3].indexOf(scope.row.typeId) >= 0" size="mini" icon="el-icon-view" @click="openDetailFun(scope.$index, scope.row)">查看详细</el-button>
-          <el-button v-show="[0].indexOf(scope.row.typeId) >= 0" size="mini" icon="el-icon-document-add" @click="editFun(scope.$index, scope.row)">编辑粮单</el-button>
-          <el-button v-show="scope.row.typeId !== 3" size="mini" icon="el-icon-edit" @click="confirmFun(scope.$index, scope.row)">粮单确认</el-button>
+          <!-- <el-button v-show="[0].indexOf(scope.row.typeId) >= 0" size="mini" icon="el-icon-document-add" @click="editFun(scope.$index, scope.row)">编辑粮单</el-button> -->
+          <el-button v-show="[1,3].indexOf(scope.row.typeId) < 0" size="mini" icon="el-icon-edit" @click="confirmFun(scope.$index, scope.row)">粮单确认</el-button>
           <el-button v-show="[1,3].indexOf(scope.row.typeId) >= 0" size="mini" icon="el-icon-document-add" @click="adjAmountFun(scope.$index, scope.row)">调整金额</el-button>
           <el-button v-show="[1,3].indexOf(scope.row.typeId) <= 0" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>

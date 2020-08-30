@@ -1,4 +1,3 @@
-
 <template>
   <div class="staffPayrollDetail">
     <el-divider>详细信息</el-divider>
@@ -7,26 +6,35 @@
         <el-card class="showWarning" shadow="always">状态：{{item.typeTxt}}</el-card>
       </el-col>
       <el-col :span="8">
-        <el-card shadow="always">总额：{{item.totalAmount}}</el-card>
+        <el-card shadow="always">出粮总额：{{item.totalAmount}}</el-card>
       </el-col>
       <el-col :span="8" v-show="item.adjAmount > 0">
         <el-card shadow="always">调整金额：{{item.adjAmount}}</el-card>
       </el-col>
-      <el-col :span="8" v-show="item.reallyAmount > 0">
-        <el-card shadow="always">实际金额：{{item.reallyAmount}}</el-card>
-      </el-col>      
       <el-col :span="8" v-show="item.adjAmountTime && item.adjAmountTime != ''">
         <el-card shadow="always">调整时间：{{item.adjAmountTime}}</el-card>
       </el-col>
       <el-col :span="8" v-show="item.adjAmountHrCode">
         <el-card shadow="always">调整人：{{item.adjAmountHrName}}</el-card>
       </el-col>
-      <el-col :span="8" >
+      <!-- <el-col :span="8" >
         <el-card shadow="always">包含缴纳：{{item.isInsuredTxt}}</el-card>
+      </el-col> -->
+      <el-col :span="8" >
+        <el-card shadow="always">MPF缴纳：{{item.MPFAmount}}</el-card>
+      </el-col>
+      <el-col :span="8" v-show="item.isInsured" >
+        <el-card shadow="always">MPF自愿：{{item.MPFAmountSelf}}</el-card>
+      </el-col>
+      <!-- <el-col :span="8" >
+        <el-card shadow="always">MPF自愿：{{item.isInsuredTxt}}</el-card>
+      </el-col> -->
+      <el-col :span="8" v-show="item.reallyAmount > 0">
+        <el-card shadow="always">实际支出金额：{{item.reallyAmount}}</el-card>
       </el-col>
       <el-col :span="8" v-show="item.payDay && item.payDay != ''">
         <el-card shadow="always">出粮日期：{{item.payDay}}</el-card>
-      </el-col>      
+      </el-col>
       <el-col :span="8" v-show="item.confirmTime && item.confirmTime != ''">
         <el-card shadow="always">确认日期：{{item.confirmTime}}</el-card>
       </el-col>
@@ -63,7 +71,7 @@ export default {
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.item = res.data.data;
-          this.item.reallyAmount = parseFloat(this.item.totalAmount) + parseFloat(this.item.adjAmount);
+          this.item.reallyAmount = parseFloat(this.item.totalAmount) + parseFloat(this.item.adjAmount) + parseFloat(this.item.MPFAmount) + parseFloat(this.item.MPFAmountSelf);
           this.item.isInsuredTxt = this.item.isInsured == 1?'是':'否';
           this.item.payDay = this.$toolFn.timeFormat(this.item.payDay,'yyyy-MM-dd');
           this.item.adjAmountTime = this.$toolFn.timeFormat(this.item.adjAmountTime,'yyyy-MM-dd');

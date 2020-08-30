@@ -464,6 +464,7 @@ export default {
       this.curInfo = res
       this.curInfo.hrCode = this.hrCode
       this.curInfo.buSelectedLocationType = this.buSelectedLocationType
+      this.curInfo.payrollTimesType = this.seachMsg.payrollTimesType
       this.isShowPayrollUpdate = true
     },
     // 打开详细页面

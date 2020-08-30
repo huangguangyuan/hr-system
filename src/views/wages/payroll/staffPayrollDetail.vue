@@ -32,7 +32,7 @@
       <el-col :span="8" v-if="HCList && HCList.length > 0">
         <el-card shadow="always">公积金应扣总额：-{{details.detail.HCAmount}}</el-card>
       </el-col>
-      <el-col :span="8" v-if="MPFList && MPFList.length > 0">
+      <el-col :span="8" v-if="MPFList && MPFList.length > 0 && details.payrollTimesType === 1">
         <el-card shadow="always">MPF应扣总额：-{{details.detail.MPFAmount}}</el-card>
       </el-col>
       <el-col :span="8" v-if="specialDeductionList && specialDeductionList.length > 0">
@@ -62,10 +62,27 @@
       <el-col :span="8">
         <el-card shadow="always" v-if="details.reallyAmount && details.reallyAmount != 0">实发工资：{{ details.reallyAmount}}</el-card>
       </el-col>
-      <el-col :span="8">
-        <el-card shadow="always" v-if="payrollTimes && payrollTimes.length != 0">多次出粮金额：{{ details.payrollTimesAmt}}</el-card>
+      <template v-if="details.payrollTimesType === 2 && payrollTimes && payrollTimes.length != 0">
+      <el-col :span="8"  >
+        <el-card shadow="always">多次出粮总金额：{{ details.payrollTimesAmtSum}}</el-card>
       </el-col>
+      <el-col :span="8" >
+        <el-card shadow="always">多次出粮MPF缴纳：{{ details.MPFAmountSum}}</el-card>
+      </el-col>
+      <el-col :span="8" >
+        <el-card shadow="always">多次出粮MPF自愿：{{ details.MPFAmountSelfSum}}</el-card>
+      </el-col>
+      </template>
+
     </el-row>
+    <el-divider v-if="details.payrollTimesType === 2 && payrollTimes && payrollTimes.length != 0">多次出粮列表</el-divider>
+    <el-table v-if="payrollTimes && payrollTimes.length > 0" :data="payrollTimes" stripe border show-summary>
+      <el-table-column prop="reallyAmount" label="出粮金额"></el-table-column>
+      <el-table-column prop="MPFAmount" label="MPF缴纳"></el-table-column>
+      <el-table-column prop="MPFAmountSelf" label="MPF自愿"></el-table-column>
+      <el-table-column prop="payDay" label="出粮日期"></el-table-column>
+      <el-table-column prop="typeTxt" label="状态"></el-table-column>
+    </el-table>
     <el-divider v-if="taxableItemsList && taxableItemsList.length > 0">应税项目清单</el-divider>
     <el-table  v-if="taxableItemsList && taxableItemsList.length > 0"  :data="taxableItemsList" stripe border show-summary>
       <el-table-column prop="name" label="项目名称"></el-table-column>
@@ -96,7 +113,7 @@
       <el-table-column prop="typeIdTxt" label="类型"></el-table-column>
       <el-table-column prop="amount" label="金额"></el-table-column>
     </el-table>
-    <el-divider v-if="MPFList && MPFList.length > 0">MPF清单</el-divider>
+    <el-divider v-if="details.payrollTimesType === 1 && MPFList && MPFList.length > 0">MPF清单</el-divider>
     <el-table v-if="MPFList && MPFList.length > 0" :data="MPFList" stripe border show-summary>
       <el-table-column prop="paymentTxt" label="类 型"></el-table-column>
       <!-- <el-table-column prop="typeTxt" label="类 型"></el-table-column> -->
@@ -122,13 +139,7 @@
           <el-card class="showWarning" shadow="always">备注：{{details.adjAmountRemarks}}</el-card>
         </el-col>
     </el-row>
-    <el-divider v-if="payrollTimes && payrollTimes.length != 0">多次出粮列表</el-divider>
-    <el-table v-if="payrollTimes && payrollTimes.length > 0" :data="payrollTimes" stripe border show-summary>
-      <el-table-column prop="isInsuredTxt" label="包含缴纳"></el-table-column>
-      <el-table-column prop="reallyAmount" label="出粮金额"></el-table-column>
-      <el-table-column prop="payDay" label="出粮日期"></el-table-column>
-      <el-table-column prop="typeTxt" label="状态"></el-table-column>
-    </el-table>
+
   </div>
 </template>
 <script>
@@ -212,16 +223,20 @@ export default {
           this.notTaxableItemsList = this.details.detail.notTaxableItemsList;
           this.MPFList = this.details.detail.MPFList || [];
           let payrollTimes = this.details.detail.payrollTimes || [];
-          let payrollTimesAmt = 0;
+          let payrollTimesAmtSum = 0,MPFAmountSum = 0,MPFAmountSelfSum = 0;
           for (let index = 0; index < payrollTimes.length; index++) {
             payrollTimes[index].reallyAmount = parseFloat(payrollTimes[index].totalAmount) + parseFloat(payrollTimes[index].adjAmount);
             payrollTimes[index].isInsuredTxt = payrollTimes[index].isInsured == 1?'是':'否';
             payrollTimes[index].payDay = this.$toolFn.timeFormat(payrollTimes[index].payDay,"yyyy-MM-dd");
             payrollTimes[index].typeTxt = payrollListTypeTxt(payrollTimes[index].typeId);
-            payrollTimesAmt += payrollTimes[index].reallyAmount
+            payrollTimesAmtSum += payrollTimes[index].reallyAmount;
+            MPFAmountSum += payrollTimes[index].MPFAmount;
+            MPFAmountSelfSum += payrollTimes[index].MPFAmountSelf;
           }
           this.payrollTimes = payrollTimes;
-          this.details.payrollTimesAmt = payrollTimesAmt;
+          this.details.payrollTimesAmtSum = payrollTimesAmtSum;
+          this.details.MPFAmountSum = MPFAmountSum;
+          this.details.MPFAmountSelfSum = MPFAmountSelfSum;
           this.details.typeTxt = payrollListTypeTxt(this.details.typeId);
           this.details.netAmount = parseFloat(this.details.grossPay - this.details.taxAmount).toFixed(2);
           this.details.reallyAmount = parseFloat(parseFloat(this.details.netAmount) + parseFloat(this.details.notTaxableAmount) + this.details.adjAmount).toFixed(2);

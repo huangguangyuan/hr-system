@@ -63,6 +63,7 @@ export default {
         MPFAmountSelf:0,
         MPFAmount:0,
         payDay: "",
+        MPFCalc:false,
         remarks: ""
       }, //表单信息
       isShow: true, //是否显示
@@ -147,7 +148,8 @@ export default {
         MPFAmount: this.ruleForm.MPFAmount,
         MPFAmountSelf: 0,
         remarks: this.ruleForm.remarks,
-        isInsured : this.ruleForm.isInsured ? 1 : 0
+        isInsured : this.ruleForm.isInsured ? 1 : 0,
+        MPFCalc:this.ruleForm.MPFCalc
       };
       if (data.isInsured === 1){
         if (this.payrollTimesSummary.MPFAmountSelfSum > 0){
@@ -215,29 +217,39 @@ export default {
     },
     /**
      * @description: 计算MPF
+     * amt 本次输入金额
+     * amtPaid 未计算MPF的多次出粮总额
+     * amtMPFPaid 多次出粮MPF总额
      */
-    calMPF(amt) {
-      let modelList = this.staffInsuredInfoMPF.MPFSchemeDetail.schemeMPFList;
+    calMPF(amt,amtPaid,amtMPFPaid) {
       let payment = 0.00;
-      for (let i = 0; i < modelList.length; i++) {
-        const model = modelList[i];
-        let paymentRatio = Number.parseFloat(amt * model.paymentRatio) ;
-        if (paymentRatio <= Number.parseFloat(model.baseLower)){
-          payment = 0;
-        }else if (paymentRatio >= Number.parseFloat(model.baseUpper)){
-          payment = model.baseUpper;
-        }else{
-          payment = paymentRatio;
-        }
-        payment = Number.parseFloat(payment.toFixed(2));
+      amt = amt + amtMPFPaid;
+      const model = this.staffInsuredInfoMPF.MPFSchemeDetail.schemeMPFList[0];
+      if (amtMPFPaid >= model.baseUpper){// 如果已缴纳是MPF最高基数，则不再缴纳
+        return payment;
       }
+      let paymentRatio = Number.parseFloat(amt * model.paymentRatio) ;
+      if (paymentRatio <= Number.parseFloat(model.baseLower)){
+        payment = 0;
+      }else if (paymentRatio >= Number.parseFloat(model.baseUpper)){
+        payment = model.baseUpper;
+      }else{
+        payment = paymentRatio;
+      }
+      if (amtMPFPaid + payment > model.baseUpper){ // 如果即将缴纳MPF与已缴纳MPF大于最高基数，则即将缴纳为 （最高基数 - 已缴纳MPF）
+        payment = model.baseUpper - amtMPFPaid;
+      }
+      if (payment > 0){ // 如果缴纳MPF不为0，则把未计算的出粮金额设置为已参与计算
+        this.ruleForm.MPFCalc = true
+      }
+      payment = Number.parseFloat(payment.toFixed(2));
       return payment;
     }
   },
   watch:{
     "ruleForm.totalAmount":{
       handler: function(newVal) {
-        this.ruleForm.MPFAmount = this.calMPF(newVal);
+        this.ruleForm.MPFAmount = this.calMPF(newVal,this.payrollTimesSummary.MPFCalcAmount,this.payrollTimesSummary.MPFAmountSum);
       }
     },
   }
