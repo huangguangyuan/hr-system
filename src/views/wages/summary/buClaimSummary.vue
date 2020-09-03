@@ -73,13 +73,11 @@
       <el-table v-loading="isShowLoading" :data="dataList" stripe v-if="dataList.length > 0 && showType === 2" >
         <el-table-column sortable prop="nameChinese" label="第一姓名" width="200" fixed></el-table-column>
         <el-table-column sortable prop="claimDate" label="申请日期" width="150" fixed></el-table-column>
-        <el-table-column sortable prop="remarks" label=" 备注" width="150"></el-table-column>
-        
           <el-table-column sortable  v-for="(item,index) in dataList[0].buClaimsItems" :key="index" width="160">
             <template slot="header">{{item.name}}</template>
             <template slot-scope="scope">{{scope.row.buClaimsItems[index].val}}</template>
           </el-table-column>
-        
+        <el-table-column sortable prop="remarks" label=" 备注" width="150"></el-table-column>
       </el-table>
     </div>
   </div>

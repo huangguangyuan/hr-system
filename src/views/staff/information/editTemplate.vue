@@ -15,6 +15,7 @@
             :key="item.id"
             :label="item.name"
             :value="item.code"
+            :disabled="item.status===0"
           ></el-option>
         </el-select>
       </el-form-item>
