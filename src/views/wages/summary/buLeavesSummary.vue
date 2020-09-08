@@ -72,8 +72,8 @@
             <el-table-column sortable prop="annual.annualYear" label="年假" width="90"></el-table-column>
             <el-table-column sortable prop="annual.total" label="总数" width="90" ></el-table-column>
             <el-table-column sortable prop="annual.taken" label="请假天数" width="120"></el-table-column>
-            <el-table-column sortable prop="annual.remarks" label="备注" width="150"></el-table-column>
-            <el-table-column sortable prop="annual.bal" label="结余" width="90" >
+            <el-table-column sortable prop="annual.remarks" label="备注" width="150" v-if="monthSelectAlllChecked" ></el-table-column>
+            <el-table-column sortable prop="annual.bal" label="结余" width="90" v-if="monthSelectAlllChecked">
               <template slot-scope="scope" >
                 <span style="color: #ff0000">{{scope.row.annual.bal}}</span>
               </template>
@@ -82,7 +82,7 @@
           <el-table-column label="病假">
               <el-table-column sortable prop="sick.sickYear" label="病假" width="90"></el-table-column>
               <el-table-column sortable prop="sick.taken" label="请假天数" width="120"></el-table-column>
-              <el-table-column sortable label="结余" width="90">
+              <el-table-column sortable label="结余" width="90" v-if="monthSelectAlllChecked">
                 <template slot-scope="scope" >
                   <span style="color: #ff0000">{{scope.row.sick.bal}}</span>
                 </template>
@@ -102,7 +102,7 @@
           <el-table-column label="年假">
             <el-table-column sortable prop="annual.taken" label="请假天数" width="120"></el-table-column>
             <el-table-column sortable prop="annual.total" label="累计" width="90"></el-table-column>
-            <el-table-column sortable prop="annual.bal" label="结余" width="90" class="bg-set01">
+            <el-table-column sortable prop="annual.bal" label="结余" width="90" class="bg-set01" v-if="monthSelectAlllChecked">
                 <template slot-scope="scope" >
                   <span style="color: #ff0000">{{scope.row.annual.bal}}</span>
                 </template>
@@ -112,7 +112,7 @@
           <el-table-column label="病假">
               <el-table-column sortable prop="sick.taken" label="请假天数" width="120"></el-table-column>
               <el-table-column sortable prop="sick.total" label="累计" width="90" ></el-table-column>
-              <el-table-column sortable prop="sick.bal" label="结余" width="90">
+              <el-table-column sortable prop="sick.bal" label="结余" width="90" v-if="monthSelectAlllChecked">
                 <template slot-scope="scope" >
                   <span style="color: #ff0000">{{scope.row.sick.bal}}</span>
                 </template>
