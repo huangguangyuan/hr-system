@@ -107,7 +107,7 @@
                   <span style="color: #ff0000">{{scope.row.annual.bal}}</span>
                 </template>
             </el-table-column>
-            <el-table-column sortable prop="annual.remarks" label="备注" width="150"></el-table-column>
+            <el-table-column sortable prop="annual.remarks" label="备注" width="150" ></el-table-column>
           </el-table-column>
           <el-table-column label="病假">
               <el-table-column sortable prop="sick.taken" label="请假天数" width="120"></el-table-column>
@@ -117,16 +117,16 @@
                   <span style="color: #ff0000">{{scope.row.sick.bal}}</span>
                 </template>
               </el-table-column>
-              <el-table-column sortable prop="sick.remarks" label="备注" width="150"></el-table-column>
+              <el-table-column sortable prop="sick.remarks" label="备注" width="150" ></el-table-column>
           </el-table-column>
           <el-table-column sortable prop="noPay.taken" label="事假" width="90"></el-table-column>
           <el-table-column sortable prop="noPay.remarks" label="备注" width="200"></el-table-column>
           <el-table-column sortable prop="maternity.taken" label="产假/陪产假" width="150"></el-table-column>
-          <el-table-column sortable prop="maternity.remarks" label="备注" width="200"></el-table-column>
+          <el-table-column sortable prop="maternity.remarks" label="备注" width="200" ></el-table-column>
           <el-table-column sortable prop="marriage.taken" label="婚假" width="90"></el-table-column>
           <el-table-column sortable prop="marriage.remarks" label="备注" width="200"></el-table-column>
           <el-table-column sortable prop="special.taken" label="特别假" width="90"></el-table-column>
-          <el-table-column sortable prop="special.remarks" label="备注" width="200"></el-table-column>
+          <el-table-column sortable prop="special.remarks" label="备注" width="200" ></el-table-column>
       </el-table>
     </div>
   </div>
@@ -140,7 +140,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
-      showType:1,
+      showType:1,// 1 员工列表 2 员工明细
       dataList: [],
       curInfo: {}, //当前内容
       isShowLoading: false, //是否显示loading页
