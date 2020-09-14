@@ -11,7 +11,8 @@
     <el-table v-loading="isShowLoading" :data="tableData" stripe show-summary>
       <el-table-column prop="tbId" label="序号" width="60px"></el-table-column>
       <el-table-column prop="reallyAmount" label="实际金额"></el-table-column>
-      <el-table-column prop="totalAmount" label="出粮金额"></el-table-column>
+      <el-table-column prop="totalAmount" label="应税金额"></el-table-column>
+      <el-table-column prop="notTaxableAmount" label="非应税金额"></el-table-column>
       <el-table-column prop="adjAmount" label="调整金额"></el-table-column>
       <el-table-column prop="MPFAmount" label="MPF强制缴纳"></el-table-column>
       <el-table-column prop="MPFAmountSelf" label="MPF自愿缴纳"></el-table-column>
@@ -19,7 +20,7 @@
       <el-table-column prop="typeTxt" label="状态"></el-table-column>
       <el-table-column label="操作" width="450px">
         <template slot-scope="scope">
-          <el-button v-show="[1,3].indexOf(scope.row.typeId) >= 0" size="mini" icon="el-icon-view" @click="openDetailFun(scope.$index, scope.row)">查看详细</el-button>
+          <el-button v-if="[1,3].indexOf(scope.row.typeId) >= 0" size="mini" icon="el-icon-view" @click="openDetailFun(scope.$index, scope.row)">查看详细</el-button>
           <!-- <el-button v-show="[0].indexOf(scope.row.typeId) >= 0" size="mini" icon="el-icon-document-add" @click="editFun(scope.$index, scope.row)">编辑粮单</el-button> -->
           <el-button v-show="[1,3].indexOf(scope.row.typeId) < 0" size="mini" icon="el-icon-edit" @click="confirmFun(scope.$index, scope.row)">粮单确认</el-button>
           <el-button v-show="[1,3].indexOf(scope.row.typeId) >= 0" size="mini" icon="el-icon-document-add" @click="adjAmountFun(scope.$index, scope.row)">调整金额</el-button>

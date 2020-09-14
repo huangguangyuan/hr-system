@@ -2,7 +2,7 @@
   <div class="editLayer" v-if="!isLoading">
     <payroll-times-month-info :curInfo="curInfo"></payroll-times-month-info>
     <el-divider>本次出粮信息</el-divider>
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="140px">
       <el-form-item label="应税金额：" prop="totalAmount">
         <el-input v-model="ruleForm.totalAmount"  type="number" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
       </el-form-item>
@@ -100,6 +100,7 @@ export default {
       this.details.payroll = this.curInfo.payrollMainInfo;
       this.staffInsuredInfoMPF = this.curInfo.staffPayrollInfo.staffInsuredInfoMPF;
       this.ruleForm.id = this.curInfo.id;
+      this.ruleForm.payrollCode = this.curInfo.payrollMainInfo.code;
       this.ruleForm.MPFAmountSelf = this.staffInsuredInfoMPF.mpfVoluntarily;
       this.payrollTimesSummaryFn();
       if (this.curInfo.type == "modify") {
@@ -168,7 +169,7 @@ export default {
         data.MPFAmountSelf = this.ruleForm.MPFAmountSelf;
       }
       if ( data.notTaxableAmount + this.payrollTimesSummary.notTaxableAmountSum > this.details.payroll.notTaxableAmount){
-        this.$message.error("出粮非应税金额大于剩余总非应税金额");
+        this.$message.error("非应税金额大于剩余非应税总金额");
         return;
       }
       if (this.balanceAmount + data.notTaxableAmount - data.totalAmount - data.MPFAmount - data.MPFAmountSelf < 0){
