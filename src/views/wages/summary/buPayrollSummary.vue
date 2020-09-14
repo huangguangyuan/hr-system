@@ -296,9 +296,9 @@ export default {
       if (!this.departmentSelectAlllChecked){
         postData.departmentCodeArr = this.departmentCodeArr
       }
-      if (!this.staffSelectAlllChecked){
+      // if (!this.staffSelectAlllChecked){
         postData.staffCodeArr = this.staffCodeArr
-      }
+      // }
       if (!this.monthSelectAlllChecked){
         postData.searchMonthArr = this.searchMonthArr.map(Number)
       }

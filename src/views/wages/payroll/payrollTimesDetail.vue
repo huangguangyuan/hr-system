@@ -6,7 +6,10 @@
         <el-card class="showWarning" shadow="always">状态：{{item.typeTxt}}</el-card>
       </el-col>
       <el-col :span="8">
-        <el-card shadow="always">出粮总额：{{item.totalAmount}}</el-card>
+        <el-card shadow="always">应税总额：{{item.totalAmount}}</el-card>
+      </el-col>
+      <el-col :span="8">
+        <el-card shadow="always">非应税总额：{{item.notTaxableAmount}}</el-card>
       </el-col>
       <el-col :span="8" v-show="item.adjAmount > 0">
         <el-card shadow="always">调整金额：{{item.adjAmount}}</el-card>
@@ -16,6 +19,9 @@
       </el-col>
       <el-col :span="8" v-show="item.adjAmountHrCode">
         <el-card shadow="always">调整人：{{item.adjAmountHrName}}</el-card>
+      </el-col>
+      <el-col :span="8">
+        <el-card shadow="always">出粮总总额：{{item.totalAmount + item.notTaxableAmount + item.adjAmount}}</el-card>
       </el-col>
       <!-- <el-col :span="8" >
         <el-card shadow="always">包含缴纳：{{item.isInsuredTxt}}</el-card>

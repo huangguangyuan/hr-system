@@ -3,8 +3,11 @@
     <payroll-times-month-info :curInfo="curInfo"></payroll-times-month-info>
     <el-divider>本次出粮信息</el-divider>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-      <el-form-item label="金额：" prop="totalAmount">
+      <el-form-item label="应税金额：" prop="totalAmount">
         <el-input v-model="ruleForm.totalAmount"  type="number" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
+      </el-form-item>
+      <el-form-item label="非应税金额：" prop="notTaxableAmount">
+        <el-input v-model="ruleForm.notTaxableAmount"  type="number" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
       </el-form-item>
       <el-form-item label="MPF强制：" prop="MPFAmount">
         <el-input v-model="ruleForm.MPFAmount"  type="number" oninput="value=value.replace(/[^\d.]/g,'')" style="width:220px;"></el-input>
@@ -59,6 +62,7 @@ export default {
         id:"",
         payrollCode: "",
         totalAmount: 0,
+        notTaxableAmount:0,
         isInsured:0,
         MPFAmountSelf:0,
         MPFAmount:0,
@@ -69,7 +73,10 @@ export default {
       isShow: true, //是否显示
       rules: {
         totalAmount: [
-          { required: true, message: "请输入金额", trigger: "blur" }
+          { required: true, message: "请输入应税金额", trigger: "blur" }
+        ],
+        notTaxableAmount: [
+          { required: true, message: "请输入非应税金额", trigger: "blur" }
         ],
         MPFAmount: [
           { required: true, message: "请输入MPF金额", trigger: "blur" }
@@ -130,6 +137,7 @@ export default {
         this.isLoading = false;
         if (res.data.code == 0) {
           this.ruleForm.totalAmount = res.data.data.totalAmount;
+          this.ruleForm.notTaxableAmount = res.data.data.notTaxableAmount;
           this.ruleForm.MPFAmount = res.data.data.MPFAmount;
           this.ruleForm.MPFAmountSelf = res.data.data.MPFAmountSelf;
           this.ruleForm.payDay = res.data.data.payDay;
@@ -144,6 +152,7 @@ export default {
       var data = {
         payrollCode: this.ruleForm.payrollCode,
         totalAmount: Number.parseFloat(this.ruleForm.totalAmount),
+        notTaxableAmount: Number.parseFloat(this.ruleForm.notTaxableAmount),
         payDay: this.$toolFn.timeFormat(this.ruleForm.payDay,'yyyy-MM-dd'),
         MPFAmount: this.ruleForm.MPFAmount,
         MPFAmountSelf: 0,
@@ -158,7 +167,11 @@ export default {
         }
         data.MPFAmountSelf = this.ruleForm.MPFAmountSelf;
       }
-      if (this.balanceAmount - data.totalAmount - data.MPFAmount - data.MPFAmountSelf < 0){
+      if ( data.notTaxableAmount + this.payrollTimesSummary.notTaxableAmountSum > this.details.payroll.notTaxableAmount){
+        this.$message.error("出粮非应税金额大于剩余总非应税金额");
+        return;
+      }
+      if (this.balanceAmount + data.notTaxableAmount - data.totalAmount - data.MPFAmount - data.MPFAmountSelf < 0){
         this.$message.error("出粮金额大于剩余出粮金额");
         return;
       }
@@ -193,6 +206,7 @@ export default {
       var data = {
         id:this.curInfo.id,
         totalAmount: Number.parseFloat(this.ruleForm.totalAmount),
+        notTaxableAmount: Number.parseFloat(this.ruleForm.notTaxableAmount),
         MPFAmount:  Number.parseFloat(this.ruleForm.MPFAmount),
         // MPFAmountSelf: this.ruleForm.MPFAmountSelf,
         isInsured : this.ruleForm.isInsured ? 1 : 0,
