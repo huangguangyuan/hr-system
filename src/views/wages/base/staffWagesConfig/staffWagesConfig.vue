@@ -33,7 +33,7 @@
         <el-col :span="8">
           <el-card shadow="always">强制缴纳类型：{{configureMsg.insuredTypeId}}</el-card>
         </el-col>
-        <el-col :span="8" v-if="staffInfo.buSelectedLocationType === 2">
+        <el-col :span="8" v-show="staffInfo.buSelectedLocationType === 2">
           <el-card shadow="always">出粮方式：{{configureMsg.payrollTimesType}}</el-card>
         </el-col>
       </el-row>
@@ -80,6 +80,7 @@ export default {
     if (this.userInfo.access.payrollMain.indexOf(4) >= 0){
       this.isShowAddBtn = true;
     }
+    console.log(this.staffInfo)
     this.circleUrl = this.staffInfo.photo
       ? this.staffInfo.photo
       : require("@/assets/images/avatar.png");
@@ -111,8 +112,8 @@ export default {
             needSD:resData.needSD == 1?'是':'否',
             needTaxRate:resData.needTaxRate == 1?'是':'否',
             typeId:resData.typeId == 1?'正常':'停用',
-            insuredTypeId:this.insuredTypes.filter(f=>{return f.val == resData.payrollTimesType})[0].txt,
-            payrollTimesType:this.payrollTimesTypes.filter(f=>{return f.val == resData.insuredTypeId})[0].txt,
+            insuredTypeId:this.insuredTypes.filter(f=>{return f.val == resData.insuredTypeId})[0].txt,
+            payrollTimesType:this.payrollTimesTypes.filter(f=>{return f.val == resData.payrollTimesType})[0].txt,
             // payrollTimesType:res.data.data.payrollTimesType == 1?'否':'是',
           }
 

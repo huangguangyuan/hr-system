@@ -27,7 +27,10 @@
         <el-card shadow="always">自愿MPF缴纳总额：{{details.MPFAmountSelfSum}}</el-card>
       </el-col>
       <el-col :span="8">
-        <el-card shadow="always">已出粮总金额：{{details.totalAmountSum}}</el-card>
+        <el-card shadow="always">已出非应税总金额：{{details.notTaxableAmountSum}}</el-card>
+      </el-col>
+      <el-col :span="8">
+        <el-card shadow="always">已出应税总金额：{{details.totalAmountSum}}</el-card>
       </el-col>
       <el-col :span="12">
         <el-card shadow="always">剩余应税总金额：{{details.payroll.totalAmount - details.MPFAmountSum - details.MPFAmountSelfSum - details.totalAmountSum}}</el-card>

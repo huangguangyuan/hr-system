@@ -16,6 +16,9 @@
         <el-input v-model="ruleForm.MPFAmountSelf" type="number" v-if="ruleForm.isInsured === true" oninput="value=value.replace(/[^\d.]/g,'')" style="width:153px;padding-right:15px"></el-input>
         <el-checkbox v-model="ruleForm.isInsured" >缴纳</el-checkbox> 
       </el-form-item>
+      <el-form-item label="合计金额：">
+        {{ Number.parseFloat(ruleForm.notTaxableAmount) +  Number.parseFloat(ruleForm.totalAmount) +  Number.parseFloat(ruleForm.MPFAmount) +  Number.parseFloat(ruleForm.MPFAmountSelf)}}
+      </el-form-item>
       <el-form-item label="出粮日期：" prop="payDay">
         <el-date-picker
           v-model="ruleForm.payDay"
@@ -101,7 +104,7 @@ export default {
       this.staffInsuredInfoMPF = this.curInfo.staffPayrollInfo.staffInsuredInfoMPF;
       this.ruleForm.id = this.curInfo.id;
       this.ruleForm.payrollCode = this.curInfo.payrollMainInfo.code;
-      this.ruleForm.MPFAmountSelf = this.staffInsuredInfoMPF.mpfVoluntarily;
+      this.ruleForm.MPFAmountSelf = this.ruleForm.isInsured?this.staffInsuredInfoMPF.mpfVoluntarily:0;
       this.payrollTimesSummaryFn();
       if (this.curInfo.type == "modify") {
         this.ruleForm.id = this.curInfo.id;
@@ -237,34 +240,35 @@ export default {
      * amtMPFPaid 多次出粮MPF总额
      */
     calMPF(amt,amtPaid,amtMPFPaid) {
-      let payment = 0.00;
-      amt = amt + amtMPFPaid;
+      let payment = 0.00
+      amt = Number.parseFloat(amt) + Number.parseFloat(amtMPFPaid)
+      console.log(amt)
       const model = this.staffInsuredInfoMPF.MPFSchemeDetail.schemeMPFList[0];
       if (amtMPFPaid >= model.baseUpper){// 如果已缴纳是MPF最高基数，则不再缴纳
-        return payment;
+        return payment
       }
-      let paymentRatio = Number.parseFloat(amt * model.paymentRatio) ;
+      let paymentRatio = Number.parseFloat(amt * model.paymentRatio)
       if (paymentRatio <= Number.parseFloat(model.baseLower)){
-        payment = 0;
+        payment = 0
       }else if (paymentRatio >= Number.parseFloat(model.baseUpper)){
-        payment = model.baseUpper;
+        payment = model.baseUpper
       }else{
-        payment = paymentRatio;
+        payment = paymentRatio
       }
       if (amtMPFPaid + payment > model.baseUpper){ // 如果即将缴纳MPF与已缴纳MPF大于最高基数，则即将缴纳为 （最高基数 - 已缴纳MPF）
-        payment = model.baseUpper - amtMPFPaid;
+        payment = model.baseUpper - amtMPFPaid
       }
       if (payment > 0){ // 如果缴纳MPF不为0，则把未计算的出粮金额设置为已参与计算
         this.ruleForm.MPFCalc = true
       }
-      payment = Number.parseFloat(payment.toFixed(2));
-      return payment;
+      payment = Number.parseFloat(payment.toFixed(2))
+      return payment
     }
   },
   watch:{
     "ruleForm.totalAmount":{
       handler: function(newVal) {
-        this.ruleForm.MPFAmount = this.calMPF(newVal,this.payrollTimesSummary.MPFCalcAmount,this.payrollTimesSummary.MPFAmountSum);
+        this.ruleForm.MPFAmount = this.calMPF(newVal,this.payrollTimesSummary.MPFCalcAmount,this.payrollTimesSummary.MPFAmountSum)
       }
     },
   }

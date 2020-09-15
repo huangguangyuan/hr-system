@@ -10,12 +10,12 @@
     <!-- 列表内容 -->
     <el-table v-loading="isShowLoading" :data="tableData" stripe show-summary>
       <el-table-column prop="tbId" label="序号" width="60px"></el-table-column>
-      <el-table-column prop="reallyAmount" label="实际金额"></el-table-column>
       <el-table-column prop="totalAmount" label="应税金额"></el-table-column>
-      <el-table-column prop="notTaxableAmount" label="非应税金额"></el-table-column>
       <el-table-column prop="adjAmount" label="调整金额"></el-table-column>
       <el-table-column prop="MPFAmount" label="MPF强制缴纳"></el-table-column>
       <el-table-column prop="MPFAmountSelf" label="MPF自愿缴纳"></el-table-column>
+      <el-table-column prop="reallyAmount" label="总金额"></el-table-column>
+      <el-table-column prop="notTaxableAmount" label="非应税金额"></el-table-column>
       <el-table-column prop="payDay" label="出粮日期"></el-table-column>
       <el-table-column prop="typeTxt" label="状态"></el-table-column>
       <el-table-column label="操作" width="450px">
@@ -86,7 +86,7 @@ export default {
       let tbId = 1;
       return this.pageList.map(item => {
         item.tbId = tbId;
-        item.reallyAmount = parseFloat(item.totalAmount) + parseFloat(item.adjAmount);
+        item.reallyAmount = parseFloat(item.totalAmount) + parseFloat(item.adjAmount) + parseFloat(item.MPFAmount) + parseFloat(item.MPFAmountSelf);
         item.isInsuredTxt = item.isInsured == 1?'是':'否';
         item.payDay = this.$toolFn.timeFormat(item.payDay,"yyyy-MM-dd");
         item.typeTxt = payrollListTypeTxt(item.typeId);

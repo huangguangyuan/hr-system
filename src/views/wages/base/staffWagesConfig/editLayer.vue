@@ -35,12 +35,12 @@
           <el-radio label="0">停用</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="强制缴纳类型：" prop="insuredTypeId" v-show="false">
+      <el-form-item label="强制缴纳类型：" prop="insuredTypeId" v-if="false">
         <el-radio-group v-model="ruleForm.insuredTypeId">
           <el-radio  :label="item.val" :key='item.val' v-for='(item) in insuredTypes' >{{item.txt}}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="出粮方式：" prop="payrollTimesType" v-if="ruleForm.insuredTypeId !==1" v-show="false">
+      <el-form-item label="出粮方式：" prop="payrollTimesType" v-if="buSelectedLocationType === 2" >
         <el-radio-group v-model="ruleForm.payrollTimesType">
         <el-radio :label="item.val" :key='item.val' v-for='(item) in payrollTimesTypes'>{{item.txt}}</el-radio>
         </el-radio-group>

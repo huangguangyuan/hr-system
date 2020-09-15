@@ -83,8 +83,9 @@
           </el-form-item>
           <el-form-item label="关联系统管理员账户：" prop="hrCode" v-if="isShow">
             <el-select v-model="ruleForm.hrCode" placeholder="请选择关联系统管理员" :loading="loading">
+              <el-option label="无" value=""></el-option>
               <el-option
-                v-for="item in HRadminList"
+                v-for="item in HRadminList" 
                 :key="item.id"
                 :label="item.name"
                 :value="item.code"
