@@ -16,9 +16,6 @@
         <el-input v-model="ruleForm.MPFAmountSelf" type="number" v-if="ruleForm.isInsured === true" oninput="value=value.replace(/[^\d.]/g,'')" style="width:153px;padding-right:15px"></el-input>
         <el-checkbox v-model="ruleForm.isInsured" >缴纳</el-checkbox> 
       </el-form-item>
-      <el-form-item label="合计金额：">
-        {{ Number.parseFloat(ruleForm.notTaxableAmount) +  Number.parseFloat(ruleForm.totalAmount) +  Number.parseFloat(ruleForm.MPFAmount) +  Number.parseFloat(ruleForm.MPFAmountSelf)}}
-      </el-form-item>
       <el-form-item label="出粮日期：" prop="payDay">
         <el-date-picker
           v-model="ruleForm.payDay"
@@ -26,6 +23,16 @@
           placeholder="出粮日期"
           format="yyyy-MM-dd"
         ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="调整金额：" prop="adjAmount">
+        <el-input v-model="ruleForm.adjAmount"></el-input>
+      </el-form-item>
+      <el-form-item label="调整金额备注：" prop="adjAmountRemarks" v-show="ruleForm.adjAmount !== 0">
+        <el-input type="textarea" v-model="ruleForm.adjAmountRemarks"></el-input>
+      </el-form-item>
+      <el-form-item label="合计金额：">
+        {{ Number.parseFloat(ruleForm.notTaxableAmount) + Number.parseFloat(ruleForm.adjAmount) + Number.parseFloat(ruleForm.totalAmount) +  Number.parseFloat(ruleForm.MPFAmount) +  Number.parseFloat(ruleForm.MPFAmountSelf)}}
+
       </el-form-item>
       <el-form-item label="备 注：">
         <el-input v-model="ruleForm.remarks"></el-input>
@@ -69,6 +76,7 @@ export default {
         isInsured:0,
         MPFAmountSelf:0,
         MPFAmount:0,
+        adjAmount:0,
         payDay: "",
         MPFCalc:false,
         remarks: ""
@@ -160,6 +168,7 @@ export default {
         payDay: this.$toolFn.timeFormat(this.ruleForm.payDay,'yyyy-MM-dd'),
         MPFAmount: this.ruleForm.MPFAmount,
         MPFAmountSelf: 0,
+        adjAmount: this.ruleForm.adjAmount,
         remarks: this.ruleForm.remarks,
         isInsured : this.ruleForm.isInsured ? 1 : 0,
         MPFCalc:this.ruleForm.MPFCalc
@@ -175,7 +184,7 @@ export default {
         this.$message.error("非应税金额大于剩余非应税总金额");
         return;
       }
-      if (this.balanceAmount + data.notTaxableAmount - data.totalAmount - data.MPFAmount - data.MPFAmountSelf < 0){
+      if (this.balanceAmount + data.adjAmount - data.totalAmount - data.MPFAmount - data.MPFAmountSelf < 0){
         this.$message.error("出粮金额大于剩余出粮金额");
         return;
       }

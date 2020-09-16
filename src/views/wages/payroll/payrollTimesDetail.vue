@@ -2,8 +2,11 @@
   <div class="staffPayrollDetail">
     <el-divider>详细信息</el-divider>
     <el-row :gutter="12">
-      <el-col :span="24" >
+      <el-col :span="12" >
         <el-card class="showWarning" shadow="always">状态：{{item.typeTxt}}</el-card>
+      </el-col>
+      <el-col :span="12" v-show="item.payDay && item.payDay != ''">
+        <el-card shadow="always">出粮日期：{{item.payDay}}</el-card>
       </el-col>
       <el-col :span="8">
         <el-card shadow="always">应税金额：{{item.totalAmount}}</el-card>
@@ -29,7 +32,7 @@
       <el-col :span="8" >
         <el-card shadow="always">MPF缴纳：{{item.MPFAmount}}</el-card>
       </el-col>
-      <el-col :span="8" v-show="item.isInsured" >
+      <el-col :span="8">
         <el-card shadow="always">MPF自愿：{{item.MPFAmountSelf}}</el-card>
       </el-col>
       <!-- <el-col :span="8" >
@@ -37,9 +40,6 @@
       </el-col> -->
       <el-col :span="8" v-show="item.reallyAmount > 0">
         <el-card shadow="always">实际支出金额：{{item.reallyAmount}}</el-card>
-      </el-col>
-      <el-col :span="8" v-show="item.payDay && item.payDay != ''">
-        <el-card shadow="always">出粮日期：{{item.payDay}}</el-card>
       </el-col>
       <el-col :span="8" v-show="item.confirmTime && item.confirmTime != ''">
         <el-card shadow="always">确认日期：{{item.confirmTime}}</el-card>
@@ -77,7 +77,7 @@ export default {
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.item = res.data.data;
-          this.item.reallyAmount = parseFloat(this.item.totalAmount) + parseFloat(this.item.adjAmount) + parseFloat(this.item.MPFAmount) + parseFloat(this.item.MPFAmountSelf);
+          this.item.reallyAmount = parseFloat(this.item.totalAmount) + parseFloat(this.item.notTaxableAmount) + parseFloat(this.item.adjAmount) + parseFloat(this.item.MPFAmount) + parseFloat(this.item.MPFAmountSelf);
           this.item.isInsuredTxt = this.item.isInsured == 1?'是':'否';
           this.item.payDay = this.$toolFn.timeFormat(this.item.payDay,'yyyy-MM-dd');
           this.item.adjAmountTime = this.$toolFn.timeFormat(this.item.adjAmountTime,'yyyy-MM-dd');
