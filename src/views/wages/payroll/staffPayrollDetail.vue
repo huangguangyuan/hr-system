@@ -77,11 +77,14 @@
     </el-row>
     <el-divider v-if="details.payrollTimesType === 2 && payrollTimes && payrollTimes.length != 0">多次出粮列表</el-divider>
     <el-table v-if="payrollTimes && payrollTimes.length > 0" :data="payrollTimes" stripe border show-summary>
+      <el-table-column prop="typeTxt" label="状态"></el-table-column>
       <el-table-column prop="reallyAmount" label="出粮金额"></el-table-column>
       <el-table-column prop="MPFAmount" label="MPF缴纳"></el-table-column>
       <el-table-column prop="MPFAmountSelf" label="MPF自愿"></el-table-column>
+      <el-table-column prop="notTaxableAmount" label="非应税金额"></el-table-column>
+      <el-table-column prop="adjAmount" label="调整金额"></el-table-column>
       <el-table-column prop="payDay" label="出粮日期"></el-table-column>
-      <el-table-column prop="typeTxt" label="状态"></el-table-column>
+      
     </el-table>
     <el-divider v-if="taxableItemsList && taxableItemsList.length > 0">应税项目清单</el-divider>
     <el-table  v-if="taxableItemsList && taxableItemsList.length > 0"  :data="taxableItemsList" stripe border show-summary>

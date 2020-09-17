@@ -38,8 +38,8 @@
       <!-- <el-col :span="8" >
         <el-card shadow="always">MPF自愿：{{item.isInsuredTxt}}</el-card>
       </el-col> -->
-      <el-col :span="8" v-show="item.reallyAmount > 0">
-        <el-card shadow="always">实际支出金额：{{item.reallyAmount}}</el-card>
+      <el-col :span="8">
+        <el-card shadow="always">扣除MPF后总金额：{{item.reallyAmount}}</el-card>
       </el-col>
       <el-col :span="8" v-show="item.confirmTime && item.confirmTime != ''">
         <el-card shadow="always">确认日期：{{item.confirmTime}}</el-card>
@@ -77,7 +77,7 @@ export default {
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.item = res.data.data;
-          this.item.reallyAmount = parseFloat(this.item.totalAmount) + parseFloat(this.item.notTaxableAmount) + parseFloat(this.item.adjAmount) + parseFloat(this.item.MPFAmount) + parseFloat(this.item.MPFAmountSelf);
+          this.item.reallyAmount = parseFloat(this.item.totalAmount) + parseFloat(this.item.notTaxableAmount) + parseFloat(this.item.adjAmount) - parseFloat(this.item.MPFAmount) - parseFloat(this.item.MPFAmountSelf);
           this.item.isInsuredTxt = this.item.isInsured == 1?'是':'否';
           this.item.payDay = this.$toolFn.timeFormat(this.item.payDay,'yyyy-MM-dd');
           this.item.adjAmountTime = this.$toolFn.timeFormat(this.item.adjAmountTime,'yyyy-MM-dd');

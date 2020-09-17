@@ -15,7 +15,7 @@
         <el-card shadow="always">月份：{{details.payroll.month}}</el-card>
       </el-col>
       <el-col :span="8">
-        <el-card shadow="always">总收入：{{details.payroll.totalAmount}}</el-card>
+        <el-card shadow="always">总收入：{{details.payroll.totalAmount + details.payroll.adjAmount}}</el-card>
       </el-col>
       <el-col :span="8">
         <el-card shadow="always">非应税总额：{{details.payroll.notTaxableAmount}}</el-card>
@@ -33,7 +33,7 @@
         <el-card shadow="always">已出应税总金额：{{details.totalAmountSum}}</el-card>
       </el-col>
       <el-col :span="12">
-        <el-card shadow="always">剩余应税总金额：{{details.payroll.totalAmount  - (details.MPFAmountSum + details.MPFAmountSelfSum + details.totalAmountSum + details.adjAmountSum)}}</el-card>
+        <el-card shadow="always">剩余应税总金额：{{details.payroll.totalAmount + details.payroll.adjAmount - details.totalAmountSum + details.adjAmountSum}}</el-card>
       </el-col>
       <el-col :span="12">
         <el-card shadow="always">剩余非应税总金额：{{details.payroll.notTaxableAmount - details.notTaxableAmountSum}}</el-card>

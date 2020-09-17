@@ -24,14 +24,14 @@
           format="yyyy-MM-dd"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="调整金额：" prop="adjAmount">
+      <el-form-item label="调整金额：" prop="adjAmount" v-if="false">
         <el-input v-model="ruleForm.adjAmount"></el-input>
       </el-form-item>
       <el-form-item label="调整金额备注：" prop="adjAmountRemarks" v-show="ruleForm.adjAmount !== 0">
         <el-input type="textarea" v-model="ruleForm.adjAmountRemarks"></el-input>
       </el-form-item>
-      <el-form-item label="合计金额：">
-        {{ Number.parseFloat(ruleForm.notTaxableAmount) + Number.parseFloat(ruleForm.adjAmount) + Number.parseFloat(ruleForm.totalAmount) +  Number.parseFloat(ruleForm.MPFAmount) +  Number.parseFloat(ruleForm.MPFAmountSelf)}}
+      <el-form-item label="扣除MPF后总金额：">
+        {{ Number.parseFloat(ruleForm.notTaxableAmount) + Number.parseFloat(ruleForm.adjAmount) + Number.parseFloat(ruleForm.totalAmount) -  Number.parseFloat(ruleForm.MPFAmount) - (ruleForm.isInsured?Number.parseFloat(ruleForm.MPFAmountSelf):0)}}
 
       </el-form-item>
       <el-form-item label="备 注：">
@@ -112,7 +112,7 @@ export default {
       this.staffInsuredInfoMPF = this.curInfo.staffPayrollInfo.staffInsuredInfoMPF;
       this.ruleForm.id = this.curInfo.id;
       this.ruleForm.payrollCode = this.curInfo.payrollMainInfo.code;
-      this.ruleForm.MPFAmountSelf = this.ruleForm.isInsured?this.staffInsuredInfoMPF.mpfVoluntarily:0;
+      this.ruleForm.MPFAmountSelf = this.staffInsuredInfoMPF.mpfVoluntarily;
       this.payrollTimesSummaryFn();
       if (this.curInfo.type == "modify") {
         this.ruleForm.id = this.curInfo.id;
@@ -184,7 +184,7 @@ export default {
         this.$message.error("非应税金额大于剩余非应税总金额");
         return;
       }
-      if (this.balanceAmount + data.adjAmount - data.totalAmount - data.MPFAmount - data.MPFAmountSelf < 0){
+      if (this.balanceAmount + data.adjAmount - data.totalAmount < 0){
         this.$message.error("出粮金额大于剩余出粮金额");
         return;
       }
@@ -209,7 +209,7 @@ export default {
       this.$myApi.http.post(reqUrl, data).then(res => {
         if (res.data.code == 0) {
           this.payrollTimesSummary = res.data.data;
-          this.balanceAmount = this.details.payroll.totalAmount - this.payrollTimesSummary.MPFAmountSum - this.payrollTimesSummary.MPFAmountSelfSum - this.payrollTimesSummary.totalAmountSum
+          this.balanceAmount = this.details.payroll.totalAmount + this.details.payroll.adjAmount - this.payrollTimesSummary.totalAmountSum
         }
       });
     },
